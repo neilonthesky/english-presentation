@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>FrameForge Customer Support System: The Flow of One Request</title>
+<style>
+  :root { --ink:#2b3440; --navy:#1b365d; --muted:#56636f; --grey:#5f6b7a; --greyL:#dfe4ea; --blue:#2f5f98; --blueL:#d6e4f3; --teal:#1f7a7a; --tealL:#d3ebe8; }
+  * { box-sizing: border-box; }
+  body { margin:0; padding:24px; font:16px/1.5 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif; color:var(--ink); background:#e3eaf2; }
+  main { max-width:1280px; margin:0 auto; }
+  h1 { font-size:28px; margin:0 0 8px; color:var(--navy); }
+  h2 { font-size:21px; margin:38px 0 10px; color:var(--navy); }
+  h3 { font-size:17px; margin:0 0 6px; color:var(--navy); }
+  p { margin:0 0 8px; }
+  code { background:#fff; padding:0 4px; border-radius:4px; font-size:.92em; }
+  .status { background:#fff; border-radius:10px; padding:12px 16px; margin:8px 0 6px; }
+  .legend { display:flex; flex-wrap:wrap; gap:10px; margin:12px 0 14px; padding:0; list-style:none; }
+  .legend li { display:flex; align-items:center; gap:8px; background:#fff; border-radius:999px; padding:4px 12px 4px 6px; font-size:14px; }
+  .sw { width:18px; height:18px; border-radius:5px; display:inline-block; }
+  .sw.fx, .who.fx { background:var(--greyL); }
+  .sw.md, .who.md { background:var(--blueL); }
+  .sw.pr, .who.pr { background:var(--tealL); }
+  .diagram { background:#fff; border-radius:12px; padding:12px; overflow-x:auto; }
+  .diagram svg { display:block; width:100%; min-width:1000px; height:auto; }
+  svg .fx { fill:#dfe4ea; }
+  svg .md { fill:#d6e4f3; }
+  svg .pr { fill:#d3ebe8; }
+  svg .us { fill:#fff; stroke:#5f6b7a; stroke-width:2; }
+  svg .ttl { font:700 15px system-ui,sans-serif; fill:#1b365d; }
+  svg .ln { font:13.5px system-ui,-apple-system,"Segoe UI",Roboto,sans-serif; fill:#2b3440; }
+  svg .el { font:600 12.5px system-ui,sans-serif; fill:#56636f; }
+  svg .e { fill:none; stroke:#5f6b7a; stroke-width:2.5; marker-end:url(#ar); }
+  svg .ep { fill:none; stroke:#1f7a7a; stroke-width:2.5; marker-end:url(#arT); }
+  svg .elp { font:600 12.5px system-ui,sans-serif; fill:#1f7a7a; }
+  table { width:100%; border-collapse:collapse; background:#fff; font-size:15px; border-radius:8px; overflow:hidden; }
+  th, td { text-align:left; vertical-align:top; padding:8px 10px; border-bottom:1px solid #e3eaf2; }
+  th { background:var(--blue); color:#fff; font-size:12.5px; text-transform:uppercase; letter-spacing:.04em; }
+  td.n { font-weight:700; white-space:nowrap; }
+  .who { display:inline-block; padding:1px 8px; border-radius:999px; font-size:12px; font-weight:700; white-space:nowrap; }
+  ul.plain { margin:0; padding-left:22px; }
+  ul.plain li { margin-bottom:4px; }
+  .caption { color:var(--muted); font-size:14px; margin:6px 0 10px; }
+  .grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(420px,1fr)); gap:16px; }
+  .ex { background:#fff; border-left:6px solid var(--blue); border-radius:10px; padding:12px 14px; }
+  .ex.person { border-left-color:var(--teal); }
+  .ex.stop { border-left-color:var(--grey); }
+  .ex .req q { font-style:italic; }
+  .ex .out { margin:6px 0 0; }
+  .note { background:var(--tealL); border-radius:8px; padding:10px 14px; margin-bottom:12px; }
+  dl { margin:0; background:#fff; border-radius:8px; padding:12px 16px; }
+  dt { float:left; clear:left; width:210px; font-weight:700; margin-bottom:6px; }
+  dd { margin:0 0 6px 220px; }
+  @media print { body { background:#fff; padding:0; } }
+</style>
+</head>
+<body>
+<main>
+
+<h1>FrameForge Customer Support System: The Flow of One Request</h1>
+<p class="status"><b>Status.</b> This page describes the flow that runs in <code>web/server</code> (the demo and the experiment call the same step functions). The product <b>FrameForge</b> (an AI video-generation SaaS: users make short video clips from text prompts or reference images in a web studio; the workspace holds uploaded assets and generated videos, not code; sold as a Free, Pro, or Team plan, monthly or annual, plus prepaid credit packs that renders use up), its customers and its help articles are a <b>local simulation</b>. The Jev and LLM calls are real. A refund changes <b>local</b> records only (a ledger entry); it does <b>not</b> move money. The work of the person after a handoff is <b>not</b> simulated. Example paths on this page follow from the rules; they are not measured results (those are in the paper).</p>
+
+<h2>How to read the flow</h2>
+<ul class="plain">
+  <li>Each box is a step. The color says who works in it: <b>fixed code</b>, a <b>model</b>, or a <b>person</b> (with the LLM that prepares the handoff).</li>
+  <li>Only Jev, in step 3, decides labels. Written rules and fixed routing, also in step 3, decide the verdict, the path, and the action. An LLM only writes text.</li>
+  <li>Step 5 does the action <b>only if the written rules allow it</b>. A rule that denies the action means that nothing runs, whatever the models said.</li>
+  <li>Path C never runs anything: the request goes straight to step H, where an LLM summarizes the chat for a person.</li>
+</ul>
+<ul class="legend">
+  <li><span class="sw fx"></span>Fixed code</li>
+  <li><span class="sw md"></span>Model (Jev or LLM)</li>
+  <li><span class="sw pr"></span>Handoff to a person</li>
+</ul>
+
+<div class="diagram">
+<svg viewBox="0 0 1200 740" role="img" aria-label="Flow of one request: seven steps, three paths A, B and C, and a handoff step H">
+  <defs>
+    <marker id="ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0 0L10 5L0 10z" fill="#5f6b7a"/></marker>
+    <marker id="arT" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0 0L10 5L0 10z" fill="#1f7a7a"/></marker>
+  </defs>
+
+  <rect class="us" x="20" y="30" width="200" height="76" rx="12"/>
+  <text class="ttl" x="34" y="56">1  User</text>
+  <text class="ln" x="34" y="78">Writes a request in the chat.</text>
+
+  <rect class="fx" x="260" y="30" width="200" height="76" rx="12"/>
+  <text class="ttl" x="274" y="56">2  System</text>
+  <text class="ln" x="274" y="78">Saves it, looks up the account.</text>
+
+  <rect class="md" x="500" y="30" width="360" height="76" rx="12"/>
+  <text class="ttl" x="514" y="56">3  Routing</text>
+  <text class="ln" x="514" y="78">Jev gives five answers with probabilities;</text>
+  <text class="ln" x="514" y="95">then fixed rules choose path A, B, or C.</text>
+
+  <rect class="fx" x="200" y="190" width="200" height="76" rx="12"/>
+  <text class="ttl" x="214" y="216">4A  System plans</text>
+  <text class="ln" x="214" y="238">Fixed code writes a plan.</text>
+  <text class="ln" x="214" y="255">No model.</text>
+
+  <rect class="md" x="660" y="190" width="200" height="76" rx="12"/>
+  <text class="ttl" x="674" y="216">4B  LLM answers</text>
+  <text class="ln" x="674" y="238">From the help articles and</text>
+  <text class="ln" x="674" y="255">the account only.</text>
+
+  <rect class="fx" x="380" y="335" width="360" height="90" rx="12"/>
+  <text class="ttl" x="396" y="362">5  System does the action</text>
+  <text class="ln" x="396" y="384">Only if the written rules allow it.</text>
+  <text class="ln" x="396" y="401">A deny rule: nothing runs. Writes the ledger.</text>
+
+  <rect class="md" x="380" y="480" width="360" height="90" rx="12"/>
+  <text class="ttl" x="396" y="507">6  User gets the result</text>
+  <text class="ln" x="396" y="529">LLM writes the reply (an answer of 4B is sent</text>
+  <text class="ln" x="396" y="546">as it is). "Did this solve your request?"</text>
+
+  <rect class="pr" x="920" y="480" width="260" height="110" rx="12"/>
+  <text class="ttl" x="934" y="507">H  Handoff</text>
+  <text class="ln" x="934" y="529">LLM writes a summary for a person.</text>
+  <text class="ln" x="934" y="546">The bot says a person will join.</text>
+  <text class="ln" x="934" y="563">Nothing runs.</text>
+
+  <rect class="fx" x="440" y="640" width="240" height="70" rx="12"/>
+  <text class="ttl" x="456" y="667">7  System</text>
+  <text class="ln" x="456" y="689">Writes a log record.</text>
+
+  <path class="e" d="M220 68 H260"/>
+  <path class="e" d="M460 68 H500"/>
+  <path class="e" d="M600 106 V148 H300 V190"/>
+  <text class="el" x="450" y="140" text-anchor="middle">A: an action</text>
+  <path class="e" d="M760 106 V190"/>
+  <text class="el" x="770" y="155" text-anchor="start">B: a question</text>
+  <path class="ep" d="M860 68 H1050 V480"/>
+  <text class="elp" x="1060" y="300" text-anchor="start">C: a person is needed</text>
+  <text class="elp" x="1060" y="318" text-anchor="start">(nothing runs)</text>
+  <path class="e" d="M300 266 V380 H380"/>
+  <path class="e" d="M760 266 V380 H740"/>
+  <path class="e" d="M560 425 V480"/>
+  <path class="e" d="M560 570 V640"/>
+  <text class="el" x="570" y="610" text-anchor="start">Yes, solved</text>
+  <path class="ep" d="M740 525 H920"/>
+  <text class="elp" x="830" y="515" text-anchor="middle">No, not solved</text>
+  <path class="ep" d="M1050 590 V675 H680"/>
+</svg>
+</div>
+<p class="caption">Path C comes straight from step 3 to step H: the injection flag is on, the priority is Critical, a written rule asks for a person, or the risk flag is on and no written rule covers the action. Step H is also reached after "not solved" at step 6. Both then end at step 7.</p>
+
+<h2>The steps</h2>
+<table>
+  <thead><tr><th>Step</th><th>Who</th><th>What happens</th></tr></thead>
+  <tbody>
+    <tr><td class="n">1</td><td><span class="who fx">User</span></td><td>Writes in the chat, as the owner of the account or as a teammate of the workspace.</td></tr>
+    <tr><td class="n">2</td><td><span class="who fx">System</span></td><td>Saves the request, looks up the account (plan, render credits left, next renewal, the one purchase with its charge date and usage), and reads any other customer's e-mail address from the text with a fixed pattern.</td></tr>
+    <tr><td class="n">3</td><td><span class="who md">Jev</span> <span class="who fx">Fixed rules</span></td><td>Routing. Jev gives five typed answers in one call, each with a probability: queue, action, priority, risk flag, injection flag. Then fixed code checks the written rules for the action on the data of the request (verdict allow, deny, or review), and the first matching routing line chooses the path. Probabilities do not decide.</td></tr>
+    <tr><td class="n">4A</td><td><span class="who fx">System</span></td><td>Path A (the request asks for an action): fixed code lists the plan from the written rules. No model.</td></tr>
+    <tr><td class="n">4B</td><td><span class="who md">LLM</span></td><td>Path B (the request is a question): the LLM answers from the help articles and the account only.</td></tr>
+    <tr><td class="n">5</td><td><span class="who fx">System</span></td><td>Does the action only if the written rules allow it. A rule that denies it means nothing runs, whatever the models said, and the reply says why. A done action is written to the ledger.</td></tr>
+    <tr><td class="n">6</td><td><span class="who md">LLM</span></td><td>The customer gets the answer of 4B as it is, or a reply that the LLM writes from the result of step 5. The chat then asks "Did this solve your request?". Yes: step 7. No: step H.</td></tr>
+    <tr><td class="n">H</td><td><span class="who pr">LLM + person</span></td><td>No action runs. The LLM writes a short summary of the chat for a person (the request, the account, what the bot did and said, why a person is needed, a suggested next step). The bot sends a fixed message: a human support agent will join in a minute. The person takes over.</td></tr>
+    <tr><td class="n">7</td><td><span class="who fx">System</span></td><td>Writes a log record: the request, the path, the result, and whether it went to a person (by a rule or by the user).</td></tr>
+  </tbody>
+</table>
+<p class="caption">The experiment measures only the first pass (steps 1 to 5 and, on path C, the decision to hand off). The "solved?" answer and step H are not simulated there.</p>
+
+<h2>Path C: when a person takes over</h2>
+<div class="note">The first line that matches decides: <b>injection flag on</b>, then <b>priority Critical</b>, then <b>a written rule asks for a person</b>, then <b>risk flag on with no written rule for the action</b>. The risk flag alone does not send a request to a person: a refund that the rules allow runs on path A, and a refund that the rules forbid also stays on path A, where nothing runs and the reply explains why.</div>
+
+<h2>The written rules</h2>
+<p class="caption">Only the actions that change money or data have written rules: "Start refund" and "Delete data". Each rule gives pass, deny (the action cannot be done), or review (a person must decide). The verdict is deny if one rule denies, review if one asks for a person, and allow otherwise. The rules never use the confidence of the classifier.</p>
+<table>
+  <thead><tr><th>Action</th><th>Written rule</th><th>Outcome</th></tr></thead>
+  <tbody>
+    <tr><td class="n">Both</td><td>Only the owner can ask for this.</td><td>teammate: deny</td></tr>
+    <tr><td class="n">Both</td><td>The system changes only the account of the sender.</td><td>another customer named: deny</td></tr>
+    <tr><td class="n">Refund</td><td>Within 14 days of the charge (monthly plan) or 30 days (annual plan).</td><td>inside: pass; outside and nothing used: review; outside and used: deny</td></tr>
+    <tr><td class="n">Refund</td><td>A credit pack only while none of its credits are used. A renewal that is not charged yet can be cancelled. A charge that the bank has not settled cannot be refunded.</td><td>unused, or not charged yet: pass; used, or not settled: deny</td></tr>
+    <tr><td class="n">Refund</td><td>A purchase is refunded once.</td><td>done before: deny</td></tr>
+    <tr><td class="n">Refund</td><td>A refund over $100, or 2 or more refunds in 90 days, needs a person.</td><td>review</td></tr>
+    <tr><td class="n">Delete data</td><td>Workspace data (uploaded assets and generated videos) is deleted once. Deleting cannot be undone, so a person always handles it.</td><td>done before: deny; else review</td></tr>
+  </tbody>
+</table>
+
+<h2>Example paths</h2>
+<p class="caption">Each example shows the path that the rules produce, assuming that the classifier labels the text as expected. The exact wording of a model and its probabilities are measured values, not constants. The same sentence "I want a refund" gives different answers for different customers.</p>
+<div class="grid">
+<section class="ex">
+<h3>1. A refund inside the window</h3>
+<p class="req"><b>Linh Tran (owner; Pro plan, monthly, $64, charged 5 days ago, 520 of 2,000 render credits used)</b> writes: <q>I want a refund.</q></p>
+<p>Step 3: inside the 14-day window and under $100, so the verdict is allow and the path is A. Step 4A plans the refund. Step 5 runs it and writes the ledger. Step 6: the LLM writes the reply, and the user says if it is solved.</p>
+<p class="out"><b>Outcome.</b> A local refund record. No money moves.</p>
+</section>
+<section class="ex person">
+<h3>2. A refund that needs a person</h3>
+<p class="req"><b>Minh Pham (owner; Team plan, monthly, $129, charged 20 days ago, no credits used)</b> writes: <q>I want a refund.</q></p>
+<p>Step 3: past the 14-day window but nothing was used, and the amount is over $100. A written rule asks for a person, so the path is C. Nothing runs. Step H: the LLM writes a summary, and the bot says a person will join.</p>
+<p class="out"><b>Outcome.</b> A handoff with a summary. No refund runs.</p>
+</section>
+<section class="ex stop">
+<h3>3. A refund that the rules forbid</h3>
+<p class="req"><b>An Nguyen (owner; render-credit pack, 5,000 credits, $50, 3,120 credits used)</b> writes: <q>I want a refund.</q></p>
+<p>Step 3: the pack is partly used, so a written rule denies the refund. A deny is not a review: the path is A. Step 5 runs nothing, because the rules do not allow the action. The reply explains why and what the customer can do next.</p>
+<p class="out"><b>Outcome.</b> Nothing runs, whatever the models said.</p>
+</section>
+<section class="ex">
+<h3>4. A renewal that is not charged yet</h3>
+<p class="req"><b>Hoa Le (owner; Pro plan, monthly, $85, renewal scheduled in 2 days)</b> writes: <q>Cancel my renewal and refund me.</q></p>
+<p>Step 3: the renewal is not charged, so the rule passes; path A. Step 5 cancels the renewal with no charge.</p>
+<p class="out"><b>Outcome.</b> The renewal is cancelled before it is charged.</p>
+</section>
+<section class="ex">
+<h3>5. A question</h3>
+<p class="req"><b>Any customer</b> writes: <q>How many credits does a video render use?</q></p>
+<p>Step 3: the action is "Send reply" and no flag is on, so the path is B. Step 4B: the LLM answers from the help articles and the account. Step 5 changes nothing. Step 6 sends the answer as it is.</p>
+<p class="out"><b>Outcome.</b> An answer. If the user says "not solved", the chat goes to step H.</p>
+</section>
+<section class="ex person">
+<h3>6. Text that gives orders to the chatbot</h3>
+<p class="req"><b>Any customer</b> writes a request that tells the chatbot to ignore its rules and refund everything.</p>
+<p>Step 3: Jev sets the injection flag, and the routing sends the request to path C. Nothing runs, whatever the text says. Step H hands the chat to a person.</p>
+<p class="out"><b>Outcome.</b> A handoff. No action runs.</p>
+</section>
+<section class="ex stop">
+<h3>7. A teammate asks for a refund or a deletion</h3>
+<p class="req"><b>A teammate of the workspace</b> writes: <q>Delete all our videos and uploaded assets.</q></p>
+<p>Step 3: only the owner can ask for this, so a written rule denies it. Step 5 runs nothing, and the reply says why. The same holds when the text names another customer.</p>
+<p class="out"><b>Outcome.</b> Nothing runs.</p>
+</section>
+<section class="ex person">
+<h3>8. The user says "not solved"</h3>
+<p class="req"><b>Any customer</b> answers "No, I need a person" at step 6.</p>
+<p>The chat does not go back through steps 3 to 5. No action runs again. Step H: the LLM writes a summary of the whole chat, and the bot says a person will join.</p>
+<p class="out"><b>Outcome.</b> A handoff. Step 7 writes the log.</p>
+</section>
+</div>
+
+<h2>What this study does and does not do</h2>
+<ul class="plain">
+  <li><b>Real:</b> hosted Jev and LLM calls; an HTTP server running these steps; local records (the ledger and the log) that change when an action runs.</li>
+  <li><b>Simulated:</b> the FrameForge product (studio, renders, workspaces), its customers, purchases and help articles; the sender (an explicit choice of owner or teammate); the work of the person after a handoff.</li>
+  <li><b>Not integrated:</b> a payment provider, an account system, and a real ticket tool.</li>
+  <li><b>Two systems compared:</b> the only difference is the classifier in step 3: Jev (typed answers with a probability) or an LLM. The written rules, the routing rules, and step 5 are identical.</li>
+</ul>
+<p class="caption">The numbers are in the paper and in <code>experiment/results/</code>; this page contains none, so that it cannot drift from the evidence.</p>
+
+<h2>Words</h2>
+<dl>
+  <dt>Classifier</dt><dd>Jev, or an LLM in the baseline: it gives the five labels in step 3.</dd>
+  <dt>Jev</dt><dd>A System One model: it gives a typed answer with a probability in one call and cannot write text.</dd>
+  <dt>Written rule</dt><dd>A fixed rule of the made-up company FrameForge, with the outcome pass, deny, or review on the data of the request.</dd>
+  <dt>Path A, B, C</dt><dd>A: the system acts or refuses. B: the LLM answers a question. C: a person takes over and nothing runs.</dd>
+  <dt>Ledger</dt><dd>The list of actions that already ran in the session. A written rule reads it so that an action is not done twice.</dd>
+  <dt>Handoff</dt><dd>Step H: the LLM summarizes the chat for a person, and the bot says a person will join.</dd>
+</dl>
+
+</main>
+</body>
+</html>

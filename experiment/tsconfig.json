@@ -1,0 +1,8 @@
+{
+  "extends": "../web/tsconfig.server.json",
+  "compilerOptions": {
+    "typeRoots": ["../web/node_modules/@types"],
+    "types": ["bun"]
+  },
+  "include": ["./**/*.ts", "../web/server/**/*.ts", "../web/src/types.ts"]
+}

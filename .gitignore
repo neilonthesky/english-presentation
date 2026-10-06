@@ -1,1 +1,8 @@
 .~lock.*
+/slides/node_modules/
+/slides/.venv/
+# Anthropic pptx skill is proprietary (no redistribution)
+/.omp/skills/pptx/
+/slides/preview-*.jpg
+/slides/deck.pdf
+experiment/results
