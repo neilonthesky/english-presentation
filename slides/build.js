@@ -85,7 +85,7 @@ async function photo(file, w, h, radius = 0.08, dpi = 150) {
   const img = {};
   for (const n of ICONS) img[n] = await iconPng(n);
   const shots = {
-    title: await photo("assets/title.jpg", 5.2, 5.2),
+    title: await photo("assets/title.jpg", 4.9, 4.9),
     machine: await photo("assets/machine.jpg", 2.4, 2.4),
     human: await photo("assets/human.jpg", 2.4, 2.4),
     closing: await photo("assets/closing.jpg", 4.9, 4.9),
@@ -177,36 +177,30 @@ async function photo(file, w, h, radius = 0.08, dpi = 150) {
     valGridLine: { style: "none" }, catGridLine: { style: "none" },
   };
 
-  // ---------- 1. Title and team ----------
+  // ---------- 1. Title ----------
   {
     const s = pres.addSlide();
     s.background = { color: C.blueM };
-    s.addText(TITLE, { x: 0.8, y: 0.5, w: 6.5, h: 2.2, margin: 0, fontFace: FONT, fontSize: 32, bold: true, color: C.white, valign: "top" });
-    s.addText("FrameForge, an AI video-generation SaaS: support staff, one LLM agent, then Jev with fixed code and an LLM", {
-      x: 0.8, y: 2.4, w: 6.5, h: 0.8, margin: 0, fontFace: FONT, fontSize: 17, color: "E3ECF6", valign: "top",
-    });
-    s.addText("Task allocation (bar = share of the work and of the talk)", {
-      x: 0.8, y: 3.6, w: 6.5, h: 0.3, margin: 0, fontFace: FONT, fontSize: 13, bold: true, color: "E3ECF6", valign: "middle",
-    });
-    const team = [
-      ["Tran Thanh Long (Leader)", 28], ["Nguyen Thanh Nam", 22], ["Vu Van Son", 18], ["Vuong Quang Quy", 17], ["Nguyen Phuong Nam", 15],
-    ];
-    team.forEach(([name, pct], i) => {
-      const y = 4.0 + i * 0.44;
-      s.addText(name, { x: 0.8, y, w: 2.7, h: 0.32, margin: 0, fontFace: FONT, fontSize: 15, bold: true, color: C.white, valign: "middle" });
-      const bw = (pct / 28) * 2.6;
-      s.addShape(pres.ShapeType.roundRect, { x: 3.6, y: y + 0.04, w: bw, h: 0.24, rectRadius: 0.05, fill: { color: i === 0 ? C.white : "C9DAEC" } });
-      s.addText(pct + "%", { x: 3.6 + bw + 0.1, y, w: 0.7, h: 0.32, margin: 0, fontFace: FONT, fontSize: 15, bold: true, color: C.white, valign: "middle" });
-    });
     s.addText("Phenikaa School of Computing\nEnglish Writing and Presentation Skills · October 2026", {
-      x: 0.8, y: 6.3, w: 6.5, h: 0.55, margin: 0, fontFace: FONT, fontSize: 14, color: C.white, valign: "top",
+      x: 0.8, y: 0.55, w: 6.6, h: 0.65, margin: 0, fontFace: FONT, fontSize: 14, color: "E3ECF6", valign: "top",
     });
-    s.addImage({ data: shots.title, x: 7.5, y: 0.95, w: 5.2, h: 5.2 });
+    s.addText(TITLE, { x: 0.8, y: 1.5, w: 6.6, h: 2.1, margin: 0, fontFace: FONT, fontSize: 32, bold: true, color: C.white, valign: "top" });
+    s.addText("FrameForge, an AI video-generation SaaS: support staff, one LLM agent, then Jev with fixed code and an LLM", {
+      x: 0.8, y: 3.75, w: 6.6, h: 0.9, margin: 0, fontFace: FONT, fontSize: 18, color: "E3ECF6", valign: "top",
+    });
+    s.addText("Team", { x: 0.8, y: 4.95, w: 6.6, h: 0.3, margin: 0, fontFace: FONT, fontSize: 14, bold: true, color: "E3ECF6", valign: "middle" });
+    const team = ["Tran Thanh Long (Leader)", "Nguyen Thanh Nam", "Vu Van Son", "Vuong Quang Quy", "Nguyen Phuong Nam"];
+    team.forEach((name, i) => {
+      s.addText(name, {
+        x: i % 2 === 0 ? 0.8 : 4.2, y: 5.3 + Math.floor(i / 2) * 0.38, w: 3.3, h: 0.34, margin: 0,
+        fontFace: FONT, fontSize: 16, bold: i === 0, color: C.white, valign: "middle",
+      });
+    });
+    s.addImage({ data: shots.title, x: 7.7, y: 1.3, w: 4.9, h: 4.9 });
     speakerTag(s, 1, true);
     s.addNotes(
       `Speaker: ${LONG}, about 75 s. Good morning. A customer waits two days for a refund; a chatbot that handles money can do harm. ` +
-        "We study three levels of customer support for FrameForge, a made-up AI video-generation SaaS: support staff, one LLM agent, and Jev with fixed code and an LLM. " +
-        "The bars show the task allocation of the paper: the leader has the largest share, and each member has a different share."
+        "We study three levels of customer support for FrameForge, a made-up AI video-generation SaaS: support staff, one LLM agent, and Jev with fixed code and an LLM."
     );
   }
 
