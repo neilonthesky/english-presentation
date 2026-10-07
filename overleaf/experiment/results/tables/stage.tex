@@ -1,0 +1,18 @@
+\begin{table}[t]
+\caption{Jev against the LLM as classifier, over every classifier call of the 50 requests. The tokens are the mean of one call and the cost is for 1,000 requests. Wrong in any field is the share of requests with at least one wrong scored field. Only Jev reports a confidence, which the calibration table reads.}
+\label{tab:stage}
+\small
+\begin{tabular}{lrr}
+\toprule
+Classifier call & Jev & LLM \\
+\midrule
+Median latency (s) & 0.241 & 4.410 \\
+95th percentile (s) & 1.035 & 16.619 \\
+Input tokens (per call) & 1227 & 994 \\
+Output tokens (per call) & 196 & 730 \\
+Action accuracy (\%) & 86.0 & 92.0 \\
+Wrong in any field (\%) & 58.0 & 38.0 \\
+Cost per 1k requests (\$) & 0.052 & 0.587 \\
+\bottomrule
+\end{tabular}
+\end{table}

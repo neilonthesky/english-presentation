@@ -1,9 +1,9 @@
-// The LaTeX tables of the paper. Every number comes from results.json (written by metrics.ts) or from
-// the fault report inside it; nothing is typed by hand. The style is the one of the old tables.
+// The LaTeX tables of the paper. Every number comes from results.json (written by metrics.ts),
+// from the per-case records, or from the fault report inside results.json; nothing is typed by hand.
+// The style is the one of the old tables.
 import { mkdir, writeFile } from "node:fs/promises"
 import { join } from "node:path"
 import type { Results } from "./metrics"
-import { chanceBins, SWEEP_FOLDERS, sweepFolder } from "./sweep"
 
 const pct = (value: number, digits = 1): string => (100 * value).toFixed(digits)
 
@@ -12,6 +12,10 @@ interface TableStyle {
   wide?: boolean
   /** The space between columns, in points. The default of LaTeX is 6 pt. */
   sep?: number
+  /** The float placement specifier. The default is "t". */
+  place?: string
+  /** The size command of the table. The default is "\small". */
+  font?: string
 }
 
 function table(
@@ -20,10 +24,10 @@ function table(
 ): string {
   const env = style.wide ? "table*" : "table"
   return [
-    `\\begin{${env}}[t]`,
+    `\\begin{${env}}[${style.place ?? "t"}]`,
     `\\caption{${caption}}`,
     `\\label{${label}}`,
-    "\\small",
+    style.font ?? "\\small",
     ...(style.sep === undefined ? [] : [`\\setlength{\\tabcolsep}{${style.sep}pt}`]),
     `\\begin{tabular}{${spec}}`,
     "\\toprule",
@@ -40,105 +44,123 @@ function table(
 export async function writeTables(out: string, results: Results): Promise<string[]> {
   const directory = join(out, "tables")
   await mkdir(directory, { recursive: true })
-  const split = results.split
   const written: Record<string, string> = {}
 
-  const d = results.dataset
-  written["data.tex"] = table(
-    `The synthetic request set of the ${split} split.`,
-    "tab:data",
-    "lr",
-    ["Item", "Value"],
-    [
-      ["Requests", `${d.requests}`],
-      ["Request types", `${d.categories}`],
-      ["Customers in the world", `${d.customers}`],
-      ["Requests by owner / teammate", `${d.byRole.owner} / ${d.byRole.teammate}`],
-      ["Hard cases (mixed requests)", `${d.hard}`],
-      ["Risk flag should be on", `${pct(d.riskFlagShare)}\\%`],
-      ["Priority is critical", `${pct(d.criticalShare)}\\%`],
-      ["Injection attempts", `${pct(d.injectionShare)}\\%`],
-      ["Final result is Queued (support staff)", `${d.finalToStaff}`],
-      ["Final action differs from the asked action", `${d.finalDiffersFromGoldAction}`],
-    ],
-  )
-
+  const ladderRow = (s: (typeof results.ladder)[number]): readonly string[] =>
+    s.level === 0
+      ? [`${s.level + 1} ${s.name}`, "--", "--", "--", "--", "--", "--", s.totalSeconds.toFixed(1)]
+      : [
+          `${s.level + 1} ${s.name}`,
+          `${s.served}`,
+          `${s.stopped}`,
+          `${s.errors}`,
+          `${s.harmful}`,
+          s.machineSeconds.toFixed(1),
+          s.apiCost1000.toFixed(2),
+          s.totalSeconds.toFixed(1),
+        ]
   written["ladder.tex"] = table(
-    `The three rungs of the ladder on the ${split} split. Each rung adds one part to the rung before. Staff and Clar. are the ` +
-      "share of requests sent to support staff and the share that went to Clarify, in percent. Wrong is the number of wrong final " +
-      "results: at rung 1 a request whose correct final result is Queued counts as wrong (no support staff help the customer), and " +
-      "so does a run of an action other than the correct one; at rung 2 it is the silent errors. Harm is a wrong run of an " +
-      "action that changes money or data. Mach.~s and \\$/1k are the machine time and the API cost per 1,000 requests, measured " +
-      `over every model call of the pipeline (Jev at \\$${results.prices.jev.input} per million input tokens and free output tokens; ` +
-      `the LLM off-peak at \\$${results.prices.llm.input.toFixed(2)} and \\$${results.prices.llm.output.toFixed(2)} per million output ` +
-      `tokens). Total s adds the assumed ${results.staff_seconds}~s of support staff for each request that reaches Queued.`,
+    "The three levels on the 50 requests. Served counts a request that ends with the result it needs. Stopped counts a request " +
+      "whose correct action a written rule denies and the check of the level stopped (the fixed rules check at Level 3, the agent itself at Level 2): the flow runs nothing and the Final message tells the customer what the chat cannot do. " +
+      "Errors counts every other run, and Harm the errors that run an action which changes money, a plan, stored data, or a password. Mach.~s is the machine " +
+      "time, \\$/1k the API cost for 1,000 requests, and Total s the total time (the assumed 90~s of staff work at Level 1). " +
+      "Level 1 is the baseline, so its outcome columns are marked --.",
     "tab:ladder",
-    ">{\\raggedright\\arraybackslash}p{2.2cm}rrrrrrr",
-    ["Rung", "Staff", "Clar.", "Wrong", "Harm", "Mach. s", "\\$/1k", "Total s"],
-    results.ladder.map((s) => [
-      `${s.rung} ${s.name}`,
-      pct(s.staffRate),
-      pct(s.clarifyRate),
-      `${s.wrongFinal}`,
-      `${s.harmful}`,
-      s.machineSeconds.toFixed(1),
-      s.apiCost1000.toFixed(2),
-      s.totalSeconds.toFixed(1),
-    ]),
-    { sep: 2 },
+    ">{\\raggedright\\arraybackslash}p{1.7cm}rrrrrrr",
+    ["Level", "Served", "Stopped", "Errors", "Harm", "Mach. s", "\\$/1k", "Total s"],
+    results.ladder.map(ladderRow),
+    { sep: 1.5 },
   )
 
   const { jev, llm } = results.systems
   const quality = results.classifier
   written["stage.tex"] = table(
-    `The classifier stage on the ${split} split: Jev against the LLM baseline, over every classifier call (a Clarify round makes ` +
-      "one more call). The tokens are the mean of one classifier call and the cost is in US dollars for 1,000 requests. Action " +
-      "accuracy is the share of the requests whose action answer is the gold answer, and wrong in any field is the share with at " +
-      "least one wrong scored field. Only Jev reports a chance, which the confidence floor reads.",
+    `Jev against the LLM as classifier, over every classifier call of the 50 requests. The tokens are the ` +
+      "mean of one call and the cost is for 1,000 requests. Wrong in any field is the share of requests with at least one wrong " +
+      "scored field. Only Jev reports a confidence, which the calibration table reads.",
     "tab:stage",
     "lrr",
-    ["Classifier stage", "Jev", "LLM"],
+    ["Classifier call", "Jev", "LLM"],
     [
-      ["Median latency (s)", jev.classifierLatency.median.toFixed(3), llm.classifierLatency.median.toFixed(3)],
-      ["95th percentile (s)", jev.classifierLatency.p95.toFixed(3), llm.classifierLatency.p95.toFixed(3)],
-      ["Input tokens (per call)", jev.classifierTokens.inputPerCall.toFixed(0), llm.classifierTokens.inputPerCall.toFixed(0)],
-      ["Output tokens (per call)", jev.classifierTokens.outputPerCall.toFixed(0), llm.classifierTokens.outputPerCall.toFixed(0)],
+      ["Median latency (s)", jev.decisionLatency.median.toFixed(3), llm.decisionLatency.median.toFixed(3)],
+      ["95th percentile (s)", jev.decisionLatency.p95.toFixed(3), llm.decisionLatency.p95.toFixed(3)],
+      ["Input tokens (per call)", jev.decisionTokens.inputPerCall.toFixed(0), llm.decisionTokens.inputPerCall.toFixed(0)],
+      ["Output tokens (per call)", jev.decisionTokens.outputPerCall.toFixed(0), llm.decisionTokens.outputPerCall.toFixed(0)],
       ["Action accuracy (\\%)", pct(quality.jev.perField.action.accuracy), pct(quality.llm.perField.action.accuracy)],
       ["Wrong in any field (\\%)", pct(quality.jev.wrongAnyFieldRate), pct(quality.llm.wrongAnyFieldRate)],
-      ["Cost per 1k requests (\\$)", jev.classifierCostPer1000.toFixed(3), llm.classifierCostPer1000.toFixed(3)],
+      ["Cost per 1k requests (\\$)", jev.decisionCostPer1000.toFixed(3), llm.decisionCostPer1000.toFixed(3)],
     ],
   )
 
+  const groups = Object.entries(results.fault.groups)
+  // The lie group and the group where a reset must run are not "nothing may run" groups: they are listed on their own rows.
+  const runsGroup = "the teammate resets the password of the teammate"
+  const liesGroup = "a reply that lies about the action"
+  const quiet = groups.filter(([name]) => name !== liesGroup && name !== runsGroup)
+  const other = groups.filter(([name]) => name === liesGroup || name === runsGroup)
+  const total = (key: "requests" | "unsafe" | "denied" | "right"): number => quiet.reduce((sum, [, g]) => sum + g[key], 0)
   written["fault.tex"] = table(
-    "Fault injection with forged classifier answers. Unsafe means a state-changing action ran that the written rules do not allow.",
+    `Fault injection with forged Triage answers; no model runs. The ${quiet.length} groups where nothing may run give the same finding, so they share one row. Unsafe means a state-changing action ran that the written rules do not allow; Denied means the rules check stopped the action.`,
     "tab:fault",
-    "lrrrrr",
-    ["Case", "Requests", "Unsafe", "Denied by Rules check", "To staff", "Right result"],
-    Object.entries(results.fault.groups).map(([name, group]) => [
-      name,
-      `${group.requests}`,
-      `${group.unsafe}`,
-      `${group.denied}`,
-      `${group.toStaff}`,
-      `${group.right}`,
-    ]),
-    { wide: true },
+    ">{\\raggedright\\arraybackslash}p{2.7cm}rrrr",
+    ["Case", "Requests", "Unsafe", "Denied", "Right result"],
+    [
+      [`${quiet.length} groups where nothing may run`, `${total("requests")}`, `${total("unsafe")}`, `${total("denied")}`, `${total("right")}`],
+      ...other.map(([name, g]) => [name === runsGroup ? "a teammate resets their own password" : "the reply claims an action that did not run", `${g.requests}`, `${g.unsafe}`, `${g.denied}`, `${g.right}`]),
+    ],
   )
 
-  // The answers of the queue, the action, and the risk flag by chance: the evidence for the floor. The dev run is optional.
+  // The answers of the queue, the action, and the risk flag by confidence: the classifier quality that the calibration table reports.
   const test = await chanceBins(join(out, "per_case.json"))
-  const devPath = join(out, SWEEP_FOLDERS.dev, sweepFolder(results.parameters.floor, results.parameters.rounds), "per_case.json")
-  const dev = (await Bun.file(devPath).exists()) ? await chanceBins(devPath) : null
-  if (!dev) console.error(`calibration table without dev columns: ${devPath} is missing. Run the dev sweep first (see experiment/README.md).`)
   const cell = (bin: { n: number; wrong: number }): string[] => [`${bin.n}`, `${bin.wrong}`, bin.n ? pct(bin.wrong / bin.n) : "--"]
   written["calibration.tex"] = table(
-    "Wrong answers of the queue, the action, and the risk flag of Jev by the chance of the answer, in the first pass. The floor reads these three answers.",
+    "Wrong answers of the queue, the action, and the risk flag of Jev by the confidence of the answer.",
     "tab:calibration",
-    dev ? "lrrrrrr" : "lrrr",
-    dev ? ["Chance", "Dev n", "Wrong", "\\%", "Test n", "Wrong", "\\%"] : ["Chance", "Test n", "Wrong", "\\%"],
-    test.map((bin, i) => [bin.label, ...(dev ? cell(dev[i]) : []), ...cell(bin)]),
+    "lrrr",
+    ["Confidence", "n", "Wrong", "\\%"],
+    test.map((bin) => [bin.label, ...cell(bin)]),
   )
 
   for (const [name, text] of Object.entries(written)) await writeFile(join(directory, name), text, "utf8")
   return Object.keys(written).sort()
+}
+
+export interface ChanceBin {
+  label: string
+  /** Answers of the queue, the action, and the risk flag with a chance in [low, high). */
+  n: number
+  wrong: number
+}
+
+const BINS: readonly { label: string; low: number; high: number }[] = [
+  { label: "below 0.5", low: 0, high: 0.5 },
+  { label: "0.5 to 0.6", low: 0.5, high: 0.6 },
+  { label: "0.6 to 0.7", low: 0.6, high: 0.7 },
+  { label: "0.7 to 0.8", low: 0.7, high: 0.8 },
+  { label: "0.8 to 0.9", low: 0.8, high: 0.9 },
+  { label: "0.9 or more", low: 0.9, high: Infinity },
+]
+
+interface JevCase {
+  scored: string[]
+  gold: Record<string, unknown>
+  classifier: { fields: Record<string, { value: unknown; chance: number | null }> }
+}
+
+/** How often the three answers that carry a chance (queue, action, risk flag) are wrong, by the chance of the answer. */
+export async function chanceBins(perCasePath: string): Promise<ChanceBin[]> {
+  const perCase: { jev: (JevCase | { failure: string })[] } = await Bun.file(perCasePath).json()
+  const bins = BINS.map((bin) => ({ label: bin.label, n: 0, wrong: 0 }))
+  for (const record of perCase.jev) {
+    if ("failure" in record) continue
+    for (const field of ["queue", "action", "risk"]) {
+      if (!record.scored.includes(field)) continue
+      const answer = record.classifier.fields[field]
+      if (answer.chance === null) continue
+      const index = BINS.findIndex((bin) => answer.chance! >= bin.low && answer.chance! < bin.high)
+      bins[index].n++
+      bins[index].wrong += answer.value === record.gold[field] ? 0 : 1
+    }
+  }
+  return bins
 }

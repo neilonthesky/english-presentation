@@ -1,10 +1,8 @@
-// The charts of the paper, drawn from results.json and the sweep runs: SVG text, then one PDF per chart with rsvg-convert.
+// The charts of the paper, drawn from results.json: SVG text, then one PDF per chart with rsvg-convert.
 // The paper includes the PDFs with \includegraphics, so LaTeX has no drawing to compute (Overleaf compiles fast).
 import { mkdir, writeFile } from "node:fs/promises"
 import { join } from "node:path"
 import type { Results } from "./metrics"
-import { ENDS, type End } from "./pipeline"
-import { crossSections, FLOORS, readSweep, ROUNDS, type SweepRow } from "./sweep"
 import { FIELDS, type Field } from "./types"
 
 const NAMES: Record<Field, string> = { queue: "Queue", action: "Action", priority: "Priority", risk: "Risk", injection: "Injection" }
@@ -12,11 +10,6 @@ const BLUE = "#2563eb"
 const AMBER = "#f59e0b"
 const SLATE = "#64748b"
 const RED = "#dc2626"
-const GREEN = "#16a34a"
-const GREY = "#9ca3af"
-const BAND = "#e5e7eb"
-const END_COLORS: Record<End, string> = { answer: BLUE, action: GREEN, denied: GREY, queued: AMBER, invalid: RED }
-const END_NAMES: Record<End, string> = { answer: "Answer", action: "Action done", denied: "Denied", queued: "Queued", invalid: "Invalid" }
 
 type Anchor = "start" | "middle" | "end"
 const t = (x: number, y: number, s: string, anchor: Anchor = "middle", size = 7, fill = "#111827", extra = ""): string =>
@@ -66,35 +59,57 @@ function classifierChart(r: Results): string {
   return svg(240, 134, out)
 }
 
-/** The three rungs of the ladder: wrong final results (with the harmful runs), mean time per request, and the API cost per 1,000 requests. */
+/** The three levels of the ladder: the outcome of the 50 requests (served, stopped, errors), mean time per request, and the API cost per 1,000 requests. */
 function ladderChart(r: Results): string {
   const out: string[] = []
   const steps = r.ladder
-  const labels = [["Rung 0", "Staff"], ["Rung 1", "LLM + rules"], ["Rung 2", "+ Jev + staff"]]
+  const labels = [["Level 1", "Staff only"], ["Level 2", "LLM agent"], ["Level 3", "Jev + LLM"]]
   const DARK_RED = "#7f1d1d"
+  const GREY = "#9ca3af"
   const [top, bottom] = [22, 106]
 
-  // (a) wrong final results; the dark part is the wrong runs of an action that changes money or data
-  out.push(title(24, "(a) Wrong final results"))
+  // (a) the outcome of each level: served, stopped by design, and errors, with the harmful part of the errors on top of a stack
+  out.push(title(24, "(a) Outcome of the 50 requests"))
   const [ax0, ax1] = [24, 164]
-  const wrongMax = Math.max(10, Math.ceil(Math.max(...steps.map((s) => s.wrongFinal)) / 10) * 10)
-  const ay = yAxis(ax0, ax1, top, bottom, 0, wrongMax, wrongMax > 60 ? 20 : 10, (v) => `${v}`, out)
+  const ay = yAxis(ax0, ax1, top, bottom, 0, 50, 10, (v) => `${v}`, out)
   const gw = (ax1 - ax0) / steps.length
   const stepLabels = (x0: number, x1: number): void => {
     const w = (x1 - x0) / steps.length
     steps.forEach((_, i) => {
-      out.push(t(x0 + (i + 0.5) * w, bottom + 9, labels[i][0], "middle", 6), t(x0 + (i + 0.5) * w, bottom + 17, labels[i][1], "middle", 5.5))
+      out.push(t(x0 + (i + 0.5) * w, bottom + 9, labels[i][0], "middle", 6), t(x0 + (i + 0.5) * w, bottom + 17, labels[i][1], "middle", 6))
     })
+  }
+  const stackLabel = (x: number, lo: number, hi: number, value: string, fill: string): void => {
+    const middle = (ay(lo) + ay(hi)) / 2 + 2.2
+    if (ay(lo) - ay(hi) >= 7) out.push(t(x, middle, value, "middle", 6.5, fill))
   }
   steps.forEach((s, i) => {
     const bx = ax0 + i * gw + gw * 0.2
-    out.push(rect(bx, ay(s.wrongFinal), gw * 0.6, bottom - ay(s.wrongFinal), RED), rect(bx, ay(s.harmful), gw * 0.6, bottom - ay(s.harmful), DARK_RED))
-    out.push(t(bx + gw * 0.3, ay(s.wrongFinal) - 2, `${s.wrongFinal}`, "middle", 6.5))
+    const bw = gw * 0.6
+    const cx = bx + bw / 2
+    if (s.level === 0) {
+      // Level 1 is the reference: the study assumes that staff serve every request, so the bar is one grey block.
+      out.push(rect(bx, ay(50), bw, bottom - ay(50), GREY), t(cx, (ay(50) + bottom) / 2 + 2.2, "50", "middle", 6.5, "#ffffff"))
+      return
+    }
+    const served = s.served
+    const stopped = served + s.stopped
+    const errors = stopped + s.errors
+    out.push(rect(bx, ay(served), bw, bottom - ay(served), BLUE))
+    out.push(rect(bx, ay(stopped), bw, ay(served) - ay(stopped), AMBER))
+    out.push(rect(bx, ay(errors), bw, ay(stopped) - ay(errors), RED))
+    // The harmful errors are the lowest part of the error stack; there are none in this run.
+    if (s.harmful > 0) out.push(rect(bx, ay(stopped + s.harmful), bw, ay(stopped) - ay(stopped + s.harmful), DARK_RED))
+    stackLabel(cx, 0, served, `${served}`, "#ffffff")
+    stackLabel(cx, served, stopped, `${s.stopped}`, "#111827")
+    stackLabel(cx, stopped, errors, `${s.errors}`, "#ffffff")
   })
   stepLabels(ax0, ax1)
-  legend(ax0 - 18, 137, [["Wrong final result", RED], ["Of these, harmful", DARK_RED]], out)
+  const harmfulTotal = steps.reduce((sum, s) => sum + s.harmful, 0)
+  legend(ax0 - 18, 137, [["Served", BLUE], ["Stopped", AMBER], ["Errors", RED], [`Harmful (${harmfulTotal})`, DARK_RED]], out)
+  legend(ax0 - 18, 147, [["Staff only (assumed)", GREY]], out)
 
-  // (b) mean time per request: machine time and the assumed staff time
+  // (b) mean time per request: the machine time, and the assumed staff time of the reference level
   const timeMax = Math.max(20, Math.ceil(Math.max(...steps.map((s) => s.totalSeconds)) / 20) * 20)
   out.push(title(198, "(b) Mean time per request (s)"))
   const [bx0, bx1] = [198, 338]
@@ -106,7 +121,7 @@ function ladderChart(r: Results): string {
     out.push(t(x + bw * 0.3, by(s.totalSeconds) - 2, s.totalSeconds.toFixed(1), "middle", 6.5))
   })
   stepLabels(bx0, bx1)
-  legend(bx0 + 6, 137, [["Machine", SLATE], [`Staff (assumed ${r.staff_seconds} s)`, AMBER]], out)
+  legend(bx0 + 6, 137, [["Machine", SLATE], [`Staff (assumed ${r.staff_seconds} s, Level 1)`, AMBER]], out)
 
   // (c) the API cost of every model call of the pipeline
   out.push(title(372, "(c) API cost per 1k requests ($)"))
@@ -119,137 +134,9 @@ function ladderChart(r: Results): string {
     out.push(rect(x, cy(s.apiCost1000), cw * 0.6, bottom - cy(s.apiCost1000), BLUE), t(x + cw * 0.3, cy(s.apiCost1000) - 2, s.apiCost1000.toFixed(2), "middle", 6.5))
   })
   stepLabels(cx0, cx1)
-  return svg(520, 146, out)
+  return svg(520, 156, out)
 }
 
-/** Stacked bars of how the Jev system ended each request (answer, action done, denied, Queued) for each floor; the silent errors are printed above each bar. */
-function floorChart(rows: readonly SweepRow[]): string {
-  const out: string[] = []
-  const [x0, x1, top, bottom] = [30, 236, 34, 118]
-  const total = rows[0].requests
-  const y = yAxis(x0, x1, top, bottom, 0, total, 20, (v) => `${v}`, out)
-  out.push(t(8, (top + bottom) / 2, "requests", "middle", 6.5, "#4b5563", `transform="rotate(-90 8 ${(top + bottom) / 2})"`))
-  legend(x0 + 2, 9, ENDS.map((end) => [END_NAMES[end], END_COLORS[end]] as const), out)
-  out.push(t(x0 + 2, 24, "Silent errors above each bar", "start", 6.5, "#4b5563"))
-  const gw = (x1 - x0) / rows.length
-  rows.forEach((row, i) => {
-    const bx = x0 + i * gw + gw * 0.2
-    let at = bottom
-    for (const end of ENDS) {
-      const h = bottom - y(row.ends[end])
-      at -= h
-      out.push(rect(bx, at, gw * 0.6, h, END_COLORS[end]))
-      if (h >= 7) out.push(t(bx + gw * 0.3, at + h / 2 + 2.3, `${row.ends[end]}`, "middle", 6.5, end === "denied" ? "#111827" : "#ffffff"))
-    }
-    out.push(t(bx + gw * 0.3, y(total) - 3, `${row.silentErrors}`, "middle", 7.5, row.silentErrors ? RED : "#111827", 'font-weight="bold"'))
-    out.push(t(x0 + (i + 0.5) * gw, bottom + 9, row.floor === 0 ? "0 (none)" : `${row.floor}`, "middle", 6.5))
-  })
-  out.push(t((x0 + x1) / 2, bottom + 19, "Confidence floor", "middle", 6.5, "#4b5563"))
-  return svg(240, 142, out)
-}
-
-/** A polyline with a marker at each point; `dash` draws a dashed line. */
-function series(points: readonly (readonly [number, number])[], color: string, radius: number, dash: boolean, out: string[]): void {
-  if (!points.length) return
-  const d = dash ? ' stroke-dasharray="3 2"' : ""
-  out.push(`<polyline points="${points.map(([px, py]) => `${px.toFixed(1)},${py.toFixed(1)}`).join(" ")}" fill="none" stroke="${color}" stroke-width="1"${d}/>`)
-  for (const [px, py] of points) out.push(`<circle cx="${px.toFixed(1)}" cy="${py.toFixed(1)}" r="${radius}" fill="${color}"/>`)
-}
-
-type SplitName = "dev" | "test"
-const SPLIT_COLOR: Record<SplitName, string> = { dev: BLUE, test: AMBER }
-const SPLIT_TEXT: Record<SplitName, string> = { dev: BLUE, test: "#b45309" }
-
-/**
- * Choosing the floor, at the chosen number of Clarify rounds: for each floor, the silent errors (a), the share of requests sent
- * to staff (b), and the share that went to Clarify (c) of the Jev system, on the dev split (where the floor was chosen) and on
- * the test split (the confirmation).
- */
-function chooseFloorChart(dev: readonly SweepRow[], test: readonly SweepRow[], chosen: number, rounds: number): string {
-  const out: string[] = []
-  const [top, bottom] = [24, 110]
-  const rowsOf = { dev, test } as const
-  const label = (floor: number): string => (floor === 0 ? "0" : floor.toFixed(1))
-
-  const panel = (heading: string, x0: number, x1: number, lo: number, hi: number, step: number, fmt: (v: number) => string) => {
-    out.push(title(x0 - 28, heading))
-    const px = (floor: number) => x0 + ((FLOORS.indexOf(floor) + 0.5) / FLOORS.length) * (x1 - x0)
-    out.push(rect(px(chosen) - 0.5 * ((x1 - x0) / FLOORS.length), top, (x1 - x0) / FLOORS.length, bottom - top, BAND))
-    const y = yAxis(x0, x1, top, bottom, lo, hi, step, fmt, out)
-    for (const floor of FLOORS) out.push(t(px(floor), bottom + 9, label(floor), "middle", 6.5))
-    out.push(t((x0 + x1) / 2, bottom + 19, "Confidence floor", "middle", 6.5, "#4b5563"))
-    return { px, y }
-  }
-  /** One line per split, with the value above (dev) or below (test) each point. Near the axis the value of the test split goes above too. */
-  const lines = (p: ReturnType<typeof panel>, value: (row: SweepRow) => number, dash: boolean, digits: number): void => {
-    for (const split of ["dev", "test"] as const) {
-      const rows = rowsOf[split]
-      series(rows.map((row) => [p.px(row.floor), p.y(value(row))] as const), SPLIT_COLOR[split], (split === "dev" ? 3 : 1.8) * (dash ? 0.75 : 1), dash, out)
-      if (!dash) {
-        for (const row of rows) {
-          const at = p.y(value(row))
-          const dy = split === "dev" ? -5 : at + 10 > bottom - 1 ? -12 : 10
-          out.push(t(p.px(row.floor), at + dy, value(row).toFixed(digits), "middle", 5.5, SPLIT_TEXT[split]))
-        }
-      }
-    }
-  }
-
-  const silentMax = Math.max(2, ...dev.map((row) => row.silentErrors), ...test.map((row) => row.silentErrors))
-  lines(panel("(a) Silent errors", 36, 164, 0, silentMax, silentMax > 8 ? 2 : 1, (v) => `${v}`), (row) => row.silentErrors, false, 0)
-
-  const toStaff = panel("(b) Sent to staff (%)", 212, 340, 0, 100, 20, (v) => `${v}`)
-  lines(toStaff, (row) => 100 * row.staffRate, false, 0)
-  lines(toStaff, (row) => (100 * row.staffNotNeeded) / row.requests, true, 0)
-
-  const clarifyMax = Math.max(20, Math.ceil(Math.max(...dev.map((row) => 100 * row.clarifyRate), ...test.map((row) => 100 * row.clarifyRate)) / 20) * 20)
-  lines(panel("(c) Went to Clarify (%)", 388, 500, 0, clarifyMax, clarifyMax > 60 ? 20 : 10, (v) => `${v}`), (row) => 100 * row.clarifyRate, false, 0)
-
-  legend(40, 137, [["Dev", BLUE], ["Test", AMBER], [`Grey band: chosen floor (N = ${rounds})`, BAND]], out)
-  legend(212, 137, [["Solid: to staff", GREY], ["Dashed: of these, not needed", GREY]], out)
-  return svg(504, 146, out)
-}
-
-/**
- * Choosing the number of Clarify rounds N, at the chosen floor: for N = 0 and N = 1, the silent errors (a), the share sent to
- * staff (b), the share that went to Clarify (c), and the mean time per request (d), on the dev and the test split.
- */
-function chooseRoundsChart(dev: readonly SweepRow[], test: readonly SweepRow[], chosen: number, floor: number): string {
-  const out: string[] = []
-  const [top, bottom] = [24, 110]
-  const panels: { heading: string; x0: number; x1: number; value: (row: SweepRow) => number; digits: number; unit: number }[] = [
-    { heading: "(a) Silent errors", x0: 34, x1: 118, value: (row) => row.silentErrors, digits: 0, unit: 1 },
-    { heading: "(b) To staff (%)", x0: 158, x1: 242, value: (row) => 100 * row.staffRate, digits: 0, unit: 20 },
-    { heading: "(c) To Clarify (%)", x0: 282, x1: 366, value: (row) => 100 * row.clarifyRate, digits: 0, unit: 20 },
-    { heading: "(d) Time per request (s)", x0: 410, x1: 500, value: (row) => row.meanTotalS, digits: 1, unit: 20 },
-  ]
-  for (const p of panels) {
-    const all = [...dev, ...test].map(p.value)
-    const hi = p.unit === 1 ? Math.max(2, ...all) : Math.max(p.unit, Math.ceil(Math.max(...all) / p.unit) * p.unit)
-    const step = p.unit === 1 ? (hi > 8 ? 2 : 1) : hi > 100 ? p.unit * 2 : p.unit
-    out.push(title(p.x0 - 24, p.heading))
-    const gw = (p.x1 - p.x0) / ROUNDS.length
-    ROUNDS.forEach((n, i) => {
-      if (n === chosen) out.push(rect(p.x0 + i * gw, top, gw, bottom - top, BAND))
-    })
-    const y = yAxis(p.x0, p.x1, top, bottom, 0, hi, step, (v) => `${v}`, out)
-    ROUNDS.forEach((n, i) => {
-      ;(["dev", "test"] as const).forEach((split, k) => {
-        const row = (split === "dev" ? dev : test).find((candidate) => candidate.rounds === n)
-        if (!row) return
-        const v = p.value(row)
-        const bx = p.x0 + i * gw + gw * (0.12 + k * 0.4)
-        out.push(rect(bx, y(v), gw * 0.36, bottom - y(v), SPLIT_COLOR[split]), t(bx + gw * 0.18, y(v) - 2, v.toFixed(p.digits), "middle", 5.5, SPLIT_TEXT[split]))
-      })
-      out.push(t(p.x0 + (i + 0.5) * gw, bottom + 9, `N = ${n}`, "middle", 6.5))
-    })
-    out.push(t((p.x0 + p.x1) / 2, bottom + 19, "Clarify rounds", "middle", 6.5, "#4b5563"))
-  }
-  legend(34, 137, [["Dev", BLUE], ["Test", AMBER], [`Grey band: chosen N (floor ${floor})`, BAND]], out)
-  return svg(504, 146, out)
-}
-
-/** The reliability diagram of Jev (all fields together) and the calibration error per field. */
 function reliabilityChart(r: Results): string {
   const out: string[] = []
   out.push(title(0, "(a) Chance of answer against accuracy"))
@@ -288,17 +175,7 @@ function reliabilityChart(r: Results): string {
 export async function writeFigures(out: string, results: Results): Promise<string[]> {
   const directory = join(out, "figures")
   await mkdir(directory, { recursive: true })
-  const { floor, rounds } = results.parameters
   const charts: Record<string, string> = { classifier: classifierChart(results), ladder: ladderChart(results), reliability: reliabilityChart(results) }
-  const test = await readSweep(out, "test")
-  const dev = await readSweep(out, "dev")
-  if (test) charts.floor = floorChart(crossSections(test, "test", floor, rounds).byFloor)
-  if (test && dev) {
-    const onTest = crossSections(test, "test", floor, rounds)
-    const onDev = crossSections(dev, "dev", floor, rounds)
-    charts.choose_floor = chooseFloorChart(onDev.byFloor, onTest.byFloor, floor, rounds)
-    charts.choose_rounds = chooseRoundsChart(onDev.byRounds, onTest.byRounds, rounds, floor)
-  }
   const written: string[] = []
   for (const [name, text] of Object.entries(charts)) {
     const svgPath = join(directory, `${name}.svg`)

@@ -3,7 +3,7 @@
 @import "shadcn/tailwind.css";
 @import "@fontsource-variable/geist";
 
-/* The colors of the legend of the flow diagram: a model, fixed code, written rules, support staff. The "-strong" shade marks the active state. */
+/* The colors of the legend of the flow diagram: a model, fixed code, written rules. The "-strong" shade marks the active state. */
 @theme {
     --color-model: #a9c8f5;
     --color-model-strong: #2f6bd0;
@@ -12,9 +12,6 @@
     --color-system-strong: #56698f;
     --color-rules: #aee0d6;
     --color-rules-strong: #1b8272;
-    --color-staff: #f5cf9f;
-    --color-staff-strong: #b45309;
-    --color-staff-line: #c86a12;
     --color-ink: #172b4d;
     --color-ink-soft: #33466b;
     --color-line: #3a4d73;

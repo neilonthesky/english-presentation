@@ -1,9 +1,8 @@
-import { Check, LoaderCircle, TriangleAlert, X } from "lucide-react"
-import { useState, type ReactNode } from "react"
-import { Button } from "@/components/ui/button"
+import { Check, LoaderCircle, X } from "lucide-react"
+import type { ReactNode } from "react"
 import { cn } from "@/lib/utils"
 import { NO_LIMIT, POPUP_DELAY_MS, type Ctx, type NodeId, type Phase } from "@/machine"
-import type { Next, Policy, PolicyRule, TriageRule } from "@/types"
+import type { AccountField, Policy, PolicyRule, TriageRule } from "@/types"
 
 function Row({ k, children }: { k: string; children: ReactNode }) {
   return (
@@ -25,21 +24,14 @@ function Quote({ children }: { children: ReactNode }) {
 function Note({ children }: { children: ReactNode }) {
   return <p className="text-xs text-muted-foreground">{children}</p>
 }
-function Callout({ title, children, tone = "default" }: { title: string; children?: ReactNode; tone?: "default" | "destructive" | "staff" }) {
-  const toneClass =
-    tone === "destructive"
-      ? "bg-destructive/15 text-destructive"
-      : tone === "staff"
-        ? "bg-staff text-ink"
-        : "bg-pane text-ink"
+function Callout({ title, children, tone = "default" }: { title: string; children?: ReactNode; tone?: "default" | "destructive" }) {
   return (
-    <div className={cn("rounded-lg p-3 text-sm", toneClass)}>
+    <div className={cn("rounded-lg p-3 text-sm", tone === "destructive" ? "bg-destructive/15 text-destructive" : "bg-pane text-ink")}>
       <p className="font-semibold">{title}</p>
       {children && <p className="mt-1 text-xs leading-relaxed opacity-90">{children}</p>}
     </div>
   )
 }
-
 
 /** The chance that Jev gives to one answer. */
 function Chance({ value }: { value: number }) {
@@ -56,11 +48,10 @@ function Chance({ value }: { value: number }) {
 const OUTCOME: Record<PolicyRule["outcome"], { text: string; icon: ReactNode; color: string }> = {
   pass: { text: "Pass", icon: <Check className="size-4" />, color: "text-rules-strong" },
   deny: { text: "Deny", icon: <X className="size-4" />, color: "text-destructive" },
-  review: { text: "Needs staff", icon: <TriangleAlert className="size-4" />, color: "text-staff-strong" },
 }
 
 /** The groups of the written rules, in the order that the server lists them. */
-const CHECK: Record<PolicyRule["check"], string> = { 1: "Allowed", 2: "Not done before", 3: "Needs staff" }
+const CHECK: Record<PolicyRule["check"], string> = { 1: "Allowed", 2: "Not done before", 3: "Limits" }
 
 /** The written rules for the action, with the outcome of each rule on the data of this request. */
 function PolicyTable({ policy }: { policy: Policy }) {
@@ -99,66 +90,17 @@ function PolicyTable({ policy }: { policy: Policy }) {
 }
 
 const TRIAGE_RULES: { rule: TriageRule; text: string }[] = [
-  { rule: "critical", text: "Priority is Critical → Queued" },
   { rule: "injection", text: "Injection flag is on → Gather info. The orders in the text are ignored, and the action is Send reply" },
-  { rule: "unsure", text: "The chance of the queue, the action, or the risk flag is below the floor → Clarify. After the last round → Queued" },
-  { rule: "needs-staff", text: "Action is Needs staff → Queued" },
-  { rule: "risk", text: "Risk flag is on and no written rule covers the action → Queued" },
   { rule: "answer", text: "Action is Send reply → Gather info" },
-  { rule: "act", text: "Action is Start refund or Delete data → Gather info" },
+  { rule: "act", text: "Action is Start refund, Delete data, Cancel plan, or Reset password → Gather info" },
 ]
 
-const NEXT_NAME: Record<Next, string> = { gather: "Gather info", queued: "Queued", clarify: "Clarify" }
-
 const sentence = (text: string) => text.charAt(0).toUpperCase() + text.slice(1)
-
-/** Why support staff must read the request. */
-function whyQueued(ctx: Ctx): string {
-  switch (ctx.queued?.reason) {
-    case "customer": return `The customer said ${NO_LIMIT} times that the issue is not solved.`
-    case "rules": return ctx.rules?.staffWhy ?? "A written rule asks for support staff."
-    default: return `${sentence(ctx.triage?.reason ?? "")}.`
-  }
-}
 
 const CLOSED: Record<NonNullable<Ctx["closedBy"]>, string> = {
   popup: "The customer said in the popup that the issue is solved.",
   silence: "The customer was silent for T.",
-  "no staff": "No staff joined within T. The answer goes by e-mail.",
-}
-
-const CANNED_REPLY = "Hello, this is FrameForge support staff. I checked your account and your request is done. Tell me if you need more help."
-
-/** The text box of support staff. It mounts only while the flow waits for the reply, so each visit starts with the canned reply. */
-function StaffReply({ onReply }: { onReply: (text: string) => void }) {
-  const [text, setText] = useState(CANNED_REPLY)
-  return (
-    <div className="space-y-2">
-      <Label>Reply to the customer</Label>
-      <textarea
-        value={text}
-        onChange={(e) => setText(e.target.value)}
-        rows={3}
-        className="w-full rounded-lg border border-input bg-pane px-2.5 py-2 text-sm outline-none focus-visible:border-primary"
-      />
-      <Button className="bg-staff text-ink hover:bg-staff-strong hover:text-white" disabled={!text.trim()} onClick={() => onReply(text.trim())}>
-        Staff replies
-      </Button>
-    </div>
-  )
-}
-
-function Ticket({ ctx }: { ctx: Ctx }) {
-  if (!ctx.queued) return null
-  return (
-    <>
-      <Row k="Ticket">{ctx.requestId} (one chat is one ticket)</Row>
-      <Row k="Why">{whyQueued(ctx)}</Row>
-      <Label>Summary for support staff (written by the LLM)</Label>
-      <Quote>{ctx.queued.summary}</Quote>
-      <Note>{ctx.queued.latencyS.toFixed(1)} s</Note>
-    </>
-  )
+  unresolved: `The customer said ${NO_LIMIT} times that the issue is not solved.`,
 }
 
 function Panel({ title, why, children }: { title: string; why: string; children?: ReactNode }) {
@@ -179,14 +121,10 @@ const INFO: Record<NodeId, { title: string; why: string }> = {
     title: "Triage",
     why: "Jev, a small model, reads the whole chat of the customer and gives five answers, each with a chance. Then fixed rules choose the next state. The first rule that matches wins.",
   },
-  clarify: {
-    title: "Clarify",
-    why: "Jev is not sure. The LLM asks the customer for more detail. The reply joins the same request, and Jev classifies the whole chat again. After the last round, an unsure request goes to Queued.",
-  },
-  gather: { title: "Gather info", why: "The system reads the account, the purchase, and the help articles that match the text. It also looks for another e-mail address in the text." },
+  gather: { title: "Gather info", why: "The system reads only the account fields that the action of Triage needs, and the help articles that match the text. It also looks for another e-mail address in the text." },
   rules: {
     title: "Rules check",
-    why: "Fixed code checks the written rules for the action on the facts of this request. Allowed: Do action. Denied: Final message, and nothing runs. Needs staff: Queued.",
+    why: "Fixed code checks the written rules for the action on the facts of this request. Allowed: Do action. Denied: Final message, and nothing runs.",
   },
   act: { title: "Do action", why: "Fixed code does the action, but only after Rules check allowed it. Send reply changes nothing." },
   final: {
@@ -197,16 +135,11 @@ const INFO: Record<NodeId, { title: string; why: string }> = {
     title: "Chat open",
     why: "The customer reads the message. After a short time a popup asks if the issue is solved. The customer can also write again, or be silent.",
   },
-  queued: {
-    title: "Queued",
-    why: "The bot tells the customer that support staff will reply and that the chat is locked. This text is fixed. The LLM writes a summary for support staff. The chat stays locked until staff joins.",
-  },
-  staff: { title: "Support staff", why: "Support staff read the ticket and the summary, and reply in the chat. Then the chat opens again." },
   resolved: { title: "Resolved", why: "The chat is closed. The customer needs a new chat to continue." },
 }
 
-/** The states where the flow waits for the customer or support staff, or has ended. A middle state that did not run was skipped. */
-const STOPS: Partial<Record<NodeId, true>> = { chat: true, queued: true, staff: true, resolved: true }
+/** The states where the flow waits for the customer, or has ended. A middle state that did not run was skipped. */
+const STOPS: Partial<Record<NodeId, true>> = { chat: true, resolved: true }
 
 interface Props {
   node: NodeId
@@ -214,10 +147,9 @@ interface Props {
   current: NodeId | null
   phase: Phase | null
   ctx: Ctx
-  onStaffReply: (text: string) => void
 }
 
-export function StepDetail({ node, current, phase, ctx, onStaffReply }: Props) {
+export function StepDetail({ node, current, phase, ctx }: Props) {
   const info = INFO[node]
   const status = node === current ? phase : null
   const f = ctx.classifier?.fields
@@ -233,7 +165,6 @@ export function StepDetail({ node, current, phase, ctx, onStaffReply }: Props) {
             <Row k="Channel">{ctx.request.channel}</Row>
             <Row k="Request ID">{ctx.requestId}</Row>
             <Row k="Received (UTC)">{ctx.request.receivedUtc.slice(0, 19).replace("T", " ")}</Row>
-            {ctx.round > 0 && <Row k="Clarify rounds so far">{ctx.round}</Row>}
           </>
         )
       break
@@ -255,47 +186,40 @@ export function StepDetail({ node, current, phase, ctx, onStaffReply }: Props) {
                 <li key={r.rule} className={t.rule === r.rule ? "font-semibold text-ink" : "text-muted-foreground"}>{r.text}</li>
               ))}
             </ol>
-            <Callout title={`Next: ${NEXT_NAME[t.next]}`}>
-              {sentence(t.reason)}.
-            </Callout>
+            <Callout title="Next: Gather info">{sentence(t.reason)}.</Callout>
             <Row k="Action after Triage">{t.action}</Row>
             <Row k="Queue">{t.queue}</Row>
           </>
         )
       }
       break
-    case "clarify":
-      if (ctx.clarify)
-        content = (
-          <>
-            <Label>Question of the LLM</Label>
-            <Quote>{ctx.clarify.question}</Quote>
-            <Row k="Round">{ctx.clarify.round} of {ctx.clarify.rounds}</Row>
-            <Note>{ctx.clarify.latencyS.toFixed(1)} s</Note>
-            {status === "done" && (
-              <Callout title="The flow waits for the customer">
-                Reply in the chat: the reply joins the same request, and Jev classifies again. Or press "Customer silent for T": the chat closes.
-              </Callout>
-            )}
-          </>
-        )
-      break
     case "gather":
       if (ctx.gather) {
-        const { account: a, facts, articles } = ctx.gather
+        const { fields, account: a, facts, articles } = ctx.gather
+        const read = (field: AccountField) => fields.includes(field)
         content = (
           <>
-            <Label>Account</Label>
-            <Row k="Owner">{a.customer.name} ({a.customer.email})</Row>
-            <Row k="Plan">{a.plan}</Row>
-            <Row k="Credits left">{a.creditsLeft.toLocaleString("en-US")}</Row>
-            <Row k="Next renewal">{a.renews}</Row>
-            <Row k="Refunds in 90 days">{a.refundsLast90Days}</Row>
-            <Label>Purchase</Label>
-            <Row k="Item">{a.purchase.id}: {a.purchase.item} ({a.purchase.category})</Row>
-            <Row k="Amount">${a.purchase.amount} · {a.purchase.status}</Row>
-            <Row k={a.purchase.status === "Scheduled" ? "Planned" : "Charged"}>{a.purchase.charged}</Row>
-            <Row k="Usage">{a.purchase.usage}</Row>
+            <Label>Account fields read for "{ctx.triage?.action}"</Label>
+            <p className="text-sm">{fields.length ? fields.join(", ") : "none"}</p>
+            {(read("owner") || read("plan") || read("refunds")) && <Label>Account</Label>}
+            {read("owner") && <Row k="Owner">{a.customer.name} ({a.customer.email})</Row>}
+            {read("plan") && (
+              <>
+                <Row k="Plan">{a.plan}</Row>
+                <Row k="Credits left">{a.creditsLeft.toLocaleString("en-US")}</Row>
+                <Row k="Next renewal">{a.renews}</Row>
+              </>
+            )}
+            {read("refunds") && <Row k="Refunds in 90 days">{a.refundsLast90Days}</Row>}
+            {read("purchase") && (
+              <>
+                <Label>Purchase</Label>
+                <Row k="Item">{a.purchase.id}: {a.purchase.item} ({a.purchase.category})</Row>
+                <Row k="Amount">${a.purchase.amount} · {a.purchase.status}</Row>
+                <Row k={a.purchase.status === "Scheduled" ? "Planned" : "Charged"}>{a.purchase.charged}</Row>
+                <Row k="Usage">{a.purchase.usage}</Row>
+              </>
+            )}
             <Label>Found in the text</Label>
             <Row k="Other e-mail">{facts.otherEmail ?? "none"}</Row>
             <Label>Help articles that match</Label>
@@ -306,16 +230,16 @@ export function StepDetail({ node, current, phase, ctx, onStaffReply }: Props) {
       break
     case "rules":
       if (ctx.rules) {
-        const next = { act: "Do action", final: "Final message (nothing runs)", queued: "Queued" }[ctx.rules.next]
+        const next = { act: "Do action", final: "Final message (nothing runs)" }[ctx.rules.next]
         content = (
           <>
             <Label>Written rules for "{ctx.rules.policy.action}"</Label>
             <PolicyTable policy={ctx.rules.policy} />
             <Callout
-              title={{ allow: "The rules allow it", deny: "A rule forbids it", review: "A rule asks for support staff" }[ctx.rules.policy.verdict]}
-              tone={ctx.rules.policy.verdict === "deny" ? "destructive" : ctx.rules.policy.verdict === "review" ? "staff" : "default"}
+              title={{ allow: "The rules allow it", deny: "A rule forbids it" }[ctx.rules.policy.verdict]}
+              tone={ctx.rules.policy.verdict === "allow" ? "default" : "destructive"}
             >
-              Next: {next}.{ctx.rules.staffWhy && ` ${ctx.rules.staffWhy}`}
+              Next: {next}.
             </Callout>
           </>
         )
@@ -323,11 +247,7 @@ export function StepDetail({ node, current, phase, ctx, onStaffReply }: Props) {
       break
     case "act":
       if (ctx.executed)
-        content = ctx.executed.blocked ? (
-          <Callout title="Nothing was done" tone="destructive">
-            {ctx.executed.blocked.join(" ")}
-          </Callout>
-        ) : (
+        content = (
           <>
             <Row k="Action">{ctx.executed.action}</Row>
             <Row k="Queue">{ctx.executed.queue}</Row>
@@ -339,12 +259,13 @@ export function StepDetail({ node, current, phase, ctx, onStaffReply }: Props) {
         )
       break
     case "final":
-      if (ctx.final)
+      if (ctx.final) {
+        const blocked = ctx.final.blocked
         content = (
           <>
             <Quote>{ctx.final.text}</Quote>
             <Note>
-              {ctx.final.kind === "answer" ? "An answer from the help articles and the account" : "Written by the LLM from the result of Do action, or from the reason why nothing ran"} · {ctx.final.latencyS.toFixed(1)} s
+              {ctx.final.kind === "answer" ? "An answer from the help articles and the account" : blocked ? "Written by the LLM from the reason why nothing ran" : "Written by the LLM from the result of Do action"} · {ctx.final.latencyS.toFixed(1)} s
             </Note>
             {ctx.final.kind === "answer" && (
               <>
@@ -352,13 +273,10 @@ export function StepDetail({ node, current, phase, ctx, onStaffReply }: Props) {
                 <p className="text-sm">{ctx.final.sources.length ? ctx.final.sources.join(", ") : "none matched; the LLM had only the account"}</p>
               </>
             )}
-            {ctx.rules?.next === "final" && (
-              <Callout title="Rules check denied the action, so nothing ran" tone="destructive">
-                {ctx.rules.policy.rules.filter((r) => r.outcome === "deny").map((r) => r.detail).join(" ")}
-              </Callout>
-            )}
+            {blocked && <Callout title="A written rule forbids the action, so nothing ran" tone="destructive">{blocked.join(" ")}</Callout>}
           </>
         )
+      }
       break
     case "chat":
       content = (
@@ -367,44 +285,15 @@ export function StepDetail({ node, current, phase, ctx, onStaffReply }: Props) {
           <Row k='Answers "no"'>{ctx.noCount} of {NO_LIMIT}</Row>
           <ul className="list-disc space-y-1 pl-5 text-sm">
             <li>Yes: the chat closes (Resolved).</li>
-            <li>No: the chat stays open. After {NO_LIMIT} times the request goes to Queued.</li>
+            <li>No: the popup comes again. After {NO_LIMIT} times the chat closes (Resolved).</li>
             <li>The customer writes again: a new request in the same chat (New).</li>
             <li>The customer is silent for T: the chat closes (Resolved).</li>
           </ul>
         </>
       )
       break
-    case "queued":
-      if (ctx.queued)
-        content = (
-          <>
-            {status === "done" && (
-              <Callout title="The chat is locked" tone="staff">
-                Press "Staff takes it" to let support staff join. Press "No staff after T" to close the chat.
-              </Callout>
-            )}
-            <Ticket ctx={ctx} />
-            <Label>Message to the customer (fixed text)</Label>
-            <Quote>{ctx.queued.message}</Quote>
-          </>
-        )
-      break
-    case "staff":
-      content = (
-        <>
-          {node === current && <StaffReply onReply={onStaffReply} />}
-          {ctx.staffReply !== null && (
-            <>
-              <Label>Reply of support staff</Label>
-              <Quote>{ctx.staffReply}</Quote>
-            </>
-          )}
-          <Ticket ctx={ctx} />
-        </>
-      )
-      break
     case "resolved":
-      content = ctx.closedBy && <Note>{CLOSED[ctx.closedBy]}</Note>
+      content = ctx.closedBy && <Note>{CLOSED[ctx.closedBy]} The customer needs a new chat to continue.</Note>
       break
   }
 

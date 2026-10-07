@@ -10,19 +10,18 @@
   ar/.style={-{Stealth[length=1.6mm]}, thick},
   ao/.style={ar, draw=orange!80!black},
   lw/.style={font=\scriptsize, inner sep=1.5pt, fill=white},
-  lo/.style={lw, text=orange!60!black},
-  ls/.style={font=\scriptsize, inner sep=1.5pt, fill=white, text width=13mm, align=center}]
+  lo/.style={lw, text=orange!60!black}]
   \node[fx] (new) at (0,0) {New\\[-1pt]{\scriptsize message saved}};
-  \node[pr] (sta) at (0,-2.2) {Support staff\\[-1pt]{\scriptsize read the request and answer}};
-  \node[fx] (cha) at (0,-4.4) {Chat open\\[-1pt]{\scriptsize popup: did this solve your issue?}};
-  \node[fx] (res) at (0,-6.6) {Resolved\\[-1pt]{\scriptsize chat closed}};
+  \node[pr] (sta) at (3.2,0) {Support staff\\[-1pt]{\scriptsize read the request and answer}};
+  \node[fx, text width=24mm] (cha) at (3.2,-2.0) {Chat open\\[-1pt]{\scriptsize popup: did this solve your issue?}};
+  \node[fx] (res) at (0,-2.0) {Resolved\\[-1pt]{\scriptsize chat closed}};
 
   \draw[ao] (new) -- (sta);
   \draw[ao] (sta) -- node[lo, right]{replies} (cha);
-  \draw[ar] (cha) -- node[lw, right]{popup: yes} (res);
-  \draw[ar] (cha.east) -- (1.6,-4.4) -- (1.6,0) -- (new.east);
-  \node[ls, right] at (1.75,-2.2) {same chat: customer writes again};
-  \draw[ar] ([xshift=-5mm]cha.south) -- (-1.1,-5.05) -- (-1.55,-5.05) -- (-1.55,-3.95) -- ([xshift=-5mm]cha.north);
-  \node[ls, left] at (-1.75,-4.5) {popup no: the chat stays open};
+  \draw[ar] (cha) -- node[lw, above]{yes} (res);
+  \draw[ar] (cha.east) -- (4.9,-2.0) -- (4.9,0.85) -- (new.north |- 0,0.85) -- (new.north);
+  \node[lw, text width=30mm, align=center] at (2.45,0.85) {same chat:\\customer writes again};
+  \draw[ar] ([xshift=-6mm]cha.south) -- ++(0,-0.45) -- ++(1.2,0) -- ([xshift=6mm]cha.south);
+  \node[lw, anchor=north] at (3.2,-3.0) {popup no: chat stays open};
 \end{tikzpicture}
 \end{document}

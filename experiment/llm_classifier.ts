@@ -1,12 +1,15 @@
-// Triage, part 1, of the experiment: the two classifiers that the rest of the pipeline is compared on. They get the same
-// input (`classifierState()` of web/server/models.ts): the customer text of the chat, the sender, the channel, and the matching help articles.
+// Triage, part 1, of the experiment: the two classifier calls of the run, Jev at Level 3 and the LLM reference run. They get the
+// same input (`classifierState()` of web/server/models.ts): the customer text of the chat, the sender, the channel, and the
+// matching help articles. Level 2 runs no classifier at all: it is the LLM agent of llm_agent.ts.
 //
 //   * `classifyWithJev` is the classifier of the demo (`classify()` of web/server/models.ts). It runs
 //     through the recording transport, and the raw JSON of the answer is kept here: `classify()`
 //     drops the `confidence` that Jev reports for a choice field, which the calibration table needs.
-//   * `classifyWithLlm` is the baseline: the same five questions, the same criteria, and the same
-//     input, answered by one LLM call in strict JSON. The baseline reports no chance, so it never goes to Clarify. An
-//     answer that is not valid fails closed: the pipeline sends the request to Queued.
+//   * `classifyWithLlm` is the classifier reference run (the same LLM as classifier, with the rules
+//     of Triage; it is not a level, it gives the LLM side of the classifier stage table): the same
+//     five questions, the same criteria, and the same input, answered by one LLM call in strict
+//     JSON. The baseline reports no chance. An answer that is not valid fails closed: nothing runs,
+//     and the Final message explains.
 import { ACTIONS, PRIORITIES, QUEUES, type Classifier, type Requester } from "../web/src/types"
 import { JEV_QUESTIONS, LLM_MODEL, chat, classifierState, classify } from "../web/server/models"
 import { withCallLog, type Service } from "./transport"
@@ -15,7 +18,7 @@ import { FIELDS } from "./types"
 /** The classifier answers of one request, and what it took to get them. */
 export interface ClassifierRun {
   system: Service
-  /** null when the answer was not valid, so the pipeline must fail closed to Queued. */
+  /** null when the answer was not valid, so the pipeline must fail closed: nothing runs. */
   classifier: Classifier | null
   invalidReason: string | null
   model: string
@@ -96,7 +99,8 @@ function parseAnswer(text: string): ParsedAnswer {
   if (!priority) return { ok: false, reason: `priority is missing or is not one of ${PRIORITIES.join(", ")}` }
   if (typeof answer.risk !== "boolean") return { ok: false, reason: "risk is missing or is not true or false" }
   if (typeof answer.injection !== "boolean") return { ok: false, reason: "injection is missing or is not true or false" }
-  // The baseline reports no chance. The value 1 is a placeholder: it is never below the confidence floor, so Triage never sends a request of the baseline to Clarify.
+  // The baseline reports no chance. The value 1 is a placeholder: no rule of the flow reads a chance, and the calibration
+  // table reports only Jev.
   return {
     ok: true,
     fields: {

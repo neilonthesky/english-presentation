@@ -1,24 +1,22 @@
 // The states of the support flow as an xstate machine. A state does its work (one or two calls to the server)
 // as soon as the flow enters it. Two ways to move on:
 //   "Next step": go to the next state, run it, and stop (step by step).
-//   "Run all":   go on, one state after the other, until a state needs the customer or support staff.
-// The presenter plays the customer (popup answer, a message in the chat, silence for T) and the support staff (takes it, replies, no staff after T).
+//   "Run all":   go on, one state after the other, until a state needs the customer.
+// The presenter plays the customer (popup answer, a message in the chat, silence for T).
 import { assign, enqueueActions, fromPromise, setup } from "xstate"
 import { api } from "./api"
 import type {
-  Classifier, ClarifyResponse, Executed, FinalResponse, GatherResponse, Next, QueueResponse, RequestInfo, RulesResponse, Role, TriageResponse,
+  Classifier, Executed, FinalResponse, GatherResponse, RequestInfo, RulesResponse, Role, TriageResponse,
 } from "./types"
 
-export type NodeId = "new" | "triage" | "clarify" | "gather" | "rules" | "act" | "final" | "chat" | "queued" | "staff" | "resolved"
+export type NodeId = "new" | "triage" | "gather" | "rules" | "act" | "final" | "chat" | "resolved"
 
 /** One arrow of the diagram. The machine records each arrow that the flow takes, so the diagram can light it. */
 export type EdgeId =
   | "start-new" | "new-triage"
-  | "triage-gather" | "triage-gather-injection" | "triage-queued-critical" | "triage-queued-staff" | "triage-clarify"
-  | "gather-rules" | "rules-act" | "rules-final" | "rules-queued" | "act-final" | "final-chat"
-  | "chat-new" | "chat-queued" | "chat-resolved-yes" | "chat-resolved-silent" | "chat-chat"
-  | "queued-staff" | "staff-chat" | "queued-queued" | "queued-resolved"
-  | "clarify-queued" | "clarify-resolved" | "clarify-new"
+  | "triage-gather" | "triage-gather-injection"
+  | "gather-rules" | "rules-act" | "rules-final" | "act-final" | "final-chat"
+  | "chat-new" | "chat-resolved"
 
 /** The part of a state that is on screen: a call is running, it is done, it failed, or the chat waits for the popup or answers it. */
 export type Phase = "running" | "done" | "failed" | "waiting" | "asking"
@@ -29,11 +27,11 @@ export const AUTO_DELAY_MS = 1800
 export const POPUP_DELAY_MS = 3000
 export const NO_LIMIT = 2
 
-/** How Resolved was reached: the customer said yes in the popup, the customer was silent for T, or no staff came within T. */
-export type ClosedBy = "popup" | "silence" | "no staff"
+/** How Resolved was reached: the customer said yes in the popup, the customer was silent for T, or the customer said "no" N times. */
+export type ClosedBy = "popup" | "silence" | "unresolved"
 
 export interface Message {
-  from: "customer" | "bot" | "staff" | "note"
+  from: "customer" | "bot" | "note"
   text: string
 }
 
@@ -45,20 +43,12 @@ export interface Ctx {
   noCount: number
   requestId: string | null
   request: RequestInfo | null
-  /** Clarify rounds done so far for this request. */
-  round: number
   classifier: Classifier | null
   triage: TriageResponse | null
-  clarify: ClarifyResponse | null
   gather: GatherResponse | null
   rules: RulesResponse | null
   executed: Executed | null
   final: FinalResponse | null
-  queued: QueueResponse | null
-  /** What support staff wrote to the customer. */
-  staffReply: string | null
-  /** True when the customer said "no" N times: Queued tells the server this is the reason. */
-  giveUp: boolean
   closedBy: ClosedBy | null
   error: string | null
   /** True after "Run all": each state goes on to the next one without a click. */
@@ -74,39 +64,31 @@ type Ev =
   | { type: "YES" }
   | { type: "NO" }
   | { type: "SILENT" }
-  | { type: "TAKE" }
-  | { type: "STAFF_REPLY"; text: string }
-  | { type: "NO_STAFF" }
   | { type: "RESET" }
 
 /** The data of one request. A new request in the same chat starts from this. */
 const request0 = {
-  requestId: null, request: null, round: 0, classifier: null, triage: null, clarify: null, gather: null, rules: null,
-  executed: null, final: null, queued: null, staffReply: null, giveUp: false, closedBy: null, error: null,
-  auto: false, visited: [], taken: [],
+  requestId: null, request: null, classifier: null, triage: null, gather: null, rules: null,
+  executed: null, final: null, closedBy: null, error: null, auto: false, visited: [], taken: [],
 } satisfies Partial<Ctx>
 const initial: Ctx = { messages: [], role: "owner", customerId: "", noCount: 0, ...request0 }
 
 /** The states that call the server. */
-type Call = "new" | "triage" | "clarify" | "gather" | "rules" | "act" | "final" | "queued"
+type Call = "new" | "triage" | "gather" | "rules" | "act" | "final"
 
 /** The work of one state: a call to the server (Triage makes two, one after the other). The result is merged into the context. */
 async function runStep(step: Call, c: Ctx): Promise<Partial<Ctx>> {
   const id = { requestId: c.requestId }
   switch (step) {
     case "new": {
-      // The last customer line is the message to save. With a request ID it is the reply to Clarify.
+      // The last customer line is the message to save. With a request ID it is a new message of the same chat.
       const text = c.messages.findLast((m) => m.from === "customer")!.text
       const r = await api("receive", { text, role: c.role, customerId: c.customerId, requestId: c.requestId ?? undefined })
-      return { requestId: r.requestId, request: r.request, round: r.round }
+      return { requestId: r.requestId, request: r.request }
     }
     case "triage": {
       const classifier = await api("classify", id)
       return { classifier, triage: await api("triage", id) }
-    }
-    case "clarify": {
-      const clarify = await api("clarify", id)
-      return { clarify, round: clarify.round, messages: [...c.messages, { from: "bot", text: clarify.question }] }
     }
     case "gather":
       return { gather: await api("gather", id) }
@@ -118,23 +100,6 @@ async function runStep(step: Call, c: Ctx): Promise<Partial<Ctx>> {
       const final = await api("final", id)
       return { final, messages: [...c.messages, { from: "bot", text: final.text }] }
     }
-    case "queued": {
-      const queued = await api("queue", c.giveUp ? { ...id, reason: "customer" } : id)
-      return { queued, messages: [...c.messages, { from: "bot", text: queued.message }] }
-    }
-  }
-}
-
-/** The state that Triage chose and the arrow it took. Queued after the last Clarify round takes the arrow "N rounds" of Clarify. */
-function nextOf(t: TriageResponse): { to: Next; edge: EdgeId } {
-  switch (t.rule) {
-    case "critical": return { to: "queued", edge: "triage-queued-critical" }
-    case "injection": return { to: "gather", edge: "triage-gather-injection" }
-    case "unsure": return t.next === "clarify" ? { to: "clarify", edge: "triage-clarify" } : { to: "queued", edge: "clarify-queued" }
-    case "needs-staff":
-    case "risk": return { to: "queued", edge: "triage-queued-staff" }
-    case "answer":
-    case "act": return { to: "gather", edge: "triage-gather" }
   }
 }
 
@@ -149,9 +114,9 @@ function written(event: Ev) {
 }
 
 const CLOSED_NOTE: Record<ClosedBy, string> = {
-  popup: "The customer said the issue is solved. The chat is closed.",
+  popup: "The customer said in the popup that the issue is solved. The chat is closed.",
   silence: "The customer was silent for T. The chat is closed.",
-  "no staff": "No staff joined within T. The chat is closed and the answer goes by email.",
+  unresolved: `The customer said ${NO_LIMIT} times that the issue is not solved. The chat is closed.`,
 }
 
 /** The result of a finished actor. xstate puts it in `event.output`, but the machine type does not list that event, so it is checked here. */
@@ -206,7 +171,7 @@ export const machine = setup({
     // A failed call stops "Run all".
     storeError: assign({ error: ({ event }) => errorOf(event), auto: false }),
     setAuto: assign({ auto: true }),
-    // "Run all" stops at a state that needs the customer or support staff.
+    // "Run all" stops at a state that needs the customer.
     stopAuto: assign({ auto: false }),
     continueIfAuto: enqueueActions<Ctx, Ev, undefined, Ev, never, never, never, never, never>(({ context, enqueue }) => {
       if (context.auto) enqueue.raise({ type: "NEXT" })
@@ -217,7 +182,7 @@ export const machine = setup({
     }),
     visit: assign({ visited: ({ context }, params: { node: NodeId }) => [...context.visited, params.node] }),
     take: assign({ taken: ({ context }, params: { edge: EdgeId }) => [...context.taken, params.edge] }),
-    takeTriage: assign({ taken: ({ context }) => [...context.taken, nextOf(triageOf(context)).edge] }),
+    takeTriage: assign({ taken: ({ context }) => [...context.taken, triageOf(context).rule === "injection" ? "triage-gather-injection" : "triage-gather"] }),
     // The first message of a chat.
     customerStarts: assign(({ event }) => {
       const e = written(event)
@@ -227,26 +192,14 @@ export const machine = setup({
     customerWritesAgain: assign(({ context, event }) => ({
       ...request0, messages: [...context.messages, { from: "customer" as const, text: written(event).text }], visited: ["chat" as const],
     })),
-    // The reply to Clarify joins the chat of the same request. Jev classifies the whole chat again, so the results after New are dropped.
-    customerReplies: assign(({ context, event }) => ({
-      messages: [...context.messages, { from: "customer" as const, text: written(event).text }],
-      request: null, classifier: null, triage: null, gather: null, rules: null, executed: null, final: null, queued: null, error: null,
-    })),
     countNo: assign({ noCount: ({ context }) => context.noCount + 1 }),
-    giveUp: assign({ giveUp: true, noCount: 0 }),
     closeChat: assign({
       closedBy: (_, params: { by: ClosedBy }) => params.by,
       messages: ({ context }, params: { by: ClosedBy }) => [...context.messages, { from: "note" as const, text: CLOSED_NOTE[params.by] }],
     }),
-    staffJoins: assign({ messages: ({ context }) => [...context.messages, { from: "note" as const, text: "Support staff joined the chat." }] }),
-    staffReplies: assign(({ context, event }) => {
-      if (event.type !== "STAFF_REPLY") throw new Error(`expected STAFF_REPLY, got ${event.type}`)
-      return { staffReply: event.text, messages: [...context.messages, { from: "staff" as const, text: event.text }] }
-    }),
   },
   guards: {
-    triageTo: ({ context }, params: { to: Next }) => nextOf(triageOf(context)).to === params.to,
-    rulesNext: ({ context }, params: { next: "act" | "final" | "queued" }) => context.rules?.next === params.next,
+    rulesNext: ({ context }, params: { next: "act" | "final" }) => context.rules?.next === params.next,
     lastNo: ({ context }) => context.noCount + 1 >= NO_LIMIT,
   },
 }).createMachine({
@@ -274,30 +227,10 @@ export const machine = setup({
         running: running("triage"),
         done: {
           on: {
-            NEXT: [
-              { guard: { type: "triageTo", params: { to: "clarify" } }, target: "#clarify", actions: "takeTriage" },
-              { guard: { type: "triageTo", params: { to: "queued" } }, target: "#queued", actions: "takeTriage" },
-              { target: "#gather", actions: "takeTriage" },
-            ],
+            NEXT: { target: "#gather", actions: "takeTriage" },
             ...runAll,
           },
           after: goOnIfAuto,
-        },
-        failed,
-      },
-    },
-    // Clarify waits for the customer: a reply joins the chat (New), or silence for T closes it.
-    clarify: {
-      id: "clarify",
-      entry: [visit("clarify"), "stopAuto"],
-      initial: "running",
-      states: {
-        running: running("clarify"),
-        done: {
-          on: {
-            WRITE: { target: "#new", actions: ["customerReplies", take("clarify-new")] },
-            SILENT: { target: "#resolved", actions: [take("clarify-resolved"), close("silence")] },
-          },
         },
         failed,
       },
@@ -322,7 +255,6 @@ export const machine = setup({
           on: {
             NEXT: [
               { guard: { type: "rulesNext", params: { next: "act" } }, ...to("#act", "rules-act") },
-              { guard: { type: "rulesNext", params: { next: "queued" } }, ...to("#queued", "rules-queued") },
               to("#final", "rules-final"),
             ],
             ...runAll,
@@ -359,41 +291,20 @@ export const machine = setup({
       initial: "waiting",
       on: {
         WRITE: { target: "#new", actions: ["customerWritesAgain", take("chat-new")] },
-        SILENT: { target: "#resolved", actions: [take("chat-resolved-silent"), close("silence")] },
+        SILENT: { target: "#resolved", actions: [take("chat-resolved"), close("silence")] },
       },
       states: {
         waiting: { after: { [POPUP_DELAY_MS]: "asking" }, on: { NEXT: "asking" } },
         asking: {
           on: {
-            YES: { target: "#resolved", actions: [take("chat-resolved-yes"), close("popup")] },
+            YES: { target: "#resolved", actions: [take("chat-resolved"), close("popup")] },
             NO: [
-              { guard: "lastNo", target: "#queued", actions: ["countNo", "giveUp", take("chat-queued")] },
-              { target: "waiting", actions: ["countNo", take("chat-chat")] },
+              { guard: "lastNo", target: "#resolved", actions: ["countNo", take("chat-resolved"), close("unresolved")] },
+              { target: "waiting", actions: "countNo" },
             ],
           },
         },
       },
-    },
-    // Queued: the chat is locked until support staff joins. If nobody comes within T, the chat closes and the answer goes by email.
-    queued: {
-      id: "queued",
-      entry: [visit("queued"), take("queued-queued"), "stopAuto"],
-      initial: "running",
-      states: {
-        running: running("queued"),
-        done: {
-          on: {
-            TAKE: { target: "#staff", actions: ["staffJoins", take("queued-staff")] },
-            NO_STAFF: { target: "#resolved", actions: [take("queued-resolved"), close("no staff")] },
-          },
-        },
-        failed,
-      },
-    },
-    staff: {
-      id: "staff",
-      entry: [visit("staff"), "stopAuto"],
-      on: { STAFF_REPLY: { target: "#chat", actions: ["staffReplies", take("staff-chat")] } },
     },
     resolved: { id: "resolved", entry: [visit("resolved"), "stopAuto"] },
   },

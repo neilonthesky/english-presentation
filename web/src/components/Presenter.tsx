@@ -4,8 +4,8 @@ import { Button } from "@/components/ui/button"
 import { SCENARIOS } from "@/samples"
 import type { Account } from "@/types"
 
-/** The events that the presenter sends. Popup Yes and No are in the chat, and the reply of support staff is in the detail of Support staff. */
-export type PresenterEvent = "NEXT" | "RUN_ALL" | "SILENT" | "TAKE" | "NO_STAFF" | "RESET"
+/** The events that the presenter sends. Popup Yes and No are in the chat. */
+export type PresenterEvent = "NEXT" | "RUN_ALL" | "SILENT" | "RESET"
 
 interface Props {
   index: number
@@ -18,14 +18,11 @@ interface Props {
   onEvent: (event: PresenterEvent) => void
 }
 
-/** The buttons that play support staff are orange, like the support staff blocks of the diagram. */
-const STAFF_BUTTON = "bg-staff text-ink hover:bg-staff-strong hover:text-white"
-
 /** The one compact bar of presenter controls. It sits under the chat header, so the chat keeps the screen. */
 export function Presenter({ index, onIndex, canPick, account, can, onEvent }: Props) {
   const scenario = SCENARIOS[index]
-  const button = (event: PresenterEvent, label: ReactNode, className?: string, variant: "default" | "secondary" = "secondary") => (
-    <Button variant={variant} className={className} onClick={() => onEvent(event)} disabled={!can(event)}>{label}</Button>
+  const button = (event: PresenterEvent, label: ReactNode, variant: "default" | "secondary" = "secondary") => (
+    <Button variant={variant} onClick={() => onEvent(event)} disabled={!can(event)}>{label}</Button>
   )
   const p = account?.purchase
   const facts = account && p
@@ -51,14 +48,12 @@ export function Presenter({ index, onIndex, canPick, account, can, onEvent }: Pr
             </optgroup>
           ))}
         </select>
-        {button("NEXT", <>Next step <ArrowRight /></>, undefined, "default")}
+        {button("NEXT", <>Next step <ArrowRight /></>, "default")}
         {button("RUN_ALL", <><Play /> Run all</>)}
         {button("RESET", <><RotateCcw /> Reset</>)}
       </div>
       <div className="flex items-center gap-1.5">
         {button("SILENT", "Customer silent for T")}
-        {button("TAKE", "Staff takes it", STAFF_BUTTON)}
-        {button("NO_STAFF", "No staff after T", STAFF_BUTTON)}
       </div>
       {account ? (
         <>

@@ -1,7 +1,7 @@
 // The dataset files of the experiment: two CSV files (RFC 4180) in experiment/data/.
 //
 //   world.csv     one row per customer: the customer, the teammate, the plan, and the one purchase of the customer
-//   requests.csv  one row per request: the text, the clarification, the sender, the gold answers, and the gold final result
+//   requests.csv  one row per request: the text, the sender, the gold answers, and the gold final result
 //
 // build_dataset.ts writes them with writeDataset(); run.ts, validate.ts, and faults.ts read them with loadDataset().
 // An empty cell is null. A list is joined with ";". A boolean is "true" or "false". "Today" is the constant TODAY
@@ -10,7 +10,7 @@ import { mkdir, readFile } from "node:fs/promises"
 import { join } from "node:path"
 import { ACTIONS, PLANS, PRIORITIES, QUEUES, type Choice, type Classifier, type Flag, type PurchaseCategory, type PurchaseStatus, type Role } from "../web/src/types"
 import type { Customer, World } from "../web/server/saas"
-import { FIELDS, type FinalResult, type Gold, type TestRequest } from "./types"
+import { FIELDS, type Gold, type TestRequest } from "./types"
 
 export const TODAY = "2026-10-05"
 export const WORLD_FILE = "world.csv"
@@ -36,14 +36,15 @@ export function goldClassifier(gold: Gold): Classifier {
 }
 
 const WORLD_COLUMNS = [
-  "id", "name", "email", "teammate_name", "teammate_email", "plan", "credits_left", "renews", "refunds_last_90_days",
+  "id", "name", "email", "teammate_name", "teammate_email", "plan", "credits_left", "renews",
+  "plan_cancelled", "password_resets", "refunds_last_90_days",
   "purchase_id", "item", "category", "status", "amount", "charged", "usage", "unused",
 ] as const
 
 const REQUEST_COLUMNS = [
-  "id", "split", "category", "hard", "customer_id", "role", "text", "clarification", "start_ledger",
+  "id", "category", "hard", "customer_id", "role", "text", "start_ledger",
   "gold_queue", "gold_action", "gold_priority", "gold_risk", "gold_injection", "scored",
-  "final_to_staff", "final_action", "final_reason",
+  "final_action", "final_reason",
 ] as const
 
 const PURCHASE_CATEGORIES: readonly PurchaseCategory[] = ["Annual plan", "Monthly plan", "Credit pack"]
@@ -122,7 +123,8 @@ function worldRows(world: World): string[][] {
   const rows = world.customers.map((c) => {
     const p = c.purchase
     return [
-      c.id, c.name, c.email, c.teammate.name, c.teammate.email, c.plan, String(c.creditsLeft), c.renews, String(c.refundsLast90Days),
+      c.id, c.name, c.email, c.teammate.name, c.teammate.email, c.plan, String(c.creditsLeft), c.renews,
+      String(c.planCancelled), String(c.passwordResets), String(c.refundsLast90Days),
       p.id, p.item, p.category, p.status, String(p.amount), p.charged, p.usage, String(p.unused),
     ]
   })
@@ -131,9 +133,9 @@ function worldRows(world: World): string[][] {
 
 function requestRows(requests: readonly TestRequest[]): string[][] {
   const rows = requests.map((r) => [
-    r.id, r.split, r.category, String(r.hard), r.customerId, r.role, r.text, r.clarification, r.startLedger.join(";"),
+    r.id, r.category, String(r.hard), r.customerId, r.role, r.text, r.startLedger.join(";"),
     r.gold.queue ?? "", r.gold.action, r.gold.priority, String(r.gold.risk), String(r.gold.injection), r.scored.join(";"),
-    String(r.final.toStaff), r.final.action ?? "", r.finalReason,
+    r.finalAction ?? "", r.finalReason,
   ])
   return [[...REQUEST_COLUMNS], ...rows]
 }
@@ -142,14 +144,19 @@ function requestRows(requests: readonly TestRequest[]): string[][] {
 export async function writeDataset(dir: string, world: World, requests: readonly TestRequest[]): Promise<void> {
   await mkdir(dir, { recursive: true })
   await Bun.write(join(dir, WORLD_FILE), formatCsv(worldRows(world)))
-  await Bun.write(join(dir, REQUESTS_FILE), formatCsv(requestRows(requests)))
+  await writeRequests(dir, REQUESTS_FILE, requests)
+}
+
+/** Write one more set of requests (for the world of `dir`) into the file `name` of `dir`. */
+export async function writeRequests(dir: string, name: string, requests: readonly TestRequest[]): Promise<void> {
+  await Bun.write(join(dir, name), formatCsv(requestRows(requests)))
 }
 
 /** Read and check world.csv and requests.csv from `dir`. A bad cell raises an error that names the file, the row, and the column. */
-export async function loadDataset(dir: string): Promise<{ world: World; requests: TestRequest[] }> {
+export async function loadDataset(dir: string, requestsName: string = REQUESTS_FILE): Promise<{ world: World; requests: TestRequest[] }> {
   const worldFile = await readFile(join(dir, WORLD_FILE), "utf8").catch(() => null)
-  const requestsFile = await readFile(join(dir, REQUESTS_FILE), "utf8").catch(() => null)
-  if (worldFile === null || requestsFile === null) throw new Error(`${dir}: ${WORLD_FILE} and ${REQUESTS_FILE} are missing; run: bun run experiment/build_dataset.ts`)
+  const requestsFile = await readFile(join(dir, requestsName), "utf8").catch(() => null)
+  if (worldFile === null || requestsFile === null) throw new Error(`${dir}: ${WORLD_FILE} and ${requestsName} are missing; run: bun run experiment/build_dataset.ts`)
 
   const customers: Customer[] = records(WORLD_FILE, worldFile, WORLD_COLUMNS).map((r, i) => {
     const at = `${WORLD_FILE} row ${i + 2}`
@@ -157,6 +164,7 @@ export async function loadDataset(dir: string): Promise<{ world: World; requests
       id: r.id, name: r.name, email: r.email,
       teammate: { name: r.teammate_name, email: r.teammate_email },
       plan: oneOf(r.plan, PLANS, `${at} plan`), creditsLeft: whole(r.credits_left, `${at} credits_left`), renews: r.renews,
+      planCancelled: bool(r.plan_cancelled, `${at} plan_cancelled`), passwordResets: whole(r.password_resets, `${at} password_resets`),
       refundsLast90Days: whole(r.refunds_last_90_days, `${at} refunds_last_90_days`),
       purchase: {
         id: r.purchase_id, item: r.item, category: oneOf(r.category, PURCHASE_CATEGORIES, `${at} category`),
@@ -169,8 +177,8 @@ export async function loadDataset(dir: string): Promise<{ world: World; requests
   const ids = new Set(customers.map((c) => c.id))
   if (ids.size !== customers.length) throw new Error(`${WORLD_FILE}: a customer id is used twice`)
 
-  const requests: TestRequest[] = records(REQUESTS_FILE, requestsFile, REQUEST_COLUMNS).map((r, i) => {
-    const at = `${REQUESTS_FILE} row ${i + 2}`
+  const requests: TestRequest[] = records(requestsName, requestsFile, REQUEST_COLUMNS).map((r, i) => {
+    const at = `${requestsName} row ${i + 2}`
     if (!ids.has(r.customer_id)) throw new Error(`${at}: customer ${r.customer_id} is not in ${WORLD_FILE}`)
     const gold: Gold = {
       queue: r.gold_queue === "" ? null : oneOf(r.gold_queue, QUEUES, `${at} gold_queue`),
@@ -179,16 +187,13 @@ export async function loadDataset(dir: string): Promise<{ world: World; requests
       risk: bool(r.gold_risk, `${at} gold_risk`),
       injection: bool(r.gold_injection, `${at} gold_injection`),
     }
-    const final: FinalResult = {
-      toStaff: bool(r.final_to_staff, `${at} final_to_staff`),
-      action: r.final_action === "" ? null : oneOf(r.final_action, ACTIONS, `${at} final_action`),
-    }
+    const finalAction = r.final_action === "" ? null : oneOf(r.final_action, ACTIONS, `${at} final_action`)
     return {
-      id: r.id, split: oneOf(r.split, ["dev", "test"] as const, `${at} split`), category: r.category, hard: bool(r.hard, `${at} hard`),
-      customerId: r.customer_id, role: oneOf(r.role, ROLES, `${at} role`), text: r.text, clarification: r.clarification,
+      id: r.id, category: r.category, hard: bool(r.hard, `${at} hard`),
+      customerId: r.customer_id, role: oneOf(r.role, ROLES, `${at} role`), text: r.text,
       startLedger: list(r.start_ledger),
       gold, scored: list(r.scored).map((f) => oneOf(f, FIELDS, `${at} scored`)),
-      final, finalReason: r.final_reason,
+      finalAction, finalReason: r.final_reason,
     }
   })
   return { world: { today: TODAY, customers }, requests }

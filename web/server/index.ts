@@ -1,34 +1,28 @@
 // FrameForge customer support system: the Hono server. It holds the API credentials, so the browser never sees them.
-// One endpoint for each state of the flow that calls the server (receive, classify, triage, clarify, gather, rules, act, final, queue).
+// One endpoint for each state of the flow that calls the server (receive, classify, triage, gather, rules, act, final).
 // The server keeps each request between the calls.
 import { Hono } from "hono"
 import { HTTPException } from "hono/http-exception"
 import type {
-  ClarifyResponse, Classifier, Executed, FinalResponse, GatherResponse, QueueResponse, ReceiveResponse, Requester, Role,
+  Classifier, Executed, FinalResponse, GatherResponse, ReceiveResponse, Requester, Role,
   RulesResponse, TriageResponse,
 } from "../src/types"
-import { CLARIFY_ROUNDS, accountOf, accountsOf, extractFacts, findArticles, findCustomer, requesterFor, staffWhy } from "./saas"
-import { ApiError, QUEUED_MESSAGE, answerQuestion, classify, writeBrief, writeClarify, writeReply } from "./models"
-import { actStep, rulesStep, triageStep } from "./steps"
+import { accountFieldsFor, misuseReport, accountOf, accountText, accountsOf, extractFacts, findArticles, findCustomer, requesterFor, triage } from "./saas"
+import { ApiError, answerQuestion, classify, writeReply } from "./models"
+import { actStep, rulesStep } from "./steps"
 
 interface Req {
   customerId: string
   who: Requester
   receivedUtc: string
-  /** What the customer wrote in this request: the first message, then the replies to Clarify. */
+  /** What the customer wrote in this request: the first message, then the messages that follow in the same chat. */
   lines: string[]
-  /** Clarify rounds done so far. */
-  round: number
-  /** True after Clarify asked a question and before the reply of the customer came. */
-  waiting: boolean
   classifier?: Classifier
   triage?: TriageResponse
-  clarify?: ClarifyResponse
   gather?: GatherResponse
   rules?: RulesResponse
   executed?: Executed
   final?: FinalResponse
-  queued?: QueueResponse
 }
 interface Session {
   /** "action|target" pairs of the actions that changed something in this session. */
@@ -59,23 +53,23 @@ app.onError((err, c) => {
   return c.json({ error: err.message }, err instanceof ApiError ? 502 : 500)
 })
 
-// New: the system saves the message with an ID and the time. With a requestId, the message is the reply of the customer to Clarify:
-// it joins the chat of that request, and the results of the steps after it are dropped, because Jev classifies the whole chat again.
+// New: the system saves the message with an ID and the time. With a requestId, the message is a new message of the customer
+// in the open chat: it joins the chat of that request, and the results of the steps after it are dropped, because the
+// classifier reads the whole chat again.
 app.post("/api/receive", async (c) => {
   const { s, requestId, body, r: old } = await load(c)
   const { text, role, customerId } = body as { text: string; role: Role; customerId: string }
   if (requestId) {
-    if (!old.waiting) throw new HTTPException(409, { message: "Clarify did not ask a question for this request" })
-    const { customerId: id, who, receivedUtc, lines, round } = old
-    const r: Req = { customerId: id, who, receivedUtc, lines: [...lines, text], round, waiting: false }
+    const { customerId: id, who, receivedUtc, lines } = old
+    const r: Req = { customerId: id, who, receivedUtc, lines: [...lines, text] }
     s.requests.set(requestId, r)
-    return c.json({ requestId, request: { text: textOf(r), channel: "chat", receivedUtc, requester: who }, round } satisfies ReceiveResponse)
+    return c.json({ requestId, request: { text: textOf(r), channel: "chat", receivedUtc, requester: who } } satisfies ReceiveResponse)
   }
   if (!findCustomer(customerId)) throw new HTTPException(400, { message: `unknown customer ${customerId}` })
   const id = `R-${s.requests.size + 1}`
-  const r: Req = { customerId, who: requesterFor(customerId, role), receivedUtc: new Date().toISOString(), lines: [text], round: 0, waiting: false }
+  const r: Req = { customerId, who: requesterFor(customerId, role), receivedUtc: new Date().toISOString(), lines: [text] }
   s.requests.set(id, r)
-  return c.json({ requestId: id, request: { text, channel: "chat", receivedUtc: r.receivedUtc, requester: r.who }, round: 0 } satisfies ReceiveResponse)
+  return c.json({ requestId: id, request: { text, channel: "chat", receivedUtc: r.receivedUtc, requester: r.who } } satisfies ReceiveResponse)
 })
 
 // Triage, part 1: the classifier (Jev) gives five answers on the whole chat of the customer. The account is not an input.
@@ -88,36 +82,24 @@ app.post("/api/classify", async (c) => {
 // Triage, part 2: fixed rules choose the next state. No model.
 app.post("/api/triage", async (c) => {
   const { r } = await load(c, "classifier")
-  r.triage = triageStep(r.classifier!, r.round)
+  r.triage = triage(r.classifier!.fields)
   return c.json(r.triage)
-})
-
-// Clarify: the LLM asks the customer for more detail. This call counts the round.
-app.post("/api/clarify", async (c) => {
-  const { r } = await load(c, "triage")
-  if (r.triage!.next !== "clarify") throw new HTTPException(409, { message: `Triage chose ${r.triage!.next}, not clarify` })
-  if (!r.clarify) {
-    const q = await writeClarify(textOf(r), r.who)
-    r.round += 1
-    r.waiting = true
-    r.clarify = { question: q.text, round: r.round, rounds: CLARIFY_ROUNDS, latencyS: q.latencyS }
-  }
-  return c.json(r.clarify)
 })
 
 // Gather info: the account, the purchase, the other e-mail in the text, and the help articles.
 app.post("/api/gather", async (c) => {
   const { r } = await load(c, "triage")
-  if (r.triage!.next !== "gather") throw new HTTPException(409, { message: `Triage chose ${r.triage!.next}, not gather` })
   const text = textOf(r)
-  r.gather = { account: accountOf(r.customerId), facts: extractFacts(text), articles: findArticles(text).map((a) => a.title) }
+  r.gather = {
+    fields: accountFieldsFor(r.triage!.action), account: accountOf(r.customerId), facts: extractFacts(text), articles: findArticles(text).map((a) => a.title),
+  }
   return c.json(r.gather)
 })
 
-// Rules check: the written rules for the action of Triage are checked on the facts.
+// Rules check: the written rules for the action of Triage, checked on the facts (fixed code).
 app.post("/api/rules", async (c) => {
   const { s, r } = await load(c, "gather")
-  r.rules = rulesStep(r.triage!.action, r.who, r.gather!.facts, s.ledger, r.customerId)
+  r.rules = rulesStep(r.triage!.action, r.who, r.gather!.facts, s.ledger, r.customerId, r.gather!.fields, misuseReport(r.classifier!.fields))
   return c.json(r.rules)
 })
 
@@ -125,55 +107,30 @@ app.post("/api/rules", async (c) => {
 app.post("/api/act", async (c) => {
   const { s, r } = await load(c, "rules")
   if (r.rules!.next !== "act") throw new HTTPException(409, { message: `the rules say ${r.rules!.next}, so no action runs` })
-  r.executed ??= actStep(r.triage!.action, r.triage!.queue, r.rules!, s.ledger, r.customerId)
+  r.executed ??= actStep(r.triage!.action, r.triage!.queue, r.rules!, s.ledger, r.customerId, r.who)
   return c.json(r.executed)
 })
 
-// Final message: the LLM answers from the help articles and the account (action "Send reply"), or tells the result of Do action or why nothing ran.
+// Final message: the LLM answers from the help articles and the account ("Send reply"), or tells the result of Do action or why
+// nothing ran. Rules check ends the flow here (deny: nothing runs), and a request that an action ran ends here too.
 app.post("/api/final", async (c) => {
   const { s, r } = await load(c, "rules")
-  const { rules, triage } = r
-  if (rules!.next === "queued") throw new HTTPException(409, { message: "the rules say queued, so there is no Final message" })
-  if (rules!.next === "act" && !r.executed) throw new HTTPException(409, { message: "the step before did not run: executed is missing" })
+  const rules = r.rules!
+  if (rules.next === "act" && !r.executed) throw new HTTPException(409, { message: "the step before did not run: executed is missing" })
   // A deny verdict skips Do action: actStep returns the reasons and runs nothing.
-  r.executed ??= actStep(triage!.action, triage!.queue, rules!, s.ledger, r.customerId)
+  r.executed ??= actStep(r.triage!.action, r.triage!.queue, rules, s.ledger, r.customerId, r.who)
   if (!r.final) {
     const text = textOf(r)
+    const articles = findArticles(text)
     if (r.executed.action === "Send reply") {
-      const articles = findArticles(text)
-      const a = await answerQuestion(text, r.who, r.customerId, articles)
-      r.final = { text: a.text, latencyS: a.latencyS, kind: "answer", sources: articles.map((x) => x.title) }
+      const a = await answerQuestion(text, accountText(r.customerId, r.who, r.gather!.fields), articles)
+      r.final = { text: a.text, latencyS: a.latencyS, kind: "answer", sources: articles.map((x) => x.title), blocked: null }
     } else {
-      const w = await writeReply(text, r.who, r.customerId, rules!.policy, r.executed)
-      r.final = { text: w.text, latencyS: w.latencyS, kind: "result", sources: [] }
+      const w = await writeReply(text, r.executed, rules.policy, articles, accountText(r.customerId, r.who, r.gather!.fields))
+      r.final = { text: w.text, latencyS: w.latencyS, kind: "result", sources: [], blocked: r.executed.blocked }
     }
   }
   return c.json(r.final)
-})
-
-// Queued: the LLM writes the ticket summary for support staff, and the bot sends the fixed message. One request is one ticket.
-// Triage or Rules check sent the request here, or the customer pressed "no" N times (body reason "customer").
-app.post("/api/queue", async (c) => {
-  const { r, body } = await load(c, "classifier")
-  if (!r.queued) {
-    let reason: QueueResponse["reason"]
-    let bot = null
-    if (body.reason === "customer") {
-      if (!r.final || !r.executed) throw new HTTPException(409, { message: "the customer has not read a Final message yet" })
-      reason = "customer"
-      bot = { executed: r.executed, reply: r.final.text }
-    } else if (r.triage?.next === "queued") {
-      reason = r.triage.rule as QueueResponse["reason"]
-    } else if (r.rules?.next === "queued") {
-      reason = "rules"
-    } else {
-      throw new HTTPException(409, { message: "Triage and Rules check did not send this request to Queued" })
-    }
-    const why = reason === "customer" ? null : staffWhy(reason, r.rules?.policy)
-    const brief = await writeBrief(textOf(r), r.who, r.customerId, r.classifier!, r.rules?.policy ?? null, why, bot)
-    r.queued = { summary: brief.text, message: QUEUED_MESSAGE[reason === "customer" ? "customer" : "request"], reason, latencyS: brief.latencyS }
-  }
-  return c.json(r.queued)
 })
 
 // The demo customers. Each has one purchase. The chat shows them from the start.

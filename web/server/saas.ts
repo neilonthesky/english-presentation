@@ -5,9 +5,12 @@
 // Every customer has exactly one purchase. The refund rules set a window after the charge (14 days for a monthly plan,
 // 30 days for an annual plan), allow a credit pack only while none of its credits are used, cancel a renewal that is
 // not charged yet, and accept a request only from the owner of the account. The refund and data deletion rules also
-// set limits for this made-up customer support system.
+// set limits for this made-up customer support system. The cancellation rule ends the auto-renewal of a plan for the
+// owner only, and a plan is cancelled once. The password reset rule sends a link to the e-mail on file of the sender
+// only, and a teammate may reset only the password of the teammate.
+import { ACCOUNT_FIELDS } from "../src/types"
 import type {
-  Account, Classifier, Executed, Facts, Next, Plan, Policy, PolicyRule, PurchaseInfo, Requester, Role, TriageRule,
+  Account, AccountField, Classifier, Executed, Facts, Plan, Policy, PolicyRule, PurchaseInfo, Requester, Role, TriageResponse, TriageRule,
 } from "../src/types"
 
 export const MONTHLY_WINDOW_DAYS = 14
@@ -34,6 +37,10 @@ export interface Customer {
   plan: Plan
   creditsLeft: number
   renews: string
+  /** True when the auto-renewal of the plan is off: the plan runs to the end of the paid period and does not renew. */
+  planCancelled: boolean
+  /** The password reset links sent to this account so far: the password reset log. */
+  passwordResets: number
   refundsLast90Days: number
   purchase: Purchase
 }
@@ -43,7 +50,8 @@ export interface Customer {
 const demoCustomers = (): Customer[] => [
   {
     id: "linh", name: "Linh Tran", email: "linh@mail.example",
-    teammate: { name: "Duc Le", email: "duc@mail.example" }, plan: "Pro", creditsLeft: 1480, renews: daysAhead(25), refundsLast90Days: 0,
+    teammate: { name: "Duc Le", email: "duc@mail.example" }, plan: "Pro", creditsLeft: 1480, renews: daysAhead(25),
+    planCancelled: false, passwordResets: 0, refundsLast90Days: 0,
     purchase: {
       id: "FF-10482", item: "Pro plan, monthly", category: "Monthly plan", status: "Paid", amount: 64,
       charged: daysAgo(5), usage: "Used 520 of 2,000 credits", unused: false,
@@ -51,7 +59,8 @@ const demoCustomers = (): Customer[] => [
   },
   {
     id: "minh", name: "Minh Pham", email: "minh@mail.example",
-    teammate: { name: "Khanh Tran", email: "khanh@mail.example" }, plan: "Team", creditsLeft: 10000, renews: daysAhead(10), refundsLast90Days: 1,
+    teammate: { name: "Khanh Tran", email: "khanh@mail.example" }, plan: "Team", creditsLeft: 10000, renews: daysAhead(10),
+    planCancelled: true, passwordResets: 1, refundsLast90Days: 1,
     purchase: {
       id: "FF-10517", item: "Team plan, monthly", category: "Monthly plan", status: "Paid", amount: 129,
       charged: daysAgo(20), usage: "No credits used", unused: true,
@@ -59,7 +68,8 @@ const demoCustomers = (): Customer[] => [
   },
   {
     id: "an", name: "An Nguyen", email: "an@mail.example",
-    teammate: { name: "Bao Vu", email: "bao@mail.example" }, plan: "Free", creditsLeft: 1880, renews: daysAhead(24), refundsLast90Days: 0,
+    teammate: { name: "Bao Vu", email: "bao@mail.example" }, plan: "Free", creditsLeft: 1880, renews: daysAhead(24),
+    planCancelled: false, passwordResets: 0, refundsLast90Days: 0,
     purchase: {
       id: "FF-10533", item: "Credit pack, 5,000 credits", category: "Credit pack", status: "Paid", amount: 50,
       charged: daysAgo(6), usage: "3,120 of 5,000 credits used", unused: false,
@@ -67,7 +77,8 @@ const demoCustomers = (): Customer[] => [
   },
   {
     id: "hoa", name: "Hoa Le", email: "hoale@mail.example",
-    teammate: { name: "Tam Do", email: "tam@mail.example" }, plan: "Pro", creditsLeft: 2000, renews: daysAhead(2), refundsLast90Days: 0,
+    teammate: { name: "Tam Do", email: "tam@mail.example" }, plan: "Pro", creditsLeft: 2000, renews: daysAhead(2),
+    planCancelled: false, passwordResets: 1, refundsLast90Days: 0,
     purchase: {
       id: "FF-10561", item: "Pro plan, monthly", category: "Monthly plan", status: "Scheduled", amount: 64,
       charged: daysAhead(2), usage: "Renewal not charged yet", unused: true,
@@ -111,6 +122,8 @@ function accountFrom(c: Customer): Account {
     plan: c.plan,
     creditsLeft: c.creditsLeft,
     renews: c.renews,
+    planCancelled: c.planCancelled,
+    passwordResets: c.passwordResets,
     purchase,
     refundsLast90Days: c.refundsLast90Days,
   }
@@ -119,20 +132,39 @@ function accountFrom(c: Customer): Account {
 export const accountsOf = (): Account[] => world.customers.map(accountFrom)
 export const accountOf = (customerId: string): Account => accountFrom(customerOf(customerId))
 
-/** The account as plain text, for the prompts of the LLM. */
-export function accountText(customerId: string, who: Requester): string {
+/**
+ * Gather info at Level 3: the account fields that each action of Triage reads. A fixed table, built from what the written rules
+ * of the action check and from what the replies of the 50 requests use. Level 2 reads every field: the agent has an account tool.
+ * The password reset log is read by no written rule and by no reply, so no row has it.
+ */
+export const ACCOUNT_FIELDS_OF: Record<string, readonly AccountField[]> = {
+  "Send reply": ["today", "owner", "sender", "plan", "purchase"],
+  "Start refund": ["today", "owner", "sender", "purchase", "refunds"],
+  "Delete data": ["owner", "sender", "plan"],
+  "Cancel plan": ["owner", "sender", "plan"],
+  "Reset password": ["sender"],
+}
+
+/** The account fields to read for the action of Triage. No action (the classifier answer was not valid): none. */
+export const accountFieldsFor = (action: string | null): readonly AccountField[] => (action ? ACCOUNT_FIELDS_OF[action] : [])
+
+/** The account of the customer as the text that the models read: the lines of the fields in `fields` only, in the order of ACCOUNT_FIELDS. */
+export function accountText(customerId: string, who: Requester, fields: readonly AccountField[]): string {
   const a = accountOf(customerId)
   const p = a.purchase
   const charge = p.status === "Scheduled" ? `Planned charge: ${p.charged}.` : `Charged ${p.charged}.`
-  return [
-    `Today: ${world.today}.`,
-    `Account owner: ${a.customer.name} <${a.customer.email}>.`,
-    `Sender of the request: ${who.name} <${who.email}>, ${who.role === "owner" ? "the owner (pays and has all rights)" : "a teammate (no rights over billing or data)"}.`,
-    `Plan: ${a.plan}. Credits left: ${a.creditsLeft}. Next renewal: ${a.renews}.`,
-    `Purchase (the only one): ${p.id}, ${p.item} (${p.category}), $${p.amount}. ` +
+  const lines: Record<AccountField, string> = {
+    today: `Today: ${world.today}.`,
+    owner: `Account owner: ${a.customer.name} <${a.customer.email}>.`,
+    sender: `Sender of the request: ${who.name} <${who.email}>, ${who.role === "owner" ? "the owner (pays and has all rights)" : "a teammate (no rights over billing or data)"}.`,
+    plan: `Plan: ${a.plan}${a.planCancelled ? " (the auto-renewal is off; the plan ends at the next renewal date)" : ""}. Credits left: ${a.creditsLeft}. Next renewal: ${a.renews}.`,
+    reset: `Password reset links sent to this account so far: ${a.passwordResets}.`,
+    purchase:
+      `Purchase (the only one): ${p.id}, ${p.item} (${p.category}), $${p.amount}. ` +
       `Status: ${p.status}. ${charge} Usage: ${p.usage}.`,
-    `Refunds in the last 90 days: ${a.refundsLast90Days}.`,
-  ].join("\n")
+    refunds: `Refunds in the last 90 days: ${a.refundsLast90Days}.`,
+  }
+  return ACCOUNT_FIELDS.filter((f) => fields.includes(f)).map((f) => lines[f]).join("\n")
 }
 
 /** Gather info: read another e-mail address from the text with a fixed pattern. */
@@ -141,128 +173,249 @@ export function extractFacts(text: string): Facts {
 }
 
 /** The thing an action changes: an id for the ledger and a name for the replies. */
-export function targetOf(customerId: string, action: string): { id: string; label: string } | null {
+export function targetOf(customerId: string, action: string, who: Requester): { id: string; label: string } | null {
   const c = customerOf(customerId)
   if (action === "Start refund") return { id: c.purchase.id, label: `${c.purchase.item} (purchase ${c.purchase.id})` }
   if (action === "Delete data") return { id: `${c.id}:account`, label: `the workspace of ${c.name}` }
+  if (action === "Cancel plan") return { id: `${c.id}:plan`, label: `the ${c.plan} plan of ${c.name}` }
+  if (action === "Reset password") return { id: `${c.id}:password:${who.email}`, label: `the password of ${who.email}` }
   return null
 }
 
-/** Actions that change money or data. Only these have written rules. */
-const COVERED: Record<string, true> = { "Start refund": true, "Delete data": true }
+/** The written rules of an action, by the name of the rule set. An action that is not here has no written rule. */
+const RULE_SET: Record<string, PolicyRule["source"]> = {
+  "Start refund": "Refund rule",
+  "Delete data": "Data deletion rule",
+  "Cancel plan": "Cancellation rule",
+  "Reset password": "Password reset rule",
+}
+
+/** The actions that only the owner of the account can ask for. A teammate may reset the password of the teammate. */
+const OWNER_ONLY: Record<string, true> = { "Start refund": true, "Delete data": true, "Cancel plan": true }
 
 /**
- * The written policy for an action, checked against the data of this request. Each rule has an outcome:
- * pass (fine), deny (the action cannot be done), or review (support staff must decide). The ledger holds the
- * "action|target" pairs that already ran in this session.
+ * One written rule. The name is the source and a short name ("Refund rule: refund window"); a model that checks the rules
+ * answers with it. `check` is the group of the rule in the list of the policy. `denies` is false for a rule that states a
+ * permission and never stops an action.
  */
-export function policyFor(action: string, who: Requester, facts: Facts, ledger: ReadonlySet<string>, customerId: string): Policy {
+export interface WrittenRule {
+  name: string
+  action: string
+  source: PolicyRule["source"]
+  check: PolicyRule["check"]
+  text: string
+  denies: boolean
+}
+
+const written = (action: string, short: string, check: PolicyRule["check"], text: string, denies = true): WrittenRule =>
+  ({ name: `${RULE_SET[action]}: ${short}`, action, source: RULE_SET[action], check, text, denies })
+
+const ownerOnly = (action: string): WrittenRule => written(action, "owner only", 1, "Only the owner can ask for this.")
+const ownAccount = (action: string): WrittenRule => written(action, "own account", 1, "The system changes only the account of the sender.")
+
+const R = {
+  refundOwner: ownerOnly("Start refund"),
+  refundAccount: ownAccount("Start refund"),
+  refundPack: written("Start refund", "credit pack", 1, "A credit pack can be refunded only while none of its credits are used."),
+  refundScheduled: written("Start refund", "scheduled renewal", 1, "A renewal that is not charged yet can be cancelled with no charge.", false),
+  refundSettled: written("Start refund", "settled charge", 1, "A charge that the bank has not settled cannot be refunded; ask again after it settles."),
+  refundWindow: written("Start refund", "refund window", 1,
+    `A refund is possible within ${MONTHLY_WINDOW_DAYS} days of the charge for a monthly plan and ${ANNUAL_WINDOW_DAYS} days for an annual plan.`),
+  refundOnce: written("Start refund", "refunded once", 2, "A purchase is refunded once."),
+  refundAmount: written("Start refund", "amount limit", 3, `This chat cannot start a refund above $${AUTO_REFUND_LIMIT_USD}.`),
+  refundCount: written("Start refund", "refund count", 3, `This chat cannot start a new refund after ${MAX_REFUNDS_90_DAYS} refunds in 90 days.`),
+  deleteOwner: ownerOnly("Delete data"),
+  deleteAccount: ownAccount("Delete data"),
+  deleteOnce: written("Delete data", "deleted once", 2, "Data is deleted once."),
+  deleteNever: written("Delete data", "never deleted", 3, "Deleting data cannot be undone, so this chat never does it."),
+  cancelOwner: ownerOnly("Cancel plan"),
+  cancelAccount: ownAccount("Cancel plan"),
+  cancelReversible: written("Cancel plan", "reversible", 1, "A cancellation is reversible until the end of the paid period, and no money moves.", false),
+  cancelOnce: written("Cancel plan", "cancelled once", 2, "A plan is cancelled once."),
+  resetEmail: written("Reset password", "e-mail on file", 1, "The reset link goes only to the e-mail on file of the sender."),
+}
+
+/** Every written rule, in the order of the policy lists (by group, then as listed). */
+export const WRITTEN_RULES: readonly WrittenRule[] = Object.values(R)
+
+/** The written rules of an action that can stop it, in the order that a model reads them. An action with no written rule gives an empty list. */
+export const denyingRulesOf = (action: string): WrittenRule[] =>
+  WRITTEN_RULES.filter((r) => r.action === action && r.denies).sort((a, b) => a.check - b.check)
+
+/**
+ * The Security rule: a request that reports that the account or the payment method was used by someone who is not the customer
+ * stops every state change. It belongs to no one action, so it has its own source and the action "Any state change".
+ */
+const securityRule: WrittenRule = {
+  name: "Security rule: misuse report", action: "Any state change", source: "Security rule", check: 1, denies: true,
+  text: "A request that reports that the account or the payment method was used by someone who is not the customer stops every state change.",
+}
+export const SECURITY_RULE = securityRule
+
+/**
+ * The typed answer of the classifier that says: this request reports a misuse of the account or of the payment method. It is the
+ * queue "Security". (The risk flag was tried on the held-out set and dropped: it is true on every request that asks for an
+ * action, so it stopped every valid refund and cancel.)
+ */
+export const misuseReport = (f: Classifier["fields"]): boolean => f.queue.value === "Security"
+
+const SECURITY_DENY = "The request reports that the account or the payment method was used by someone who is not the customer."
+const SECURITY_PASS = "The request does not report a misuse of the account or the payment method."
+
+export const ruleNamed = (name: string): WrittenRule | undefined =>
+  name === securityRule.name ? securityRule : WRITTEN_RULES.find((r) => r.name === name)
+
+/**
+ * The written rules of an action, evaluated on the data of this request. This is the fixed-code reading of the rules: Rules
+ * check of Level 3 and of the demo, the oracle that derives the gold answers of the dataset (build_dataset.ts), and the check of
+ * the fault suite. The ledger holds the "action|target" pairs that already ran in this session. `fields` are the account fields
+ * that Gather info read: a rule that needs a field outside them cannot be checked, so the reading fails closed with one more
+ * denying rule that names the fields.
+ */
+function evaluateRules(
+  action: string, who: Requester, facts: Facts, ledger: ReadonlySet<string>, customerId: string, fields: readonly AccountField[],
+  report: boolean,
+): PolicyRule[] {
   const c = customerOf(customerId)
   const purchase = c.purchase
   const rules: PolicyRule[] = []
-  const add = (check: PolicyRule["check"], source: PolicyRule["source"], text: string, outcome: PolicyRule["outcome"], detail: string) => {
-    rules.push({ check, text, source, outcome, detail })
+  const unread = new Set<AccountField>()
+  const read = (field: AccountField) => {
+    if (!fields.includes(field)) unread.add(field)
+  }
+  const add = (r: WrittenRule, outcome: PolicyRule["outcome"], detail: string) => {
+    rules.push({ name: r.name, check: r.check, text: r.text, source: r.source, outcome, detail })
   }
 
-  if (action in COVERED) {
-    const source = action === "Start refund" ? "Refund rule" : "Data deletion rule"
+  if (RULE_SET[action]) {
     const owner = who.role === "owner"
-    add(1, source, "Only the owner can ask for this.", owner ? "pass" : "deny",
-      owner ? `${who.name} is the owner of the account.` : `${who.name} is a teammate, not the owner of the account.`)
-    const other = facts.otherEmail && facts.otherEmail !== c.email && facts.otherEmail !== c.teammate.email ? facts.otherEmail : null
-    add(1, source, "The system changes only the account of the sender.", other ? "deny" : "pass", other ? `${other} is another customer.` : "The request names no other customer.")
+    read("sender")
+    if (OWNER_ONLY[action]) {
+      add(ownerOnly(action), owner ? "pass" : "deny",
+        owner ? `${who.name} is the owner of the account.` : `${who.name} is a teammate, not the owner of the account.`)
+    }
+    if (action === "Reset password") {
+      const foreign = facts.otherEmail && facts.otherEmail !== who.email ? facts.otherEmail : null
+      add(R.resetEmail, foreign ? "deny" : "pass",
+        foreign ? `${foreign} is an address from the text, not the e-mail on file of the sender.` : "The request names no other address.")
+    } else {
+      read("owner")
+      const other = facts.otherEmail && facts.otherEmail !== c.email && facts.otherEmail !== c.teammate.email ? facts.otherEmail : null
+      add(ownAccount(action), other ? "deny" : "pass", other ? `${other} is another customer.` : "The request names no other customer.")
+    }
+  }
+
+  if (RULE_SET[action]) {
+    add(securityRule, report ? "deny" : "pass", report ? SECURITY_DENY : SECURITY_PASS)
   }
 
   if (action === "Start refund") {
+    read("purchase")
     const done = ledger.has(`Start refund|${purchase.id}`)
-    add(2, "Refund rule", "A purchase is refunded once.", done ? "deny" : "pass", done ? `Purchase ${purchase.id} was already refunded.` : "No refund ran for this purchase.")
+    add(R.refundOnce, done ? "deny" : "pass", done ? `Purchase ${purchase.id} was already refunded.` : "No refund ran for this purchase.")
     if (purchase.category === "Credit pack") {
-      add(1, "Refund rule", "A credit pack can be refunded only while none of its credits are used.", purchase.unused ? "pass" : "deny", `${purchase.usage}.`)
+      add(R.refundPack, purchase.unused ? "pass" : "deny", `${purchase.usage}.`)
     } else if (purchase.status === "Scheduled") {
-      add(1, "Refund rule", "A renewal that is not charged yet can be cancelled with no charge.", "pass", "The renewal is still scheduled.")
+      add(R.refundScheduled, "pass", "The renewal is still scheduled.")
     } else if (purchase.status === "Settling") {
-      add(1, "Refund rule", "A charge that the bank has not settled cannot be refunded; ask again after it settles.", "deny",
-        "The charge was made and is not settled yet.")
+      add(R.refundSettled, "deny", "The charge was made and is not settled yet.")
     } else {
+      read("today")
       const limit = purchase.category === "Monthly plan" ? MONTHLY_WINDOW_DAYS : ANNUAL_WINDOW_DAYS
       const age = daysSince(purchase.charged)
-      const text = `A refund is possible within ${MONTHLY_WINDOW_DAYS} days of the charge for a monthly plan and ${ANNUAL_WINDOW_DAYS} days for an annual plan.`
-      if (age <= limit) add(1, "Refund rule", text, "pass", `Charged ${age} days ago; the limit is ${limit} days.`)
-      else if (purchase.unused)
-        add(1, "Refund rule", text, "review",
-          `Charged ${age} days ago; the limit is ${limit} days. The workspace used nothing it bought, so support staff can make an exception.`)
-      else add(1, "Refund rule", text, "deny", `Charged ${age} days ago; the limit is ${limit} days. The workspace used the plan (${purchase.usage}).`)
+      if (age <= limit) add(R.refundWindow, "pass", `Charged ${age} days ago; the limit is ${limit} days.`)
+      else
+        add(R.refundWindow, "deny", purchase.unused
+          ? `Charged ${age} days ago; the limit is ${limit} days. The workspace used nothing it bought, and this chat cannot make an exception.`
+          : `Charged ${age} days ago; the limit is ${limit} days. The workspace used the plan (${purchase.usage}).`)
     }
-    add(3, "Refund rule", `A refund over $${AUTO_REFUND_LIMIT_USD} needs support staff.`, purchase.amount > AUTO_REFUND_LIMIT_USD ? "review" : "pass", `The refund is $${purchase.amount}.`)
+    add(R.refundAmount, purchase.amount > AUTO_REFUND_LIMIT_USD ? "deny" : "pass", `The refund is $${purchase.amount}.`)
+    read("refunds")
     const refunds = c.refundsLast90Days + (done ? 1 : 0)
-    add(3, "Refund rule", `A customer with ${MAX_REFUNDS_90_DAYS} or more refunds in 90 days needs support staff.`, refunds >= MAX_REFUNDS_90_DAYS ? "review" : "pass", `${refunds} refund${refunds === 1 ? "" : "s"} in the last 90 days.`)
+    add(R.refundCount, refunds >= MAX_REFUNDS_90_DAYS ? "deny" : "pass", `${refunds} refund${refunds === 1 ? "" : "s"} in the last 90 days.`)
   }
 
   if (action === "Delete data") {
+    read("owner")
     const done = ledger.has(`Delete data|${c.id}:account`)
-    add(2, "Data deletion rule", "Data is deleted once.", done ? "deny" : "pass", done ? "The deletion already started." : "No deletion ran before.")
-    add(3, "Data deletion rule", "Deleting data cannot be undone, so support staff always handle it.", "review", `The workspace of ${c.name} would be deleted for good.`)
+    add(R.deleteOnce, done ? "deny" : "pass", done ? "The deletion already started." : "No deletion ran before.")
+    add(R.deleteNever, "deny", `The workspace of ${c.name} would be deleted for good.`)
   }
 
-  rules.sort((a, b) => a.check - b.check)
-  const verdict = rules.some((r) => r.outcome === "deny") ? "deny" : rules.some((r) => r.outcome === "review") ? "review" : "allow"
-  return { action, verdict, rules }
+  if (action === "Cancel plan") {
+    read("plan")
+    const done = c.planCancelled || ledger.has(`Cancel plan|${c.id}:plan`)
+    add(R.cancelOnce, done ? "deny" : "pass",
+      done ? "The auto-renewal of the plan is already off." : `The auto-renewal of the ${c.plan} plan is on.`)
+    add(R.cancelReversible, "pass", `The plan runs until ${c.renews}.`)
+  }
+
+  if (unread.size) {
+    rules.push({
+      name: `${RULE_SET[action]}: account fields`, check: 1, text: "Every account field that a rule reads must be read at Gather info.",
+      source: RULE_SET[action], outcome: "deny", detail: `These account fields were not read: ${[...unread].join(", ")}.`,
+    })
+  }
+  return rules.sort((a, b) => a.check - b.check)
 }
 
-/** The classifier must be at least this sure of the queue, the action, and the risk flag, or Triage does not trust it. The environment variable CONFIDENCE_FLOOR changes it for the sweep of the experiment. */
-export const CONFIDENCE_FLOOR = Number(process.env.CONFIDENCE_FLOOR ?? 0.6)
+/** The written policy for an action, by the fixed-code reading of the rules (see `evaluateRules`) on the account fields that Gather info read. */
+export function policyFor(
+  action: string, who: Requester, facts: Facts, ledger: ReadonlySet<string>, customerId: string, fields: readonly AccountField[],
+  report: boolean,
+): Policy {
+  const rules = evaluateRules(action, who, facts, ledger, customerId, fields, report)
+  return { action, verdict: rules.some((r) => r.outcome === "deny") ? "deny" : "allow", rules }
+}
 
-/** How many times Clarify may ask the customer for more detail before an unsure request goes to Queued. The environment variable CLARIFY_ROUNDS changes it for the sweep of the experiment. */
-export const CLARIFY_ROUNDS = Number(process.env.CLARIFY_ROUNDS ?? 1)
+/** The reason that a rule shows when a model names a rule that does not apply to this account. */
+const NOT_APPLICABLE = "This rule does not apply to this account."
 
-export interface TriageResult {
-  next: Next
-  rule: TriageRule
-  reason: string
-  /** The action after Triage: "Send reply" when the injection flag is on. */
-  action: string
-  queue: string
-  ignoredOrders: boolean
+/**
+ * The written policy as a model ruled on it: the rule that the model named as not met is "deny", every other rule is "pass",
+ * and the verdict follows the model alone. The text of each rule and its reason come from the written rules and from the
+ * data of this request (the same strings that the fixed-code reading uses); the outcome of that reading is dropped. `broken`
+ * is the name of the rule that is not met, or null when the model found every rule met. The Security rule belongs to no one
+ * action: when the model names it, `action` is null and the policy has that one rule (the reply is an answer).
+ */
+export function rulingPolicy(
+  action: string | null, broken: string | null, who: Requester, facts: Facts, ledger: ReadonlySet<string>, customerId: string,
+): Policy {
+  if (action === null) {
+    const rule = securityRule
+    return {
+      action: "Send reply", verdict: "deny",
+      rules: [{ name: rule.name, check: rule.check, text: rule.text, source: rule.source, outcome: "deny", detail: SECURITY_DENY }],
+    }
+  }
+  const rules = evaluateRules(action, who, facts, ledger, customerId, ACCOUNT_FIELDS, false).map((r): PolicyRule => ({ ...r, outcome: r.name === broken ? "deny" : "pass" }))
+  const rule = broken ? ruleNamed(broken) : undefined
+  if (rule && !rules.some((r) => r.name === rule.name)) {
+    rules.push({ name: rule.name, check: rule.check, text: rule.text, source: rule.source, outcome: "deny", detail: NOT_APPLICABLE })
+    rules.sort((a, b) => a.check - b.check)
+  }
+  return { action, verdict: broken ? "deny" : "allow", rules }
 }
 
 /**
- * Triage, part 2: choose the next state from the five answers of the classifier. The first rule that matches wins.
- * `round` is the number of Clarify rounds done so far for this request.
+ * Triage, part 2: what the flow does with the request, from the five answers of the classifier. The first rule that matches
+ * wins. Triage never stops the flow: it always goes on to Gather info, and an action that the written rules deny stops at
+ * Rules check.
  */
-export function triage(f: Classifier["fields"], round: number): TriageResult {
+export function triage(f: Classifier["fields"]): TriageResponse {
   const queue = f.queue.value
-  const done = (next: Next, rule: TriageRule, reason: string, action = f.action.value, ignoredOrders = false): TriageResult =>
-    ({ next, rule, reason, action, queue, ignoredOrders })
-  if (f.priority.value === "Critical") return done("queued", "critical", "the priority is Critical")
-  if (f.injection.value) return done("gather", "injection", "the injection flag is on, so the orders in the text are ignored", "Send reply", true)
-  if (Math.min(f.queue.confidence, f.action.confidence, f.risk.confidence) < CONFIDENCE_FLOOR) {
-    const reason = `the classifier is less than ${Math.round(CONFIDENCE_FLOOR * 100)}% sure of the queue, the action, or the risk flag`
-    return round < CLARIFY_ROUNDS ? done("clarify", "unsure", reason) : done("queued", "unsure", reason)
-  }
-  if (f.action.value === "Needs staff") return done("queued", "needs-staff", "the action is Needs staff")
-  if (f.risk.value && !(f.action.value in COVERED)) return done("queued", "risk", "the risk flag is on and no written rule covers the action")
-  if (f.action.value === "Send reply") return done("gather", "answer", "the request is a question and nothing changes")
-  return done("gather", "act", "the classifier is sure and the action has written rules or needs none")
-}
-
-/** Why support staff must read the request: the reason of a Queued state. `policy` is needed for "rules". */
-export function staffWhy(rule: TriageRule | "rules" | "customer", policy?: Policy): string {
-  switch (rule) {
-    case "critical": return "The priority is Critical, so support staff must read it."
-    case "unsure": return "The classifier is not sure of its answer, so support staff must read it."
-    case "needs-staff": return "The request needs work that the system cannot do itself, so support staff must do it."
-    case "risk": return "The classifier says money or data would change, and no written rule covers this action."
-    case "rules": return policy ? policy.rules.filter((r) => r.outcome === "review").map((r) => r.detail).join(" ") : ""
-    case "customer": return "The customer says that the reply did not solve the issue."
-    default: return ""
-  }
+  const done = (rule: TriageRule, reason: string, action = f.action.value, ignoredOrders = false): TriageResponse =>
+    ({ rule, reason, action, queue, ignoredOrders })
+  if (f.injection.value) return done("injection", "the injection flag is on, so the orders in the text are ignored", "Send reply", true)
+  if (f.action.value === "Send reply") return done("answer", "the request is a question and nothing changes")
+  return done("act", "the action has written rules")
 }
 
 /** Do action: what the system does for an action. Returns the target and the details for the Final message. */
-export function perform(action: string, customerId: string): Pick<Executed, "target" | "details"> {
+export function perform(action: string, customerId: string, who: Requester): Pick<Executed, "target" | "details"> {
   const c = customerOf(customerId)
   const p = c.purchase
-  const target = targetOf(customerId, action)?.label ?? null
+  const target = targetOf(customerId, action, who)?.label ?? null
   switch (action) {
     case "Start refund":
       return {
@@ -274,6 +427,19 @@ export function perform(action: string, customerId: string): Pick<Executed, "tar
       }
     case "Delete data":
       return { target, details: [`The deletion of the workspace of ${c.name} started.`, "It is complete in 30 days and cannot be undone."] }
+    case "Cancel plan":
+      return {
+        target,
+        details: [
+          `The auto-renewal of the ${c.plan} plan was stopped.`,
+          `No money moves. The credits stay until ${c.renews}, and the plan can be turned on again before then.`,
+        ],
+      }
+    case "Reset password":
+      return {
+        target,
+        details: [`A reset link was sent to ${who.email}, the e-mail on file of the sender.`, "The link changes the password of that e-mail only."],
+      }
     default:
       return { target, details: [] }
   }
@@ -302,41 +468,45 @@ const ARTICLES: Article[] = [
     text:
       "Refunds must be asked for by the owner of the account. A monthly plan can be refunded within " + MONTHLY_WINDOW_DAYS + " days of the charge and an annual plan within " +
       ANNUAL_WINDOW_DAYS + " days. A credit pack can be refunded only while none of its credits are used. A renewal that is not charged yet can be cancelled with no charge. " +
-      `A refund over $${AUTO_REFUND_LIMIT_USD} is checked by support staff. Outside the window, support staff can make an exception when the workspace used nothing it bought. ` +
+      `This chat does not start a refund above $${AUTO_REFUND_LIMIT_USD} and does not start a new refund after ${MAX_REFUNDS_90_DAYS} refunds in 90 days. ` +
       "The money returns to the card in 5 to 10 business days.",
   },
   {
     title: "Payments and invoices",
-    keywords: ["pay", "payment", "card", "charge", "charged", "twice", "invoice", "receipt", "vat", "tax", "coupon", "promo", "discount", "billing"],
+    keywords: ["pay", "payment", "card", "charge", "charged", "twice", "invoice", "receipt", "vat", "tax", "tax id", "coupon", "promo", "discount", "billing"],
     text:
-      "The card is charged when a plan renews or a credit pack is bought. An invoice with a tax ID can be requested from support staff; " +
-      "support staff send it. A pending authorization that looks like a second charge disappears in 3 to 5 days.",
+      "The card is charged when a plan renews or a credit pack is bought. A pending authorization that looks like a second charge disappears in 3 to 5 days. " +
+      "The company name and the tax ID of an invoice can be edited on the invoice page: open Billing settings, choose the invoice, and edit those fields.",
   },
   {
-    title: "Changing your plan",
-    keywords: ["switch", "change plan", "move to", "upgrade", "downgrade", "seats", "plan change"],
+    title: "Changing or cancelling your plan",
+    keywords: ["switch", "change plan", "move to", "upgrade", "downgrade", "seats", "plan change", "cancel", "cancellation", "auto-renewal", "stop the plan", "end the plan"],
     text:
-      "The chatbot does not change a plan itself. Support staff change it for you, and the new plan starts at the next renewal. " +
-      "Only the owner of the account can ask for it.",
+      "This chat does not move the account to another plan. " +
+      "This chat can cancel the auto-renewal of a plan, and only the owner of the account can ask for it. A cancelled plan runs to the end of the paid period, " +
+      "keeps its credits until that date, and can be turned on again before then. No money moves when a plan is cancelled.",
   },
   {
     title: "Video rendering and exports",
-    keywords: ["video", "render", "rendering", "export", "exports", "upload", "uploads", "format", "stalled", "failed", "stuck", "queued", "job", "clip", "resolution", "duration", "error", "slow", "not working", "download", "mp4", "image", "reference image", "prompt"],
+    keywords: ["video", "render", "rendering", "export", "exports", "upload", "uploads", "format", "stalled", "failed", "stuck", "queue", "job", "clip", "resolution", "duration", "error", "slow", "not working", "download", "mp4", "image", "reference image", "prompt"],
     text:
       "If a render is stalled or failed, open the job in the web studio and check its status, then refresh the studio. If an upload or export fails, check that the file format is supported and try again. " +
-      "If it still fails, send the render job ID, and a member of support staff looks at the job.",
+      "If it still fails, copy the render job ID and open a new request in this chat with that ID.",
   },
   {
     title: "Account and security",
-    keywords: ["password", "login", "hacked", "fraud", "email", "two-factor", "2fa", "unauthorized", "someone else", "suspicious", "stolen", "leaked", "teammate"],
+    keywords: ["password", "reset", "login", "sign in", "hacked", "fraud", "email", "two-factor", "2fa", "unauthorized", "someone else", "suspicious", "stolen", "leaked", "teammate"],
     text:
-      "Change your password under Account settings and turn on two-factor sign-in. A teammate can use the product but cannot change billing or data. " +
-      "If someone used your card or your account without you, or your private footage or projects are exposed, support staff look at the request at once.",
+      "Change your password under Account settings and turn on two-factor sign-in. This chat can send a password reset link: the link goes to the e-mail on file of the person who asks, " +
+      "and an address that is written in a message is never used. A teammate can use the product but cannot change billing or data, and a teammate can reset the password of the teammate only. " +
+      "If someone used your card or your account without you, change your password in Account settings and remove the card in the payment settings. Turn on two-factor sign-in there as well.",
   },
   {
     title: "Delete workspace data",
     keywords: ["delete", "data", "privacy", "gdpr", "remove", "erase", "close account", "workspace"],
-    text: "Only the owner can delete the data of a workspace. Support staff take over every deletion request and handle it in the chat. The deletion is complete in 30 days and cannot be undone.",
+    text:
+      "Only the owner can delete the data of a workspace. Open Account settings and choose Delete workspace data. This chat never runs the deletion: it cannot be undone. " +
+      "A deletion is complete in 30 days, and the workspace keeps a recovery window of those 30 days; before that window closes, the owner can download a copy of the workspace from the settings page.",
   },
 ]
 

@@ -1,6 +1,5 @@
 import type {
-  Account, ClarifyResponse, Classifier, Executed, FinalResponse, GatherResponse, QueueResponse, ReceiveResponse, RulesResponse,
-  TriageResponse,
+  Account, Classifier, Executed, FinalResponse, GatherResponse, ReceiveResponse, RulesResponse, TriageResponse,
 } from "./types"
 
 /** One id per browser tab. The server keeps the requests and the ledger of actions that ran under this id. */
@@ -11,12 +10,10 @@ interface Endpoints {
   receive: ReceiveResponse
   classify: Classifier
   triage: TriageResponse
-  clarify: ClarifyResponse
   gather: GatherResponse
   rules: RulesResponse
   act: Executed
   final: FinalResponse
-  queue: QueueResponse
   reset: { ok: true }
 }
 

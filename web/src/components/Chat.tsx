@@ -1,4 +1,4 @@
-import { Clapperboard, Lock, Send } from "lucide-react"
+import { Clapperboard, Send } from "lucide-react"
 import { useState, type ReactNode } from "react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -6,15 +6,14 @@ import { cn } from "@/lib/utils"
 import type { Message } from "@/machine"
 import type { Scenario } from "@/types"
 
-/** What the customer can write now: the first message, the reply to a Clarify question, a new message in an open chat, or nothing. */
-export type ChatMode = "start" | "reply" | "again" | "locked"
-/** Why the customer cannot write: Queued waits for support staff, Support staff is writing a reply, or Resolved closed the chat. */
-export type LockReason = "queued" | "staff" | "closed"
+/** What the customer can write now: the first message, or a new message in an open chat. */
+export type ChatMode = "start" | "again"
 
 interface Props {
   messages: Message[]
   mode: ChatMode
-  lock: LockReason | null
+  /** True when the flow does not take a message now: the chat is closed, or the customer is not known yet. */
+  disabled: boolean
   /** The popup "Did this solve your issue?" is on screen. */
   popup: boolean
   scenario: Scenario
@@ -30,14 +29,7 @@ interface Props {
 const BUBBLE = {
   customer: "bg-primary text-primary-foreground",
   bot: "bg-model text-ink",
-  staff: "bg-staff text-ink",
 } as const
-
-const LOCK_TEXT: Record<LockReason, string> = {
-  queued: "The chat is locked until support staff joins.",
-  staff: "Support staff joined. Waiting for the reply.",
-  closed: "This chat is closed. Press Reset to start a new chat.",
-}
 
 /** The text box of the customer. The parent gives it a new key whenever its start text changes, so it starts again from `initial`. */
 function Composer({ initial, placeholder, disabled, onSend }: { initial: string; placeholder: string; disabled: boolean; onSend: (text: string) => void }) {
@@ -56,13 +48,11 @@ function Composer({ initial, placeholder, disabled, onSend }: { initial: string;
   )
 }
 
-export function Chat({ messages, mode, lock, popup, scenario, sender, controls, onSend, onYes, onNo }: Props) {
-  const who = { customer: sender, bot: "FrameForge bot", staff: "Support staff" } as const
+export function Chat({ messages, mode, disabled, popup, scenario, sender, controls, onSend, onYes, onNo }: Props) {
+  const who = { customer: sender, bot: "FrameForge bot" } as const
   const box: Record<ChatMode, { initial: string; placeholder: string }> = {
     start: { initial: scenario.text, placeholder: "Write to FrameForge support" },
-    reply: { initial: scenario.reply ?? "", placeholder: "Reply to the question" },
     again: { initial: "", placeholder: "Write a new message" },
-    locked: { initial: "", placeholder: "You cannot write now" },
   }
 
   return (
@@ -102,17 +92,11 @@ export function Chat({ messages, mode, lock, popup, scenario, sender, controls, 
       </div>
 
       <div className="space-y-2 bg-system p-3">
-        {lock && (
-          <p className={cn("flex items-center gap-2 rounded-lg px-3 py-2 text-base text-ink", lock === "closed" ? "bg-resolved" : "bg-staff")}>
-            {lock !== "closed" && <Lock className="size-4 shrink-0" />}
-            {LOCK_TEXT[lock]}
-          </p>
-        )}
         <Composer
           key={`${mode}-${scenario.label}`}
           initial={box[mode].initial}
-          placeholder={box[mode].placeholder}
-          disabled={mode === "locked"}
+          placeholder={disabled ? "You cannot write now" : box[mode].placeholder}
+          disabled={disabled}
           onSend={onSend}
         />
       </div>

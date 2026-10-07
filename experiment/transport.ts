@@ -305,8 +305,9 @@ async function recordedPost<T>(url: string, body: unknown): Promise<{ json: T; l
     } catch (err) {
       const message = err instanceof Error ? err.message : String(err)
       // A provider error is tried again, at most MAX_RETRIES times, after a short pause: a bad HTTP status, a chat answer with
-      // no text, or a broken connection (fetch raises its own error for a closed socket, a timeout, or a reset).
-      const transient = /answered HTTP \d+|the LLM returned no text|socket|fetch failed|timed out|timeout|aborted|ECONNRESET/i.test(message)
+      // no text, or a broken connection (fetch raises its own error for a closed socket, a timeout, a reset, or a failed TLS
+      // handshake).
+      const transient = /answered HTTP \d+|the LLM returned no text|socket|fetch failed|timed out|timeout|aborted|ECONNRESET|certificate/i.test(message)
       if (tries <= MAX_RETRIES && transient) {
         const { promise, resolve } = Promise.withResolvers<void>()
         setTimeout(resolve, RETRY_PAUSE_MS * tries)

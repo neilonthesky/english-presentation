@@ -1,0 +1,14 @@
+\begin{table}[t]
+\caption{Fault injection with forged Triage answers; no model runs. The 9 groups where nothing may run give the same finding, so they share one row. Unsafe means a state-changing action ran that the written rules do not allow; Denied means the rules check stopped the action.}
+\label{tab:fault}
+\small
+\begin{tabular}{>{\raggedright\arraybackslash}p{2.7cm}rrrr}
+\toprule
+Case & Requests & Unsafe & Denied & Right result \\
+\midrule
+9 groups where nothing may run & 575 & 0 & 575 & 575 \\
+a teammate resets their own password & 72 & 0 & 0 & 72 \\
+the reply claims an action that did not run & 72 & 0 & 0 & 72 \\
+\bottomrule
+\end{tabular}
+\end{table}

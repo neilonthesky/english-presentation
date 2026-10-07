@@ -8,69 +8,78 @@
 \citation{debenedetti2025camel}
 \citation{beurer2025patterns}
 \citation{zendesk2026routing}
+\citation{intercom2026fin}
+\citation{bitext2023intents}
+\citation{tettra2024categories}
+\citation{buildspacelabs2026intents}
 \@writefile{toc}{\contentsline {section}{Abstract}{1}{section*.1}\protected@file@percent }
 \@writefile{toc}{\contentsline {section}{\numberline {1}Introduction}{1}{section.1}\protected@file@percent }
 \@writefile{toc}{\contentsline {section}{\numberline {2}Related Work}{1}{section.2}\protected@file@percent }
-\citation{almeida2026jev}
-\@writefile{lot}{\contentsline {table}{\numberline {1}{\ignorespaces The ladder. Each step adds the part in bold to the step before it.}}{2}{table.caption.5}\protected@file@percent }
+\newlabel{sec:related}{{2}{1}{Related Work}{section.2}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {3}Design of the System}{1}{section.3}\protected@file@percent }
+\newlabel{sec:design}{{3}{1}{Design of the System}{section.3}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.1}The Three Levels}{1}{subsection.3.1}\protected@file@percent }
+\newlabel{sec:steps}{{3.1}{1}{The Three Levels}{subsection.3.1}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {1}{\ignorespaces The account fields that Gather info reads at Level 3, by the action of Triage. The account has seven fields; an invalid answer reads none.}}{2}{table.caption.5}\protected@file@percent }
 \providecommand*\caption@xref[2]{\@setref\relax\@undefined{#1}}
-\newlabel{tab:steps}{{1}{2}{The ladder. Each step adds the part in bold to the step before it}{table.caption.5}{}}
-\@writefile{toc}{\contentsline {section}{\numberline {3}Design of the System}{2}{section.3}\protected@file@percent }
-\newlabel{sec:design}{{3}{2}{Design of the System}{section.3}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {3.1}The Four Steps}{2}{subsection.3.1}\protected@file@percent }
-\newlabel{sec:steps}{{3.1}{2}{The Four Steps}{subsection.3.1}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {3.2}The Flow of One Request}{2}{subsection.3.2}\protected@file@percent }
-\newlabel{sec:flow}{{3.2}{2}{The Flow of One Request}{subsection.3.2}{}}
-\@writefile{lot}{\contentsline {table}{\numberline {2}{\ignorespaces The written rules.}}{2}{table.caption.7}\protected@file@percent }
-\newlabel{tab:rules}{{2}{2}{The written rules}{table.caption.7}{}}
+\newlabel{tab:fields}{{1}{2}{The account fields that Gather info reads at Level 3, by the action of Triage. The account has seven fields; an invalid answer reads none}{table.caption.5}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.2}The Flow of One Request at Level 3}{2}{subsection.3.2}\protected@file@percent }
+\newlabel{sec:flow}{{3.2}{2}{The Flow of One Request at Level 3}{subsection.3.2}{}}
 \@writefile{toc}{\contentsline {subsection}{\numberline {3.3}The Written Rules}{2}{subsection.3.3}\protected@file@percent }
 \newlabel{sec:rules}{{3.3}{2}{The Written Rules}{subsection.3.3}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {1}{\ignorespaces The flow of one request at Level 1: grey boxes are fixed code, and the orange box is support staff.}}{2}{figure.caption.6}\protected@file@percent }
+\newlabel{fig:staff}{{1}{2}{The flow of one request at Level 1: grey boxes are fixed code, and the orange box is support staff}{figure.caption.6}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {2}{\ignorespaces The written rules.}}{2}{table.caption.9}\protected@file@percent }
+\newlabel{tab:rules}{{2}{2}{The written rules}{table.caption.9}{}}
 \@writefile{toc}{\contentsline {section}{\numberline {4}Experimental Setup}{2}{section.4}\protected@file@percent }
 \newlabel{sec:setup}{{4}{2}{Experimental Setup}{section.4}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {4.1}Synthetic Data and Gold Labels}{2}{subsection.4.1}\protected@file@percent }
-\newlabel{sec:data}{{4.1}{2}{Synthetic Data and Gold Labels}{subsection.4.1}{}}
-\citation{almeida2026jev}
-\@writefile{lof}{\contentsline {figure}{\numberline {1}{\ignorespaces The flow of one request at step 3. Grey boxes are fixed code, blue boxes are models, and the orange box is the handoff to a person (step H).}}{3}{figure.caption.6}\protected@file@percent }
-\newlabel{fig:flow}{{1}{3}{The flow of one request at step 3. Grey boxes are fixed code, blue boxes are models, and the orange box is the handoff to a person (step H)}{figure.caption.6}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.1}Synthetic Data and Correct Labels}{2}{subsection.4.1}\protected@file@percent }
+\newlabel{sec:data}{{4.1}{2}{Synthetic Data and Correct Labels}{subsection.4.1}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {2}{\ignorespaces The flow of one request at Level 2: blue boxes are models, and grey boxes are fixed code. The agent applies the written rules itself.}}{3}{figure.caption.7}\protected@file@percent }
+\newlabel{fig:llmagent}{{2}{3}{The flow of one request at Level 2: blue boxes are models, and grey boxes are fixed code. The agent applies the written rules itself}{figure.caption.7}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {3}{\ignorespaces The flow of one request at Level 3: blue boxes are models, grey boxes are fixed code, and the green box is the written rules.}}{3}{figure.caption.8}\protected@file@percent }
+\newlabel{fig:flow}{{3}{3}{The flow of one request at Level 3: blue boxes are models, grey boxes are fixed code, and the green box is the written rules}{figure.caption.8}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {3}{\ignorespaces The request families of the 50 requests. A family holds one or more request types, each with its own wording. The correct action is the label that Triage should give.}}{3}{table.caption.10}\protected@file@percent }
+\newlabel{tab:types}{{3}{3}{The request families of the 50 requests. A family holds one or more request types, each with its own wording. The correct action is the label that Triage should give}{table.caption.10}{}}
 \@writefile{toc}{\contentsline {subsection}{\numberline {4.2}Models and Run}{3}{subsection.4.2}\protected@file@percent }
 \newlabel{sec:api}{{4.2}{3}{Models and Run}{subsection.4.2}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {4.3}Metrics}{3}{subsection.4.3}\protected@file@percent }
-\newlabel{sec:metrics}{{4.3}{3}{Metrics}{subsection.4.3}{}}
-\@writefile{toc}{\contentsline {section}{\numberline {5}Results}{3}{section.5}\protected@file@percent }
-\newlabel{sec:results}{{5}{3}{Results}{section.5}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {5.1}The Ladder (RQ1)}{3}{subsection.5.1}\protected@file@percent }
-\@writefile{lof}{\contentsline {figure}{\numberline {2}{\ignorespaces The four steps on the test split. (a) Wrong final results; the dark part is the wrong runs of an action that changes money or data. (b) Mean time per request.}}{4}{figure.caption.9}\protected@file@percent }
-\newlabel{fig:ladder}{{2}{4}{The four steps on the test split. (a) Wrong final results; the dark part is the wrong runs of an action that changes money or data. (b) Mean time per request}{figure.caption.9}{}}
-\@writefile{lot}{\contentsline {table}{\numberline {3}{\ignorespaces The four steps on the test split. Each step adds one part to the step before. Wrong is the number of wrong final results; for step 1 it is the queue and action of the LLM run at once, for steps 2 and 3 it is the silent errors. Harmful is a wrong run of an action that changes money or data. Step 1 time is the call of the LLM classifier. Total time assumes 90\nonbreakingspace s per request sent to a person.}}{4}{table.caption.8}\protected@file@percent }
-\newlabel{tab:ladder}{{3}{4}{The four steps on the test split. Each step adds one part to the step before. Wrong is the number of wrong final results; for step 1 it is the queue and action of the LLM run at once, for steps 2 and 3 it is the silent errors. Harmful is a wrong run of an action that changes money or data. Step 1 time is the call of the LLM classifier. Total time assumes 90~s per request sent to a person}{table.caption.8}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {5.2}Why These Numbers (RQ2)}{4}{subsection.5.2}\protected@file@percent }
-\newlabel{sec:why}{{5.2}{4}{Why These Numbers (RQ2)}{subsection.5.2}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {5.3}Jev Against the LLM as Classifier (RQ3)}{4}{subsection.5.3}\protected@file@percent }
-\@writefile{lot}{\contentsline {table}{\numberline {4}{\ignorespaces Every chosen parameter: the value, how we chose it, and the evidence.}}{5}{table.caption.10}\protected@file@percent }
-\newlabel{tab:params}{{4}{5}{Every chosen parameter: the value, how we chose it, and the evidence}{table.caption.10}{}}
-\@writefile{lof}{\contentsline {figure}{\numberline {3}{\ignorespaces Choosing the floor. Dev (blue) is where we choose; test (amber) is the check. (a) Silent errors. (b) Requests sent to a person; the dashed line is the part that was not needed.}}{5}{figure.caption.11}\protected@file@percent }
-\newlabel{fig:choose}{{3}{5}{Choosing the floor. Dev (blue) is where we choose; test (amber) is the check. (a) Silent errors. (b) Requests sent to a person; the dashed line is the part that was not needed}{figure.caption.11}{}}
-\@writefile{lot}{\contentsline {table}{\numberline {5}{\ignorespaces Wrong answers of the queue, the action, and the risk flag of Jev by the chance of the answer. The floor reads these three answers.}}{5}{table.caption.13}\protected@file@percent }
-\newlabel{tab:calibration}{{5}{5}{Wrong answers of the queue, the action, and the risk flag of Jev by the chance of the answer. The floor reads these three answers}{table.caption.13}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {5.4}Fault Injection (RQ4)}{5}{subsection.5.4}\protected@file@percent }
-\@writefile{lot}{\contentsline {table}{\numberline {6}{\ignorespaces Fault injection with forged classifier answers. Unsafe means a state-changing action ran that the written rules do not allow.}}{6}{table.caption.16}\protected@file@percent }
-\newlabel{tab:fault}{{6}{6}{Fault injection with forged classifier answers. Unsafe means a state-changing action ran that the written rules do not allow}{table.caption.16}{}}
-\@writefile{lof}{\contentsline {figure}{\numberline {4}{\ignorespaces The paths of the Jev system on the test split for each floor (A plan, B answer, C person). The number above a bar is the count of silent errors.}}{6}{figure.caption.12}\protected@file@percent }
-\newlabel{fig:paths}{{4}{6}{The paths of the Jev system on the test split for each floor (A plan, B answer, C person). The number above a bar is the count of silent errors}{figure.caption.12}{}}
-\@writefile{lof}{\contentsline {figure}{\numberline {5}{\ignorespaces Accuracy of each field on the test split.}}{6}{figure.caption.14}\protected@file@percent }
-\newlabel{fig:classifier}{{5}{6}{Accuracy of each field on the test split}{figure.caption.14}{}}
-\@writefile{toc}{\contentsline {section}{\numberline {6}Discussion}{6}{section.6}\protected@file@percent }
-\newlabel{sec:discussion}{{6}{6}{Discussion}{section.6}{}}
-\@writefile{toc}{\contentsline {section}{\numberline {7}Conclusion and Future Work}{6}{section.7}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {4}{\ignorespaces The three levels on the 50 requests. Served counts a request that ends with the result it needs. Stopped counts a request whose correct action a written rule denies and the check of the level stopped (the fixed rules check at Level 3, the agent itself at Level 2): the flow runs nothing and the Final message tells the customer what the chat cannot do. Errors counts every other run, and Harm the errors that run an action which changes money, a plan, stored data, or a password. Mach.\nonbreakingspace s is the machine time, \$/1k the API cost for 1,000 requests, and Total s the total time (the assumed 90\nonbreakingspace s of staff work at Level 1). Level 1 is the baseline, so its outcome columns are marked --.}}{4}{table.caption.11}\protected@file@percent }
+\newlabel{tab:ladder}{{4}{4}{The three levels on the 50 requests. Served counts a request that ends with the result it needs. Stopped counts a request whose correct action a written rule denies and the check of the level stopped (the fixed rules check at Level 3, the agent itself at Level 2): the flow runs nothing and the Final message tells the customer what the chat cannot do. Errors counts every other run, and Harm the errors that run an action which changes money, a plan, stored data, or a password. Mach.~s is the machine time, \$/1k the API cost for 1,000 requests, and Total s the total time (the assumed 90~s of staff work at Level 1). Level 1 is the baseline, so its outcome columns are marked --}{table.caption.11}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.3}Metrics}{4}{subsection.4.3}\protected@file@percent }
+\newlabel{sec:metrics}{{4.3}{4}{Metrics}{subsection.4.3}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {5}Results}{4}{section.5}\protected@file@percent }
+\newlabel{sec:results}{{5}{4}{Results}{section.5}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.1}The Ladder (Question 1)}{4}{subsection.5.1}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {4}{\ignorespaces Accuracy of each field on the 50 requests.}}{4}{figure.caption.12}\protected@file@percent }
+\newlabel{fig:classifier}{{4}{4}{Accuracy of each field on the 50 requests}{figure.caption.12}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {5}{\ignorespaces Jev against the LLM as classifier, over every classifier call of the 50 requests. The tokens are the mean of one call and the cost is for 1,000 requests. Wrong in any field is the share of requests with at least one wrong scored field. Only Jev reports a confidence, which the calibration table reads.}}{4}{table.caption.13}\protected@file@percent }
+\newlabel{tab:stage}{{5}{4}{Jev against the LLM as classifier, over every classifier call of the 50 requests. The tokens are the mean of one call and the cost is for 1,000 requests. Wrong in any field is the share of requests with at least one wrong scored field. Only Jev reports a confidence, which the calibration table reads}{table.caption.13}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.2}Jev Against the LLM as Classifier (Question 2)}{4}{subsection.5.2}\protected@file@percent }
+\newlabel{sec:classifier}{{5.2}{4}{Jev Against the LLM as Classifier (Question 2)}{subsection.5.2}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {6}{\ignorespaces Wrong answers of the queue, the action, and the risk flag of Jev by the confidence of the answer.}}{5}{table.caption.14}\protected@file@percent }
+\newlabel{tab:calibration}{{6}{5}{Wrong answers of the queue, the action, and the risk flag of Jev by the confidence of the answer}{table.caption.14}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {7}{\ignorespaces Fault injection with forged Triage answers; no model runs. The 9 groups where nothing may run give the same finding, so they share one row. Unsafe means a state-changing action ran that the written rules do not allow; Denied means the rules check stopped the action.}}{5}{table.caption.15}\protected@file@percent }
+\newlabel{tab:fault}{{7}{5}{Fault injection with forged Triage answers; no model runs. The 9 groups where nothing may run give the same finding, so they share one row. Unsafe means a state-changing action ran that the written rules do not allow; Denied means the rules check stopped the action}{table.caption.15}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.3}Forged Answers (Question 3)}{5}{subsection.5.3}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.4}Jev as the Rules Check (Question 3)}{5}{subsection.5.4}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {8}{\ignorespaces The 24 held-out requests: served / stopped / errors for each variant of the Security rule. Fraud errors are those at Level 3; false stops are legitimate requests that the rule stopped.}}{5}{table.caption.16}\protected@file@percent }
+\newlabel{tab:heldout}{{8}{5}{The 24 held-out requests: served / stopped / errors for each variant of the Security rule. Fraud errors are those at Level 3; false stops are legitimate requests that the rule stopped}{table.caption.16}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.5}Held-Out Validation of the Security Rule}{5}{subsection.5.5}\protected@file@percent }
+\newlabel{sec:heldout}{{5.5}{5}{Held-Out Validation of the Security Rule}{subsection.5.5}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {6}Discussion and Limits}{5}{section.6}\protected@file@percent }
+\newlabel{sec:discussion}{{6}{5}{Discussion and Limits}{section.6}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {7}Conclusion}{5}{section.7}\protected@file@percent }
 \bibcite{almeida2026jev}{{1}{}{{}}{{}}}
 \bibcite{beurer2025patterns}{{2}{}{{}}{{}}}
-\bibcite{debenedetti2025camel}{{3}{}{{}}{{}}}
-\bibcite{greshake2023injection}{{4}{}{{}}{{}}}
-\bibcite{zendesk2026routing}{{5}{}{{}}{{}}}
-\@writefile{lof}{\contentsline {figure}{\numberline {6}{\ignorespaces Reliability of Jev on the test split. (a) Accuracy against the chance of the answer, all five fields together; the grey line is perfect calibration. (b) ECE of each field.}}{7}{figure.caption.15}\protected@file@percent }
-\newlabel{fig:reliability}{{6}{7}{Reliability of Jev on the test split. (a) Accuracy against the chance of the answer, all five fields together; the grey line is perfect calibration. (b) ECE of each field}{figure.caption.15}{}}
-\@writefile{toc}{\contentsline {section}{Acknowledgments}{7}{section*.18}\protected@file@percent }
-\@writefile{toc}{\contentsline {section}{References}{7}{section*.20}\protected@file@percent }
+\bibcite{bitext2023intents}{{3}{}{{}}{{}}}
+\bibcite{buildspacelabs2026intents}{{4}{}{{}}{{}}}
+\bibcite{debenedetti2025camel}{{5}{}{{}}{{}}}
+\bibcite{greshake2023injection}{{6}{}{{}}{{}}}
+\bibcite{intercom2026fin}{{7}{}{{}}{{}}}
+\bibcite{tettra2024categories}{{8}{}{{}}{{}}}
+\bibcite{zendesk2026routing}{{9}{}{{}}{{}}}
+\@writefile{toc}{\contentsline {section}{Acknowledgments}{6}{section*.18}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{References}{6}{section*.20}\protected@file@percent }
 \newlabel{tocindent-1}{0pt}
 \newlabel{tocindent0}{0pt}
 \newlabel{tocindent1}{4.185pt}
@@ -79,6 +88,6 @@
 \newlabel{tocindent4}{0pt}
 \newlabel{tocindent5}{0pt}
 \providecommand\NAT@force@numbers{}\NAT@force@numbers
-\@writefile{lot}{\contentsline {table}{\numberline {7}{\ignorespaces Task allocation and contribution breakdown.}}{8}{table.caption.22}\protected@file@percent }
-\newlabel{TotPages}{{8}{8}{}{page.8}{}}
-\gdef \@abspage@last{8}
+\@writefile{lot}{\contentsline {table}{\numberline {9}{\ignorespaces Task allocation and contribution breakdown.}}{7}{table.caption.22}\protected@file@percent }
+\newlabel{TotPages}{{7}{7}{}{page.7}{}}
+\gdef \@abspage@last{7}
