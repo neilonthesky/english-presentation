@@ -13,7 +13,7 @@
 
 Đọc to và rõ ràng câu giới thiệu này khi nhận lượt nói:
 
-> "Hello everyone. My name is Vuong Quang Quy. I am responsible for our experimental results, statistical analysis, and our generated tables and charts."
+> "Thank you, Son. My name is Vuong Quang Quy. I will show our results."
 
 ---
 
@@ -24,11 +24,11 @@
 - **Thời gian dự kiến trên slide:** 0 phút 30 giây (30 giây, ~65 từ)
 
 > `[NHÌN KHÁN GIẢ - MỈM CƯỜI]`  
-> Thank you, Son.  
+> Thank you, Son. My name is Vuong Quang Quy. I will show our results.  
 > 
 > `[NGHỈ 1 GIÂY]`  
 > 
-> One Jev call takes a median of 0.24 seconds. One DeepSeek call takes 4.41 seconds. That is eighteen times faster! Jev costs 0.052 dollars per thousand requests, and DeepSeek costs 0.587 dollars. That is eleven times cheaper! Jev is behind on four fields, but it gives a confidence with every label. The written rules keep the customer safe.  
+> One Jev call takes 0.24 seconds. One LLM call takes 4.41 seconds. Jev is eighteen times faster. Jev costs 0.052 dollars per 1,000 requests. The LLM costs 0.587. Jev is eleven times cheaper. Jev is behind the LLM on four of five answers. The written rules catch its wrong answers.  
 > 
 > `[NGHỈ 1 GIÂY]`  
 > `[CHUYỂN SANG SLIDE 8]`
@@ -39,24 +39,28 @@
 - **Tiêu đề slide:** Result 2: Level 3 is never worse (The Ladder)
 - **Thời gian dự kiến trên slide:** 1 phút 00 giây (60 giây, ~130 từ)
 
-> Now, look at the table for all fifty test requests.  
+> All levels use the same fifty requests.  
 > 
 > `[NGHỈ 1 GIÂY]`  
 > 
-> Level One uses ninety seconds of assumed staff time per request. Level Two serves thirty-two requests, stops fifteen, and makes three errors. It needs 6.85 seconds of machine time and costs 0.71 dollars per thousand requests.  
+> At Level One, we assume staff need ninety seconds per request. It is an assumed number, not a measurement.  
 > 
 > `[NGHỈ 1 GIÂY]`  
 > 
-> Level Three serves thirty-five requests, stops fifteen, and makes zero errors! It needs 3.16 seconds and costs 0.30 dollars per thousand requests.  
+> Level Two serves thirty-two requests, stops fifteen, and makes three errors. It needs 6.85 seconds and costs 0.71 dollars per 1,000 requests.  
 > 
 > `[NGHỈ 1 GIÂY]`  
 > 
-> So Level Three is never worse in any column! It is 2.2 times faster and 2.4 times cheaper. The sign test has three discordant pairs and gives p equals 0.25, so the accuracy gap is not established. Our strong claims are speed, cost, and never worse!  
+> Level Three serves thirty-five requests, stops fifteen, and makes zero errors. It needs 3.16 seconds and costs 0.30 dollars.  
+> 
+> `[NGHỈ 1 GIÂY]`  
+> 
+> So Level Three is never worse in any column. It is 2.2 times faster and 2.4 times cheaper. The sign test gives p equals 0.25 on three requests. So we do not show an accuracy gap. Our strong claims are speed, cost, and never worse.  
 > 
 > `[NGHỈ 1 GIÂY]`  
 > `[NHÌN SANG NGUYEN PHUONG NAM]`  
 > 
-> Finally, my teammate Nguyen Phuong Nam will discuss our study limitations and conclude our presentation.
+> Next, my teammate Nguyen Phuong Nam will explain our limits and end our talk.
 
 ---
 
@@ -64,7 +68,7 @@
 
 Nói chính xác câu tiếng Anh này để chuyển tiếp cho Diễn giả 5:
 
-> "Finally, my teammate Nguyen Phuong Nam will discuss our study limitations and conclude our presentation."
+> "Next, my teammate Nguyen Phuong Nam will explain our limits and end our talk."
 
 ---
 
@@ -73,17 +77,17 @@ Nói chính xác câu tiếng Anh này để chuyển tiếp cho Diễn giả 5:
 ### Câu hỏi 1:
 **"What is a 'harmful error' in your evaluation metrics?"**
 - **Câu trả lời ngắn (2 câu):**
-  > "A harmful error is defined strictly as an unauthorized database action that changes user money or deletes data against business policy. A benign error might give an unhelpful answer, but a harmful error breaks financial or privacy security."
+  > "A harmful error is a wrong action that moves money or deletes data against a written rule. A wrong answer in words is a smaller error."
 
 ### Câu hỏi 2:
 **"Why did Level 2 take 6.85 seconds of machine time per request?"**
-- **Câu trả lời ngắn (3 câu):**
-  > "In Level 2, the agent call must read the user text and the account and reason through the rules, and it takes 3.11 seconds per request. The Final message call adds the rest, for 6.85 seconds of machine time. In Level 3, the Jev call takes 0.295 seconds, and the total falls to 3.16 seconds, which is 2.2 times faster."
+- **Câu trả lời ngắn (4 câu):**
+  > "At Level 2, the agent call reads the chat and the account, and it checks the rules. This takes 3.11 seconds. The Final message call adds the rest, so the total is 6.85 seconds. At Level 3, the Jev call takes 0.295 seconds, and the total falls to 3.16 seconds."
 
 ### Câu hỏi 3:
 **"What did the paired sign test test, and what does p = 0.25 indicate?"**
-- **Câu trả lời ngắn (3 câu):**
-  > "The exact paired sign test used the three discordant requests where only Level 2 produced an error. The resulting p-value of 0.25 is not statistically significant due to the small sample size. We state this honestly: our strong empirical claims are 2.2 times speedup, 2.4 times cost reduction, and that Level 3 is never worse in any measured column."
+- **Câu trả lời ngắn (4 câu):**
+  > "The sign test looks at three requests where only Level 2 makes an error. It gives p equals 0.25. With only three requests, we cannot show an accuracy gap. Our strong claims are speed, cost, and never worse."
 
 ---
 
@@ -94,15 +98,15 @@ Luyện phát âm 10 từ vựng này theo phiên âm đơn giản dưới đây
 | Từ tiếng Anh | Phiên âm đơn giản | Hướng dẫn phát âm và trọng âm |
 | :--- | :--- | :--- |
 | **Eighteen** | **ay-TEEN** | Có 2 âm tiết; nhấn vào 'TEEN' để người nghe không nhầm với 'eighty'. |
-| **Percentile** | **per-SEN-tyl** | Có 3 âm tiết; nhấn vào 'SEN'; vần 'tyl' gieo âm giống 'mile'. |
-| **Denial** | **dih-NY-ul** | Có 3 âm tiết; nhấn vào 'NY'; đuôi 'ul' đọc nhẹ. |
-| **Cumulative** | **KYOO-myuh-luh-tiv** | Có 4 âm tiết; nhấn vào 'KYOO'; đuôi 'tiv' dứt khoát. |
-| **Discordant** | **dis-KOR-dunt** | Có 3 âm tiết; nhấn vào 'KOR'; đuôi 'dunt' rõ ràng. |
-| **Statistically** | **stuh-TIS-tih-klee** | Có 4 âm tiết; nhấn vào 'TIS'; đuôi 'klee' đọc nhẹ. |
-| **Compliance** | **kum-PLY-ens** | Có 3 âm tiết; nhấn vào 'PLY'; đuôi 'ens' mềm. |
-| **Significant** | **sig-NIF-ih-kunt** | Có 4 âm tiết; nhấn mạnh vào 'NIF'. |
-| **Median** | **MEE-dee-un** | Có 3 âm tiết; nhấn vào 'MEE'; đuôi 'un' đọc nhẹ. |
-| **Latency** | **LAY-ten-see** | Có 3 âm tiết; nhấn vào 'LAY'; đuôi 'see' rõ ràng. |
+| **Eleven** | **ih-LEV-un** | Có 3 âm tiết; nhấn vào 'LEV'; đuôi 'un' đọc nhẹ. |
+| **Thirty-five** | **THUR-tee-fyv** | Có 3 âm tiết; nhấn vào 'THUR'; 'five' đọc như 'fyv'. |
+| **Measurement** | **MEZH-er-munt** | Có 3 âm tiết; nhấn vào 'MEZH'; âm 'zh' như trong 'vision'. |
+| **Assumed** | **uh-SOOMD** | Có 2 âm tiết; nhấn vào 'SOOMD'; âm cuối 'd' bật nhẹ. |
+| **Written** | **RIT-un** | Có 2 âm tiết; nhấn vào 'RIT'; không đọc chữ 'w'. |
+| **Accuracy** | **AK-yuh-ruh-see** | Có 4 âm tiết; nhấn vào 'AK'; đuôi 'see' rõ ràng. |
+| **Column** | **KOL-um** | Có 2 âm tiết; nhấn vào 'KOL'; chữ 'n' cuối không đọc. |
+| **Results** | **rih-ZULTS** | Có 2 âm tiết; nhấn vào 'ZULTS'; 's' đọc như 'z'. |
+| **Errors** | **ER-erz** | Có 2 âm tiết; nhấn vào 'ER'; đuôi 'erz' đọc nhẹ. |
 
 ---
 

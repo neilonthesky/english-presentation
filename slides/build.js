@@ -359,9 +359,9 @@ async function photo(file, w, h, radius = 0.08, dpi = 150) {
     const s = base(
       6,
       "Experiment: synthetic data, real model calls",
-      "All data are made by us. The test data have 72 FrameForge customers. A seeded generator writes 50 requests in 24 types. A full run makes 300 model calls: 100 each at Level 2, at Level 3, and in the LLM-classifier run. " +
-        "We call two hosted models for real: Jev (jev-1.13.0) and deepseek-v4.1-flash through the DeepSeek API. An offline replay of the recorded run gives the same numbers. " +
-        "Two questions: what does each level buy and cost; what changes when Jev replaces the LLM as the classifier."
+      "We made all the data ourselves. The test data has 72 FrameForge customers. A seeded generator writes 50 requests in 24 types. A full run makes 300 model calls: 100 for each of three runs. " +
+        "We call two hosted models for real: Jev (jev-1.13.0) and deepseek-v4.1-flash through the DeepSeek API. We record every call. An offline replay of the main run gives every number in the paper. " +
+        "We ask two questions. What does each level give us, and what does it cost? What changes when Jev replaces the LLM as the classifier?"
     );
     const gap = 0.3, cw = (CW - 3 * gap) / 4, y = 1.55, h = 1.85;
     [
@@ -389,9 +389,9 @@ async function photo(file, w, h, radius = 0.08, dpi = 150) {
     const s = base(
       7,
       "Result 1: Jev is 18x faster, 11x cheaper",
-      "Both classifiers get the same input and the same criteria. Jev is behind the LLM on action (86.0% against 92.0%), priority, risk flag, and injection flag, and ahead on queue (91.7% against 85.4% of 48 scored requests). " +
-        "One classifier call takes a median of 0.241 s with Jev and 4.410 s with the LLM: 18 times faster. The stage costs $0.052 against $0.587 per 1,000 requests: 11 times cheaper. " +
-        "Jev gives a wrong queue or action in 11 of 50 requests, and none is an error at Level 3 (7 are label errors); the routing rule, the written rules, and the Security rule catch them."
+      "Both classifiers get the same input and the same criteria. One Jev call takes 0.241 s (median). One LLM call takes 4.410 s. Jev is 18 times faster. Jev costs $0.052 per 1,000 requests. The LLM costs $0.587. Jev is 11 times cheaper. " +
+        "Jev is behind the LLM on four of five answers: action 86.0% against 92.0%, priority, risk flag, and injection flag. Jev is ahead on the queue: 91.7% against 85.4% of 48 scored requests. " +
+        "Jev gives a wrong queue or action in 11 of 50 requests. None is an error at Level 3: the routing rule, the written rules, and the Security rule catch them."
     );
     box(s, ML, 1.65, 7.6, 4.9);
     const labels = ["Action", "Queue", "Priority", "Risk flag", "Injection flag"];
@@ -418,9 +418,9 @@ async function photo(file, w, h, radius = 0.08, dpi = 150) {
     const s = base(
       8,
       "Result 2: Level 3 is never worse",
-      "Level 1 uses an assumed 90 s per request. Level 2 serves 32 of 50, stops 15, and makes 3 errors: wrong denials where the correct result is an answer; nothing ran. Level 3 serves 35, stops 15, and makes 0 errors. " +
-        "Machine time is 6.85 s against 3.16 s: 2.2 times faster. Cost is $0.71 against $0.30 per 1,000 requests: 2.4 times cheaper. " +
-        "The exact sign test has 3 discordant pairs, all errors at Level 2 only, and gives p = 0.25. The accuracy gap is not established. Our strong claims are speed, cost, and never worse in any column. No run is harmful at either level."
+      "All levels use the same 50 requests. At Level 1, we assume staff need 90 s per request. It is an assumed number, not a measurement. Level 2 serves 32 of 50, stops 15, and makes 3 errors. It needs 6.85 s and costs $0.71 per 1,000 requests. " +
+        "Level 3 serves 35, stops 15, and makes 0 errors. It needs 3.16 s and costs $0.30. So Level 3 is never worse in any column. It is 2.2 times faster and 2.4 times cheaper. " +
+        "The sign test has 3 requests where only Level 2 makes an error. It gives p = 0.25. So we do not show an accuracy gap. Our strong claims are speed, cost, and never worse. No run is harmful at either level."
     );
     box(s, ML, 1.65, 7.6, 3.95);
     const cats = ["Level 2: LLM agent", "Level 3: Jev + LLM + rules"];
@@ -449,9 +449,9 @@ async function photo(file, w, h, radius = 0.08, dpi = 150) {
     const s = base(
       9,
       "Limits and what we claim",
-      "The evidence is small-sample: two hosted models, one synthetic SaaS product, and an assumed 90 s per request at Level 1. 0 money or data harm in 50 requests is not proof of zero; the 95% upper limit is about 6%. " +
-        "The popup delay and the silence time are not simulated. The classifier comparison uses one prompt wording and one run per request. The Security rule was added after fraud reports showed a defect on these 50 requests, so the main numbers are not a blind test. " +
-        "With 3 discordant pairs (p = 0.25) the accuracy gap is not established. What Level 3 buys is time and cost, and it is never worse in any column."
+      "Our evidence is small: two hosted models, one synthetic SaaS product, and our own labels. We saw 0 harmful runs in 50 requests. That does not prove the real rate is zero. The 95% upper limit is about 6%. " +
+        "Real users write slang and make spelling mistakes. Our test data does not. The 90 s at Level 1 is assumed. We did not simulate the popup or the silence timer. We used one prompt wording and one run for each request. " +
+        "We added the Security rule after fraud reports showed a defect on these 50 requests. So the main numbers are not a blind test. The prompt cache covered 22.3% of the input tokens, so the real costs are lower than ours. With p = 0.25, we do not show an accuracy gap."
     );
     const gapC = 0.3, cwL = 6.9, cwR = CW - cwL - gapC;
     {
@@ -500,10 +500,10 @@ async function photo(file, w, h, radius = 0.08, dpi = 150) {
     s.addImage({ data: shots.closing, x: 7.7, y: 1.3, w: 4.9, h: 4.9 });
     speakerTag(s, 10, true);
     s.addNotes(
-      `Speaker: ${PNAM}, about ${SPEAKER[9][1]} s. To conclude: three levels on one ladder, measured on the same 50 requests. Level 3 serves 35, stops 15, and makes 0 errors; Level 2 serves 32, stops 15, and makes 3. ` +
-        "Level 3 is never worse in any column, 2.2 times faster, and 2.4 times cheaper. The sign test (p = 0.25) does not establish an accuracy gap. " +
-        "The Security rule stops state changes on fraud reports; we added it after we saw a defect on these 50 requests, so the main numbers are not a blind test. Jev is less accurate than the LLM on four of five fields, but the written rules catch its wrong answers. " +
-        "Thank you. Our leader, Tran Thanh Long, will now take your questions."
+      `Speaker: ${PNAM}, about ${SPEAKER[9][1]} s. To finish, we tested three levels of customer support on the same 50 requests. Level 3 serves 35, stops 15, and makes 0 errors. Level 2 serves 32, stops 15, and makes 3. ` +
+        "Level 3 is never worse in any column. It is 2.2 times faster and 2.4 times cheaper. The sign test (p = 0.25) does not show an accuracy gap. " +
+        "The Security rule stops state changes on fraud reports. We added it after we saw a defect on these 50 requests. So the main numbers are not a blind test. Jev is less accurate than the LLM on four of five answers, but the written rules catch its wrong answers. " +
+        "Thank you for listening. Our leader, Tran Thanh Long, will now take your questions."
     );
   }
 

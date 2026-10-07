@@ -13,7 +13,7 @@
 
 Đọc to và rõ ràng câu giới thiệu này khi nhận lượt nói:
 
-> "Hello everyone. My name is Nguyen Phuong Nam. I am responsible for our literature review, research limitations, and our conclusion."
+> "Thank you, Quy. My name is Nguyen Phuong Nam. I will explain our limits and our conclusion."
 
 ---
 
@@ -24,23 +24,23 @@
 - **Thời gian dự kiến trên slide:** 1 phút 15 giây (75 giây, ~160 từ)
 
 > `[NHÌN KHÁN GIẢ - GIAO TIẾP ÁNH MẮT TRÁI VÀ PHẢI]`  
-> Thank you, Quy.  
+> Thank you, Quy. My name is Nguyen Phuong Nam. I will explain our limits and our conclusion.  
 > 
 > `[NGHỈ 1 GIÂY]`  
 > 
-> In our literature review, the Intercom Fin agent reports over seventy-five percent resolution without a human. Commercial systems rarely publish how they fail. In scientific writing, we must be honest about the limits of our study.  
+> Intercom Fin says it solves over seventy-five percent of chats without a human. Companies rarely say how their systems fail.  
 > 
 > `[NGHỈ 1 GIÂY]`  
 > 
-> First, the evidence comes from two hosted models, one synthetic product, and our own labels: fifty requests in twenty-four types. Zero harmful runs in fifty requests is not proof of zero. The ninety-five percent upper limit is about six percent.  
+> First, our evidence is small. We use two hosted models, one synthetic product, and our own labels. We have fifty requests in twenty-four types. We saw zero harmful runs. That does not prove the real rate is zero. The upper limit is about six percent.  
 > 
 > `[NGHỈ 1 GIÂY]`  
 > 
-> Second, real users write slang, emotional rants, and spelling mistakes, and our data is synthetic. Third, the ninety seconds at Level One is assumed, and we did not simulate the popup or the silence timer.  
+> Second, real users write slang and make spelling mistakes. Our test data does not. Third, we assume ninety seconds per request at Level One. We did not simulate the popup or the silence timer.  
 > 
 > `[NGHỈ 1 GIÂY]`  
 > 
-> Last, we added the Security rule after fraud reports showed a defect on these fifty requests. So the main numbers are not a blind test. Also, the provider's prompt cache supplied 22.3 percent of the input tokens, so our costs are upper bounds.  
+> Last, we added the Security rule after fraud reports showed a defect on these fifty requests. So the main numbers are not a blind test. The prompt cache covered 22.3 percent of the input tokens. So the real costs are lower than ours.  
 > 
 > `[NGHỈ 1 GIÂY]`  
 > `[CHUYỂN SANG SLIDE 10]`
@@ -51,18 +51,18 @@
 - **Tiêu đề slide:** Conclusion
 - **Thời gian dự kiến trên slide:** 0 phút 40 giây (40 giây, ~85 từ)
 
-> To conclude, we built three levels of customer support on one ladder and tested them on the same fifty requests.  
+> To finish, we tested three levels of customer support on the same fifty requests.  
 > 
 > `[NGHỈ 1 GIÂY]`  
 > 
-> First, Level Three, with Jev and DeepSeek, is 2.2 times faster and 2.4 times cheaper than the LLM agent, and it is never worse.  
-> Second, Jev gives a confidence with every label.  
-> Third, the written rules make a weaker classifier safe.  
+> First, Level Three, with Jev and the LLM, is 2.2 times faster and 2.4 times cheaper than Level Two. It is never worse.  
+> Second, Jev gives a confidence number with every answer.  
+> Third, the written rules catch the wrong answers that Jev gives.  
 > 
 > `[NGHỈ 1 GIÂY]`  
 > `[NHÌN SANG TRAN THANH LONG]`  
 > 
-> Thank you very much for listening. Our leader, Tran Thanh Long, will now take your questions.
+> Thank you for listening. Our leader, Tran Thanh Long, will now take your questions.
 
 ---
 
@@ -70,49 +70,30 @@
 
 Nói chính xác câu tiếng Anh này để mở đầu phần hỏi đáp, rồi lùi sang bên và lắng nghe. Long trả lời toàn bộ câu hỏi:
 
-> "Thank you very much for listening. Our leader, Tran Thanh Long, will now take your questions."
+> "Thank you for listening. Our leader, Tran Thanh Long, will now take your questions."
 
 ---
 
-## 4. Ba câu hỏi khán giả thường gặp và gợi ý trả lời (chỉ để hiểu sâu phần của mình; Long là người trả lời trong Q&A)
-
-### Câu hỏi 1:
-**"How does your state machine compare to real commercial customer support platforms like Intercom or Salesforce?"**
-- **Câu trả lời ngắn (3 câu):**
-  > "Commercial platforms rely heavily on static keyword triggers and manual routing rules configured by support administrators. Our architecture modernizes this workflow by inserting a fast neural classifier for automated triage, while preserving deterministic safety checks. It bridges modern AI capabilities with established enterprise reliability."
-
-### Câu hỏi 2:
-**"If you had more time and budget, what would be your next experiment?"**
-- **Câu trả lời ngắn (3 câu):**
-  > "Our primary next step would be evaluating real, anonymized customer support logs from a live SaaS production system. We would also recruit professional support staff to benchmark true human response times and compare human agreement against our automated rules."
-
-### Câu hỏi 3:
-**"Why do you say that your costs are upper bounds?"**
-- **Câu trả lời ngắn (2 câu):**
-  > "We use list prices with no cache discount, but the provider's prompt cache supplied 22.3 percent of the input tokens. So the real cost of every level is lower than the cost that we report."
-
----
-
-## 5. Hướng dẫn phát âm (10 từ kỹ thuật khó)
+## 4. Hướng dẫn phát âm (10 từ kỹ thuật khó)
 
 Luyện phát âm 10 từ vựng này theo phiên âm đơn giản dưới đây:
 
 | Từ tiếng Anh | Phiên âm đơn giản | Hướng dẫn phát âm và trọng âm |
 | :--- | :--- | :--- |
-| **Literature** | **LIT-er-uh-chur** | Có 4 âm tiết; nhấn vào 'LIT'; đuôi 'chur' đọc nhẹ. |
-| **Transparent** | **trans-PAIR-unt** | Có 3 âm tiết; nhấn vào 'PAIR'; đuôi 'unt' dứt khoát. |
-| **Statistical** | **stuh-TIS-tih-kul** | Có 4 âm tiết; nhấn vào 'TIS'; đuôi 'kul' nhẹ. |
-| **Bound** | **BOWND** | Có 1 âm tiết; phát âm giống 'round'; bật âm 'd'. |
-| **Commercial** | **kuh-MUR-shul** | Có 3 âm tiết; nhấn vào 'MUR'; đuôi 'shul' đọc mềm. |
-| **Questions** | **KWES-chunz** | Có 2 âm tiết; nhấn vào 'KWES'; đuôi 'chunz' đọc nhẹ. |
+| **Intercom** | **IN-ter-kom** | Có 3 âm tiết; nhấn vào 'IN'; đuôi 'kom' dứt khoát. |
+| **Seventy-five** | **SEV-un-tee-fyv** | Có 4 âm tiết; nhấn vào 'SEV'; 'five' đọc như 'fyv'. |
+| **Synthetic** | **sin-THET-ik** | Có 3 âm tiết; nhấn vào 'THET'; đuôi 'ik' ngắn. |
+| **Evidence** | **EV-ih-dens** | Có 3 âm tiết; nhấn vào 'EV'; đuôi 'dens' đọc nhẹ. |
 | **Confidence** | **KON-fih-dens** | Có 3 âm tiết; nhấn mạnh vào 'KON'; đuôi 'dens' đọc nhẹ. |
+| **Security** | **sih-KYOOR-ih-tee** | Có 4 âm tiết; nhấn vào 'KYOOR'; đuôi 'tee' rõ ràng. |
 | **Cache** | **KASH** | Có 1 âm tiết; đọc giống 'cash'. |
 | **Blind** | **BLYND** | Có 1 âm tiết; vần giống 'kind'; bật nhẹ âm 'd'. |
+| **Percent** | **per-SENT** | Có 2 âm tiết; nhấn vào 'SENT'; đuôi 't' dứt khoát. |
 | **Conclusion** | **kun-KLOO-zhun** | Có 3 âm tiết; nhấn vào 'KLOO'; âm 'zh' như trong 'vision'. |
 
 ---
 
-## 6. Ký hiệu tốc độ và cử chỉ biểu diễn
+## 5. Ký hiệu tốc độ và cử chỉ biểu diễn
 
 - `[NHÌN KHÁN GIẢ - GIAO TIẾP ÁNH MẮT TRÁI VÀ PHẢI]`: Quét mắt bao quát phòng học để duy trì sự ấm áp và tự tin.
 - `[NGHỈ 1 GIÂY]`: Ngắt nhịp cẩn thận giữa các hạn chế nghiên cứu để thể hiện sự trung thực trong học thuật.

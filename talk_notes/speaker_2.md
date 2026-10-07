@@ -68,26 +68,7 @@ Nói chính xác câu tiếng Anh này để chuyển tiếp cho Diễn giả 3:
 
 ---
 
-## 4. Ba câu hỏi khán giả thường gặp và gợi ý trả lời (chỉ để hiểu sâu phần của mình; Long là người trả lời trong Q&A)
-
-### Câu hỏi 1:
-**"Why does the Security rule read the Security queue and not the risk flag?"**
-- **Câu trả lời ngắn (3 câu):**
-  > "The risk flag only says that money, stored data, the plan, or the password is at stake. A valid refund has the same flag as a fraud case, so it cannot tell them apart. The Security queue says that the request reports use of the account by someone else, so the rule reads the queue and denies every state change."
-
-### Câu hỏi 2:
-**"Why do you permanently deny workspace data deletion in the chat?"**
-- **Câu trả lời ngắn (2 câu):**
-  > "Customer video assets and custom-trained AI weights are completely permanent to delete. Allowing a conversational chatbot to delete workspace data creates severe liability from accidental prompts or account hijackers, so our policy mandates secure web dashboard settings."
-
-### Câu hỏi 3:
-**"What does 'nothing runs' mean in your state machine?"**
-- **Câu trả lời ngắn (2 câu):**
-  > "If the classifier answer is invalid, or a written rule denies the action, no action runs and no data changes. The Final message then tells the customer the result and the steps that the customer can take alone."
-
----
-
-## 5. Hướng dẫn phát âm (10 từ kỹ thuật khó)
+## 4. Hướng dẫn phát âm (10 từ kỹ thuật khó)
 
 Luyện phát âm 10 từ vựng này theo phiên âm đơn giản dưới đây:
 
@@ -106,7 +87,7 @@ Luyện phát âm 10 từ vựng này theo phiên âm đơn giản dưới đây
 
 ---
 
-## 6. Ký hiệu tốc độ và cử chỉ biểu diễn
+## 5. Ký hiệu tốc độ và cử chỉ biểu diễn
 
 - `[NHÌN KHÁN GIẢ - GIAO TIẾP ÁNH MẮT TRÁI VÀ PHẢI]`: Bao quát toàn bộ lớp học trước khi nói.
 - `[NGHỈ 1 GIÂY]`: Cho phép người nghe có thời gian xử lý các điều kiện quy tắc phức tạp.
