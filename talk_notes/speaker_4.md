@@ -3,9 +3,9 @@
 - **Họ và tên diễn giả:** Vuong Quang Quy
 - **Vai trò trong đề tài:** Phân tích kết quả thực nghiệm; Kiểm định thống kê; Tạo các bảng biểu LaTeX và đồ thị trực quan
 - **Tỷ lệ phân công:** 17% tổng thời lượng thuyết trình
-- **Thời gian nói được phân bổ:** 1 phút 55 giây (115 giây). Đã giảm 38 giây so với bản trước vì slide thử nghiệm tiêm lỗi bị bỏ khỏi bộ slide.
-- **Số từ mục tiêu:** ~249 từ (tốc độ ~130 từ/phút)
-- **Các slide phụ trách:** Slide 7 và Slide 8 (trước đây là Slide 8, 9 và 10). Câu bàn giao cho Diễn giả 5 nay nằm ở cuối Slide 8.
+- **Thời gian nói được phân bổ:** 1 phút 30 giây (90 giây). Giảm 25 giây so với bản trước (115 giây) vì câu hỏi dự đoán ở Slide 7 đã chuyển sang Long (Slide 3).
+- **Số từ mục tiêu:** ~195 từ (tốc độ ~130 từ/phút)
+- **Các slide phụ trách:** Slide 7 (30 giây) và Slide 8 (60 giây). Câu bàn giao cho Diễn giả 5 nằm ở cuối Slide 8. Quy **không đặt câu hỏi** cho khán giả và không nhắc lại câu hỏi dự đoán: Quy chỉ trình bày số liệu, vì Long đã hỏi khán giả ở Slide 3.
 
 ---
 
@@ -21,24 +21,14 @@
 
 ### Slide 7: Kết quả 1: So sánh giai đoạn phân loại
 - **Tiêu đề slide:** Result 1: labels are close; Jev is 18 times faster (Classifier Stage)
-- **Thời gian dự kiến trên slide:** 0 phút 55 giây (55 giây, ~120 từ)
+- **Thời gian dự kiến trên slide:** 0 phút 30 giây (30 giây, ~65 từ)
 
 > `[NHÌN KHÁN GIẢ - MỈM CƯỜI]`  
 > Thank you, Son.  
 > 
 > `[NGHỈ 1 GIÂY]`  
 > 
-> Before we look at the numbers, a quick guess: which level is faster and cheaper? Level Two with DeepSeek alone, or Level Three with Jev and DeepSeek together? `[NGHỈ 2 GIÂY]`  
-> 
-> Most people guess Level Two. But look at the data on this slide!  
-> 
-> `[NGHỈ 1 GIÂY]`  
-> 
-> One Jev call takes a median of 0.24 seconds. One DeepSeek call takes 4.41 seconds. That is eighteen times faster! Jev costs 0.052 dollars per thousand requests, and DeepSeek as a classifier costs 0.587 dollars. That is eleven times cheaper!  
-> 
-> `[NGHỈ 1 GIÂY]`  
-> 
-> Jev is behind DeepSeek on four fields, but ahead on the queue, and it reports a confidence with every label. The calibration error runs from 0.07 to 0.15. Five wrong answers still carry a confidence of 0.9 or more. That is why the written rules, not the confidence, keep the customer safe.  
+> One Jev call takes a median of 0.24 seconds. One DeepSeek call takes 4.41 seconds. That is eighteen times faster! Jev costs 0.052 dollars per thousand requests, and DeepSeek costs 0.587 dollars. That is eleven times cheaper! Jev is behind on four fields, but it gives a confidence with every label. The written rules keep the customer safe.  
 > 
 > `[NGHỈ 1 GIÂY]`  
 > `[CHUYỂN SANG SLIDE 8]`
@@ -53,7 +43,7 @@
 > 
 > `[NGHỈ 1 GIÂY]`  
 > 
-> Level One uses ninety seconds of assumed staff time per request. Level Two serves thirty-two requests, stops fifteen, and makes three errors. These errors are wrong denials: the correct result is an answer, and nothing ran. It needs 6.85 seconds of machine time and costs 0.71 dollars per thousand requests.  
+> Level One uses ninety seconds of assumed staff time per request. Level Two serves thirty-two requests, stops fifteen, and makes three errors. It needs 6.85 seconds of machine time and costs 0.71 dollars per thousand requests.  
 > 
 > `[NGHỈ 1 GIÂY]`  
 > 
@@ -62,10 +52,6 @@
 > `[NGHỈ 1 GIÂY]`  
 > 
 > So Level Three is never worse in any column! It is 2.2 times faster and 2.4 times cheaper. The sign test has three discordant pairs and gives p equals 0.25, so the accuracy gap is not established. Our strong claims are speed, cost, and never worse!  
-> 
-> `[NGHỈ 1 GIÂY]`  
-> 
-> One caveat: we measure what the customer gets. Level Three has seven label errors and Level Two has five, but no wrong label becomes an error of Level Three. No run is harmful at either level.  
 > 
 > `[NGHỈ 1 GIÂY]`  
 > `[NHÌN SANG NGUYEN PHUONG NAM]`  
@@ -82,7 +68,7 @@ Nói chính xác câu tiếng Anh này để chuyển tiếp cho Diễn giả 5:
 
 ---
 
-## 4. Ba câu hỏi khán giả thường gặp và gợi ý trả lời
+## 4. Ba câu hỏi khán giả thường gặp và gợi ý trả lời (chỉ để hiểu sâu phần của mình; Long là người trả lời trong Q&A)
 
 ### Câu hỏi 1:
 **"What is a 'harmful error' in your evaluation metrics?"**
@@ -107,7 +93,7 @@ Luyện phát âm 10 từ vựng này theo phiên âm đơn giản dưới đây
 
 | Từ tiếng Anh | Phiên âm đơn giản | Hướng dẫn phát âm và trọng âm |
 | :--- | :--- | :--- |
-| **Intuition** | **in-too-ISH-un** | Có 4 âm tiết; nhấn vào 'ISH'; đọc rõ 'too'. |
+| **Eighteen** | **ay-TEEN** | Có 2 âm tiết; nhấn vào 'TEEN' để người nghe không nhầm với 'eighty'. |
 | **Percentile** | **per-SEN-tyl** | Có 3 âm tiết; nhấn vào 'SEN'; vần 'tyl' gieo âm giống 'mile'. |
 | **Denial** | **dih-NY-ul** | Có 3 âm tiết; nhấn vào 'NY'; đuôi 'ul' đọc nhẹ. |
 | **Cumulative** | **KYOO-myuh-luh-tiv** | Có 4 âm tiết; nhấn vào 'KYOO'; đuôi 'tiv' dứt khoát. |
@@ -124,5 +110,4 @@ Luyện phát âm 10 từ vựng này theo phiên âm đơn giản dưới đây
 
 - `[NHÌN KHÁN GIẢ - MỈM CƯỜI]`: Thể hiện sự hào hứng trước khi công bố số liệu thực nghiệm.
 - `[NGHỈ 1 GIÂY]`: Giúp người nghe tiếp thu các số liệu so sánh (nhanh hơn 18x, rẻ hơn 11x).
-- `[NGHỈ 2 GIÂY]`: Ngắt nhịp tạo kịch tính sau câu hỏi dự đoán để người nghe tập trung.
 - `[CHUYỂN SANG SLIDE X]`: Bấm chuyển slide trình chiếu chuẩn xác theo kịch bản.

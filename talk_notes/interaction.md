@@ -1,20 +1,23 @@
 # Kế hoạch tương tác với khán giả (Audience Interaction Plan)
 
-Tài liệu này chi tiết hóa chiến lược tương tác với khán giả trong bài thuyết trình 10 slide (13 phút 26 giây). Các mốc thời gian đã tính lại sau khi bỏ hai slide. Mục tiêu là duy trì sự tập trung tích cực của người nghe, đáp ứng trọn vẹn tiêu chí 4 trong mẫu đánh giá chéo (Interaction with audience, 1.0 điểm), và bám sát lời khuyên của giảng viên:
+Tài liệu này chi tiết hóa chiến lược tương tác với khán giả trong bài thuyết trình 10 slide (13 phút 06 giây, 786 giây). Mục tiêu là duy trì sự tập trung tích cực của người nghe, đáp ứng trọn vẹn tiêu chí 4 trong mẫu đánh giá chéo (Interaction with audience, 1.0 điểm), và bám sát lời khuyên của giảng viên:
 
 > *"Trong lúc thuyết trình nên có sự tương tác với khán giả, ví dụ đặt câu hỏi hoặc mở đầu bằng một câu chuyện, để bài nói hấp dẫn hơn. Đồng thời hãy giới thiệu rõ tên từng người để người nghe dễ đánh giá."*
 
+**Quyết định của nhóm:** TOÀN BỘ tương tác với khán giả do trưởng nhóm **Tran Thanh Long** thực hiện ở phần mở đầu bài nói (Slide 1 đến Slide 3). Bốn bạn còn lại (Nguyen Thanh Nam, Vu Van Son, Vuong Quang Quy, Nguyen Phuong Nam) chỉ trình bày slide của mình: không bình chọn, không đặt câu hỏi cho khán giả, không yêu cầu giơ tay. Toàn bộ phần Q&A sau bài nói cũng do Long trả lời.
+
 ---
 
-## Bảng tổng hợp 5 thời điểm tương tác chính
+## Bảng tổng hợp 4 thời điểm tương tác (tất cả do Long thực hiện)
 
 | Thời điểm | Slide | Diễn giả | Kỹ thuật tương tác | Thời lượng mục tiêu | Phương án dự phòng khi cả phòng im lặng |
 | :---: | :---: | :--- | :--- | :---: | :--- |
-| **1** | Slide 1 | **Tran Thanh Long** | Câu chuyện mở đầu 30 giây: Khách hàng chờ 2 ngày để được hoàn tiền | 30 s | Chuyển ý tự nhiên: "I see several nods; we have all been there." |
-| **2** | Slide 2 | **Tran Thanh Long** | Câu hỏi giơ tay: "Have you ever waited over 24 hours for customer support?" | 20 s | "Even if you do not raise your hand, research shows 60 percent of users leave." |
-| **3** | Slide 4 | **Nguyen Thanh Nam** | Bình chọn nhanh giữa bài: "Which action would you never let a chatbot do alone?" | 25 s | "Many choose data deletion, and we agree: it cannot be undone, so our rules always deny it in chat." |
-| **4** | Slide 7 | **Vuong Quang Quy** | Câu hỏi dự đoán trước kết quả: "Which level do you think is faster and cheaper?" | 25 s | "Most guess Level 2, but Level 3 is 2.2x faster, 2.4x cheaper, and never worse!" |
-| **5** | Slide 10 | **Nguyen Phuong Nam** | Câu hỏi suy ngẫm kết thúc: "Where should software companies draw the line for AI safety?" | 20 s | "This exact question brings us directly to our open Q&A session." |
+| **1** | Slide 1 | **Tran Thanh Long** | Câu chuyện mở đầu 30 giây: Khách hàng chờ 2 ngày để được hoàn tiền | 30 s | Chuyển ý tự nhiên: "I see a few knowing smiles in the front row." |
+| **2** | Slide 2 | **Tran Thanh Long** | Câu hỏi giơ tay: "Have you ever waited over 24 hours for customer support?" | 20 s | "Over sixty percent of customers leave after one slow support experience." |
+| **3** | Slide 2 | **Tran Thanh Long** | Bình chọn nhanh: "Which action would you never let a chatbot do alone?" (chuyển từ Nam) | 25 s | "For FrameForge, data deletion cannot be undone, so our written rules always deny it in chat." |
+| **4** | Slide 3 | **Tran Thanh Long** | Câu hỏi dự đoán: "Which level do you think is faster and cheaper, Level 2 or Level 3?" (chuyển từ Quy) | 25 s | "No guess yet? That is fine. The results will show the answer." (không tiết lộ số liệu) |
+
+Thời gian cộng thêm: Slide 2 của Long tăng từ 85 lên 110 giây (+25 giây), Slide 3 tăng từ 92 lên 117 giây (+25 giây). Slide 4 của Nam giảm 25 giây (70 xuống 45), Slide 7 của Quy giảm 25 giây (55 xuống 30), Slide 10 của Phuong Nam giảm 20 giây (60 xuống 40). Câu hỏi suy ngẫm cuối bài của Phuong Nam đã bị bỏ và không chuyển sang đâu khác, vì phần bình chọn đã bao phủ chủ đề an toàn của AI.
 
 ---
 
@@ -37,28 +40,30 @@ Nếu người nghe ngồi yên hoặc chưa phản ứng, Long dừng lại 2 g
 ## Thời điểm 2: Câu hỏi giơ tay biểu quyết (Slide 2)
 
 - **Người thực hiện:** Tran Thanh Long (Trưởng nhóm)
-- **Thời điểm trong bài nói:** 1:30 – 1:50 (20 giây)
+- **Thời điểm trong bài nói:** khoảng 1:20 – 1:40 (20 giây; slide 2 bắt đầu ở 1:15)
 - **Vùng giao tiếp ánh mắt:** Nhìn thẳng vào khu vực trung tâm lớp học, chạm ánh mắt trực tiếp với 2–3 bạn sinh viên cụ thể.
 - **Cử chỉ hình thể:** Giơ cao tay phải qua vai một cách dứt khoát để làm mẫu cho cả lớp cùng làm theo.
 
 ### Kịch bản nói tiếng Anh:
-> "Please raise your hand: have you ever waited more than twenty-four hours to get an answer from online customer support? `[RAISE RIGHT HAND AND PAUSE - 3s]` Look around the room. Almost every single hand is up. That slow speed is the price of using human staff for every message. Support staff are safe, but they cost time and money."
+> "Please raise your hand: have you ever waited more than twenty-four hours to get an answer from online customer support? `[RAISE RIGHT HAND AND PAUSE - 3s]` Look around the room. Almost every hand is up!"
 
 ### Phương án dự phòng khi khán giả im lặng:
 Nếu sau 3 giây không ai giơ tay:
-> "`[LOWER HAND]` Even if you have been lucky, industry data shows that over sixty percent of customers abandon a software service after one slow support experience."
+> "`[LOWER HAND]` Even if you have been lucky, industry data shows that over sixty percent of customers leave a software service after one slow support experience."
 
 ---
 
-## Thời điểm 3: Bình chọn nhanh giữa bài thuyết trình (Slide 4)
+## Thời điểm 3: Bình chọn nhanh về hành động nguy hiểm (Slide 2)
 
-- **Người thực hiện:** Nguyen Thanh Nam
-- **Thời điểm trong bài nói:** 4:25 – 4:50 (25 giây; slide 4 bắt đầu ở 4:12)
+Phần này được **chuyển từ Nguyen Thanh Nam (Slide 4) sang Long (Slide 2)**; lời thoại giữ nguyên. Long đặt câu hỏi sau khi giới thiệu Level Two (chatbot LLM tự do), vì lúc đó khán giả vừa nghe về rủi ro khi để chatbot xử lý tiền và dữ liệu.
+
+- **Người thực hiện:** Tran Thanh Long (Trưởng nhóm)
+- **Thời điểm trong bài nói:** khoảng 2:25 – 2:55 (25 giây; slide 2 bắt đầu ở 1:15)
 - **Vùng giao tiếp ánh mắt:** Tập trung vào nửa bên trái của phòng học, sau đó chuyển sang nửa bên phải.
-- **Cử chỉ hình thể:** Hơi nghiêng người về phía trước; mở lòng bàn tay hướng nhẹ về phía người nghe.
+- **Cử chỉ hình thể:** Hơi nghiêng người về phía trước; mở lòng bàn tay hướng nhẹ về phía người nghe. Giơ tay phải khi nói "Hands up", để khán giả làm theo.
 
 ### Kịch bản nói tiếng Anh:
-> "Let me ask you a quick poll question. Four actions can change a customer account: a refund, a plan cancellation, a password reset, and a data deletion. Which one would you never let a chatbot do alone? `[PAUSE - 1s]` Hands up for the refund? `[PAUSE - 2s]` Hands up for the data deletion? `[PAUSE - 2s]` Many people choose data deletion, and we agree. A deleted video project cannot come back. That is why our written rules always deny data deletion in chat."
+> "Now a quick poll. Four actions can change a customer account: a refund, a plan cancellation, a password reset, and a data deletion. Which one would you never let a chatbot do alone? `[PAUSE - 1s]` Hands up for the refund? `[PAUSE - 2s]` Hands up for the data deletion? `[PAUSE - 2s]` Many people choose data deletion, and we agree. For FrameForge, deleting data erases video projects and fine-tuned AI models. It cannot be undone, so our written rules always deny it in chat."
 
 ### Phương án dự phòng khi khán giả im lặng:
 Nếu cả lớp ngồi yên và không ai phản ứng:
@@ -66,35 +71,34 @@ Nếu cả lớp ngồi yên và không ai phản ứng:
 
 ---
 
-## Thời điểm 4: Câu hỏi dự đoán trước khi công bố kết quả (Slide 7)
+## Thời điểm 4: Câu hỏi dự đoán trước khi công bố kết quả (Slide 3)
 
-- **Người thực hiện:** Vuong Quang Quy
-- **Thời điểm trong bài nói:** 9:20 – 9:45 (25 giây; slide 7 bắt đầu ở 9:16)
+Phần này được **chuyển từ Vuong Quang Quy (Slide 7) sang Long (Slide 3)**. Long hỏi ngay sau khi giới thiệu ba cấp độ. Long **không được tiết lộ đáp án**, kể cả bằng con số hay gợi ý; chỉ nói rằng dữ liệu sẽ cho biết ở phần kết quả. Khi đến Slide 7 và Slide 8, Quy chỉ trình bày số liệu và không hỏi lại khán giả.
+
+- **Người thực hiện:** Tran Thanh Long (Trưởng nhóm)
+- **Thời điểm trong bài nói:** khoảng 4:35 – 4:55 (25 giây; slide 3 bắt đầu ở 3:05)
 - **Vùng giao tiếp ánh mắt:** Giao tiếp ánh mắt trực tiếp với giảng viên và các bạn sinh viên ngồi ở hàng ghế đầu.
-- **Cử chỉ hình thể:** Giơ 2 ngón tay khi nhắc đến Level 2, sau đó giơ 3 ngón tay khi nhắc đến Level 3.
+- **Cử chỉ hình thể:** Giơ 2 ngón tay khi nhắc đến Level Two, sau đó giơ 3 ngón tay khi nhắc đến Level Three.
 
 ### Kịch bản nói tiếng Anh:
-> "Before I show you our live experimental numbers, let us test your intuition. We have Level 2, which uses DeepSeek LLM for everything, and Level 3, which pairs Jev with DeepSeek. By calling out or raising your hand: which level do you think is faster and cheaper? Level 2 or Level 3? `[LOOK AT AUDIENCE - PAUSE - 3s]` Many of you guessed Level 3. Let us reveal the actual data and see why that happens."
+> "Now I have one question for you. Which level do you think is faster and cheaper, Level Two or Level Three? `[LOOK AT AUDIENCE - PAUSE - 3s]` Please keep your guess in mind. The data will show the answer later."
 
 ### Phương án dự phòng khi khán giả im lặng:
-Nếu căn phòng hoàn toàn yên tĩnh:
-> "Most people assume Level 2 is faster because it uses only one model. But look at the screen: Level 3 is 2.2 times faster in machine time, 2.4 times cheaper, and makes zero errors for the customer!"
+Nếu căn phòng hoàn toàn yên tĩnh sau 3 giây, không nêu con số nào và không nói đáp án:
+> "No guess yet? That is fine. Please keep the question in mind. The results will show the answer."
 
 ---
 
-## Thời điểm 5: Câu hỏi suy ngẫm kết thúc bài nói (Slide 10)
+## Q&A do Long phụ trách
 
-- **Người thực hiện:** Nguyen Phuong Nam
-- **Thời điểm trong bài nói:** 13:06 – 13:26 (20 giây; bài nói kết thúc ở 13:26)
-- **Vùng giao tiếp ánh mắt:** Quét ánh mắt lên hàng ghế cuối cùng của lớp học, khép lại bài nói với phong thái đĩnh đạc và tự tin.
-- **Cử chỉ hình thể:** Mở rộng hai cánh tay hướng về phía khán giả; mỉm cười ấm áp.
+- Sau lời mời của Nguyen Phuong Nam ("Our leader, Tran Thanh Long, will now take your questions."), **Long trả lời toàn bộ câu hỏi** trong 5 phút. Chi tiết và 15 câu trả lời chuẩn nằm trong `qa_prep.md`.
+- Bốn bạn còn lại đứng bên cạnh sân khấu, lắng nghe, không tự ý trả lời. Chỉ khi Long chủ động nhường lời cho người phụ trách phần đó (ví dụ Son cho câu hỏi về tập dữ liệu) thì người đó mới nói, và chỉ khi thật cần.
+- Long nhắc lại câu hỏi bằng lời của mình trước khi trả lời, để cả lớp nghe rõ và để có thêm vài giây suy nghĩ.
 
-### Kịch bản nói tiếng Anh:
-> "As we conclude our talk, consider this final question: as AI models become more powerful, how much control should companies give to models versus deterministic rules? We believe safety must always come first. Thank you very much for your kind attention. We now welcome any questions from our lecturer and classmates."
+## Quy tắc cho bốn thành viên còn lại: lắng nghe tích cực
 
-### Phương án dự phòng khi khán giả im lặng:
-Nếu lớp học chờ đợi trong yên lặng trước khi đặt câu hỏi:
-> "Thank you. To kick off the discussion, our team is ready to answer questions about our rules, our benchmark dataset, or the Jev classifier."
+- Không đặt câu hỏi cho khán giả, không bình chọn, không yêu cầu giơ tay trong phần của mình. Nếu có tình huống bất ngờ giữa bài, chỉ tiếp tục trình bày và giữ đúng thời gian.
+- Khi Long tương tác (Slide 1 đến 3) và khi Long trả lời Q&A: đứng nghiêm túc ở một bên sân khấu, nhìn về phía Long, thỉnh thoảng gật đầu. Không bấm điện thoại, không thì thầm.
 
 ---
 

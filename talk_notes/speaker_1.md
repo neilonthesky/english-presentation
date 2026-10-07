@@ -2,10 +2,11 @@
 
 - **Họ và tên diễn giả:** Tran Thanh Long
 - **Vai trò trong đề tài:** Trưởng nhóm; Điều phối đề tài; Tóm tắt (Abstract), Mở đầu (Introduction) và Kết luận (Conclusion); Kiến trúc bậc thang hỗ trợ; Biên tập hoàn thiện
-- **Tỷ lệ phân công:** 28% tổng thời lượng thuyết trình
-- **Thời gian nói được phân bổ:** 4 phút 12 giây (252 giây)
-- **Số từ mục tiêu:** ~545 từ (tốc độ ~130 từ/phút)
-- **Các slide phụ trách:** Slide 1, Slide 2 và Slide 3
+- **Tỷ lệ phân công:** 28% tổng thời lượng thuyết trình (trong bài báo). Về thời gian nói, Long nói nhiều nhất vì phụ trách toàn bộ phần tương tác với khán giả và toàn bộ phần hỏi đáp.
+- **Thời gian nói được phân bổ:** 5 phút 02 giây (302 giây) = 252 giây cũ + 50 giây tương tác chuyển từ các bạn khác sang (+25 giây ở Slide 2, +25 giây ở Slide 3)
+- **Số từ mục tiêu:** ~600 từ (tốc độ ~130 từ/phút, đã tính cả các lần nghỉ để khán giả phản hồi)
+- **Các slide phụ trách:** Slide 1 (75 giây), Slide 2 (110 giây) và Slide 3 (117 giây), cộng toàn bộ phần Q&A sau bài nói (5 phút, xem `qa_prep.md`)
+- **Quy ước tương tác:** Toàn bộ tương tác với khán giả của cả nhóm do Long thực hiện ngay ở đầu bài (Slide 1 đến 3): câu chuyện mở đầu, giơ tay, bình chọn và câu hỏi dự đoán. Bốn bạn còn lại chỉ trình bày, không hỏi khán giả. Chi tiết nằm trong `interaction.md`.
 
 ---
 
@@ -41,7 +42,7 @@
 
 ### Slide 2: Khởi điểm: Hai cách tiếp cận truyền thống
 - **Tiêu đề slide:** Where We Start: Two Old Ways
-- **Thời gian dự kiến trên slide:** 1 phút 25 giây (85 giây, ~185 từ)
+- **Thời gian dự kiến trên slide:** 1 phút 50 giây (110 giây, ~235 từ gồm cả phần nghỉ chờ khán giả giơ tay và bình chọn)
 
 > On this slide, we look at the two traditional extremes of customer support.  
 > 
@@ -51,20 +52,28 @@
 > 
 > `[NGHỈ 1 GIÂY]`  
 > 
-> That slow speed is the problem with Level One on the left. In this traditional model, human support staff read every single request. Human staff make very few errors. They do not delete data by accident. But each request takes about ninety seconds of staff time. Waiting times explode, and labor costs grow with every customer.  
+> That slow speed is the problem with Level One on the left. Human support staff read every single request. They make very few errors, but each request takes about ninety seconds of staff time. Waiting times explode, and labor costs grow with every customer.  
 > 
 > `[NGHỈ 1 GIÂY]`  
 > 
-> To cut costs, many companies jump straight to the opposite extreme on the right: an unconstrained LLM chatbot, which we study as Level Two. An LLM acts immediately, but it can make confident mistakes. More dangerously, attackers can use prompt injection. That means a customer writes hidden instructions in their message, telling the model to ignore company policies and issue an illegal refund. A wrong refund costs real money, and deleting video projects destroys customer trust.  
+> To cut costs, many companies jump to the opposite extreme on the right: an unconstrained LLM chatbot, which we study as Level Two. It acts immediately, but it can make confident mistakes. A wrong refund costs real money, and deleted video projects destroy customer trust.  
+> 
+> `[NGHỈ 1 GIÂY]`  
+> 
+> Now a quick poll. Four actions can change a customer account: a refund, a plan cancellation, a password reset, and a data deletion. Which one would you never let a chatbot do alone? `[NGHỈ 1 GIÂY]` Hands up for the refund? `[NGHỈ 2 GIÂY]` Hands up for the data deletion? `[NGHỈ 2 GIÂY]` Many people choose data deletion, and we agree. For FrameForge, deleting data erases video projects and fine-tuned AI models. It cannot be undone, so our written rules always deny it in chat.  
 > 
 > `[NGHỈ 1 GIÂY]`  
 > `[CHUYỂN SANG SLIDE 3]`
+
+**Phương án dự phòng khi cả phòng im lặng (hai lần tương tác ở Slide 2):**
+- Nếu sau 3 giây không ai giơ tay: *"`[HẠ TAY]` Even if you have been lucky, industry data shows that over sixty percent of customers leave a software service after one slow support experience."*
+- Nếu không ai giơ tay ở phần bình chọn: *"If you are hesitant, that makes complete sense! For FrameForge, deleted video projects and AI models cannot be restored, so our written rules always deny data deletion in chat."*
 
 ---
 
 ### Slide 3: Mô hình bậc thang 3 cấp độ
 - **Tiêu đề slide:** Three levels, one new part at each level (The Three-Level Ladder)
-- **Thời gian dự kiến trên slide:** 1 phút 32 giây (92 giây, ~200 từ)
+- **Thời gian dự kiến trên slide:** 1 phút 57 giây (117 giây, ~250 từ gồm cả phần nghỉ chờ khán giả)
 
 > This trade-off leads to our central research question: can we build an automated support system that is fast and cheap, without risking customer money or data?  
 > 
@@ -78,16 +87,22 @@
 > 
 > `[NGHỈ 1 GIÂY]`  
 > 
-> Level Two introduces one LLM agent that does the whole job. The agent reads the customer account and the chat, applies the written rules itself, and answers with one action to run, or one denial with the reason. There is no separate classifier and no triage rules, and no fixed code stands behind it: if the agent names an action, the action runs. This level removes human staff completely.
+> Level Two introduces one LLM agent that does the whole job. The agent reads the customer account and the chat, applies the written rules itself, and answers with one action to run, or one denial with the reason.
 > 
 > `[NGHỈ 1 GIÂY]`  
 > 
-> Level Three introduces Jev, a fast, lightweight classifier. Jev replaces the agent as the step that chooses the action. It reads the chat only, predicts five structured labels with calibrated confidence in less than a quarter of a second, and never reads the account. The LLM then only writes the final polite message. If Jev detects prompt injection, Triage ignores the orders in the text. If Jev routes a fraud report to the Security queue, our fixed rules deny every state change.
+> Level Three introduces Jev, a fast, lightweight classifier. Jev replaces the agent as the step that chooses the action. It reads the chat only, predicts five structured labels with calibrated confidence in less than a quarter of a second, and never reads the account. The LLM then only writes the final polite message.
+> 
+> `[NGHỈ 1 GIÂY]`  
+> 
+> Now I have one question for you. Which level do you think is faster and cheaper, Level Two or Level Three? `[NHÌN KHÁN GIẢ - NGHỈ 3 GIÂY]` Please keep your guess in mind. The data will show the answer later.  
 > 
 > `[NGHỈ 1 GIÂY]`  
 > `[NHÌN SANG NGUYEN THANH NAM]`  
 > 
 > Now, I hand over to my teammate Nguyen Thanh Nam, who will explain our written rules and the state machine flow.
+
+**Phương án dự phòng khi cả phòng im lặng (câu hỏi dự đoán):** Long không tiết lộ đáp án và không nêu con số nào. Nếu không ai trả lời sau 3 giây, nói: *"No guess yet? That is fine. Please keep the question in mind. The results will show the answer."*
 
 ---
 
@@ -99,7 +114,7 @@ Nói chính xác câu tiếng Anh này để chuyển tiếp cho Diễn giả 2:
 
 ---
 
-## 4. Ba câu hỏi khán giả thường gặp và gợi ý trả lời
+## 4. Ba câu hỏi khán giả thường gặp và gợi ý trả lời (Long là người trả lời)
 
 ### Câu hỏi 1:
 **"Why do you assume ninety seconds for a human support staff read?"**
@@ -144,3 +159,11 @@ Luyện phát âm 10 từ vựng này theo phiên âm đơn giản dưới đây
 - `[NGHỈ 2 GIÂY]`: Ngắt nhịp dài hơn sau câu hỏi hoặc trước khi nêu luận điểm quan trọng.
 - `[GIƠ TAY PHẢI VÀ NGHỈ 3 GIÂY]`: Ra hiệu cử chỉ rõ ràng để mời khán giả tương tác giơ tay.
 - `[CHUYỂN SANG SLIDE X]`: Bấm chuyển slide trình chiếu chuẩn xác theo kịch bản.
+- `[NGHỈ 3 GIÂY]` sau câu hỏi: Đứng yên, nhìn khán giả, không nói thêm. Không tiết lộ đáp án của câu hỏi dự đoán.
+- `[HẠ TAY]`: Hạ tay xuống khi không ai giơ tay, rồi nói câu dự phòng.
+
+---
+
+## 7. Phần hỏi đáp (Q&A): Long trả lời toàn bộ
+
+Sau khi Nguyen Phuong Nam nói "Our leader, Tran Thanh Long, will now take your questions.", Long bước lên giữa sân khấu và trả lời **tất cả** câu hỏi trong 5 phút. Bốn bạn còn lại đứng bên cạnh, lắng nghe, không trả lời trừ khi Long nhường lời. Dùng `qa_prep.md` (15 câu trả lời chuẩn) làm tài liệu chính. Mở đầu mỗi câu bằng: *"Thank you for your question."* và nhắc lại câu hỏi bằng lời của mình trước khi trả lời.

@@ -3,9 +3,9 @@
 - **Họ và tên diễn giả:** Nguyen Thanh Nam
 - **Vai trò trong đề tài:** Quy tắc bằng văn bản (Written rules); Quy tắc điều hướng Level 3; Kiểm tra quy tắc (Rules check) cho hoàn tiền, xóa dữ liệu, hủy gói và đổi mật khẩu; Security rule
 - **Tỷ lệ phân công:** 22% tổng thời lượng thuyết trình
-- **Thời gian nói được phân bổ:** 2 phút 22 giây (142 giây). Đã giảm 56 giây so với bản trước vì slide kiểm chứng riêng cho Security rule bị bỏ khỏi bộ slide.
-- **Số từ mục tiêu:** ~308 từ (tốc độ ~130 từ/phút)
-- **Các slide phụ trách:** Slide 4 và Slide 5. Câu bàn giao cho Diễn giả 3 nằm ở cuối Slide 5. Nội dung Security rule vẫn còn trong Slide 4 và Slide 5 (thiết kế rule, queue "Security", từ chối mọi thay đổi trạng thái).
+- **Thời gian nói được phân bổ:** 1 phút 57 giây (117 giây). Giảm 25 giây so với bản trước vì phần bình chọn ở Slide 4 đã chuyển sang Long (Slide 2).
+- **Số từ mục tiêu:** ~254 từ (tốc độ ~130 từ/phút)
+- **Các slide phụ trách:** Slide 4 (45 giây) và Slide 5 (72 giây). Câu bàn giao cho Diễn giả 3 nằm ở cuối Slide 5. Nam **không đặt câu hỏi** và **không tổ chức bình chọn** với khán giả: mọi tương tác do Long thực hiện ở Slide 1 đến 3. Nội dung Security rule vẫn còn trong Slide 4 và Slide 5.
 
 ---
 
@@ -21,22 +21,18 @@
 
 ### Slide 4: Level 2 và các quy tắc bằng văn bản
 - **Tiêu đề slide:** The written rules: allow or deny
-- **Thời gian dự kiến trên slide:** 1 phút 10 giây (70 giây, ~150 từ)
+- **Thời gian dự kiến trên slide:** 0 phút 45 giây (45 giây, ~95 từ)
 
 > `[NHÌN KHÁN GIẢ - GIAO TIẾP ÁNH MẮT TRÁI VÀ PHẢI]`  
 > Thank you, Long.  
 > 
 > `[NGHỈ 1 GIÂY]`  
 > 
-> A quick poll. Four actions can change a customer account: a refund, a plan cancellation, a password reset, and a data deletion. Which one would you never let a chatbot do alone? `[NGHỈ 2 GIÂY]` Many people pick data deletion, and we agree. For FrameForge, deleting data erases video projects and fine-tuned AI models. It cannot be undone, so our rules always deny it in chat.  
+> For refunds, only the account owner can ask. The purchase must be within fourteen days for a monthly plan, or thirty days for an annual plan. If a credit pack is used, or if the customer has two refunds in ninety days, the rule returns deny. Data deletion is always denied in chat, because it cannot be undone.  
 > 
 > `[NGHỈ 1 GIÂY]`  
 > 
-> For refunds, only the account owner can ask. The purchase must be within fourteen days for a monthly plan, or thirty days for an annual plan. If a credit pack is used, or if the customer has two refunds in ninety days, the rule returns deny.  
-> 
-> `[NGHỈ 1 GIÂY]`  
-> 
-> We check the Security rule first, for every state change. If a request says that someone else used the account or the card, the rule denies the action, and the reply gives the security steps. We added this rule after fraud reports showed a defect on our main requests. At Level Three, Triage puts a fraud report in the queue Security. At Level Two, the agent reads the text of the rule.
+> We check the Security rule first, for every state change. If a request says that someone else used the account or the card, the rule denies the action, and the reply gives the security steps.  
 > 
 > `[NGHỈ 1 GIÂY]`  
 > `[CHUYỂN SANG SLIDE 5]`
@@ -47,11 +43,11 @@
 - **Tiêu đề slide:** Level 3: Jev, fixed code, and an LLM
 - **Thời gian dự kiến trên slide:** 1 phút 12 giây (72 giây, ~155 từ)
 
-> In Level Three, Jev replaces the LLM agent as the step that chooses the action. Jev never writes text and never reads the account. In one call, it answers five questions about the chat, each with a confidence: the queue, the action, the priority, the risk flag, and the injection flag.  
+> In Level Three, Jev replaces the LLM agent as the step that chooses the action. In one call, it answers five questions about the chat, each with a confidence: the queue, the action, the priority, the risk flag, and the injection flag.  
 > 
 > `[NGHỈ 1 GIÂY]`  
 > 
-> Look at the state machine with eight states. It starts at New message saved. Then Triage runs Jev. If the injection flag is on, the action becomes Send reply, and the orders in the text are ignored.
+> Look at the state machine with eight states. Triage runs Jev. If the injection flag is on, the action becomes Send reply, and the orders in the text are ignored.
 > 
 > `[NGHỈ 1 GIÂY]`  
 > 
@@ -72,7 +68,7 @@ Nói chính xác câu tiếng Anh này để chuyển tiếp cho Diễn giả 3:
 
 ---
 
-## 4. Ba câu hỏi khán giả thường gặp và gợi ý trả lời
+## 4. Ba câu hỏi khán giả thường gặp và gợi ý trả lời (chỉ để hiểu sâu phần của mình; Long là người trả lời trong Q&A)
 
 ### Câu hỏi 1:
 **"Why does the Security rule read the Security queue and not the risk flag?"**
@@ -114,5 +110,4 @@ Luyện phát âm 10 từ vựng này theo phiên âm đơn giản dưới đây
 
 - `[NHÌN KHÁN GIẢ - GIAO TIẾP ÁNH MẮT TRÁI VÀ PHẢI]`: Bao quát toàn bộ lớp học trước khi nói.
 - `[NGHỈ 1 GIÂY]`: Cho phép người nghe có thời gian xử lý các điều kiện quy tắc phức tạp.
-- `[NGHỈ 2 GIÂY]`: Ngắt nhịp chiến lược sau câu hỏi bình chọn và trước khi giải thích tính không thể đảo ngược của việc xóa dữ liệu.
 - `[CHUYỂN SANG SLIDE X]`: Bấm chuyển slide trình chiếu chuẩn xác theo kịch bản.

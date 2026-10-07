@@ -65,7 +65,7 @@ Nói chính xác câu tiếng Anh này để chuyển tiếp cho Diễn giả 4:
 
 ---
 
-## 4. Ba câu hỏi khán giả thường gặp và gợi ý trả lời
+## 4. Ba câu hỏi khán giả thường gặp và gợi ý trả lời (chỉ để hiểu sâu phần của mình; Long là người trả lời trong Q&A)
 
 ### Câu hỏi 1:
 **"Why do you say that the experiment replays offline with the same numbers?"**

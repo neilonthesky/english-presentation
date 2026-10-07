@@ -35,8 +35,8 @@ const TITLE = "Human to LLM & Classifier Support Agent: A Three-Level Ladder for
 // Speakers and speaking time per slide (the times of the two deleted slides are gone; talk_notes holds the full split).
 const LONG = "Tran Thanh Long", NAM = "Nguyen Thanh Nam", SON = "Vu Van Son", QUY = "Vuong Quang Quy", PNAM = "Nguyen Phuong Nam";
 const SPEAKER = [
-  [LONG, 75], [LONG, 85], [LONG, 92], [NAM, 70], [NAM, 72],
-  [SON, 162], [QUY, 55], [QUY, 60], [PNAM, 75], [PNAM, 60],
+  [LONG, 75], [LONG, 110], [LONG, 117], [NAM, 45], [NAM, 72],
+  [SON, 162], [QUY, 30], [QUY, 60], [PNAM, 75], [PNAM, 40],
 ];
 
 // ---------- icon and illustration helpers ----------
@@ -217,7 +217,8 @@ async function photo(file, w, h, radius = 0.08, dpi = 150) {
       "Where we start: staff or one LLM agent",
       "Level 1: support staff read every request. No model runs, so no model error, but each request takes an assumed 90 s and the cost grows with every request. " +
         "Level 2: one LLM agent reads the chat and the whole account and applies the written rules itself. Nothing fixed stands behind its answer, and an order hidden in a text can reach it. " +
-        "Our question: can an AI agent serve fast and cheap without risk to money and data?"
+        "Our question: can an AI agent serve fast and cheap without risk to money and data? " +
+        "Opening interaction by the leader: raise your hand if you waited over 24 hours for support; then the poll: which action would you never let a chatbot do alone (refund, plan cancellation, password reset, data deletion)? The written rules always deny data deletion in chat."
     );
     const cw = (CW - 0.4) / 2, y = 1.65, h = 3.5;
     [
@@ -249,7 +250,8 @@ async function photo(file, w, h, radius = 0.08, dpi = 150) {
       "Level 1 is the baseline: support staff read every request, 90 s each (assumed). " +
         "Level 2 replaces the staff with one LLM agent that reads the account, applies the written rules itself, and either runs an action or denies it. " +
         "Level 3 splits the job: Jev gives five typed answers, each with a confidence, fixed code reads only the account fields that the action needs and checks the written rules, and the LLM writes the reply. " +
-        "Every level runs on the same 50 requests."
+        "Every level runs on the same 50 requests. " +
+        "Opening interaction by the leader: which level is faster and cheaper, Level 2 or Level 3? The answer is not given here; the results show it."
     );
     const gap = 0.45, cw = (CW - 2 * gap) / 3, y = 1.65, h = 4.05;
     [
@@ -498,10 +500,10 @@ async function photo(file, w, h, radius = 0.08, dpi = 150) {
     s.addImage({ data: shots.closing, x: 7.7, y: 1.3, w: 4.9, h: 4.9 });
     speakerTag(s, 10, true);
     s.addNotes(
-      `Speaker: ${PNAM}, about 60 s. To conclude: three levels on one ladder, measured on the same 50 requests. Level 3 serves 35, stops 15, and makes 0 errors; Level 2 serves 32, stops 15, and makes 3. ` +
+      `Speaker: ${PNAM}, about ${SPEAKER[9][1]} s. To conclude: three levels on one ladder, measured on the same 50 requests. Level 3 serves 35, stops 15, and makes 0 errors; Level 2 serves 32, stops 15, and makes 3. ` +
         "Level 3 is never worse in any column, 2.2 times faster, and 2.4 times cheaper. The sign test (p = 0.25) does not establish an accuracy gap. " +
         "The Security rule stops state changes on fraud reports; we added it after we saw a defect on these 50 requests, so the main numbers are not a blind test. Jev is less accurate than the LLM on four of five fields, but the written rules catch its wrong answers. " +
-        "Thank you. We are happy to take questions."
+        "Thank you. Our leader, Tran Thanh Long, will now take your questions."
     );
   }
 

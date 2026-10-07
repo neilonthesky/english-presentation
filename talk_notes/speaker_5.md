@@ -1,11 +1,11 @@
 # Kịch bản và ghi chú thuyết trình của Diễn giả 5
 
 - **Họ và tên diễn giả:** Nguyen Phuong Nam
-- **Vai trò trong đề tài:** Tổng quan tài liệu nghiên cứu liên quan; Thảo luận hạn chế nghiên cứu; Thiết kế trực quan slide; Chuẩn bị câu hỏi Q&A và điều phối thảo luận
+- **Vai trò trong đề tài:** Tổng quan tài liệu nghiên cứu liên quan; Thảo luận hạn chế nghiên cứu; Thiết kế trực quan slide; Hỗ trợ chuẩn bị tài liệu hỏi đáp cho Long
 - **Tỷ lệ phân công:** 15% tổng thời lượng thuyết trình
-- **Thời gian nói được phân bổ:** 2 phút 15 giây (135 giây)
-- **Số từ mục tiêu:** ~290 từ (tốc độ ~130 từ/phút)
-- **Các slide phụ trách:** Slide 9 và Slide 10 (trước đây là Slide 11 và 12). Thời gian không đổi: 2 phút 15 giây. Các phần nói về kiểm chứng riêng cho Security rule và về dữ liệu giả mạo đã bị bỏ khỏi cả hai slide; hạn chế nay nói thẳng rằng Security rule được thêm sau khi thấy lỗi gian lận trên 50 yêu cầu nên số liệu chính không phải kiểm tra mù.
+- **Thời gian nói được phân bổ:** 1 phút 55 giây (115 giây). Giảm 20 giây so với bản trước (135 giây) vì câu hỏi suy ngẫm kết thúc ở Slide 10 đã bị bỏ.
+- **Số từ mục tiêu:** ~249 từ (tốc độ ~130 từ/phút)
+- **Các slide phụ trách:** Slide 9 (75 giây) và Slide 10 (40 giây). Phương Nam **không đặt câu hỏi** cho khán giả. Slide cuối kết thúc bằng lời cảm ơn và mời mọi người đặt câu hỏi cho Long; toàn bộ phần Q&A do Long trả lời. Các phần nói về kiểm chứng riêng cho Security rule và về dữ liệu giả mạo đã bị bỏ khỏi cả hai slide; hạn chế nay nói thẳng rằng Security rule được thêm sau khi thấy lỗi gian lận trên 50 yêu cầu nên số liệu chính không phải kiểm tra mù.
 
 ---
 
@@ -13,7 +13,7 @@
 
 Đọc to và rõ ràng câu giới thiệu này khi nhận lượt nói:
 
-> "Hello everyone. My name is Nguyen Phuong Nam. I am responsible for our literature review, research limitations, and Q&A session coordination."
+> "Hello everyone. My name is Nguyen Phuong Nam. I am responsible for our literature review, research limitations, and our conclusion."
 
 ---
 
@@ -47,38 +47,34 @@
 
 ---
 
-### Slide 10: Kết luận, câu hỏi mở và chuyển sang Q&A
+### Slide 10: Kết luận và chuyển sang Q&A
 - **Tiêu đề slide:** Conclusion
-- **Thời gian dự kiến trên slide:** 1 phút 00 giây (60 giây, ~130 từ)
+- **Thời gian dự kiến trên slide:** 0 phút 40 giây (40 giây, ~85 từ)
 
-> To conclude, we built three levels of customer support on one ladder and measured them on the same fifty requests.  
+> To conclude, we built three levels of customer support on one ladder and tested them on the same fifty requests.  
 > 
 > `[NGHỈ 1 GIÂY]`  
 > 
-> We have three takeaways.  
-> First, Level Three, with Jev and DeepSeek, is 2.2 times faster and 2.4 times cheaper than the LLM agent, and it is never worse in any measured outcome.  
-> Second, Jev gives a confidence with every label, and it triages in under a quarter of a second.  
-> And third, the written rules make a weaker classifier safe. Jev is behind the LLM on four fields, yet no wrong answer becomes an error of Level Three. A Security rule closes the fraud defect that we found.  
+> First, Level Three, with Jev and DeepSeek, is 2.2 times faster and 2.4 times cheaper than the LLM agent, and it is never worse.  
+> Second, Jev gives a confidence with every label.  
+> Third, the written rules make a weaker classifier safe.  
 > 
 > `[NGHỈ 1 GIÂY]`  
+> `[NHÌN SANG TRAN THANH LONG]`  
 > 
-> As our closing thought, we leave you with one question: as AI models become smarter, where should software companies draw the line between automated AI and fixed business rules?  
-> 
-> `[NGHỈ 2 GIÂY]`  
-> 
-> Thank you very much for listening. All five team members are now ready to answer your questions.
+> Thank you very much for listening. Our leader, Tran Thanh Long, will now take your questions.
 
 ---
 
 ## 3. Câu nói chuyển tiếp sang phần hỏi đáp (Q&A)
 
-Nói chính xác câu tiếng Anh này để mở đầu phần hỏi đáp:
+Nói chính xác câu tiếng Anh này để mở đầu phần hỏi đáp, rồi lùi sang bên và lắng nghe. Long trả lời toàn bộ câu hỏi:
 
-> "Thank you very much for listening. All five team members are now ready to answer your questions."
+> "Thank you very much for listening. Our leader, Tran Thanh Long, will now take your questions."
 
 ---
 
-## 4. Ba câu hỏi khán giả thường gặp và gợi ý trả lời
+## 4. Ba câu hỏi khán giả thường gặp và gợi ý trả lời (chỉ để hiểu sâu phần của mình; Long là người trả lời trong Q&A)
 
 ### Câu hỏi 1:
 **"How does your state machine compare to real commercial customer support platforms like Intercom or Salesforce?"**
@@ -108,11 +104,11 @@ Luyện phát âm 10 từ vựng này theo phiên âm đơn giản dưới đây
 | **Statistical** | **stuh-TIS-tih-kul** | Có 4 âm tiết; nhấn vào 'TIS'; đuôi 'kul' nhẹ. |
 | **Bound** | **BOWND** | Có 1 âm tiết; phát âm giống 'round'; bật âm 'd'. |
 | **Commercial** | **kuh-MUR-shul** | Có 3 âm tiết; nhấn vào 'MUR'; đuôi 'shul' đọc mềm. |
-| **Takeaways** | **TAYK-uh-wayz** | Có 3 âm tiết; nhấn vào 'TAYK'; đuôi 'z' rung nhẹ. |
+| **Questions** | **KWES-chunz** | Có 2 âm tiết; nhấn vào 'KWES'; đuôi 'chunz' đọc nhẹ. |
 | **Confidence** | **KON-fih-dens** | Có 3 âm tiết; nhấn mạnh vào 'KON'; đuôi 'dens' đọc nhẹ. |
 | **Cache** | **KASH** | Có 1 âm tiết; đọc giống 'cash'. |
 | **Blind** | **BLYND** | Có 1 âm tiết; vần giống 'kind'; bật nhẹ âm 'd'. |
-| **Coordination** | **koh-OR-dih-nay-shun** | Có 5 âm tiết; trọng âm chính rơi vào 'nay'. |
+| **Conclusion** | **kun-KLOO-zhun** | Có 3 âm tiết; nhấn vào 'KLOO'; âm 'zh' như trong 'vision'. |
 
 ---
 
@@ -120,5 +116,4 @@ Luyện phát âm 10 từ vựng này theo phiên âm đơn giản dưới đây
 
 - `[NHÌN KHÁN GIẢ - GIAO TIẾP ÁNH MẮT TRÁI VÀ PHẢI]`: Quét mắt bao quát phòng học để duy trì sự ấm áp và tự tin.
 - `[NGHỈ 1 GIÂY]`: Ngắt nhịp cẩn thận giữa các hạn chế nghiên cứu để thể hiện sự trung thực trong học thuật.
-- `[NGHỈ 2 GIÂY]`: Ngắt nhịp tạo ấn tượng sâu sắc sau câu hỏi suy ngẫm trước khi chuyển sang phần Q&A.
 - `[CHUYỂN SANG SLIDE X]`: Bấm chuyển slide trình chiếu chuẩn xác theo kịch bản.
