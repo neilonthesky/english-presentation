@@ -5,7 +5,7 @@ import { join } from "node:path"
 import type { Results } from "./metrics"
 import { FIELDS, type Field } from "./types"
 
-const NAMES: Record<Field, string> = { queue: "Queue", action: "Action", priority: "Priority", risk: "Risk", injection: "Injection" }
+const NAMES: Record<Field, string> = { queue: "Topic", action: "Action", priority: "Priority", risk: "Risk", injection: "Injection" }
 const BLUE = "#2563eb"
 const AMBER = "#f59e0b"
 const SLATE = "#64748b"

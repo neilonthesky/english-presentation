@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.29 (TeX Live 2026/Arch Linux) (preloaded format=pdflatex 2026.10.5)  7 OCT 2026 07:54
+This is pdfTeX, Version 3.141592653-2.6-1.40.29 (TeX Live 2026/Arch Linux) (preloaded format=pdflatex 2026.10.5)  7 OCT 2026 08:52
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -1132,10 +1132,8 @@ ut line 276.
 (pdftex.def)             Requested size: 204.97684pt x 114.44873pt.
 
 (./experiment/results/tables/stage.tex)
-(./experiment/results/tables/calibration.tex)
-Underfull \vbox (badness 10000) has occurred while \output is active []
-
- [4.4 <./experiment/results/figures/classifier.pdf>] Processing 'acks' comment.
+(./experiment/results/tables/calibration.tex) [4.4 <./experiment/results/figure
+s/classifier.pdf>] Processing 'acks' comment.
 \openout3 = `comment.cut'.
 
 
@@ -1182,11 +1180,11 @@ Package rerunfilecheck Info: File `paper.out' has not changed.
 (rerunfilecheck)             Checksum: 314587BF7A46FF8C2287029750489D04;2904.
  ) 
 Here is how much of TeX's memory you used:
- 21366 strings out of 469515
- 343242 string characters out of 5470807
+ 21372 strings out of 469515
+ 343395 string characters out of 5470807
  840881 words of memory out of 5000000
  49038 multiletter control sequences out of 15000+600000
- 772162 words of font info for 381 fonts, out of 8000000 for 9000
+ 772798 words of font info for 385 fonts, out of 8000000 for 9000
  175 hyphenation exceptions out of 8191
  90i,10n,131p,1350b,611s stack positions out of 10000i,1000n,20000p,200000b,200000s
 </usr/share/texmf-dist/fonts/type1/public/inconsolata/Inconsolata-zi4r.pfb></
@@ -1197,7 +1195,7 @@ pe1/public/libertine/LinLibertineTB.pfb></usr/share/texmf-dist/fonts/type1/publ
 ic/libertine/LinLibertineTI.pfb></usr/share/texmf-dist/fonts/type1/public/amsfo
 nts/cm/cmr7.pfb></usr/share/texmf-dist/fonts/type1/public/newtx/txmiaX.pfb></us
 r/share/texmf-dist/fonts/type1/public/newtx/txsys.pfb>
-Output written on paper.pdf (6 pages, 433985 bytes).
+Output written on paper.pdf (6 pages, 433681 bytes).
 PDF statistics:
  276 PDF objects out of 1000 (max. 8388607)
  234 compressed objects within 3 object streams

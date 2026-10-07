@@ -125,7 +125,7 @@ export function classifierState(text: string, who: Requester) {
   }
 }
 
-/** Triage, part 1: one Jev call gives the queue, the action, the priority, the risk flag, and the injection flag. */
+/** Triage, part 1: one Jev call gives the topic, the action, the priority, the risk flag, and the injection flag. */
 export async function classify(text: string, who: Requester): Promise<Classifier> {
   const { json, latencyS } = await transport.post<JevJson>(JEV_URL, {
     state: classifierState(text, who),

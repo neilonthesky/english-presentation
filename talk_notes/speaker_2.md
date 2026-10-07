@@ -43,7 +43,7 @@
 - **Tiêu đề slide:** Level 3: Jev, fixed code, and an LLM
 - **Thời gian dự kiến trên slide:** 1 phút 12 giây (72 giây, ~155 từ)
 
-> In Level Three, Jev replaces the LLM agent as the step that chooses the action. In one call, it answers five questions about the chat, each with a confidence: the queue, the action, the priority, the risk flag, and the injection flag.  
+> In Level Three, Jev replaces the LLM agent as the step that chooses the action. In one call, it answers five questions about the chat, each with a confidence: the topic, the action, the priority, the risk flag, and the injection flag.  
 > 
 > `[NGHỈ 1 GIÂY]`  
 > 
@@ -78,7 +78,7 @@ Luyện phát âm 10 từ vựng này theo phiên âm đơn giản dưới đây
 | **Deterministic** | **dih-TUR-mih-nis-tik** | Có 5 âm tiết; nhấn mạnh vào 'TUR' và 'nis'. |
 | **Irreversible** | **eer-ih-VUR-sih-bul** | Có 5 âm tiết; nhấn mạnh vào 'VUR'; đuôi 'bul' đọc rõ. |
 | **Security** | **sih-KYUR-ih-tee** | Có 4 âm tiết; nhấn vào 'KYUR'; đuôi 'tee' đọc nhẹ. |
-| **Queue** | **KYOO** | Có 1 âm tiết; đọc giống chữ 'Q'; không đọc 'que-ue'. |
+| **Topic** | **TOP-ik** | Có 2 âm tiết; nhấn vào 'TOP'; đuôi 'ik' đọc nhẹ. |
 | **Calibrated** | **KAL-ih-bray-tid** | Có 4 âm tiết; nhấn vào 'KAL'; đuôi 'tid' dứt khoát. |
 | **Probability** | **praw-buh-BIL-ih-tee** | Có 5 âm tiết; trọng âm chính rơi vào 'BIL'. |
 | **Verdict** | **VUR-dikt** | Có 2 âm tiết; nhấn vào 'VUR'; đuôi 'dikt' đọc sắc. |

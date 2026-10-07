@@ -174,7 +174,7 @@ export function StepDetail({ node, current, phase, ctx }: Props) {
         content = (
           <>
             <Label>Jev gives five answers</Label>
-            <Row k="Queue">{f.queue.value}<Chance value={f.queue.confidence} /></Row>
+            <Row k="Topic">{f.queue.value}<Chance value={f.queue.confidence} /></Row>
             <Row k="Action">{f.action.value}<Chance value={f.action.confidence} /></Row>
             <Row k="Priority">{f.priority.value}<Chance value={f.priority.confidence} /></Row>
             <Row k="Risk flag">{f.risk.value ? "on" : "off"}<Chance value={f.risk.confidence} /></Row>
@@ -188,7 +188,7 @@ export function StepDetail({ node, current, phase, ctx }: Props) {
             </ol>
             <Callout title="Next: Gather info">{sentence(t.reason)}.</Callout>
             <Row k="Action after Triage">{t.action}</Row>
-            <Row k="Queue">{t.queue}</Row>
+            <Row k="Topic">{t.queue}</Row>
           </>
         )
       }
@@ -250,7 +250,7 @@ export function StepDetail({ node, current, phase, ctx }: Props) {
         content = (
           <>
             <Row k="Action">{ctx.executed.action}</Row>
-            <Row k="Queue">{ctx.executed.queue}</Row>
+            <Row k="Topic">{ctx.executed.queue}</Row>
             <Row k="Target">{ctx.executed.target ?? "none"}</Row>
             {ctx.executed.details.length > 0 && (
               <ul className="list-disc space-y-1 pl-5 text-sm">{ctx.executed.details.map((d, i) => <li key={i}>{d}</li>)}</ul>

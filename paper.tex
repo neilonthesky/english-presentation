@@ -123,7 +123,7 @@ The ladder changes one part at a time. Level 1 to 2 replaces the staff with one 
 
 \textbf{Level 2 (LLM agent).} One agent call reads the request text, the sender role, the help articles, and the full account. The agent applies the written rules (Section~\ref{sec:rules}) itself and returns one of two answers: an action to run with its target, or a denial that names the rule. The action that it names runs at once: no fixed code checks it, and nothing handles an order hidden in the text (Figure~\ref{fig:llmagent}). The LLM then writes the Final message.
 
-\textbf{Level 3 (Jev + LLM + rules).} Jev replaces the agent as the step that reads the chat. In one call it answers five questions, each with a confidence, and it never reads the account: the \emph{queue} (the team that owns the request: Account, Payments, Plans and Credits, Product Help, Refunds, or Security), the \emph{priority}, the \emph{action} (Send reply, Start refund, Delete data, Cancel plan, or Reset password), a \emph{risk flag} (money, stored data, the plan, or the password is at stake), and an \emph{injection flag} (the text gives orders to the model). Fixed code does the other jobs of the agent: Gather info reads only the account fields that the action needs, and Rules check applies the written rules. The LLM writes the text only (Figure~\ref{fig:flow}).
+\textbf{Level 3 (Jev + LLM + rules).} Jev replaces the agent as the step that reads the chat. In one call it answers five questions, each with a confidence, and it never reads the account: the \emph{topic} (the subject of the request: Account, Payments, Plans and Credits, Product Help, Refunds, or Security), the \emph{priority}, the \emph{action} (Send reply, Start refund, Delete data, Cancel plan, or Reset password), a \emph{risk flag} (money, stored data, the plan, or the password is at stake), and an \emph{injection flag} (the text gives orders to the model). Fixed code does the other jobs of the agent: Gather info reads only the account fields that the action needs, and Rules check applies the written rules. The LLM writes the text only (Figure~\ref{fig:flow}).
 
 \subsection{The Flow of One Request at Level 3}\label{sec:flow}
 
@@ -179,7 +179,7 @@ Reset password & sender \\
 
 \subsection{The Written Rules}\label{sec:rules}
 
-Four actions that change the state have written rules (Table~\ref{tab:rules}); ``Send reply'' has none. Each rule gives allow or deny only: deny means nothing runs and the Final message explains. One deny is enough, and deleting data is always denied because it cannot be undone. The \emph{Security rule} is checked first and covers every state change: a request that reports that the account or the payment method was used by someone who is not the customer stops it, and the reply gives the security steps. At Level 3 the rule applies when Triage puts the request in the queue ``Security''; at Level 2 the agent reads the text of the rule.
+Four actions that change the state have written rules (Table~\ref{tab:rules}); ``Send reply'' has none. Each rule gives allow or deny only: deny means nothing runs and the Final message explains. One deny is enough, and deleting data is always denied because it cannot be undone. The \emph{Security rule} is checked first and covers every state change: a request that reports that the account or the payment method was used by someone who is not the customer stops it, and the reply gives the security steps. At Level 3 the rule applies when the topic of the request from Triage is ``Security''; at Level 2 the agent reads the text of the rule.
 
 \begin{table}[t]
 \caption{The written rules.}
@@ -190,7 +190,7 @@ Four actions that change the state have written rules (Table~\ref{tab:rules}); `
 \toprule
 Action & Written rule & Outcome \\
 \midrule
-Any state change & The request reports that the account or the payment method was used by someone who is not the customer. & Security queue: deny; the reply gives the security steps \\
+Any state change & The request reports that the account or the payment method was used by someone who is not the customer. & Security topic: deny; the reply gives the security steps \\
 Refund, delete, cancel & Only the owner can ask for this. & asked by a teammate: deny \\
 Refund, delete, cancel & The system changes only the account of the sender. & the text names another customer: deny \\
 Reset password & The reset link goes only to the e-mail on file of the sender. & another e-mail address in the text: deny \\
@@ -234,7 +234,7 @@ Closing message & 2 & Send reply \\
 \end{tabular}
 \end{table}
 
-A seeded generator (seed 20261007) writes 50 requests in 24 types (Table~\ref{tab:types}); there is one request set and no split. Every request has its own wording, its own sender (44 owners and 6 teammates), and a customer from the test data. The correct labels come from the written rules: the generator runs the real code of the system on the correct action, the true sender, the facts in the text (for example, an e-mail address), and the refund history of the customer. A written rule denies the action on 15 of the 50 requests, and the flow then runs nothing; 26 end with an answer, and 9 run an action. One closing message has no right queue, so its queue label is not scored.
+A seeded generator (seed 20261007) writes 50 requests in 24 types (Table~\ref{tab:types}); there is one request set and no split. Every request has its own wording, its own sender (44 owners and 6 teammates), and a customer from the test data. The correct labels come from the written rules: the generator runs the real code of the system on the correct action, the true sender, the facts in the text (for example, an e-mail address), and the refund history of the customer. A written rule denies the action on 15 of the 50 requests, and the flow then runs nothing; 26 end with an answer, and 9 run an action. One closing message has no right topic, so its topic label is not scored.
 
 \subsection{Models and Run}\label{sec:api}
 
@@ -281,13 +281,13 @@ Level 3 is 2.2 times faster and 2.4 times cheaper than Level 2. The first call e
 
 \input{experiment/results/tables/stage.tex}
 
-Figure~\ref{fig:classifier} and Table~\ref{tab:stage} compare the two classifiers on the same input and criteria. Jev is behind the LLM on four fields and ahead on the queue (91.7\% against 85.4\% of the 48 scored requests). Jev is wrong in at least one field in 29 of the 50 requests (58.0\%), against 19 (38.0\%) for the LLM. Jev is ahead on speed and cost: one call takes a median of 0.241~s against 4.410~s (18 times faster), and the classifier costs \$0.052 against \$0.587 per 1,000 requests (11 times cheaper).
+Figure~\ref{fig:classifier} and Table~\ref{tab:stage} compare the two classifiers on the same input and criteria. Jev is behind the LLM on four fields and ahead on the topic (91.7\% against 85.4\% of the 48 scored requests). Jev is wrong in at least one field in 29 of the 50 requests (58.0\%), against 19 (38.0\%) for the LLM. Jev is ahead on speed and cost: one call takes a median of 0.241~s against 4.410~s (18 times faster), and the classifier costs \$0.052 against \$0.587 per 1,000 requests (11 times cheaper).
 
-The routing rule, the written rules, and the Security rule catch the wrong answers. Jev gives a wrong queue or action in 11 of the 50 requests, and none is an error of Level 3; the LLM does the same in 11, and none is an error of the LLM-classifier run. The LLM-classifier run serves 35, stops 15, and makes 0 errors like Level 3, but it takes 9.42~s and costs \$0.849 per 1,000 requests.
+The routing rule, the written rules, and the Security rule catch the wrong answers. Jev gives a wrong topic or action in 11 of the 50 requests, and none is an error of Level 3; the LLM does the same in 11, and none is an error of the LLM-classifier run. The LLM-classifier run serves 35, stops 15, and makes 0 errors like Level 3, but it takes 9.42~s and costs \$0.849 per 1,000 requests.
 
 \input{experiment/results/tables/calibration.tex}
 
-Table~\ref{tab:calibration} groups the answers that carry a confidence (the queue, the action, and the risk flag) by that confidence. Wrong answers cluster in the low bands: 11 of the 22 wrong answers sit below 0.8, and 5 sit at 0.9 or more. The ECE runs from 0.072 (the priority) to 0.153 (the action). Only Jev reports a confidence; some bins hold few answers, and we tested no significance.
+Table~\ref{tab:calibration} groups the answers that carry a confidence (the topic, the action, and the risk flag) by that confidence. Wrong answers cluster in the low bands: 11 of the 22 wrong answers sit below 0.8, and 5 sit at 0.9 or more. The ECE runs from 0.072 (the priority) to 0.153 (the action). Only Jev reports a confidence; some bins hold few answers, and we tested no significance.
 
 \section{Discussion and Limits}\label{sec:discussion}
 

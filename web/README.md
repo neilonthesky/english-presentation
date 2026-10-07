@@ -8,7 +8,7 @@ Left: customer chat. Middle: state machine diagram (React Flow). Right: details 
 Eight states. The flow does not leave the chat: the chat answers, or the LLM says plainly what the chat cannot do.
 
 1. **New**: the customer message is saved.
-2. **Triage**: Jev classifies the request (queue, action, priority, risk flag, injection flag), each answer with a chance. The chances report classifier quality only; no rule reads them. The action is one of five: Send reply, Start refund, Delete data, Cancel plan, Reset password. Fixed rules choose the next state. The first match wins:
+2. **Triage**: Jev classifies the request (topic, action, priority, risk flag, injection flag), each answer with a chance. The chances report classifier quality only; no rule reads them. The action is one of five: Send reply, Start refund, Delete data, Cancel plan, Reset password. Fixed rules choose the next state. The first match wins:
    - Injection flag on -> **Gather info**; the orders in the text are ignored and the action is forced to "Send reply" (rule `injection`).
    - Action "Send reply" -> **Gather info** (rule `answer`). Action "Start refund", "Delete data", "Cancel plan", or "Reset password" -> **Gather info** (rule `act`).
    The priority and the risk flag stay in the classifier answer and in the evaluation; no rule reads them. An invalid classifier answer fails closed: the classify call fails, the flow stops in Triage, and nothing runs.

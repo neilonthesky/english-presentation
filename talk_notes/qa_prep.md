@@ -126,11 +126,11 @@ Tài liệu này chuẩn bị cho phiên hỏi đáp 5 phút với khán giả (
 
 ---
 
-### Câu hỏi 14: Security Queue vs Risk Flag
-**"Why does the Security rule read the Security queue rather than the risk flag?"**
+### Câu hỏi 14: Security Topic vs Risk Flag
+**"Why does the Security rule read the Security topic rather than the risk flag?"**
 - **Người trả lời:** Tran Thanh Long (nội dung thuộc phần của Nguyen Thanh Nam: Quy tắc và Kiến trúc)
 - **Câu trả lời tiếng Anh (3 câu):**
-  > "The risk flag only says that money, stored data, the plan, or the password is at stake. A valid refund has the same flag as a fraud case, so the flag cannot tell them apart. The Security queue says that the request reports use of the account by someone else, so the rule reads the queue and denies every state change."
+  > "The risk flag only says that money, stored data, the plan, or the password is at stake. A valid refund has the same flag as a fraud case, so the flag cannot tell them apart. The Security topic says that the request reports use of the account by someone else, so the rule reads the topic and denies every state change."
 
 ---
 

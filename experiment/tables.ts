@@ -92,11 +92,11 @@ export async function writeTables(out: string, results: Results): Promise<string
     ],
   )
 
-  // The answers of the queue, the action, and the risk flag by confidence: the classifier quality that the calibration table reports.
+  // The answers of the topic, the action, and the risk flag by confidence: the classifier quality that the calibration table reports.
   const test = await chanceBins(join(out, "per_case.json"))
   const cell = (bin: { n: number; wrong: number }): string[] => [`${bin.n}`, `${bin.wrong}`, bin.n ? pct(bin.wrong / bin.n) : "--"]
   written["calibration.tex"] = table(
-    "Wrong answers of the queue, the action, and the risk flag of Jev by the confidence of the answer.",
+    "Wrong answers of the topic, the action, and the risk flag of Jev by the confidence of the answer.",
     "tab:calibration",
     "lrrr",
     ["Confidence", "n", "Wrong", "\\%"],
@@ -109,7 +109,7 @@ export async function writeTables(out: string, results: Results): Promise<string
 
 export interface ChanceBin {
   label: string
-  /** Answers of the queue, the action, and the risk flag with a chance in [low, high). */
+  /** Answers of the topic, the action, and the risk flag with a chance in [low, high). */
   n: number
   wrong: number
 }
@@ -129,7 +129,7 @@ interface JevCase {
   classifier: { fields: Record<string, { value: unknown; chance: number | null }> }
 }
 
-/** How often the three answers that carry a chance (queue, action, risk flag) are wrong, by the chance of the answer. */
+/** How often the three answers that carry a chance (topic, action, risk flag) are wrong, by the chance of the answer. */
 export async function chanceBins(perCasePath: string): Promise<ChanceBin[]> {
   const perCase: { jev: (JevCase | { failure: string })[] } = await Bun.file(perCasePath).json()
   const bins = BINS.map((bin) => ({ label: bin.label, n: 0, wrong: 0 }))

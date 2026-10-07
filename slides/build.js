@@ -309,7 +309,7 @@ async function photo(file, w, h, radius = 0.08, dpi = 150) {
     const s = base(
       5,
       "Level 3: Jev, fixed code, and an LLM",
-      "This is the flow of Level 3 as a state machine with eight states. New saves the message. Triage: Jev answers five questions, each with a confidence, in one call and never reads the account; an injection flag ignores the orders in the text, and a fraud report goes to the queue Security. " +
+      "This is the flow of Level 3 as a state machine with eight states. New saves the message. Triage: Jev answers five questions, each with a confidence, in one call and never reads the account; an injection flag ignores the orders in the text, and a fraud report has the topic Security. " +
         "Gather info is fixed code and reads only the account fields that the action needs. Rules check applies the written rules, the Security rule first: allow goes to Do action, deny goes to the Final message with nothing run. " +
         "The LLM writes the Final message only. A popup then asks if the issue is solved, and the chat resolves. The selected fields cut the Final message input from 617 to 590 tokens."
     );
@@ -390,11 +390,11 @@ async function photo(file, w, h, radius = 0.08, dpi = 150) {
       7,
       "Result 1: Jev is 18x faster, 11x cheaper",
       "Both classifiers get the same input and the same criteria. One Jev call takes 0.241 s (median). One LLM call takes 4.410 s. Jev is 18 times faster. Jev costs $0.052 per 1,000 requests. The LLM costs $0.587. Jev is 11 times cheaper. " +
-        "Jev is behind the LLM on four of five answers: action 86.0% against 92.0%, priority, risk flag, and injection flag. Jev is ahead on the queue: 91.7% against 85.4% of 48 scored requests. " +
-        "Jev gives a wrong queue or action in 11 of 50 requests. None is an error at Level 3: the routing rule, the written rules, and the Security rule catch them."
+        "Jev is behind the LLM on four of five answers: action 86.0% against 92.0%, priority, risk flag, and injection flag. Jev is ahead on the topic: 91.7% against 85.4% of 48 scored requests. " +
+        "Jev gives a wrong topic or action in 11 of 50 requests. None is an error at Level 3: the routing rule, the written rules, and the Security rule catch them."
     );
     box(s, ML, 1.65, 7.6, 4.9);
-    const labels = ["Action", "Queue", "Priority", "Risk flag", "Injection flag"];
+    const labels = ["Action", "Topic", "Priority", "Risk flag", "Injection flag"];
     s.addChart(
       pres.charts.BAR,
       [
@@ -404,13 +404,13 @@ async function photo(file, w, h, radius = 0.08, dpi = 150) {
       {
         ...chartBase, x: ML + 0.2, y: 1.8, w: 7.2, h: 4.6, barDir: "col", barGrouping: "clustered", barGapWidthPct: 60,
         chartColors: [C.l3, "9AA7B5"], dataLabelPosition: "outEnd", dataLabelFontSize: 12, dataLabelFormatCode: "0.0",
-        catAxisLabelFontSize: 13, valAxisMaxVal: 112, title: "Percent correct on 50 requests (queue: 48 scored)",
+        catAxisLabelFontSize: 13, valAxisMaxVal: 112, title: "Percent correct on 50 requests (topic: 48 scored)",
       }
     );
     const x = ML + 7.9, w = CW - 7.9;
     callout(s, x, 1.65, w, 1.5, { icon: "LuZap", big: "18x", label: "faster: 0.241 s against 4.410 s, median for one classifier call", color: C.l3 });
     callout(s, x, 3.35, w, 1.5, { icon: "LuDollarSign", big: "11x", label: "cheaper: $0.052 against $0.587 per 1,000 requests", color: C.l3 });
-    callout(s, x, 5.05, w, 1.5, { icon: "LuBadgeCheck", big: "11 of 50", label: "wrong queue or action from Jev. None is an error at Level 3.", color: C.teal });
+    callout(s, x, 5.05, w, 1.5, { icon: "LuBadgeCheck", big: "11 of 50", label: "wrong topic or action from Jev. None is an error at Level 3.", color: C.teal });
   }
 
   // ---------- 8. Result 2: the ladder ----------

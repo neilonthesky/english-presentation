@@ -254,7 +254,7 @@ export const SECURITY_RULE = securityRule
 
 /**
  * The typed answer of the classifier that says: this request reports a misuse of the account or of the payment method. It is the
- * queue "Security".
+ * topic "Security".
  */
 export const misuseReport = (f: Classifier["fields"]): boolean => f.queue.value === "Security"
 
