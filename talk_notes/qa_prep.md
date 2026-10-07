@@ -17,7 +17,7 @@ Tài liệu này chuẩn bị cho nhóm 5 người trong phiên hỏi đáp 5 ph
 
 ## 2. 15 câu hỏi hóc búa nhất của buổi thuyết trình
 
-### Question 1: System Design
+### Câu hỏi 1: System Design
 **"Why did you use a deterministic state machine instead of letting an autonomous LLM agent make decisions at each step?"**
 - **Diễn giả phụ trách chính:** Nguyen Thanh Nam (Quy tắc và Kiến trúc)
 - **Câu trả lời tiếng Anh (3 câu):**
@@ -25,7 +25,7 @@ Tài liệu này chuẩn bị cho nhóm 5 người trong phiên hỏi đáp 5 ph
 
 ---
 
-### Question 2: Classifier Selection
+### Câu hỏi 2: Classifier Selection
 **"Why did you choose Jev instead of using a standard lightweight model like GPT-4o-mini or Claude Haiku?"**
 - **Diễn giả phụ trách chính:** Vuong Quang Quy (Kết quả và Mô hình)
 - **Câu trả lời tiếng Anh (3 câu):**
@@ -33,15 +33,15 @@ Tài liệu này chuẩn bị cho nhóm 5 người trong phiên hỏi đáp 5 ph
 
 ---
 
-### Question 3: Dataset Size and Significance
+### Câu hỏi 3: Dataset Size and Significance
 **"Your dataset only contains 50 requests. Isn't that sample too small to draw conclusions?"**
 - **Diễn giả phụ trách chính:** Vu Van Son (Tập dữ liệu và Thực nghiệm)
-- **Câu trả lời tiếng Anh (5 câu):**
-  > "Fifty requests is a focused benchmark, which we chose to run live against hosted commercial APIs without simulated mocks. In total, the study covers seven hundred and ninety-three live and forged requests, including seven hundred and nineteen fault cases in which the written rules never let an unsafe action run. On the fifty main requests, our exact two-sided sign test on three discordant pairs yielded p equals 0.25, which is not statistically significant due to the small sample size. We state this plainly: our strong empirical claims are speed, cost, and that Level 3 is never worse in any measured column."
+- **Câu trả lời tiếng Anh (4 câu):**
+  > "Fifty requests is a focused benchmark, which we chose to run live against hosted commercial APIs without simulated mocks. Our exact two-sided sign test on three discordant pairs yielded p equals 0.25, which is not statistically significant due to the small sample size. Zero harmful runs in fifty requests is not proof of zero: the ninety-five percent upper limit is about six percent. We state this plainly: our strong empirical claims are speed, cost, and that Level 3 is never worse in any measured column."
 
 ---
 
-### Question 4: Fairness of the Baseline Comparison
+### Câu hỏi 4: Fairness of the Baseline Comparison
 **"Is it fair to compare Jev with DeepSeek when DeepSeek did not have access to a confidence floor?"**
 - **Diễn giả phụ trách chính:** Vuong Quang Quy (Kết quả và Mô hình)
 - **Câu trả lời tiếng Anh (3 câu):**
@@ -49,31 +49,31 @@ Tài liệu này chuẩn bị cho nhóm 5 người trong phiên hỏi đáp 5 ph
 
 ---
 
-### Question 5: Error Analysis and Overfitting
+### Câu hỏi 5: Error Analysis and Overfitting
 **"Why did Level 3 achieve 0 errors while Level 2 made 3 errors, and is 0 errors overfitting?"**
 - **Diễn giả phụ trách chính:** Vuong Quang Quy (Kết quả và Mô hình)
-- **Câu trả lời tiếng Anh (4 câu):**
-  > "Level 3 achieves zero customer errors because Jev names the requested action, the Security rule intercepts fraud reports, and our written rules stop illegal actions cleanly. To verify that this was not overfitting, we tested our Security rule on a frozen held-out set of twenty-four new requests built before writing the rule. On that held-out set, the Security rule eliminated all four fraud errors with zero false stops, proving the rule generalizes beyond the main test set."
+- **Câu trả lời tiếng Anh (3 câu):**
+  > "Level 3 achieves zero customer errors because Jev names the requested action, the Security rule stops fraud reports, and our written rules deny illegal actions. We do not call this a blind test: we added the Security rule after fraud reports showed a defect on these fifty requests. So the zero is a result on a set that we know, not proof that it holds on new requests."
 
 ---
 
-### Question 6: Economic Cost Analysis
+### Câu hỏi 6: Economic Cost Analysis
 **"Why is Level 3 2.4 times cheaper if the LLM still generates the final message?"**
 - **Diễn giả phụ trách chính:** Vuong Quang Quy (Kết quả và Mô hình)
 - **Câu trả lời tiếng Anh (3 câu):**
-  > "In Level 2, the LLM agent call costs 0.468 dollars per thousand requests and the Final message costs 0.244 dollars, totaling 0.71 dollars per thousand requests. In Level 3, Jev replaces the expensive agent call with a fast 0.052 dollar classifier call, reducing total pipeline cost to 0.30 dollars per thousand requests. Eliminating the heavy reasoning tokens of the agent decision stage cuts overall costs by 2.4 times."
+  > "In Level 2, the LLM agent call costs 0.386 dollars per thousand requests, and the whole level costs 0.71 dollars per thousand requests. In Level 3, the Jev call replaces the agent call and costs 0.052 dollars per thousand requests, so the whole level costs 0.30 dollars. Removing the reasoning tokens of the agent call cuts the total cost by 2.4 times."
 
 ---
 
-### Question 7: Synthetic Data Realism
+### Câu hỏi 7: Synthetic Data Realism
 **"Why did you use synthetic data rather than public customer support datasets like Bitext?"**
 - **Diễn giả phụ trách chính:** Vu Van Son (Tập dữ liệu và Thực nghiệm)
 - **Câu trả lời tiếng Anh (3 câu):**
-  > "Public datasets like Bitext only contain customer intent labels without the underlying SaaS database state. Our study required full user profiles, including subscription dates, unused credit balances, and teammate permission flags, to evaluate deterministic written rules. We generated 72 complete customer worlds with 24 distinct scenario types to test every single rule branch."
+  > "Public datasets like Bitext only contain customer intent labels without the underlying SaaS account data. Our study required full customer profiles, including purchase dates, unused credit balances, and teammate permissions, to test the written rules. We generated 72 complete customers and 24 distinct request types to cover every rule branch."
 
 ---
 
-### Question 8: Human Support Staff Role
+### Câu hỏi 8: Human Support Staff Role
 **"In Level 3, what work is left for human support staff if the bot handles every request?"**
 - **Diễn giả phụ trách chính:** Tran Thanh Long (Trưởng nhóm)
 - **Câu trả lời tiếng Anh (3 câu):**
@@ -81,15 +81,15 @@ Tài liệu này chuẩn bị cho nhóm 5 người trong phiên hỏi đáp 5 ph
 
 ---
 
-### Question 9: Prompt Injection Defenses
+### Câu hỏi 9: Prompt Injection Defenses
 **"How does Level 3 prevent a malicious user from using prompt injection to steal a refund?"**
 - **Diễn giả phụ trách chính:** Nguyen Thanh Nam (Quy tắc và Kiến trúc)
 - **Câu trả lời tiếng Anh (4 câu):**
-  > "Level 3 uses a two-layer defense against prompt injection. First, the Triage classifier detects injection attempts and fixes the internal action to 'Send reply', ignoring any hidden commands in the text. Second, even if an injection bypassed the classifier, the written rules check account ownership, purchase dates, and ledger history. The system will refuse to execute any refund that violates business rules."
+  > "Level 3 uses a two-layer defense against prompt injection. First, Triage detects the injection flag and sets the action to 'Send reply', so the orders in the text are ignored. Second, even if the classifier missed the injection, the written rules check account ownership, purchase dates, and refund history. The system will deny any refund that breaks the written rules."
 
 ---
 
-### Question 10: Calibration and Probability
+### Câu hỏi 10: Calibration and Probability
 **"What does Expected Calibration Error prove about Jev, and why does it matter?"**
 - **Diễn giả phụ trách chính:** Vuong Quang Quy (Kết quả và Mô hình)
 - **Câu trả lời tiếng Anh (3 câu):**
@@ -97,23 +97,23 @@ Tài liệu này chuẩn bị cho nhóm 5 người trong phiên hỏi đáp 5 ph
 
 ---
 
-### Question 11: Safety Under Adversarial Conditions
-**"What happens if an attacker corrupts the classifier output to output a high-confidence refund?"**
+### Câu hỏi 11: Blind Testing of the Security Rule
+**"Did you test the Security rule on data that you had not seen?"**
 - **Diễn giả phụ trách chính:** Nguyen Thanh Nam (Quy tắc và Kiến trúc)
 - **Câu trả lời tiếng Anh (3 câu):**
-  > "We tested this exact failure mode in our fault injection experiment using 575 forged classifier requests. In all 575 cases, the deterministic written rules evaluated the user's ledger and blocked the action completely. A corrupted classifier cannot bypass our database checks because the model never possesses direct database execution permissions."
+  > "No. We added the Security rule after fraud reports showed a defect on these fifty requests, so the main numbers are not a blind test. We state this as a limit of the study. Future work should test adversarial inputs and real tickets."
 
 ---
 
-### Question 12: Latency Bottleneck
+### Câu hỏi 12: Latency Bottleneck
 **"Why is Level 3 2.2 times faster in machine time if DeepSeek still generates the final conversational reply?"**
 - **Diễn giả phụ trách chính:** Vuong Quang Quy (Kết quả và Mô hình)
 - **Câu trả lời tiếng Anh (3 câu):**
-  > "In Level 2, the LLM agent call takes 3.5 seconds on average to read the chat and account and reason about policies, before the final message call, resulting in 6.85 seconds mean machine time. In Level 3, Jev chooses the action in just 0.24 seconds without reading the account, cutting the total mean machine time to 3.16 seconds. That speedup cuts response latency by 2.2 times."
+  > "In Level 2, the agent call reads the chat and the account and reasons about the rules, and it takes 3.11 seconds per request. The Final message call adds the rest, for 6.85 seconds of mean machine time. In Level 3, the Jev call takes 0.295 seconds, and the total falls to 3.16 seconds, which is 2.2 times faster."
 
 ---
 
-### Question 13: Permanent Data Deletion
+### Câu hỏi 13: Permanent Data Deletion
 **"Why does your system permanently deny all data deletion requests in chat?"**
 - **Diễn giả phụ trách chính:** Nguyen Thanh Nam (Quy tắc và Kiến trúc)
 - **Câu trả lời tiếng Anh (3 câu):**
@@ -121,16 +121,16 @@ Tài liệu này chuẩn bị cho nhóm 5 người trong phiên hỏi đáp 5 ph
 
 ---
 
-### Question 14: Security Queue vs Risk Flag
-**"Why did you choose the Security queue rather than the risk flag for the Security rule?"**
+### Câu hỏi 14: Security Queue vs Risk Flag
+**"Why does the Security rule read the Security queue rather than the risk flag?"**
 - **Diễn giả phụ trách chính:** Nguyen Thanh Nam (Quy tắc và Kiến trúc)
 - **Câu trả lời tiếng Anh (3 câu):**
-  > "We evaluated both variants on our frozen held-out test of twenty-four new requests. The risk flag was active on every action request, which caused eight false stops on completely valid customer refunds and cancellations. The Security queue label specifically identifies unauthorized account access, successfully stopping all four fraud attempts with zero false alarms."
+  > "The risk flag only says that money, stored data, the plan, or the password is at stake. A valid refund has the same flag as a fraud case, so the flag cannot tell them apart. The Security queue says that the request reports use of the account by someone else, so the rule reads the queue and denies every state change."
 
 ---
 
-### Question 15: Customer Outcome Errors vs Label Errors
+### Câu hỏi 15: Customer Outcome Errors vs Label Errors
 **"What is the difference between a label error and a customer outcome error?"**
 - **Diễn giả phụ trách chính:** Vuong Quang Quy (Kết quả và Mô hình)
 - **Câu trả lời tiếng Anh (3 câu):**
-  > "A customer outcome error means the customer experienced an incorrect result, such as an unauthorized action or an unhelpful response; Level 3 had zero such errors, while Level 2 had three. A label error means the raw model prediction differed from the gold label, where Level 3 had seven misses and Level 2 had five. Crucially, our deterministic written rules absorbed every single label miss in Level 3, ensuring perfect safety for the customer."
+  > "A customer outcome error means the customer got a wrong result, such as a wrong denial or an unauthorized action; Level 3 had zero such errors, while Level 2 had three. A label error means the raw action label differed from the correct label, where Level 3 had seven misses and Level 2 had five. At Level 3, the Security rule stops the fraud reports among them, and in the other misses Jev answers 'Send reply' and nothing runs."

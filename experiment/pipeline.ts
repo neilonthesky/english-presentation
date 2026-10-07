@@ -19,7 +19,7 @@
 //                    rule. No rule of Triage runs, and no fixed rule runs.
 //
 // The reference run `llm` (not a level) runs the same flow as Level 3 with the LLM as the classifier (`decide()` below); `decide()`
-// is also the oracle of the dataset and the check of the fault suite.
+// is also the oracle of the dataset.
 //
 // Triage never stops the flow: every request goes on to Gather info. A request that a guard denies ends at the Final message,
 // where the LLM explains what the chat cannot do and gives the steps of the help articles. The flow has no waiting state: Chat

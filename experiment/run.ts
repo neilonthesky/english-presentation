@@ -10,7 +10,7 @@
 // transport, runs every system through the same pipeline (pipeline.ts) -- Level 2 (the LLM agent of the chat and the written
 // rules; no rule of Triage), Level 3 (Jev, the LLM, and the Triage rules), and the classifier
 // reference run "llm" (the same LLM as classifier with the rules of Triage; it is not a level, it gives the LLM side of the
-// stage table) -- then runs the fault injection and writes results.json, per_case.json,
+// stage table) -- then writes results.json, per_case.json,
 // provenance.json, tables/*.tex, and figures/ into <out>. The recorded calls are in <cache>/<service>/<sha256>.json
 // (default: <out>/requests). Every request of every system is logged as it finishes.
 import { mkdir, readdir, readFile, writeFile } from "node:fs/promises"
@@ -23,7 +23,7 @@ import {
   type ClassifierSystem, type RunRecord, type SystemName,
 } from "./pipeline"
 import { buildResults, type Results } from "./metrics"
-import { pmap, runFaultInjection } from "./faults"
+import { pmap } from "./pmap"
 import { installRecordedTransport } from "./transport"
 import { writeTables } from "./tables"
 import { writeFigures } from "./figures"
@@ -62,7 +62,7 @@ Options:
   --out DIR          evidence directory (default: experiment/results)
   --cache DIR        directory of the recorded calls (default: <out>/requests)
   --data DIR         directory with world.csv and the requests file (default: experiment/data)
-  --requests FILE    the requests file of that directory (default: requests.csv; the held-out set is heldout.csv)
+  --requests FILE    the requests file of that directory (default: requests.csv)
   --no-report        write no tables and no figures
   --help             print this text
 
@@ -229,7 +229,7 @@ async function main(): Promise<number> {
   const handle = installRecordedTransport({ out: args.out, cache, offline: args.offline, jevWorkers: args.jevWorkers, llmWorkers: args.llmWorkers })
   log(`${requests.length} requests, ${args.offline ? "offline replay" : "live calls"}; evidence in ${args.out}`)
 
-  // The calls of each phase of the run: the live calls and the cache hits that each system made. The fault suite makes no call.
+  // The calls of each phase of the run: the live calls and the cache hits that each system made.
   const phases: { phase: string; jevLive: number; jevCacheHits: number; llmLive: number; llmCacheHits: number }[] = []
   let before = snapshot(handle.counters)
   const cases: Record<SystemName, CaseEntry[]> = { jev: [], llm: [], llm_agent: [] }
@@ -251,7 +251,6 @@ async function main(): Promise<number> {
 
   const records = SYSTEMS.flatMap((system) => cases[system].filter((entry): entry is RunRecord => !isFailedRecord(entry)))
   const failedRequests = SYSTEMS.reduce((total, system) => total + cases[system].filter(isFailedRecord).length, 0)
-  const fault = await runFaultInjection(world)
   const results: Results = buildResults({
     limit: args.limit,
     offline: args.offline,
@@ -259,7 +258,6 @@ async function main(): Promise<number> {
     failedRequests,
     requests,
     world,
-    fault,
   })
 
   await writeJson(join(args.out, "results.json"), results)
@@ -323,7 +321,6 @@ async function main(): Promise<number> {
     )
   }
   if (failedRequests) log(`WARNING: ${failedRequests} request(s) failed; the failures are listed in provenance.json and per_case.json`)
-  if (!fault.allInvariantsHold) log("WARNING: a fault group broke an invariant; see results.json")
   log(`done: results.json, per_case.json, provenance.json${args.report ? `, ${written.length} tables and figures` : ""} in ${args.out}`)
   return failedRequests ? 1 : 0
 }

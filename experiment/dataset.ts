@@ -3,7 +3,7 @@
 //   world.csv     one row per customer: the customer, the teammate, the plan, and the one purchase of the customer
 //   requests.csv  one row per request: the text, the sender, the gold answers, and the gold final result
 //
-// build_dataset.ts writes them with writeDataset(); run.ts, validate.ts, and faults.ts read them with loadDataset().
+// build_dataset.ts writes them with writeDataset(); run.ts and validate.ts read them with loadDataset().
 // An empty cell is null. A list is joined with ";". A boolean is "true" or "false". "Today" is the constant TODAY
 // below, because the whole dataset is dated relative to it.
 import { mkdir, readFile } from "node:fs/promises"
@@ -144,12 +144,7 @@ function requestRows(requests: readonly TestRequest[]): string[][] {
 export async function writeDataset(dir: string, world: World, requests: readonly TestRequest[]): Promise<void> {
   await mkdir(dir, { recursive: true })
   await Bun.write(join(dir, WORLD_FILE), formatCsv(worldRows(world)))
-  await writeRequests(dir, REQUESTS_FILE, requests)
-}
-
-/** Write one more set of requests (for the world of `dir`) into the file `name` of `dir`. */
-export async function writeRequests(dir: string, name: string, requests: readonly TestRequest[]): Promise<void> {
-  await Bun.write(join(dir, name), formatCsv(requestRows(requests)))
+  await Bun.write(join(dir, REQUESTS_FILE), formatCsv(requestRows(requests)))
 }
 
 /** Read and check world.csv and requests.csv from `dir`. A bad cell raises an error that names the file, the row, and the column. */

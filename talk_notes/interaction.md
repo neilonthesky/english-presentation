@@ -1,6 +1,6 @@
 # Kế hoạch tương tác với khán giả (Audience Interaction Plan)
 
-Tài liệu này chi tiết hóa chiến lược tương tác với khán giả trong 15 phút thuyết trình. Mục tiêu là duy trì sự tập trung tích cực của người nghe, đáp ứng trọn vẹn tiêu chí 4 trong mẫu đánh giá chéo (Interaction with audience, 1.0 điểm), và bám sát lời khuyên của giảng viên:
+Tài liệu này chi tiết hóa chiến lược tương tác với khán giả trong bài thuyết trình 10 slide (13 phút 26 giây). Các mốc thời gian đã tính lại sau khi bỏ hai slide. Mục tiêu là duy trì sự tập trung tích cực của người nghe, đáp ứng trọn vẹn tiêu chí 4 trong mẫu đánh giá chéo (Interaction with audience, 1.0 điểm), và bám sát lời khuyên của giảng viên:
 
 > *"Trong lúc thuyết trình nên có sự tương tác với khán giả, ví dụ đặt câu hỏi hoặc mở đầu bằng một câu chuyện, để bài nói hấp dẫn hơn. Đồng thời hãy giới thiệu rõ tên từng người để người nghe dễ đánh giá."*
 
@@ -12,9 +12,9 @@ Tài liệu này chi tiết hóa chiến lược tương tác với khán giả 
 | :---: | :---: | :--- | :--- | :---: | :--- |
 | **1** | Slide 1 | **Tran Thanh Long** | Câu chuyện mở đầu 30 giây: Khách hàng chờ 2 ngày để được hoàn tiền | 30 s | Chuyển ý tự nhiên: "I see several nods; we have all been there." |
 | **2** | Slide 2 | **Tran Thanh Long** | Câu hỏi giơ tay: "Have you ever waited over 24 hours for customer support?" | 20 s | "Even if you do not raise your hand, research shows 60 percent of users leave." |
-| **3** | Slide 4 | **Nguyen Thanh Nam** | Bình chọn nhanh giữa bài: "Which signal would you trust to block fraud: a risk flag or a queue label?" | 25 s | "Many guess the risk flag, but our held-out test showed it blocked 8 valid actions!" |
-| **4** | Slide 8 | **Vuong Quang Quy** | Câu hỏi dự đoán trước kết quả: "Which level do you think is faster and cheaper?" | 25 s | "Most guess Level 2, but Level 3 is 2.2x faster, 2.4x cheaper, and never worse!" |
-| **5** | Slide 12 | **Nguyen Phuong Nam** | Câu hỏi suy ngẫm kết thúc: "Where should software companies draw the line for AI safety?" | 20 s | "This exact question brings us directly to our open Q&A session." |
+| **3** | Slide 4 | **Nguyen Thanh Nam** | Bình chọn nhanh giữa bài: "Which action would you never let a chatbot do alone?" | 25 s | "Many choose data deletion, and we agree: it cannot be undone, so our rules always deny it in chat." |
+| **4** | Slide 7 | **Vuong Quang Quy** | Câu hỏi dự đoán trước kết quả: "Which level do you think is faster and cheaper?" | 25 s | "Most guess Level 2, but Level 3 is 2.2x faster, 2.4x cheaper, and never worse!" |
+| **5** | Slide 10 | **Nguyen Phuong Nam** | Câu hỏi suy ngẫm kết thúc: "Where should software companies draw the line for AI safety?" | 20 s | "This exact question brings us directly to our open Q&A session." |
 
 ---
 
@@ -53,23 +53,23 @@ Nếu sau 3 giây không ai giơ tay:
 ## Thời điểm 3: Bình chọn nhanh giữa bài thuyết trình (Slide 4)
 
 - **Người thực hiện:** Nguyen Thanh Nam
-- **Thời điểm trong bài nói:** 4:25 – 4:50 (25 giây)
+- **Thời điểm trong bài nói:** 4:25 – 4:50 (25 giây; slide 4 bắt đầu ở 4:12)
 - **Vùng giao tiếp ánh mắt:** Tập trung vào nửa bên trái của phòng học, sau đó chuyển sang nửa bên phải.
 - **Cử chỉ hình thể:** Hơi nghiêng người về phía trước; mở lòng bàn tay hướng nhẹ về phía người nghe.
 
 ### Kịch bản nói tiếng Anh:
-> "Let me ask you a quick poll question. If someone might be committing fraud, which AI signal would you trust to stop the transaction: a generic risk flag, or a specific Security queue label? `[PAUSE - 1s]` Hands up for the generic risk flag? `[PAUSE - 2s]` Hands up for the Security queue? `[PAUSE - 2s]` Many people guess the risk flag. But our held-out test showed the risk flag stopped eight completely valid customer refunds! That is why our Security rule uses the dedicated Security queue label."
+> "Let me ask you a quick poll question. Four actions can change a customer account: a refund, a plan cancellation, a password reset, and a data deletion. Which one would you never let a chatbot do alone? `[PAUSE - 1s]` Hands up for the refund? `[PAUSE - 2s]` Hands up for the data deletion? `[PAUSE - 2s]` Many people choose data deletion, and we agree. A deleted video project cannot come back. That is why our written rules always deny data deletion in chat."
 
 ### Phương án dự phòng khi khán giả im lặng:
 Nếu cả lớp ngồi yên và không ai phản ứng:
-> "If you are hesitant, that makes complete sense! In our experiments, a generic risk flag created eight false alarms on valid refunds, while the Security queue stopped all fraud attempts with zero false alarms."
+> "If you are hesitant, that makes complete sense! For FrameForge, deleted video projects and AI models cannot be restored, so our written rules always deny data deletion in chat."
 
 ---
 
-## Thời điểm 4: Câu hỏi dự đoán trước khi công bố kết quả (Slide 8)
+## Thời điểm 4: Câu hỏi dự đoán trước khi công bố kết quả (Slide 7)
 
 - **Người thực hiện:** Vuong Quang Quy
-- **Thời điểm trong bài nói:** 8:40 – 9:05 (25 giây)
+- **Thời điểm trong bài nói:** 9:20 – 9:45 (25 giây; slide 7 bắt đầu ở 9:16)
 - **Vùng giao tiếp ánh mắt:** Giao tiếp ánh mắt trực tiếp với giảng viên và các bạn sinh viên ngồi ở hàng ghế đầu.
 - **Cử chỉ hình thể:** Giơ 2 ngón tay khi nhắc đến Level 2, sau đó giơ 3 ngón tay khi nhắc đến Level 3.
 
@@ -82,10 +82,10 @@ Nếu căn phòng hoàn toàn yên tĩnh:
 
 ---
 
-## Thời điểm 5: Câu hỏi suy ngẫm kết thúc bài nói (Slide 12)
+## Thời điểm 5: Câu hỏi suy ngẫm kết thúc bài nói (Slide 10)
 
 - **Người thực hiện:** Nguyen Phuong Nam
-- **Thời điểm trong bài nói:** 14:35 – 14:55 (20 giây)
+- **Thời điểm trong bài nói:** 13:06 – 13:26 (20 giây; bài nói kết thúc ở 13:26)
 - **Vùng giao tiếp ánh mắt:** Quét ánh mắt lên hàng ghế cuối cùng của lớp học, khép lại bài nói với phong thái đĩnh đạc và tự tin.
 - **Cử chỉ hình thể:** Mở rộng hai cánh tay hướng về phía khán giả; mỉm cười ấm áp.
 

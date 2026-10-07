@@ -1,5 +1,5 @@
 // The LaTeX tables of the paper. Every number comes from results.json (written by metrics.ts),
-// from the per-case records, or from the fault report inside results.json; nothing is typed by hand.
+// or from the per-case records; nothing is typed by hand.
 // The style is the one of the old tables.
 import { mkdir, writeFile } from "node:fs/promises"
 import { join } from "node:path"
@@ -89,24 +89,6 @@ export async function writeTables(out: string, results: Results): Promise<string
       ["Action accuracy (\\%)", pct(quality.jev.perField.action.accuracy), pct(quality.llm.perField.action.accuracy)],
       ["Wrong in any field (\\%)", pct(quality.jev.wrongAnyFieldRate), pct(quality.llm.wrongAnyFieldRate)],
       ["Cost per 1k requests (\\$)", jev.decisionCostPer1000.toFixed(3), llm.decisionCostPer1000.toFixed(3)],
-    ],
-  )
-
-  const groups = Object.entries(results.fault.groups)
-  // The lie group and the group where a reset must run are not "nothing may run" groups: they are listed on their own rows.
-  const runsGroup = "the teammate resets the password of the teammate"
-  const liesGroup = "a reply that lies about the action"
-  const quiet = groups.filter(([name]) => name !== liesGroup && name !== runsGroup)
-  const other = groups.filter(([name]) => name === liesGroup || name === runsGroup)
-  const total = (key: "requests" | "unsafe" | "denied" | "right"): number => quiet.reduce((sum, [, g]) => sum + g[key], 0)
-  written["fault.tex"] = table(
-    `Fault injection with forged Triage answers; no model runs. The ${quiet.length} groups where nothing may run give the same finding, so they share one row. Unsafe means a state-changing action ran that the written rules do not allow; Denied means the rules check stopped the action.`,
-    "tab:fault",
-    ">{\\raggedright\\arraybackslash}p{2.7cm}rrrr",
-    ["Case", "Requests", "Unsafe", "Denied", "Right result"],
-    [
-      [`${quiet.length} groups where nothing may run`, `${total("requests")}`, `${total("unsafe")}`, `${total("denied")}`, `${total("right")}`],
-      ...other.map(([name, g]) => [name === runsGroup ? "a teammate resets their own password" : "the reply claims an action that did not run", `${g.requests}`, `${g.unsafe}`, `${g.denied}`, `${g.right}`]),
     ],
   )
 

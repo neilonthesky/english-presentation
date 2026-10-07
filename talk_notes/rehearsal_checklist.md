@@ -6,20 +6,20 @@ Tài liệu này cung cấp các bài tập khớp giờ, danh mục kiểm tra 
 
 ## 1. Bài tập kiểm soát thời gian và quy tắc bấm giờ
 
-- **Thời gian thuyết trình mục tiêu:** Đúng 15 phút (900 giây).
+- **Thời gian thuyết trình mục tiêu:** 13 phút 26 giây (806 giây). Bản trước dài 15 phút; hai slide bị bỏ khỏi bộ slide nên tổng giảm 94 giây (Nguyen Thanh Nam giảm 56 s, Vuong Quang Quy giảm 38 s). Các diễn giả khác giữ nguyên thời gian.
 - **Thời gian hỏi đáp Q&A mục tiêu:** 5 phút (300 giây).
-- **Tổng thời gian tối đa:** 20 phút (1.200 giây).
+- **Tổng thời gian:** 18 phút 26 giây (1.106 giây), dưới mức tối đa 20 phút.
 
 ### Mốc chuẩn thời gian của từng diễn giả:
 
 | Thứ tự | Họ và tên | Vai trò trong bài báo | Tỷ lệ | Thời gian dự kiến | Giới hạn tối thiểu | Giới hạn tối đa |
 | :---: | :--- | :--- | :---: | :---: | :---: | :---: |
 | 1 | **Tran Thanh Long** | Leader; Intro; Ladder | 28% | 4 phút 12 giây (252 s) | 4 phút 00 giây | 4 phút 20 giây |
-| 2 | **Nguyen Thanh Nam** | Rules; Flow; Actions | 22% | 3 phút 18 giây (198 s) | 3 phút 10 giây | 3 phút 25 giây |
+| 2 | **Nguyen Thanh Nam** | Rules; Flow; Security rule | 22% | 2 phút 22 giây (142 s) | 2 phút 15 giây | 2 phút 30 giây |
 | 3 | **Vu Van Son** | Synthetic Data; Setup | 18% | 2 phút 42 giây (162 s) | 2 phút 35 giây | 2 phút 50 giây |
-| 4 | **Vuong Quang Quy** | Results; Tables; Charts | 17% | 2 phút 33 giây (153 s) | 2 phút 25 giây | 2 phút 40 giây |
+| 4 | **Vuong Quang Quy** | Results; Tables; Charts | 17% | 1 phút 55 giây (115 s) | 1 phút 50 giây | 2 phút 00 giây |
 | 5 | **Nguyen Phuong Nam** | Related Work; Limits; Concl. | 15% | 2 phút 15 giây (135 s) | 2 phút 05 giây | 2 phút 20 giây |
-| **Tổng** | **Cả 5 thành viên** | **Toàn bộ bài thuyết trình** | **100%** | **15 phút 00 giây (900 s)** | **14 phút 30 giây** | **15 phút 15 giây** |
+| **Tổng** | **Cả 5 thành viên** | **Toàn bộ bài thuyết trình** | **100%** | **13 phút 26 giây (806 s)** | **12 phút 45 giây** | **14 phút 00 giây** |
 
 ### Quy tắc luyện tập với đồng hồ bấm giờ:
 1. **Thành viên phụ trách bấm giờ:** Diễn giả 5 (Nguyen Phuong Nam) điều khiển đồng hồ bấm giờ chính trong các buổi tập và ra hiệu kín đáo bằng tay:
@@ -61,15 +61,13 @@ Chuyển giao lộn xộn sẽ bị trừ điểm ở tiêu chí tổ chức bà
 - **Slide 1:** Tiêu đề và câu chuyện khách hàng mở đầu (Speaker 1).
 - **Slide 2:** `[CHUYỂN SANG SLIDE 2]` Where We Start: Two Old Ways (Speaker 1).
 - **Slide 3:** `[CHUYỂN SANG SLIDE 3]` The Three-Level Ladder (Speaker 1).
-- **Slide 4:** `[CHUYỂN SANG SLIDE 4]` Level 2 & The Written Rules (Speaker 2).
-- **Slide 5:** `[CHUYỂN SANG SLIDE 5]` Level 3 Architecture & Flow (Speaker 2).
-- **Slide 6:** `[CHUYỂN SANG SLIDE 6]` Action Execution & Safety (Speaker 2).
-- **Slide 7:** `[CHUYỂN SANG SLIDE 7]` Experimental Setup: Synthetic Data, Real Calls (Speaker 3).
-- **Slide 8:** `[CHUYỂN SANG SLIDE 8]` Result 1: Classifier Stage (Speaker 4).
-- **Slide 9:** `[CHUYỂN SANG SLIDE 9]` Result 2: The Three-Level Ladder Comparison (Speaker 4).
-- **Slide 10:** `[CHUYỂN SANG SLIDE 10]` Result 3: Safety and Fault Injection (Speaker 4).
-- **Slide 11:** `[CHUYỂN SANG SLIDE 11]` Discussion and Study Limitations (Speaker 5).
-- **Slide 12:** `[CHUYỂN SANG SLIDE 12]` Conclusion and Open Q&A (Speaker 5).
+- **Slide 4:** `[CHUYỂN SANG SLIDE 4]` Level 2 & The Written Rules, gồm Security rule (Speaker 2).
+- **Slide 5:** `[CHUYỂN SANG SLIDE 5]` Level 3 Architecture & Flow; cuối slide là câu bàn giao cho Speaker 3 (Speaker 2).
+- **Slide 6:** `[CHUYỂN SANG SLIDE 6]` Experimental Setup: Synthetic Data, Real Calls (Speaker 3).
+- **Slide 7:** `[CHUYỂN SANG SLIDE 7]` Result 1: Classifier Stage (Speaker 4).
+- **Slide 8:** `[CHUYỂN SANG SLIDE 8]` Result 2: The Three-Level Ladder Comparison; cuối slide là câu bàn giao cho Speaker 5 (Speaker 4).
+- **Slide 9:** `[CHUYỂN SANG SLIDE 9]` Discussion and Study Limitations (Speaker 5).
+- **Slide 10:** `[CHUYỂN SANG SLIDE 10]` Conclusion and Open Q&A (Speaker 5).
 
 ---
 
@@ -99,6 +97,6 @@ Sử dụng bảng tiêu chí này để tự đánh giá trong các buổi tậ
 | **6** | English use & vocabulary | 1.0 | "Are our spoken sentences short, simple, free of em dashes, and strictly using customer support terms?" | Nguyen Thanh Nam | [ ] ĐẠT |
 | **7** | Technical approach | 1.0 | "Is the state machine and deterministic rule execution clearly explained?" | Nguyen Thanh Nam | [ ] ĐẠT |
 | **8** | Experimental results | 1.5 | "Are the speedup (18x classifier, 2.2x machine time) and cost reduction numbers exact?" | Vuong Quang Quy | [ ] ĐẠT |
-| **9** | Analysis & discussion | 1.0 | "Do we clearly explain why zero harmful actions were executed across all tests?" | Vuong Quang Quy | [ ] ĐẠT |
+| **9** | Analysis & discussion | 1.0 | "Do we say plainly that the sign test is not significant and that the main numbers are not a blind test?" | Vuong Quang Quy | [ ] ĐẠT |
 | **10** | Slides & visual support | 0.5 | "Are the diagrams legible from the back of the classroom without text clutter?" | Nguyen Phuong Nam | [ ] ĐẠT |
 | **Tổng** | **Mục tiêu điểm số toàn diện** | **10.0** | **Sẵn sàng thuyết trình trước lớp và nhận đánh giá chéo** | **Cả nhóm** | **10.0 / 10** |

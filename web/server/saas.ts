@@ -254,8 +254,7 @@ export const SECURITY_RULE = securityRule
 
 /**
  * The typed answer of the classifier that says: this request reports a misuse of the account or of the payment method. It is the
- * queue "Security". (The risk flag was tried on the held-out set and dropped: it is true on every request that asks for an
- * action, so it stopped every valid refund and cancel.)
+ * queue "Security".
  */
 export const misuseReport = (f: Classifier["fields"]): boolean => f.queue.value === "Security"
 
@@ -267,8 +266,7 @@ export const ruleNamed = (name: string): WrittenRule | undefined =>
 
 /**
  * The written rules of an action, evaluated on the data of this request. This is the fixed-code reading of the rules: Rules
- * check of Level 3 and of the demo, the oracle that derives the gold answers of the dataset (build_dataset.ts), and the check of
- * the fault suite. The ledger holds the "action|target" pairs that already ran in this session. `fields` are the account fields
+ * check of Level 3 and of the demo, the oracle that derives the gold answers of the dataset (build_dataset.ts). The ledger holds the "action|target" pairs that already ran in this session. `fields` are the account fields
  * that Gather info read: a rule that needs a field outside them cannot be checked, so the reading fails closed with one more
  * denying rule that names the fields.
  */

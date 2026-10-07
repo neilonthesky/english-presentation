@@ -62,7 +62,7 @@
 \renewcommand{\shortauthors}{Tran Thanh Long et al.}
 
 \begin{abstract}
-Customer support for a software-as-a-service (SaaS) product can run in three ways. We build them as three levels of one ladder and measure them on the same 50 requests in 24 types for FrameForge, an AI video-generation service. Level 1: support staff read every request (an assumed 90~s each). Level 2: one large language model (LLM) agent reads the chat and the account, applies the written rules itself, and either runs an action or denies it. Level 3: Jev, a fast classifier, answers five fixed questions about the request; fixed code reads only the account fields that the action needs and checks the written rules; the LLM writes the text. Level 2 serves 32 requests, stops 15 (a written rule denies the action), and makes 3 errors; Level 3 serves 35, stops 15, and makes 0. Neither level runs a harmful action. With 3 discordant pairs (requests where only Level 2 errs) the sign test gives \(p = 0.25\), so an accuracy gap is not established at 50 requests. Level 3 is never worse in any measure, 2.2 times faster (3.16~s against 6.85~s), and 2.4 times cheaper (\$0.302 against \$0.712 per 1,000 requests). A Security rule, chosen on 24 held-out requests, stops every account change when the customer reports fraud. When we forge the classifier answers, the fixed rules check denies 575 of 575 requests that must not run; when Jev checks the rules in its place, 94 of them run.
+Customer support for a software-as-a-service (SaaS) product can run in three ways. We build them as three levels of one ladder and measure them on the same 50 requests in 24 types for FrameForge, an AI video-generation service. Level 1: support staff read every request (an assumed 90~s each). Level 2: one large language model (LLM) agent reads the chat and the account, applies the written rules itself, and either runs an action or denies it. Level 3: Jev, a fast classifier, answers five fixed questions about the request; fixed code reads only the account fields that the action needs and checks the written rules; the LLM writes the text. Level 2 serves 32 requests, stops 15 (a written rule denies the action), and makes 3 errors; Level 3 serves 35, stops 15, and makes 0. Neither level runs a harmful action. With 3 discordant pairs (requests where only Level 2 errs) the sign test gives \(p = 0.25\), so an accuracy gap is not established at 50 requests. Level 3 is never worse in any measure, 2.2 times faster (3.16~s against 6.85~s), and 2.4 times cheaper (\$0.302 against \$0.712 per 1,000 requests). As a classifier, Jev is 18 times faster and 11 times cheaper than the LLM, but it is less accurate on four of the five answers.
 \end{abstract}
 
 
@@ -101,11 +101,10 @@ Customer support for a software-as-a-service (SaaS) product can run in three way
 
 Large language models (LLMs) now read customer requests and act on them, and text in a request can carry prompt-injection orders for the model~\cite{greshake2023injection}. When the system can start a refund or delete customer data, one wrong action does real harm, and support staff who read every request are slow and costly.
 
-We study one \emph{ladder} of three levels, from the traditional workflow of support staff to a modern AI-agent system. Each level changes one part of the level before it, and all levels run on the same requests. The case is FrameForge, an AI video-generation SaaS sold as subscription plans and credit packs. Jev~\cite{almeida2026jev} is a fast classifier that gives typed labels, each with a confidence, and cannot write text. We ask three questions:
+We study one \emph{ladder} of three levels, from the traditional workflow of support staff to a modern AI-agent system. Each level changes one part of the level before it, and all levels run on the same requests. The case is FrameForge, an AI video-generation SaaS sold as subscription plans and credit packs. Jev~\cite{almeida2026jev} is a fast classifier that gives typed labels, each with a confidence, and cannot write text. We ask two questions:
 \begin{itemize}
     \item \textbf{Question 1.} What does each level buy and cost: requests served, requests stopped by a written rule, errors, harmful actions, time, and API cost?
     \item \textbf{Question 2.} What changes when Jev replaces the LLM as the classifier?
-    \item \textbf{Question 3.} Do the written rules hold when the classifier answers are forged? Do they also hold when Jev checks them in place of the fixed code?
 \end{itemize}
 
 \section{Related Work}\label{sec:related}
@@ -266,7 +265,7 @@ Table~\ref{tab:ladder} answers Question 1. Level 1, the baseline, makes no error
 
 Level 2 serves 32 of the 50 requests, stops 15, and makes 3 errors (6.0\%); Level 3 serves 35, stops 15, and makes 0. Both levels stop all 15 requests that a written rule denies: nothing runs, and the reply gives the rule. The 3 errors of Level 2 are wrong denials: the correct result is an answer; nothing ran in any of them. The sign test has 3 discordant pairs, all errors at Level 2 only, and gives \(p = 0.25\): the accuracy gap is not established. A wrong label is not always a wrong outcome. The label errors are 7 at Level 3 and 5 at Level 2. At Level 3 the Security rule stops the 2 fraud reports among them, and in the other 5 Jev answers ``Send reply'' and nothing runs.
 
-No run is harmful at either level. Level 2 has no fixed check: only the judgment of the agent separates a wrong answer from a wrong action, and the held-out set shows the risk (Section~\ref{sec:heldout}).
+No run is harmful at either level. Level 2 has no fixed check: only the judgment of the agent separates a wrong answer from a wrong action.
 
 Level 3 is 2.2 times faster and 2.4 times cheaper than Level 2. The first call explains most of the gap: the agent call at Level 2 takes 3.11~s per request and costs \$0.386 per 1,000 requests, and the Jev call at Level 3 takes 0.295~s and costs \$0.052. The fields of Table~\ref{tab:fields} cut the Final message input at Level 3 from 617.2 to 589.6 tokens per request (\(-4.5\%\)); we claim this input saving only, because the Final message calls vary between recordings.
 
@@ -290,45 +289,15 @@ The routing rule, the written rules, and the Security rule catch the wrong answe
 
 Table~\ref{tab:calibration} groups the answers that carry a confidence (the queue, the action, and the risk flag) by that confidence. Wrong answers cluster in the low bands: 11 of the 22 wrong answers sit below 0.8, and 5 sit at 0.9 or more. The ECE runs from 0.072 (the priority) to 0.153 (the action). Only Jev reports a confidence; some bins hold few answers, and we tested no significance.
 
-\subsection{Forged Answers (Question 3)}
-
-\input{experiment/results/tables/fault.tex}
-
-Table~\ref{tab:fault} answers the first part of Question 3. We forged the classifier answers (full confidence, both flags off, priority Low) with no model call, so only the fixed rules and the routing rule stand in the way. In the nine groups where nothing may run, the written rules deny 575 of 575, and none runs. In 72 requests a teammate resets their own password, and the link goes to the e-mail on file every time. In 72 more the reply claims an action that did not run, and 0 are unsafe, because the Final message is written after the action and cannot change it. Together with the 50 main and the 24 held-out requests, 793 requests went through the flow. Level 2 is not in the suite: no fixed code stands behind the agent.
-
-\subsection{Jev as the Rules Check (Question 3)}
-
-We also built Level 3 with a second Jev call as the Rules check (typed labels allow or deny, with the account as input; an invalid answer was a deny) and ran it on the same 50 requests and the same fault suite. 17 of its 50 answers were invalid and were denied, legitimate requests were wrongly denied (errors 7 to 15), and it allowed a cancellation on a plan that was already cancelled (a harmful run). The sign test against Level 2 turned against it (11 discordant pairs, \(p = 0.001\)). In the fault suite 481 of 575 requests were denied and 94 ran (16.3\%): Jev held the five groups that the text or the sender decides (431 requests) and failed the groups that need arithmetic on the account and its state, a plan already cancelled (6 of 6 ran) and a plan cancelled twice (65 of 66). We dropped this design.
-
-\subsection{Held-Out Validation of the Security Rule}\label{sec:heldout}
-
-\begin{table}[t]
-\caption{The 24 held-out requests: served / stopped / errors for each variant of the Security rule. Fraud errors are those at Level 3; false stops are legitimate requests that the rule stopped.}
-\label{tab:heldout}
-\small
-\setlength{\tabcolsep}{2.5pt}
-\begin{tabular}{@{}lccrr@{}}
-\toprule
-Rule & Level 2 & Level 3 & Fraud errors & False stops \\
-\midrule
-none & 16 / 0 / 8 & 20 / 0 / 4 & 4 & 0 \\
-risk flag & 20 / 0 / 4 & 15 / 0 / 9 & 1 & 8 \\
-Security queue & 20 / 0 / 4 & 24 / 0 / 0 & 0 & 0 \\
-\bottomrule
-\end{tabular}
-\end{table}
-
-The defect was seen on the main set: a fraud report got a refund or a password reset. We fixed it on 24 new requests in four groups of six (fraud reports, ordinary requests, legitimate requests with a security worry, and injections), built with a new seed and frozen before any rule code existed. Without a rule, Level 3 makes 4 fraud errors and Level 2 makes 3. The risk flag fixes 3 of the 4 but stops 8 legitimate requests; the Security queue fixes all 4 with 0 false stops, and we chose it. At Level 2 four errors remain (a wrong denial of a legitimate refund and three injection requests), and one injection request made the agent run a refund (a harmful run): nothing stands behind the agent.
-
 \section{Discussion and Limits}\label{sec:discussion}
 
-Level 3 buys time and cost, not a proven gain in accuracy: the gap is not established, but Level 3 is never worse in any measure, and the gain comes from the first call, where a fast classifier replaces a reasoning LLM agent. The written rules make a weaker classifier safe: Jev is behind the LLM on four fields, yet no wrong answer becomes an error of Level 3. The checking job is different. It needs arithmetic on amounts, dates, and counts, so a label classifier fails it, and fixed code keeps the safety rules that must always hold.
+Level 3 buys time and cost, not a proven gain in accuracy: the gap is not established, but Level 3 is never worse in any measure, and the gain comes from the first call, where a fast classifier replaces a reasoning LLM agent. The written rules make a weaker classifier safe: Jev is behind the LLM on four fields, yet no wrong answer becomes an error of Level 3.
 
-\textbf{Limits.} The evidence comes from two hosted models, one synthetic SaaS product, and our own labels: 50 requests in 24 types and a held-out set of 24. Zero money or data harm in 50 requests is not proof of zero (the 95\% upper limit is about 6\%). The popup delay and the silence time \(T\) are not simulated, and the 90~s at Level 1 is assumed. The classifier comparison uses one prompt wording and one run per request, and errors are graded by the action label, not by the reply wording. The Security rule was found on the main set and the Jev Rules check was dropped after a measurement, so the main numbers are not a blind test. Time and cost of the Final message calls vary between recordings, Level 2 was recorded at another time than Level 3, and the provider's prompt cache supplied 22.3\% of the input tokens, so the cost of every level is an upper bound.
+\textbf{Limits.} The evidence comes from two hosted models, one synthetic SaaS product, and our own labels: 50 requests in 24 types. Zero money or data harm in 50 requests is not proof of zero (the 95\% upper limit is about 6\%). The popup delay and the silence time \(T\) are not simulated, and the 90~s at Level 1 is assumed. The classifier comparison uses one prompt wording and one run per request, and errors are graded by the action label, not by the reply wording. The Security rule was added after fraud reports showed a defect on these 50 requests, so the main numbers are not a blind test. Time and cost of the Final message calls vary between recordings, Level 2 was recorded at another time than Level 3, and the provider's prompt cache supplied 22.3\% of the input tokens, so the cost of every level is an upper bound.
 
 \section{Conclusion}
 
-We built three levels of customer support on one ladder and measured them on the same 50 requests, by what the customer gets. One LLM agent already serves most requests, but no fixed code stands behind it. Splitting the job at Level 3 (Jev, fixed code, and an LLM writer) gives no error, 2.2 times the speed, and 2.4 times lower cost, and the sign test does not establish an accuracy gap. A Security rule chosen on held-out requests closes the fraud defect, and the fixed rules check holds under forged answers where Jev as the Rules check does not. Future work should test real tickets, more request types, and the popup and the silence timer with real customers.
+We built three levels of customer support on one ladder and measured them on the same 50 requests, by what the customer gets. One LLM agent already serves most requests, but no fixed code stands behind it. Splitting the job at Level 3 (Jev, fixed code, and an LLM writer) gives no error, 2.2 times the speed, and 2.4 times lower cost, and the sign test does not establish an accuracy gap. A Security rule closes the fraud defect that we found on the main set. Future work should test adversarial inputs, real tickets, more request types, and the popup and the silence timer with real customers.
 
 \begin{acks}
 We thank our lecturer of the course \emph{English Writing and Presentation Skills} for guidance on scientific writing.

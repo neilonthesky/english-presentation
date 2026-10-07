@@ -5,7 +5,7 @@
 - **Tỷ lệ phân công:** 15% tổng thời lượng thuyết trình
 - **Thời gian nói được phân bổ:** 2 phút 15 giây (135 giây)
 - **Số từ mục tiêu:** ~290 từ (tốc độ ~130 từ/phút)
-- **Các slide phụ trách:** Slide 11 và Slide 12
+- **Các slide phụ trách:** Slide 9 và Slide 10 (trước đây là Slide 11 và 12). Thời gian không đổi: 2 phút 15 giây. Các phần nói về kiểm chứng riêng cho Security rule và về dữ liệu giả mạo đã bị bỏ khỏi cả hai slide; hạn chế nay nói thẳng rằng Security rule được thêm sau khi thấy lỗi gian lận trên 50 yêu cầu nên số liệu chính không phải kiểm tra mù.
 
 ---
 
@@ -19,8 +19,8 @@
 
 ## 2. Kịch bản nói chi tiết từng từ (Word-for-Word Spoken Script)
 
-### Slide 11: Thảo luận và các hạn chế nghiên cứu
-- **Tiêu đề slide:** Limits and future work
+### Slide 9: Thảo luận và các hạn chế nghiên cứu
+- **Tiêu đề slide:** Limits and what we claim
 - **Thời gian dự kiến trên slide:** 1 phút 15 giây (75 giây, ~160 từ)
 
 > `[NHÌN KHÁN GIẢ - GIAO TIẾP ÁNH MẮT TRÁI VÀ PHẢI]`  
@@ -28,45 +28,41 @@
 > 
 > `[NGHỈ 1 GIÂY]`  
 > 
-> In our literature review, commercial solutions like the Intercom Fin agent claim over seventy-five percent automated resolution. However, commercial systems rarely publish their internal failure modes or exact safety architectures. Our study provides a fully transparent, open-source benchmark.  
+> In our literature review, the Intercom Fin agent reports over seventy-five percent resolution without a human. Commercial systems rarely publish how they fail. In scientific writing, we must be honest about the limits of our study.  
 > 
 > `[NGHỈ 1 GIÂY]`  
 > 
-> In scientific writing, we must also be completely honest about our study limitations.  
+> First, the evidence comes from two hosted models, one synthetic product, and our own labels: fifty requests in twenty-four types. Zero harmful runs in fifty requests is not proof of zero. The ninety-five percent upper limit is about six percent.  
 > 
 > `[NGHỈ 1 GIÂY]`  
 > 
-> First, our benchmark uses fifty synthetic requests. Fifty requests across twenty-four types is a focused dataset. While we observed zero harmful actions in fifty requests, statistical rule-of-three estimation means the ninety-five percent upper confidence bound for harmful errors is about six percent, not absolute zero.  
+> Second, real users write slang, emotional rants, and spelling mistakes, and our data is synthetic. Third, the ninety seconds at Level One is assumed, and we did not simulate the popup or the silence timer.  
 > 
 > `[NGHỈ 1 GIÂY]`  
 > 
-> Second, our data is synthetic. While our customer profiles model real business states, real users write unstructured slang, emotional rants, and spelling mistakes.  
+> Last, we added the Security rule after fraud reports showed a defect on these fifty requests. So the main numbers are not a blind test. Also, the provider's prompt cache supplied 22.3 percent of the input tokens, so our costs are upper bounds.  
 > 
 > `[NGHỈ 1 GIÂY]`  
-> 
-> Third, our Level One staff baseline assumes ninety seconds per request without measuring live human agents. In addition, while our Security rule was validated on twenty-four unseen held-out requests, fifty requests remains a focused sample size. These numbers represent an honest first measurement.  
-> 
-> `[NGHỈ 1 GIÂY]`  
-> `[CHUYỂN SANG SLIDE 12]`
+> `[CHUYỂN SANG SLIDE 10]`
 
 ---
 
-### Slide 12: Kết luận, câu hỏi mở và chuyển sang Q&A
+### Slide 10: Kết luận, câu hỏi mở và chuyển sang Q&A
 - **Tiêu đề slide:** Conclusion
 - **Thời gian dự kiến trên slide:** 1 phút 00 giây (60 giây, ~130 từ)
 
-> To conclude our presentation, we built and tested a three-level customer support ladder for SaaS request triage.  
+> To conclude, we built three levels of customer support on one ladder and measured them on the same fifty requests.  
 > 
 > `[NGHỈ 1 GIÂY]`  
 > 
-> Our findings deliver three clear takeaways:  
-> First, Level Three combines Jev with DeepSeek to achieve a 2.2 times machine speedup and a 2.4 times cost reduction compared to the LLM agent, while remaining never worse in any measured outcome.  
-> Second, Jev provides native probability calibration, enabling fast triage in under a quarter of a second.  
-> And third, deterministic written rules provide unconditional safety. In five hundred and seventy-five forged attacks, our system executed zero unauthorized database actions.  
+> We have three takeaways.  
+> First, Level Three, with Jev and DeepSeek, is 2.2 times faster and 2.4 times cheaper than the LLM agent, and it is never worse in any measured outcome.  
+> Second, Jev gives a confidence with every label, and it triages in under a quarter of a second.  
+> And third, the written rules make a weaker classifier safe. Jev is behind the LLM on four fields, yet no wrong answer becomes an error of Level Three. A Security rule closes the fraud defect that we found.  
 > 
 > `[NGHỈ 1 GIÂY]`  
 > 
-> As our closing thought, we leave you with one final question: as generative AI models become smarter, where should software companies draw the line between automated AI and deterministic business rules?  
+> As our closing thought, we leave you with one question: as AI models become smarter, where should software companies draw the line between automated AI and fixed business rules?  
 > 
 > `[NGHỈ 2 GIÂY]`  
 > 
@@ -84,20 +80,20 @@ Nói chính xác câu tiếng Anh này để mở đầu phần hỏi đáp:
 
 ## 4. Ba câu hỏi khán giả thường gặp và gợi ý trả lời
 
-### Question 1:
+### Câu hỏi 1:
 **"How does your state machine compare to real commercial customer support platforms like Intercom or Salesforce?"**
 - **Câu trả lời ngắn (3 câu):**
   > "Commercial platforms rely heavily on static keyword triggers and manual routing rules configured by support administrators. Our architecture modernizes this workflow by inserting a fast neural classifier for automated triage, while preserving deterministic safety checks. It bridges modern AI capabilities with established enterprise reliability."
 
-### Question 2:
+### Câu hỏi 2:
 **"If you had more time and budget, what would be your next experiment?"**
 - **Câu trả lời ngắn (3 câu):**
   > "Our primary next step would be evaluating real, anonymized customer support logs from a live SaaS production system. We would also recruit professional support staff to benchmark true human response times and compare human agreement against our automated rules."
 
-### Question 3:
-**"Why does your paper say you did not perform post-hoc prompt tuning?"**
+### Câu hỏi 3:
+**"Why do you say that your costs are upper bounds?"**
 - **Câu trả lời ngắn (2 câu):**
-  > "Post-hoc prompt tuning means repeatedly tweaking prompt words after looking at test errors until the score improves, which causes artificial overfitting. By reporting our honest first measurement, our results reflect genuine generalization rather than inflated test scores."
+  > "We use list prices with no cache discount, but the provider's prompt cache supplied 22.3 percent of the input tokens. So the real cost of every level is lower than the cost that we report."
 
 ---
 
@@ -113,9 +109,9 @@ Luyện phát âm 10 từ vựng này theo phiên âm đơn giản dưới đây
 | **Bound** | **BOWND** | Có 1 âm tiết; phát âm giống 'round'; bật âm 'd'. |
 | **Commercial** | **kuh-MUR-shul** | Có 3 âm tiết; nhấn vào 'MUR'; đuôi 'shul' đọc mềm. |
 | **Takeaways** | **TAYK-uh-wayz** | Có 3 âm tiết; nhấn vào 'TAYK'; đuôi 'z' rung nhẹ. |
-| **Unconditional** | **un-kun-DISH-un-ul** | Có 5 âm tiết; nhấn mạnh vào 'DISH'; đuôi 'ul' rõ. |
-| **Generalization** | **jen-er-ul-ih-ZAY-shun** | Có 6 âm tiết; trọng âm chính rơi vào 'ZAY'. |
-| **Overfitting** | **OH-vur-fit-ing** | Có 4 âm tiết; nhấn vào 'OH' và 'fit'. |
+| **Confidence** | **KON-fih-dens** | Có 3 âm tiết; nhấn mạnh vào 'KON'; đuôi 'dens' đọc nhẹ. |
+| **Cache** | **KASH** | Có 1 âm tiết; đọc giống 'cash'. |
+| **Blind** | **BLYND** | Có 1 âm tiết; vần giống 'kind'; bật nhẹ âm 'd'. |
 | **Coordination** | **koh-OR-dih-nay-shun** | Có 5 âm tiết; trọng âm chính rơi vào 'nay'. |
 
 ---

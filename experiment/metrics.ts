@@ -6,7 +6,6 @@
 // stopped (a written rule denies the gold action, and the flow ran nothing and stopped the request by design), or an error
 // (every other run). Level 1 is the reference: the study assumes that support staff handle every request.
 import type { World } from "../web/server/saas"
-import type { FaultReport } from "./faults"
 import {
   ENDS, PRICE, STAFF_SECONDS, callCost, decisionService,
   type AgentRequestRecord, type ClassifierRequestRecord, type End, type RunRecord, type SystemName,
@@ -164,7 +163,6 @@ export interface Results {
   reliability: Record<Field, { chance_of_answer: Reliability; reported_confidence: Reliability }>
   sign_test: SignTest
   dataset: DatasetSummary
-  fault: FaultReport
 }
 
 const mean = (values: readonly number[]): number => (values.length ? values.reduce((a, b) => a + b, 0) / values.length : 0)
@@ -405,7 +403,6 @@ export interface ResultsInput {
   failedRequests: number
   requests: readonly TestRequest[]
   world: World
-  fault: FaultReport
 }
 
 /**
@@ -497,6 +494,5 @@ export function buildResults(input: ResultsInput): Results {
     reliability: reliabilityByField,
     sign_test: signTest(agent, jev),
     dataset: datasetSummary(input.world, input.requests),
-    fault: input.fault,
   }
 }

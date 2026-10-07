@@ -11,19 +11,19 @@ const fs = require("fs");
 const lu = require("react-icons/lu");
 
 const C = {
-  bg: "E3EAF2", // soft cool light tone (slide background)
+  bg: "D6DDE5", // soft cool light tone (slide background)
   card: "FFFFFF",
-  border: "C5D0DC",
+  border: "8C9BAD",
   navy: "1B365D", // titles
   text: "2B3440",
   muted: "56636F",
   blue: "2F5F98", // model, primary
   blueM: "3E6A9A", // mid-tone background for title/closing slides
-  blueL: "D6E4F3",
+  blueL: "A6BCD6",
   grey: "5F6B7A", // fixed code, Level 1
-  greyL: "DFE4EA",
+  greyL: "AEB7C2",
   teal: "1F7A7A", // written rules
-  tealL: "D3EBE8",
+  tealL: "A2C4BE",
   l2: "4A82B8", // Level 2
   l3: "234B84", // Level 3
   red: "A94A4A", // errors and unsafe runs
@@ -32,11 +32,11 @@ const C = {
 const FONT = "Calibri";
 const TITLE = "Human to LLM & Classifier Support Agent: A Three-Level Ladder for SaaS Request Triage";
 
-// Speakers and speaking time per slide (talk_notes/README.md).
+// Speakers and speaking time per slide (the times of the two deleted slides are gone; talk_notes holds the full split).
 const LONG = "Tran Thanh Long", NAM = "Nguyen Thanh Nam", SON = "Vu Van Son", QUY = "Vuong Quang Quy", PNAM = "Nguyen Phuong Nam";
 const SPEAKER = [
-  [LONG, 75], [LONG, 85], [LONG, 92], [NAM, 70], [NAM, 72], [NAM, 56],
-  [SON, 162], [QUY, 55], [QUY, 60], [QUY, 38], [PNAM, 75], [PNAM, 60],
+  [LONG, 75], [LONG, 85], [LONG, 92], [NAM, 70], [NAM, 72],
+  [SON, 162], [QUY, 55], [QUY, 60], [PNAM, 75], [PNAM, 60],
 ];
 
 // ---------- icon and illustration helpers ----------
@@ -246,16 +246,16 @@ async function photo(file, w, h, radius = 0.08, dpi = 150) {
     const s = base(
       3,
       "Three levels, one change at each level",
-      "Level 1 is the reference: support staff read every request, 90 s each (assumed). " +
-        "Level 2 replaces the staff with one LLM agent that reads the account, applies the written rules itself, and answers run or refuse. " +
-        "Level 3 splits the job: Jev gives five typed answers with chances, fixed code reads only the account fields that the action needs and guards the action, and the LLM writes the reply. " +
+      "Level 1 is the baseline: support staff read every request, 90 s each (assumed). " +
+        "Level 2 replaces the staff with one LLM agent that reads the account, applies the written rules itself, and either runs an action or denies it. " +
+        "Level 3 splits the job: Jev gives five typed answers, each with a confidence, fixed code reads only the account fields that the action needs and checks the written rules, and the LLM writes the reply. " +
         "Every level runs on the same 50 requests."
     );
     const gap = 0.45, cw = (CW - 2 * gap) / 3, y = 1.65, h = 4.05;
     [
-      { n: "Level 1", head: "Staff only", icon: "LuUsers", bg: C.grey, body: "Support staff read every request. Reference: 90 s each (assumed)." },
-      { n: "Level 2", head: "One LLM agent", icon: "LuBot", bg: C.l2, body: "One LLM agent reads the account and applies the written rules itself. It answers run or refuse." },
-      { n: "Level 3", head: "Jev + fixed code + LLM", icon: "LuTags", bg: C.l3, body: "Jev gives five answers with chances. Fixed code reads only the fields the action needs and guards it. The LLM writes the reply." },
+      { n: "Level 1", head: "Staff only", icon: "LuUsers", bg: C.grey, body: "Support staff read every request. Baseline: 90 s each (assumed)." },
+      { n: "Level 2", head: "One LLM agent", icon: "LuBot", bg: C.l2, body: "One LLM agent reads the account and applies the written rules itself. It runs an action or denies it." },
+      { n: "Level 3", head: "Jev + fixed code + LLM", icon: "LuTags", bg: C.l3, body: "Jev gives five answers with confidence. Fixed code reads only the fields the action needs and checks the rules. The LLM writes the reply." },
     ].forEach((p, i) => {
       const x = ML + i * (cw + gap);
       box(s, x, y, cw, h);
@@ -307,13 +307,13 @@ async function photo(file, w, h, radius = 0.08, dpi = 150) {
     const s = base(
       5,
       "Level 3: Jev, fixed code, and an LLM",
-      "This is the flow of Level 3 as a state machine with eight states. New saves the message. Triage: Jev answers five questions with a chance in one call and never reads the account; an injection flag ignores the orders in the text. " +
-        "Gather info is fixed code and reads only the account fields that the action needs. Rules check applies the written rules: allow goes to Do action, deny goes to the Final message with nothing run. " +
+      "This is the flow of Level 3 as a state machine with eight states. New saves the message. Triage: Jev answers five questions, each with a confidence, in one call and never reads the account; an injection flag ignores the orders in the text, and a fraud report goes to the queue Security. " +
+        "Gather info is fixed code and reads only the account fields that the action needs. Rules check applies the written rules, the Security rule first: allow goes to Do action, deny goes to the Final message with nothing run. " +
         "The LLM writes the Final message only. A popup then asks if the issue is solved, and the chat resolves. The selected fields cut the Final message input from 617 to 590 tokens."
     );
     const nodes = [
       ["New", "message saved", "LuMail", "fx"],
-      ["Triage", "Jev: five answers with chances", "LuTags", "md"],
+      ["Triage", "Jev: five answers with confidence", "LuTags", "md"],
       ["Gather info", "only the fields the action needs", "LuDatabase", "fx"],
       ["Rules check", "written rules: allow or deny", "LuScale", "rl"],
       ["Do action", "refund, cancel plan, or reset", "LuZap", "fx"],
@@ -352,74 +352,44 @@ async function photo(file, w, h, radius = 0.08, dpi = 150) {
     band(s, 6.0, 0.8, "LuDatabase", [{ text: "Jev never reads the account. ", options: { bold: true } }, { text: "Fixed code reads only the fields the action needs: the Final message input falls from 617 to 590 tokens." }]);
   }
 
-  // ---------- 6. Security rule held-out test ----------
+  // ---------- 6. Experiment ----------
   {
     const s = base(
       6,
-      "Security rule: chosen on held-out data",
-      "The defect: on the main set a fraud report got a refund or a password reset (R0015, R0016). We tested two versions of the rule on 24 new requests in four groups of six, frozen before any rule code existed. " +
-        "Without a rule, Level 3 makes 4 fraud errors. The risk-flag version fixes 3 of 4 but stops 8 valid requests, because the risk flag is true on every action request. " +
-        "The Security-queue version fixes 4 of 4 with 0 false stops, and we chose it. At Level 2 the agent reads the same rule text: 3 of 3 fixed, 0 false stops. Nothing was tuned after we saw the answers."
-    );
-    box(s, ML, 1.65, 7.6, 4.9);
-    const cats = ["No rule", "Risk flag", "Security queue (chosen)"];
-    s.addChart(
-      pres.charts.BAR,
-      [
-        { name: "Fraud errors", labels: cats, values: [4, 1, 0] },
-        { name: "False stops (valid actions stopped)", labels: cats, values: [0, 8, 0] },
-      ],
-      {
-        ...chartBase, x: ML + 0.2, y: 1.8, w: 7.2, h: 4.6, barDir: "col", barGrouping: "clustered", barGapWidthPct: 60,
-        chartColors: [C.l3, C.red], dataLabelPosition: "outEnd", valAxisMaxVal: 10, dataLabelFormatCode: "0",
-        title: "Level 3 on 24 held-out requests, by version of the rule",
-      }
-    );
-    const x = ML + 7.9, w = CW - 7.9;
-    callout(s, x, 1.65, w, 1.5, { icon: "LuShieldCheck", big: "4 of 4", label: "fraud errors fixed by the Security queue, with 0 false stops", color: C.l3 });
-    callout(s, x, 3.35, w, 1.5, { icon: "LuShieldX", big: "8 false stops", label: "valid actions stopped by the risk flag, so we rejected it", color: C.red, bigSize: 26 });
-    callout(s, x, 5.05, w, 1.5, { icon: "LuBot", big: "3 of 3", label: "fixed at Level 2 too: the agent reads the same rule, 0 false stops", color: C.l2 });
-  }
-
-  // ---------- 7. Experiment ----------
-  {
-    const s = base(
-      7,
       "Experiment: synthetic data, real model calls",
-      "All data are made by us. The world has 72 FrameForge customers. A seeded generator writes 50 requests in 24 types; a second set of 24 held-out requests was frozen before any rule code existed. " +
-        "The fault suite forges 719 cases. In all, 793 requests ran, live or forged. We call two hosted models for real: Jev (jev-1.13.0) and DeepSeek V4.1 Flash. A recorded run replays offline with the same numbers. " +
-        "Three questions: what does each level buy and cost; what changes when Jev replaces the LLM as the classifier; do the written rules hold when answers are forged."
+      "All data are made by us. The test data have 72 FrameForge customers. A seeded generator writes 50 requests in 24 types. A full run makes 300 model calls: 100 each at Level 2, at Level 3, and in the LLM-classifier run. " +
+        "We call two hosted models for real: Jev (jev-1.13.0) and deepseek-v4.1-flash through the DeepSeek API. An offline replay of the recorded run gives the same numbers. " +
+        "Two questions: what does each level buy and cost; what changes when Jev replaces the LLM as the classifier."
     );
     const gap = 0.3, cw = (CW - 3 * gap) / 4, y = 1.55, h = 1.85;
     [
       ["LuUsers", "72", "synthetic customers"],
       ["LuFileText", "50", "requests in 24 types"],
-      ["LuFlaskConical", "24", "held-out requests, frozen early"],
-      ["LuTriangleAlert", "719", "forged fault cases; 793 requests in all"],
+      ["LuCpu", "300", "model calls: 100 for each of three runs"],
+      ["LuBot", "2", "hosted models: Jev and an LLM"],
     ].forEach(([ic, n, l], i) => {
       statCard(s, ML + i * (cw + gap), y, cw, h, { icon: ic, big: n, label: l, bigSize: 44, labelY: 1.2 });
     });
     [
       ["Q1", "What does each level buy and cost? Served, stopped, errors, harm, time, and cost."],
-      ["Q2", "What changes when Jev replaces the LLM as the classifier? Accuracy, speed, cost, and chances."],
-      ["Q3", "Do the rules hold when answers are forged, a reply lies, or Jev checks the rules?"],
+      ["Q2", "What changes when Jev replaces the LLM as the classifier? Accuracy, speed, and cost."],
     ].forEach(([tag, t], i) => {
-      const yy = 3.7 + i * 0.85;
-      box(s, ML, yy, CW, 0.72);
-      textBox(s, tag, ML + 0.25, yy + 0.13, 0.9, 0.46, { shape: pres.ShapeType.roundRect, fill: C.blue, line: C.blue, color: C.white, bold: true, size: 16, margin: 0, valign: "middle", align: "center" });
-      textBox(s, t, ML + 1.4, yy, CW - 1.65, 0.72, { size: 16, valign: "middle" });
+      const yy = 3.85 + i * 1.1;
+      box(s, ML, yy, CW, 0.9);
+      textBox(s, tag, ML + 0.25, yy + 0.2, 0.9, 0.5, { shape: pres.ShapeType.roundRect, fill: C.blue, line: C.blue, color: C.white, bold: true, size: 18, margin: 0, valign: "middle", align: "center" });
+      textBox(s, t, ML + 1.4, yy, CW - 1.65, 0.9, { size: 18, valign: "middle" });
     });
-    textBox(s, "Live calls to two hosted models: Jev (jev-1.13.0) and DeepSeek V4.1 Flash. A recorded run replays offline with the same numbers.", ML, 6.3, CW, 0.5, { size: 15, color: C.muted, valign: "middle" });
+    textBox(s, "Live calls to two hosted models: Jev (jev-1.13.0) and deepseek-v4.1-flash through the DeepSeek API. An offline replay gives the same numbers.", ML, 6.2, CW, 0.5, { size: 15, color: C.muted, valign: "middle" });
   }
 
-  // ---------- 8. Result 1: classifier ----------
+  // ---------- 7. Result 1: classifier ----------
   {
     const s = base(
-      8,
+      7,
       "Result 1: Jev is 18x faster, 11x cheaper",
       "Both classifiers get the same input and the same criteria. Jev is behind the LLM on action (86.0% against 92.0%), priority, risk flag, and injection flag, and ahead on queue (91.7% against 85.4% of 48 scored requests). " +
         "One classifier call takes a median of 0.241 s with Jev and 4.410 s with the LLM: 18 times faster. The stage costs $0.052 against $0.587 per 1,000 requests: 11 times cheaper. " +
-        "Jev gives a wrong queue or action in 11 of 50 requests, and none is an error at Level 3 (7 are label errors); the written rules and the Security rule absorb them."
+        "Jev gives a wrong queue or action in 11 of 50 requests, and none is an error at Level 3 (7 are label errors); the routing rule, the written rules, and the Security rule catch them."
     );
     box(s, ML, 1.65, 7.6, 4.9);
     const labels = ["Action", "Queue", "Priority", "Risk flag", "Injection flag"];
@@ -441,12 +411,12 @@ async function photo(file, w, h, radius = 0.08, dpi = 150) {
     callout(s, x, 5.05, w, 1.5, { icon: "LuBadgeCheck", big: "11 of 50", label: "wrong queue or action from Jev. None is an error at Level 3.", color: C.teal });
   }
 
-  // ---------- 9. Result 2: the ladder ----------
+  // ---------- 8. Result 2: the ladder ----------
   {
     const s = base(
-      9,
+      8,
       "Result 2: Level 3 is never worse",
-      "Level 1 uses an assumed 90 s per request. Level 2 serves 32 of 50, stops 15, and makes 3 errors (R0018, R0043, R0044: refusals where the gold result is an answer; nothing ran). Level 3 serves 35, stops 15, and makes 0 errors. " +
+      "Level 1 uses an assumed 90 s per request. Level 2 serves 32 of 50, stops 15, and makes 3 errors: wrong denials where the correct result is an answer; nothing ran. Level 3 serves 35, stops 15, and makes 0 errors. " +
         "Machine time is 6.85 s against 3.16 s: 2.2 times faster. Cost is $0.71 against $0.30 per 1,000 requests: 2.4 times cheaper. " +
         "The exact sign test has 3 discordant pairs, all errors at Level 2 only, and gives p = 0.25. The accuracy gap is not established. Our strong claims are speed, cost, and never worse in any column. No run is harmful at either level."
     );
@@ -469,45 +439,16 @@ async function photo(file, w, h, radius = 0.08, dpi = 150) {
     callout(s, x, 1.65, w, 1.25, { icon: "LuTimer", big: "2.2x", label: "faster: 3.16 s against 6.85 s of machine time", color: C.l3, bigSize: 28, bigH: 0.55, bigY: 0.1 });
     callout(s, x, 3.0, w, 1.25, { icon: "LuDollarSign", big: "2.4x", label: "cheaper: $0.30 against $0.71 per 1,000 requests", color: C.l3, bigSize: 28, bigH: 0.55, bigY: 0.1 });
     callout(s, x, 4.35, w, 1.25, { icon: "LuScale", big: "0 and 3", label: "errors at Level 3 and Level 2. Sign test: p = 0.25, not significant", color: C.teal, bigSize: 28, bigH: 0.55, bigY: 0.1, labelSize: 13 });
-    band(s, 5.85, 0.95, "LuShieldCheck", [{ text: "Level 3 is never worse in any column. ", options: { bold: true } }, { text: "Harmful runs: 0 at both levels. Level 1 reference: 90 s per request (assumed)." }]);
+    band(s, 5.85, 0.95, "LuShieldCheck", [{ text: "Level 3 is never worse in any column. ", options: { bold: true } }, { text: "Harmful runs: 0 at both levels. Level 1 baseline: 90 s per request (assumed)." }]);
   }
 
-  // ---------- 10. Result 3: fault injection ----------
+  // ---------- 9. Limits and claims ----------
   {
     const s = base(
-      10,
-      "Result 3: the fixed guard held on 575 of 575",
-      "We forged the classifier answers with no model call, so only the fixed rules check and the routing rule stand in the way. In nine groups where nothing may run, the written rules deny all 575 of 575, and none runs. " +
-        "In 72 more requests a teammate resets the password of the teammate, and the link goes to the e-mail on file every time. In 72 more the Final message lies about the action, and 0 are unsafe, because the message is written after the action. " +
-        "Negative finding: when a second Jev call checked the rules, 17 of 50 answers were invalid, and 94 of 575 forged requests ran (481 denied). So the guard stays fixed code."
-    );
-    box(s, ML, 1.65, 7.6, 4.9);
-    const cats = ["Fixed code guard (Level 3)", "Jev as the guard (dropped)"];
-    s.addChart(
-      pres.charts.BAR,
-      [
-        { name: "Denied: nothing ran", labels: cats, values: [575, 481] },
-        { name: "Ran an unsafe action", labels: cats, values: [0, 94] },
-      ],
-      {
-        ...chartBase, x: ML + 0.2, y: 1.8, w: 7.2, h: 4.6, barDir: "bar", barGrouping: "stacked", barGapWidthPct: 50,
-        chartColors: [C.teal, C.red], dataLabelPosition: "ctr", dataLabelColor: C.white, dataLabelFontSize: 16, dataLabelFormatCode: "0;-0;;@",
-        catAxisOrientation: "maxMin", valAxisMaxVal: 575, title: "575 forged requests where nothing may run",
-      }
-    );
-    const x = ML + 7.9, w = CW - 7.9;
-    callout(s, x, 1.65, w, 1.5, { icon: "LuShieldCheck", big: "575 of 575", label: "forged requests denied, 0 unsafe; no model call, only the fixed rules", color: C.teal, bigSize: 28 });
-    callout(s, x, 3.35, w, 1.5, { icon: "LuLock", big: "72 and 72", label: "teammate resets go to the e-mail on file; a lying reply changes no action", color: C.l3, bigSize: 28 });
-    callout(s, x, 5.05, w, 1.5, { icon: "LuTriangleAlert", big: "94 of 575", label: "ran when Jev checked the rules; 17 of 50 answers were invalid", color: C.red, bigSize: 28 });
-  }
-
-  // ---------- 11. Limits and claims ----------
-  {
-    const s = base(
-      11,
+      9,
       "Limits and what we claim",
       "The evidence is small-sample: two hosted models, one synthetic SaaS product, and an assumed 90 s per request at Level 1. 0 money or data harm in 50 requests is not proof of zero; the 95% upper limit is about 6%. " +
-        "The popup delay and the silence time are not simulated. The classifier comparison uses one prompt wording and one run per request. The Security rule was found on the main set and validated on the held-out set; the Jev guard was dropped after an earlier measurement, so the main numbers are not a blind test. " +
+        "The popup delay and the silence time are not simulated. The classifier comparison uses one prompt wording and one run per request. The Security rule was added after fraud reports showed a defect on these 50 requests, so the main numbers are not a blind test. " +
         "With 3 discordant pairs (p = 0.25) the accuracy gap is not established. What Level 3 buys is time and cost, and it is never worse in any column."
     );
     const gapC = 0.3, cwL = 6.9, cwR = CW - cwL - gapC;
@@ -518,18 +459,18 @@ async function photo(file, w, h, radius = 0.08, dpi = 150) {
       textBox(s, "Limits", p.x + 1.3, p.y + 0.25, cwL - 1.6, 0.7, { size: 24, bold: true, color: C.navy, valign: "middle" });
       s.addText(
         bullets([
-          "Synthetic data and our own labels: 50 requests in 24 types, plus 24 held-out",
+          "Synthetic data and our own labels: 50 requests in 24 types",
           "0 harmful runs in 50 is not proof of zero: the 95% upper limit is about 6%",
           "The 90 s at Level 1 is assumed; the popup and the silence timer are not simulated",
           "One prompt wording and one run for each request; two hosted models",
-          "The Security rule was found on the main set, then validated on the held-out set",
+          "The Security rule was added after fraud reports showed a defect on these 50 requests, so the main numbers are not a blind test",
         ]),
-        { x: p.x + 0.35, y: p.y + 1.15, w: cwL - 0.7, h: p.h - 1.3, margin: 0, fontFace: FONT, fontSize: 17, color: C.text, paraSpaceAfter: 12, valign: "top" }
+        { x: p.x + 0.35, y: p.y + 1.15, w: cwL - 0.7, h: p.h - 1.3, margin: 0, fontFace: FONT, fontSize: 16, color: C.text, paraSpaceAfter: 12, valign: "top" }
       );
     }
     [
       { y: 1.65, h: 2.55, icon: "LuBadgeCheck", bg: C.l3, head: "What we claim", items: ["Level 3 is 2.2x faster, 2.4x cheaper, and never worse", "p = 0.25: no accuracy gap is shown"] },
-      { y: 4.4, h: 2.35, icon: "LuFlaskConical", bg: C.teal, head: "Next", items: ["Real requests with independent labels", "A study with real support staff", "Several runs and other models"] },
+      { y: 4.4, h: 2.35, icon: "LuFlaskConical", bg: C.teal, head: "Next", items: ["Real tickets and more request types", "Adversarial inputs", "Real customers for the popup and timer"] },
     ].forEach((p) => {
       const x = ML + cwL + gapC;
       box(s, x, p.y, cwR, p.h);
@@ -539,7 +480,7 @@ async function photo(file, w, h, radius = 0.08, dpi = 150) {
     });
   }
 
-  // ---------- 12. Conclusion ----------
+  // ---------- 10. Conclusion ----------
   {
     const s = pres.addSlide();
     s.background = { color: C.blueM };
@@ -548,18 +489,18 @@ async function photo(file, w, h, radius = 0.08, dpi = 150) {
       bullets([
         "Same 50 requests at every level. Level 2: 32 served, 15 stopped, 3 errors. Level 3: 35 served, 15 stopped, 0 errors.",
         "Level 3 is never worse, 2.2x faster, and 2.4x cheaper: 3.16 s and $0.30 against 6.85 s and $0.71. The sign test (p = 0.25) shows no accuracy gap.",
-        "The Security rule fixed 4 of 4 fraud errors with 0 false stops on 24 held-out requests.",
-        "Fixed rules denied 575 of 575 forged requests. Jev as the guard let 94 run, so the guard stays fixed code.",
+        "A Security rule stops state changes on fraud reports. We added it after we saw a defect on these 50 requests.",
+        "Jev is less accurate than the LLM on four of five fields, but the written rules catch its wrong answers, so Level 3 makes 0 errors.",
       ]),
       { x: 0.8, y: 1.75, w: 6.5, h: 4.15, margin: 0, fontFace: FONT, fontSize: 18, color: C.white, paraSpaceAfter: 12, valign: "top" }
     );
     s.addText("Thank you. Questions?", { x: 0.8, y: 6.0, w: 6.6, h: 0.7, margin: 0, fontFace: FONT, fontSize: 30, bold: true, color: C.white });
     s.addImage({ data: shots.closing, x: 7.7, y: 1.3, w: 4.9, h: 4.9 });
-    speakerTag(s, 12, true);
+    speakerTag(s, 10, true);
     s.addNotes(
       `Speaker: ${PNAM}, about 60 s. To conclude: three levels on one ladder, measured on the same 50 requests. Level 3 serves 35, stops 15, and makes 0 errors; Level 2 serves 32, stops 15, and makes 3. ` +
         "Level 3 is never worse in any column, 2.2 times faster, and 2.4 times cheaper. The sign test (p = 0.25) does not establish an accuracy gap. " +
-        "The Security rule, chosen on 24 held-out requests, fixed 4 of 4 fraud errors with 0 false stops. The fixed rules denied 575 of 575 forged requests, and Jev as the guard let 94 run. " +
+        "The Security rule stops state changes on fraud reports; we added it after we saw a defect on these 50 requests, so the main numbers are not a blind test. Jev is less accurate than the LLM on four of five fields, but the written rules catch its wrong answers. " +
         "Thank you. We are happy to take questions."
     );
   }
