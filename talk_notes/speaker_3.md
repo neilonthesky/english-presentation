@@ -1,11 +1,11 @@
 # Kịch bản và ghi chú thuyết trình của Diễn giả 3
 
 - **Họ và tên diễn giả:** Vu Van Son
-- **Vai trò trong đề tài:** Xây dựng tập dữ liệu tổng hợp (100 yêu cầu qua 24 loại); Thiết kế thế giới khách hàng FrameForge; Thực thi thực nghiệm và đo lường API trực tiếp
-- **Tỷ lệ phân công:** 18% tổng thời lượng thuyết trình trong bài báo; về thời gian nói, Son nói 120 giây trên tổng 900 giây.
-- **Thời gian nói được phân bổ:** 2 phút 00 giây (120 giây) cho ba slide: Slide 23 (42 giây), Slide 24 (38 giây), Slide 25 (40 giây).
-- **Số từ mục tiêu:** ~249 từ (tốc độ ~120 đến 130 từ/phút, nói chậm vì có nhiều số liệu)
-- **Slide phụ trách:** Slide 23 (42 giây): lần chạy thí nghiệm; Slide 24 (38 giây): cùng đầu vào và giá niêm yết; Slide 25 (40 giây): Kết quả 1 (Jev nhanh hơn 19.8 lần, rẻ hơn 10.9 lần). Câu bàn giao cho Quy nằm ở cuối Slide 25.
+- **Vai trò trong đề tài:** Xây dựng tập dữ liệu tổng hợp (1.024 yêu cầu qua 24 loại); Thiết kế thế giới khách hàng FrameForge; Thực thi thực nghiệm và đo lường API trực tiếp
+- **Tỷ lệ phân công:** 18% tổng thời lượng thuyết trình trong bài báo; về thời gian nói, Son nói 120 giây trên tổng 858 giây.
+- **Thời gian nói được phân bổ:** 2 phút 00 giây (120 giây) cho ba slide: Slide 24 (42 giây), Slide 25 (38 giây), Slide 26 (40 giây).
+- **Số từ mục tiêu:** ~315 từ trong 120 giây, tức khoảng 158 từ mỗi phút: nhanh hơn tốc độ nói rõ ràng thông thường (120 đến 130 từ/phút), nên phải bấm giờ khi luyện. Nếu vượt khung, giữ các số liệu chính và bỏ bớt các con số token chi tiết ở Slide 25
+- **Slide phụ trách:** Slide 24 (42 giây): lần chạy thí nghiệm; Slide 25 (38 giây): số token và giá niêm yết; Slide 26 (40 giây): Kết quả 1 (Jev nhanh, rẻ và phần lớn đúng). Câu bàn giao cho Quy nằm ở cuối Slide 26. Son **không đặt câu hỏi** cho khán giả.
 
 ---
 
@@ -19,24 +19,16 @@
 
 ## 2. Kịch bản nói chi tiết từng từ (Word-for-Word Spoken Script)
 
-### Slide 23: Lần chạy: hai model, 600 lượt gọi
-- **Tiêu đề slide:** The run: two hosted models, 600 calls
-- **Thời gian dự kiến trên slide:** 0 phút 42 giây (42 giây, ~85 từ)
+### Slide 24: Lần chạy: 1.024 yêu cầu
+- **Tiêu đề slide:** The run: 1,024 requests
+- **Thời gian dự kiến trên slide:** 0 phút 42 giây (42 giây, ~90 từ)
 
 > `[NHÌN KHÁN GIẢ - MỈM CƯỜI]`  
-> Thank you, Nam. My name is Vu Van Son. I will explain how we ran the experiment. We call two hosted models for real: Jev, version 1.13.0, and DeepSeek V4.1 Flash. A full run makes 600 model calls, 200 for each of the three runs. In the final recording, 412 LLM calls are live, and 0 Jev calls are live: those answers came from a cache. We ask two questions: what does each level buy and cost, and what changes when Jev replaces the LLM?  
+> Thank you, Nam. My name is Vu Van Son. I will explain how we ran the experiment. We call two hosted models for real: Jev, version one point thirteen, and DeepSeek V four point one Flash. Both levels run on the same one thousand and twenty-four requests. At Level Three, Jev answers the chat of every request once, and answers the rule questions on the four hundred and ten requests whose action changes the state: one thousand four hundred and thirty-four Jev calls.
 > 
 > `[NGHỈ 1 GIÂY]`  
 > 
-> `[CHUYỂN SANG SLIDE 24]`
-
----
-
-### Slide 24: Cùng đầu vào, giá niêm yết: một lần gọi tốn bao nhiêu
-- **Tiêu đề slide:** Same input, list prices: what one call costs
-- **Thời gian dự kiến trên slide:** 0 phút 38 giây (38 giây, ~78 từ)
-
-> Both classifiers get the same input: the chat text, the sender role, the channel, and the matching help articles. Neither reads the account. Jev costs 4.2 cents per million input tokens, and its output is free. The LLM costs 15 cents in and 60 cents out per million tokens, with high reasoning effort. One Jev call writes 196 tokens, and one LLM call writes 690, because reasoning counts. All 600 calls cost about 17 cents at list price.  
+> Every count gets a ninety-five percent interval. We ask two questions: what does each level buy and cost, and when is Jev wrong, and does its confidence warn us?
 > 
 > `[NGHỈ 1 GIÂY]`  
 > 
@@ -44,17 +36,37 @@
 
 ---
 
-### Slide 25: Kết quả 1: So sánh giai đoạn phân loại
-- **Tiêu đề slide:** Result 1: Jev is 19.8x faster, 10.9x cheaper
-- **Thời gian dự kiến trên slide:** 0 phút 40 giây (40 giây, ~86 từ)
+### Slide 25: Số token và giá niêm yết: một lần gọi tốn bao nhiêu
+- **Tiêu đề slide:** List prices: what one call costs
+- **Thời gian dự kiến trên slide:** 0 phút 38 giây (38 giây, ~110 từ)
 
-> Now the first result. One Jev call takes 0.263 seconds at the median, and one LLM call takes 5.223 seconds: Jev is 19.8 times faster. Jev costs 5 cents per 1,000 requests, and the LLM costs 56 cents: 10.9 times cheaper. Jev is behind the LLM on four of the five answers, but ahead on the topic: 87.5% against 82.3%. Jev gives a wrong topic or action on 27 of the 100 requests.  
+> Level Two reads the chat text, the sender role, the channel, the help articles, the whole account, and the written rules. Level Three reads less: the chat first, then only the account lines and the rule questions of one action. Jev costs four point two cents per million input tokens, and its output is free. The LLM costs fifteen cents in and sixty cents out per million tokens, with high reasoning effort. The first Jev call reads one thousand two hundred and thirty-three tokens and writes one hundred and ninety-six. The second call, on four hundred and ten of the requests, reads seven hundred and forty-three tokens and writes one hundred and five. One LLM agent call reads one thousand two hundred and twenty-nine tokens and writes two hundred and sixty-eight, because reasoning counts.
+> 
+> `[NGHỈ 1 GIÂY]`  
+> 
+> At list price, for one thousand and twenty-four requests, Level Two costs sixty-two cents, and Level Three costs thirty cents: one thousand four hundred and thirty-four calls to Jev, and one thousand and twenty-four to the LLM.
+> 
+> `[NGHỈ 1 GIÂY]`  
+> 
+> `[CHUYỂN SANG SLIDE 26]`
+
+---
+
+### Slide 26: Kết quả 1: Jev nhanh, rẻ và phần lớn đúng
+- **Tiêu đề slide:** Result 1: Jev is fast and cheap, and mostly right
+- **Thời gian dự kiến trên slide:** 0 phút 40 giây (40 giây, ~105 từ)
+
+> Now the first result, for Jev alone, over the one thousand and twenty-four requests. One Jev call takes zero point three one seconds at the median, and the Jev calls cost six cents per one thousand requests. Jev gives the right topic on eighty-eight percent of the requests, the priority on eighty-three percent, the action on eighty-three percent, and the injection flag on ninety-six percent. The rule questions are almost always right: one thousand six hundred and ninety of one thousand seven hundred answers match the written rules.
+> 
+> `[NGHỈ 1 GIÂY]`  
+> 
+> The action label is wrong on one hundred and seventy-four requests, but none of them ends in a wrong outcome: when a rule would deny a request, Jev often picks Send reply, and the result is still a stop. The intervals are wide.
 > 
 > `[NGHỈ 1 GIÂY]`  
 > 
 > `[NHÌN SANG VUONG QUANG QUY]`  
 > 
-> Now my teammate Vuong Quang Quy will show what happens to these errors.
+> Now my teammate Vuong Quang Quy will show what the confidence of Jev tells us.
 
 ---
 
@@ -62,26 +74,26 @@
 
 Nói chính xác câu tiếng Anh này để chuyển tiếp cho Quy (Diễn giả 4):
 
-> "Now my teammate Vuong Quang Quy will show what happens to these errors."
+> "Now my teammate Vuong Quang Quy will show what the confidence of Jev tells us."
 
 ---
 
 ## 4. Ba câu hỏi khán giả thường gặp và gợi ý trả lời (chỉ để hiểu sâu phần của mình; Long là người trả lời trong Q&A)
 
 ### Câu hỏi 1:
-**"Why do you say that the experiment replays offline with the same numbers?"**
-- **Câu trả lời ngắn (4 câu):**
-  > "We save every model call in a local cache. A full run makes six hundred model calls. The final recording made four hundred and twelve live LLM calls and no live Jev call. So an offline replay of the main run gives every number in our paper."
+**"Are these numbers measured live, or replayed from a cache?"**
+- **Câu trả lời ngắn (3 câu):**
+  > "The Jev calls of Level Three are live calls to the hosted API, including the rule questions, and each answer carries its confidence. The time and the cost of the final message come from our recorded run of the same requests. We kept that part recorded because the final message only writes text; it does not change any decision."
 
 ### Câu hỏi 2:
-**"Why does DeepSeek use 'high reasoning effort' if you only want five JSON fields?"**
-- **Câu trả lời ngắn (4 câu):**
-  > "DeepSeek writes internal reasoning tokens before it answers. This helps with hard requests where a customer wants two things at once. We chose high reasoning effort so that the LLM works at its best. But these tokens add time and cost."
+**"Why does DeepSeek use 'high reasoning effort' if it only writes the final message at Level 3?"**
+- **Câu trả lời ngắn (3 câu):**
+  > "At Level Two the same model does the whole decision, so it needs the reasoning: it reads the account and applies the written rules itself. We keep one model and one setting across the two levels, so the comparison stays fair. At Level Three the reasoning effort changes nothing in the decision, because the decision is already made by Jev and by the code that reads the rule answers."
 
 ### Câu hỏi 3:
-**"What is the list pricing for Jev versus DeepSeek?"**
-- **Câu trả lời ngắn (5 câu):**
-  > "Jev costs 0.042 dollars for each million input tokens. Its output tokens are free. DeepSeek off-peak price is 0.15 dollars for each million input tokens. It is 0.60 dollars for each million output tokens, and this includes reasoning tokens. So each Jev call costs much less."
+**"What is the list pricing for Jev and for DeepSeek?"**
+- **Câu trả lời ngắn (4 câu):**
+  > "Jev costs zero point zero four two dollars for each million input tokens, and its output tokens are free. DeepSeek costs zero point one five dollars for each million input tokens, and zero point six zero dollars for each million output tokens, which includes its reasoning tokens. So at list price, one thousand and twenty-four requests cost thirty cents at Level Three and sixty-two cents at Level Two."
 
 ---
 
@@ -91,22 +103,22 @@ Luyện phát âm 10 từ vựng này theo phiên âm đơn giản dưới đây
 
 | Từ tiếng Anh | Phiên âm đơn giản | Hướng dẫn phát âm và trọng âm |
 | :--- | :--- | :--- |
-| **Seeded** | **SEE-did** | Có 2 âm tiết; nhấn vào 'SEE'; phát âm rõ 'did'. |
-| **Generator** | **JEN-uh-ray-ter** | Có 4 âm tiết; nhấn vào 'JEN'; đuôi 'ter' đọc nhẹ. |
-| **Fraud** | **FRAWD** | Có 1 âm tiết; vần với 'broad'; không đọc 'frau-dơ'. |
-| **Injections** | **in-JEK-shunz** | Có 3 âm tiết; nhấn vào 'JEK'; kết thúc bằng âm rung 'z'. |
-| **Cancellations** | **kan-suh-LAY-shunz** | Có 4 âm tiết; nhấn vào 'LAY'; kết thúc bằng âm 'z'. |
+| **Median** | **MEE-dee-un** | Có 3 âm tiết; nhấn vào 'MEE'; đuôi 'un' đọc nhẹ. |
+| **Priority** | **pry-OR-ih-tee** | Có 4 âm tiết; nhấn vào 'OR'; đuôi 'tee' đọc nhẹ. |
+| **Interval** | **IN-ter-vul** | Có 3 âm tiết; nhấn vào 'IN'; đuôi 'vul' đọc rõ. |
+| **Percent** | **per-SENT** | Có 2 âm tiết; nhấn vào 'SENT'; đuôi 't' dứt khoát. |
 | **Reasoning** | **REE-zun-ing** | Có 3 âm tiết; nhấn vào 'REE'; 's' đọc thành 'z'. |
 | **Temperature** | **TEM-per-uh-chur** | Có 4 âm tiết; nhấn vào 'TEM'; đuôi 'chur' đọc nhẹ. |
-| **Recording** | **rih-KOR-ding** | Có 3 âm tiết; nhấn vào 'KOR'; đuôi 'ding' rõ ràng. |
-| **Replay** | **ree-PLAY** | Có 2 âm tiết; nhấn vào 'PLAY'; 'ree' đọc ngắn. |
-| **Cache** | **KASH** | Có 1 âm tiết; đọc giống 'cash'; không đọc 'ca-che'. |
+| **Tokens** | **TOH-kunz** | Có 2 âm tiết; nhấn vào 'TOH'; kết thúc bằng âm 'z'. |
+| **Result** | **rih-ZULT** | Có 2 âm tiết; nhấn vào 'ZULT'; 's' đọc như 'z'. |
+| **Injection** | **in-JEK-shun** | Có 3 âm tiết; nhấn vào 'JEK'; đuôi 'shun' đọc nhẹ. |
+| **Twenty-four** | **TWEN-tee-for** | Có 3 âm tiết; nhấn vào 'TWEN'; không đọc 'twenty-fo'. |
 
 ---
 
 ## 6. Ký hiệu tốc độ và cử chỉ biểu diễn
 
 - `[NHÌN KHÁN GIẢ - MỈM CƯỜI VÀ GIAO TIẾP ÁNH MẮT]`: Tư thế ấm áp, tự tin trước khi bắt đầu phần kỹ thuật.
-- `[NGHỈ 1 GIÂY]`: Giúp khán giả theo dõi kịp các số liệu tập dữ liệu (72 hồ sơ, 100 yêu cầu, 24 loại).
-- `[NGHỈ 2 GIÂY]`: Ngắt nhịp tạo điểm nhấn trước khi nêu 2 câu hỏi nghiên cứu trọng tâm.
+- `[NGHỈ 1 GIÂY]`: Cho khán giả theo kịp các con số (1.024 yêu cầu, 1.434 lượt gọi Jev, 24 loại).
+- `[NHÌN SANG VUONG QUANG QUY]`: Nhìn sang người nói tiếp theo khi đọc câu bàn giao lượt nói.
 - `[CHUYỂN SANG SLIDE X]`: Bấm chuyển slide trình chiếu chuẩn xác theo kịch bản.

@@ -1,6 +1,6 @@
 # Kế hoạch tương tác với khán giả (Audience Interaction Plan)
 
-Tài liệu này chi tiết hóa chiến lược tương tác với khán giả trong bài thuyết trình 31 slide (15 phút 00 giây, 900 giây). Mục tiêu là duy trì sự tập trung tích cực của người nghe, đáp ứng trọn vẹn tiêu chí 4 trong mẫu đánh giá chéo (Interaction with audience, 1.0 điểm), và bám sát lời khuyên của giảng viên:
+Tài liệu này chi tiết hóa chiến lược tương tác với khán giả trong bài thuyết trình 31 slide (858 giây nói, tức 14 phút 18 giây, cộng 300 giây hỏi đáp). Mục tiêu là duy trì sự tập trung tích cực của người nghe, đáp ứng trọn vẹn tiêu chí 4 trong mẫu đánh giá chéo (Interaction with audience, 1.0 điểm), và bám sát lời khuyên của giảng viên:
 
 > *"Trong lúc thuyết trình nên có sự tương tác với khán giả, ví dụ đặt câu hỏi hoặc mở đầu bằng một câu chuyện, để bài nói hấp dẫn hơn. Đồng thời hãy giới thiệu rõ tên từng người để người nghe dễ đánh giá."*
 
@@ -14,10 +14,10 @@ Tài liệu này chi tiết hóa chiến lược tương tác với khán giả 
 | :---: | :---: | :--- | :--- | :---: | :--- |
 | **1** | Slide 1 | **Tran Thanh Long** | Câu chuyện mở đầu 30 giây: Khách hàng chờ 2 ngày để được hoàn tiền | 30 s | Chuyển ý tự nhiên: "I see a few knowing smiles in the front row." |
 | **2** | Slide 2 | **Tran Thanh Long** | Câu hỏi giơ tay: "Have you ever waited over 24 hours for customer support?" | 20 s | "Over sixty percent of customers leave after one slow support experience." |
-| **3** | Slide 2 | **Tran Thanh Long** | Bình chọn nhanh: "Which action would you never let a chatbot do alone?" (chuyển từ Nam) | 25 s | "For FrameForge, data deletion cannot be undone, so our written rules always deny it in chat." |
-| **4** | Slide 3 | **Tran Thanh Long** | Câu hỏi dự đoán: "Which level do you think is faster and cheaper, Level 2 or Level 3?" (chuyển từ Quy) | 25 s | "No guess yet? That is fine. The results will show the answer." (không tiết lộ số liệu) |
+| **3** | Slide 2 | **Tran Thanh Long** | Bình chọn nhanh: "Which action would you never let a chatbot do alone?" | 25 s | "For FrameForge, data deletion cannot be undone, so our written rules always deny it in chat." |
+| **4** | Slide 3 | **Tran Thanh Long** | Câu hỏi dự đoán: "Which level do you think is faster and cheaper, Level 2 or Level 3?" | 25 s | "No guess yet? That is fine. The results will show the answer." (không tiết lộ số liệu) |
 
-Thời gian cộng thêm ở phần tương tác: Slide 2 của Long là 100 giây và Slide 3 là 100 giây (đã gồm khoảng 50 giây tương tác). Phần bình chọn và câu hỏi dự đoán trước đây thuộc về Nam và Quy nay do Long đọc, và câu hỏi suy ngẫm cuối bài của Phuong Nam đã bị bỏ. Số giây hiện tại của từng người nằm trong `README.md`.
+Thời gian của hai slide mở đầu đã bao gồm phần tương tác: Slide 2 của Long là 98 giây (khoảng 45 giây là giơ tay và bình chọn), và Slide 3 là 98 giây (khoảng 25 giây là câu hỏi dự đoán). Phần bình chọn và câu hỏi dự đoán đều do Long đọc; bốn bạn còn lại không đặt câu hỏi cho khán giả. Số giây hiện tại của từng người nằm trong `README.md`.
 
 ---
 
@@ -29,7 +29,7 @@ Thời gian cộng thêm ở phần tương tác: Slide 2 của Long là 100 gi�
 - **Cử chỉ hình thể:** Hướng hai tay ra phía trước với lòng bàn tay mở nhẹ; hạ tông giọng để tạo sự đồng cảm và kết nối cảm xúc.
 
 ### Kịch bản nói tiếng Anh:
-> "Imagine this simple situation. It is Friday evening. You subscribed to an AI video tool for forty dollars, but the render failed completely. You open the support chat and ask for a refund. The chat window says: *Your request is in the queue.* You wait ten minutes. You wait one hour. You wait two whole days until Monday morning just to get your money back. That waiting hurts. But for the company, giving an AI bot total control over refunds is terrifying. One bad prompt could empty their bank account. Today, we show you how to solve both problems."
+> "Imagine this simple situation. It is Friday evening. You subscribed to an AI video tool for forty dollars, but the render failed completely. You open the support chat and ask for a refund. The chat window says: *Your request is in the queue.* You wait ten minutes. You wait one hour. You wait two whole days until Monday morning just to get your money back. That waiting hurts. But letting an AI chatbot handle money is dangerous: one bad answer can refund the wrong customer or delete user files. Today, we show you how we handle this problem for FrameForge, a made-up AI video service."
 
 ### Phương án dự phòng khi khán giả im lặng:
 Nếu người nghe ngồi yên hoặc chưa phản ứng, Long dừng lại 2 giây, mỉm cười và nói:
@@ -73,7 +73,7 @@ Nếu cả lớp ngồi yên và không ai phản ứng:
 
 ## Thời điểm 4: Câu hỏi dự đoán trước khi công bố kết quả (Slide 3)
 
-Phần này được **chuyển từ Vuong Quang Quy sang Long (Slide 3)**. Long hỏi ngay sau khi giới thiệu ba cấp độ. Long **không được tiết lộ đáp án**, kể cả bằng con số hay gợi ý; chỉ nói rằng dữ liệu sẽ cho biết ở phần kết quả. Khi đến Slide 34 đến 36, Quy chỉ trình bày số liệu và không hỏi lại khán giả.
+Phần này được **chuyển từ Vuong Quang Quy sang Long (Slide 3)**. Long hỏi ngay sau khi giới thiệu ba cấp độ. Long **không được tiết lộ đáp án**, kể cả bằng con số hay gợi ý; chỉ nói rằng dữ liệu sẽ cho biết ở phần kết quả. Khi đến Slide 27 và 28, Quy chỉ trình bày số liệu và không hỏi lại khán giả.
 
 - **Người thực hiện:** Tran Thanh Long (Trưởng nhóm)
 - **Thời điểm trong bài nói:** khoảng 4:05 – 4:25 (25 giây; slide 3 bắt đầu ở 2:50)
@@ -91,7 +91,7 @@ Nếu căn phòng hoàn toàn yên tĩnh sau 3 giây, không nêu con số nào 
 
 ## Q&A do Long phụ trách
 
-- Sau lời mời của Nguyen Phuong Nam ("Our leader, Tran Thanh Long, will now take your questions."), **Long trả lời toàn bộ câu hỏi** trong 5 phút. Chi tiết và 15 câu trả lời chuẩn nằm trong `qa_prep.md`.
+- Sau lời mời của Nguyen Phuong Nam ("Our leader, Tran Thanh Long, will now take your questions."), **Long trả lời toàn bộ câu hỏi** trong 5 phút. Chi tiết và 18 câu trả lời chuẩn nằm trong `qa_prep.md`.
 - Bốn bạn còn lại đứng bên cạnh sân khấu, lắng nghe, không tự ý trả lời. Chỉ khi Long chủ động nhường lời cho người phụ trách phần đó (ví dụ Son cho câu hỏi về tập dữ liệu) thì người đó mới nói, và chỉ khi thật cần.
 - Long nhắc lại câu hỏi bằng lời của mình trước khi trả lời, để cả lớp nghe rõ và để có thêm vài giây suy nghĩ.
 

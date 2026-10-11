@@ -2,10 +2,10 @@
 
 - **Họ và tên diễn giả:** Nguyen Phuong Nam
 - **Vai trò trong đề tài:** Tổng quan tài liệu nghiên cứu liên quan; Thảo luận hạn chế nghiên cứu; Thiết kế trực quan slide; Hỗ trợ chuẩn bị tài liệu hỏi đáp cho Long
-- **Tỷ lệ phân công:** 13% tổng thời lượng thuyết trình (120 giây trên tổng 900 giây)
-- **Thời gian nói được phân bổ:** 2 phút 00 giây (120 giây). Phuong Nam có ba slide (thêm slide công trình liên quan), đọc ít chữ hơn bản trước nhưng đủ 120 giây: nói chậm và rõ.
-- **Số từ mục tiêu:** ~283 từ (nói chậm hơn 130 từ/phút một chút)
-- **Các slide phụ trách:** Slide 29 (30 giây), Slide 30 (55 giây) và Slide 31 (35 giây). Cuối Slide 31, Phuong Nam mời khán giả hỏi Long.
+- **Tỷ lệ phân công:** 15% tổng thời lượng thuyết trình trong bài báo; về thời gian nói, Phuong Nam nói 120 giây trên tổng 858 giây.
+- **Thời gian nói được phân bổ:** 2 phút 00 giây (120 giây) cho ba slide: Slide 29 (30 giây), Slide 30 (55 giây), Slide 31 (35 giây).
+- **Số từ mục tiêu:** ~350 từ trong 120 giây, tức khoảng 175 từ mỗi phút: nhanh hơn tốc độ nói rõ ràng thông thường, nên phải bấm giờ khi luyện. Nếu vượt khung, bỏ bớt câu phụ ở Slide 30 (ví dụ câu về tập yêu cầu thứ hai) và giữ nguyên các số liệu chính
+- **Các slide phụ trách:** Slide 29 (30 giây), Slide 30 (55 giây) và Slide 31 (35 giây). Cuối Slide 31, Phuong Nam mời khán giả hỏi Long. Phuong Nam **không đặt câu hỏi** cho khán giả.
 
 ---
 
@@ -21,14 +21,10 @@
 
 ### Slide 29: Công trình liên quan
 - **Tiêu đề slide:** Related work: limit what the model can trigger
-- **Thời gian dự kiến trên slide:** 0 phút 30 giây (30 giây, ~81 từ)
+- **Thời gian dự kiến trên slide:** 0 phút 30 giây (30 giây, ~78 từ)
 
 > `[NHÌN KHÁN GIẢ - MỈM CƯỜI]`  
-> Thank you, Quy. My name is Nguyen Phuong Nam. I will explain how our work fits the field, and its limits.  
-> 
-> `[NGHỈ 1 GIÂY]`  
-> 
-> Text in data can carry orders for a model. CaMeL and other design patterns defend by limiting what the model can trigger. Support platforms route tickets by rules, and the Fin agent runs refunds and cancellations. Our first design is of this kind: a fixed check limits what Jev can trigger. Our new design gives Jev the rules as context.  
+> Thank you, Quy. My name is Nguyen Phuong Nam. I will explain how our work fits the field, and its limits. Text in data can carry orders for a model. CaMeL and other design patterns defend by limiting what the model can trigger. Support platforms route tickets by rules, and the Fin agent runs refunds and cancellations. Level Three follows the same idea: Jev only answers typed questions, and the process, not Jev, decides if the action runs. Result Two shows what that buys.
 > 
 > `[NGHỈ 1 GIÂY]`  
 > 
@@ -38,17 +34,21 @@
 
 ### Slide 30: Giới hạn nghiên cứu và điều chúng tôi khẳng định
 - **Tiêu đề slide:** Limits and what we claim
-- **Thời gian dự kiến trên slide:** 0 phút 55 giây (55 giây, ~119 từ)
+- **Thời gian dự kiến trên slide:** 0 phút 55 giây (55 giây, ~140 từ)
 
-> Our evidence is small: two hosted models, one synthetic SaaS product, and our own labels. All results have a fixed check behind Jev. We did not run the design where Jev reads the rules as context. We saw 0 harmful runs in 100 requests. That does not prove that the real rate is zero. The 95% upper limit is 3.7%.  
+> Our evidence is small: two hosted models, one synthetic SaaS product, and our own labels, which the same code that applies the rules produced. Both levels run on the same one thousand and twenty-four requests, and the intervals are wide: for example, the Level Three errors are zero, with a ninety-five percent interval from zero to thirty-eight, and the sign test gives p equal to zero point zero three one.
 > 
 > `[NGHỈ 1 GIÂY]`  
 > 
-> Real users write slang and make spelling mistakes. Our test data does not. The 90 seconds at Level 1 is assumed. We did not simulate the popup or the silence timer.  
+> Jev needs a question that we write for each rule. We tried questions made from the text of the rule alone, and they made about sixty-one to one hundred and twenty-three errors of one thousand and twenty-four, against none for ours. We wrote our questions knowing the twenty-four request types, and a second set of requests did not change the result.
 > 
 > `[NGHỈ 1 GIÂY]`  
 > 
-> We found the Security rule and the account fields on an earlier 50-request set of these same 24 types, so the main numbers are not a blind test.  
+> Real users write slang and make spelling mistakes. Our test data does not. The ninety seconds at Level One is assumed. We did not simulate the popup or the silence timer.
+> 
+> `[NGHỈ 1 GIÂY]`  
+> 
+> We found the Security rule and the account fields on an earlier five-hundred-and-twelve-request set of these same twenty-four types, so the main numbers are not a blind test.
 > 
 > `[NGHỈ 1 GIÂY]`  
 > 
@@ -58,17 +58,17 @@
 
 ### Slide 31: Kết luận và chuyển sang Q&A
 - **Tiêu đề slide:** Conclusion
-- **Thời gian dự kiến trên slide:** 0 phút 35 giây (35 giây, ~83 từ)
+- **Thời gian dự kiến trên slide:** 0 phút 35 giây (35 giây, ~110 từ)
 
-> To finish, we tested three levels of customer support on the same 100 requests. With a fixed check behind Jev, Level 3 serves 70, stops 30, and makes 0 errors. Level 2 makes 6.  
+> To finish, we tested three levels of customer support on the same one thousand and twenty-four requests. Level Two serves six hundred and seventy-six, stops two hundred and eighty-seven, and makes sixty-one errors. Level Three serves seven hundred and seventeen, stops three hundred and seven, and makes no error. Level Three is one point eight times faster and two point one times cheaper, and it makes fewer errors: it was never wrong where Level Two was right, and Level Two was wrong on sixty-one requests where it was right.
 > 
 > `[NGHỈ 1 GIÂY]`  
 > 
-> Level 3 is never worse, 1.9 times faster, and 2.2 times cheaper, and the sign test gives p = 0.031. Our new design gives Jev the rules as context, and that is the next test.  
+> Jev needs a question that we write for each rule. The confidence of Jev is a warning: three hundred and thirty-eight of the seven hundred and thirty-seven answers below zero point eight are wrong, against ninety-two of four thousand four hundred and fifty-five at zero point nine or more. The next step is real tickets and a larger set of requests.
 > 
 > `[NGHỈ 1 GIÂY]`  
 > 
-> Thank you for listening.  
+> Thank you for listening.
 > 
 > `[NGHỈ 1 GIÂY]`  
 > 
@@ -86,27 +86,47 @@ Nói chính xác câu tiếng Anh này để chuyển tiếp cho Long (Q&A):
 
 ---
 
-## 4. Hướng dẫn phát âm (10 từ kỹ thuật khó)
+## 4. Ba câu hỏi khán giả thường gặp và gợi ý trả lời (chỉ để hiểu sâu phần của mình; Long là người trả lời trong Q&A)
+
+### Câu hỏi 1:
+**"What does the related work say about prompt injection, and how is your work different?"**
+- **Câu trả lời ngắn (3 câu):**
+  > "Greshake and others showed that text which a model reads can carry orders, and CaMeL and design patterns defend by limiting what the model can trigger. Our Level Three uses the same idea from the other side: Jev answers typed questions only, and the code that reads the answers decides if the action runs. The model never writes an action by itself."
+
+### Câu hỏi 2:
+**"Which limitation of your study would you fix first?"**
+- **Câu trả lời ngắn (3 câu):**
+  > "The labels, because the same code that applies the written rules also produced the correct answers, so the comparison is not independent. After that, the question bank: each rule needs a question that we wrote, and questions generated from the rule text alone made about sixty-one to one hundred and twenty-three errors of one thousand and twenty-four. Third, real tickets with slang and spelling mistakes."
+
+### Câu hỏi 3:
+**"What is the next experiment?"**
+- **Câu trả lời ngắn (2 câu):**
+  > "Real tickets and a larger set of requests, with adversarial inputs. The open question is whether the rule questions hold when a real customer writes in a messy, unexpected way."
+
+---
+
+## 5. Hướng dẫn phát âm (10 từ kỹ thuật khó)
 
 Luyện phát âm 10 từ vựng này theo phiên âm đơn giản dưới đây:
 
 | Từ tiếng Anh | Phiên âm đơn giản | Hướng dẫn phát âm và trọng âm |
 | :--- | :--- | :--- |
-| **Intercom** | **IN-ter-kom** | Có 3 âm tiết; nhấn vào 'IN'; đuôi 'kom' dứt khoát. |
-| **Seventy-five** | **SEV-un-tee-fyv** | Có 4 âm tiết; nhấn vào 'SEV'; 'five' đọc như 'fyv'. |
-| **Synthetic** | **sin-THET-ik** | Có 3 âm tiết; nhấn vào 'THET'; đuôi 'ik' ngắn. |
+| **Related** | **rih-LAY-tid** | Có 3 âm tiết; nhấn vào 'LAY'; đuôi 'tid' dứt khoát. |
+| **Literature** | **LIT-ruh-chur** | Có 3 âm tiết; nhấn vào 'LIT'; đuôi 'chur' đọc nhẹ. |
+| **Injection** | **in-JEK-shun** | Có 3 âm tiết; nhấn vào 'JEK'; đuôi 'shun' đọc nhẹ. |
+| **Adversarial** | **ad-ver-SAIR-ee-ul** | Có 5 âm tiết; nhấn vào 'SAIR'; các âm còn lại đọc lướt. |
 | **Evidence** | **EV-ih-dens** | Có 3 âm tiết; nhấn vào 'EV'; đuôi 'dens' đọc nhẹ. |
-| **Confidence** | **KON-fih-dens** | Có 3 âm tiết; nhấn mạnh vào 'KON'; đuôi 'dens' đọc nhẹ. |
-| **Security** | **sih-KYOOR-ih-tee** | Có 4 âm tiết; nhấn vào 'KYOOR'; đuôi 'tee' rõ ràng. |
-| **Cache** | **KASH** | Có 1 âm tiết; đọc giống 'cash'. |
+| **Synthetic** | **sin-THET-ik** | Có 3 âm tiết; nhấn vào 'THET'; đuôi 'ik' ngắn. |
+| **Interval** | **IN-ter-vul** | Có 3 âm tiết; nhấn vào 'IN'; đuôi 'vul' đọc rõ. |
 | **Blind** | **BLYND** | Có 1 âm tiết; vần giống 'kind'; bật nhẹ âm 'd'. |
-| **Percent** | **per-SENT** | Có 2 âm tiết; nhấn vào 'SENT'; đuôi 't' dứt khoát. |
+| **Limits** | **LIM-its** | Có 2 âm tiết; nhấn vào 'LIM'; đuôi 'its' đọc rõ. |
 | **Conclusion** | **kun-KLOO-zhun** | Có 3 âm tiết; nhấn vào 'KLOO'; âm 'zh' như trong 'vision'. |
 
 ---
 
-## 5. Ký hiệu tốc độ và cử chỉ biểu diễn
+## 6. Ký hiệu tốc độ và cử chỉ biểu diễn
 
 - `[NHÌN KHÁN GIẢ - GIAO TIẾP ÁNH MẮT TRÁI VÀ PHẢI]`: Quét mắt bao quát phòng học để duy trì sự ấm áp và tự tin.
 - `[NGHỈ 1 GIÂY]`: Ngắt nhịp cẩn thận giữa các hạn chế nghiên cứu để thể hiện sự trung thực trong học thuật.
+- `[NHÌN SANG TRAN THANH LONG]`: Nhìn sang trưởng nhóm khi mời khán giả đặt câu hỏi.
 - `[CHUYỂN SANG SLIDE X]`: Bấm chuyển slide trình chiếu chuẩn xác theo kịch bản.

@@ -10,6 +10,7 @@ const sharp = require("sharp");
 const fs = require("fs");
 const lu = require("react-icons/lu");
 const { addTransitions } = require("./transitions");
+const { dropBlankPoints } = require("./charts");
 const { CASES, FIELDS } = require("./cases");
 
 const C = {
@@ -42,7 +43,7 @@ const SPEAKER = [
   [LONG, 22], [LONG, 12], [LONG, 12], // the three walk-throughs (CASES in cases.js): every click is its own slide, so these seconds cover all of them
   [NAM, 41], [NAM, 39], [NAM, 40], // test data, request families, outcomes
   [SON, 42], [SON, 38], [SON, 40], // the run, models and prices, Result 1
-  [QUY, 40], [QUY, 38], [QUY, 42], // the confidence of Jev, Result 2, the ablation of the fixed check
+  [QUY, 40], [QUY, 38], // the confidence of Jev, Result 2
   [PNAM, 30], [PNAM, 55], [PNAM, 35], // related work, limits, conclusion
 ];
 
@@ -256,15 +257,15 @@ async function photo(file, w, h, radius = 0.08, dpi = 150) {
       "Three levels, one change at each level",
       "Level 1 is the baseline: support staff read every request, 90 s each (assumed). " +
         "Level 2 replaces the staff with one LLM agent that reads the account, applies the written rules itself, and either runs an action or denies it. " +
-        "Level 3 replaces the agent with Jev: Jev reads the chat, the account, and the written rules as context, and gives typed answers, each with a confidence; the process follows its answer, and the LLM writes the reply. " +
-        "Every level runs on the same 100 requests. " +
+        "Level 3 replaces the agent with Jev: Jev reads the chat and gives typed answers, then answers one yes/no question for each written rule of the action, each with a confidence; the process follows the answers, and the LLM writes the reply. " +
+        "Every level runs on the same 1,024 requests. " +
         "Opening interaction by the leader: which level is faster and cheaper, Level 2 or Level 3? The answer is not given here; the results show it. Now, the rules."
     );
     const gap = 0.45, cw = (CW - 2 * gap) / 3, y = 1.65, h = 4.05;
     [
       { n: "Level 1", head: "Staff only", icon: "LuUsers", bg: C.grey, body: "Support staff read every request. Baseline: 90 s each (assumed)." },
       { n: "Level 2", head: "One LLM agent", icon: "LuBot", bg: C.l2, body: "One LLM agent reads the account and applies the written rules itself. It runs an action or denies it." },
-      { n: "Level 3", head: "Jev + LLM", icon: "LuTags", bg: C.l3, body: "Jev reads the chat, the account, and the rules, and decides. The process follows its answer. The LLM writes the reply." },
+      { n: "Level 3", head: "Jev + LLM", icon: "LuTags", bg: C.l3, body: "Jev reads the chat, then answers one yes/no question for each written rule. The process follows the answers. The LLM writes the reply." },
     ].forEach((p, i) => {
       const x = ML + i * (cw + gap);
       box(s, x, y, cw, h);
@@ -274,7 +275,7 @@ async function photo(file, w, h, radius = 0.08, dpi = 150) {
       textBox(s, p.body, x + 0.3, y + 2.5, cw - 0.6, 1.45, { size: 16 });
       if (i < 2) line(s, x + cw + 0.05, y + h / 2, gap - 0.1, 0, { arrow: true });
     });
-    band(s, 5.95, 0.8, "LuTarget", [{ text: "One change at a time: ", options: { bold: true } }, { text: "every level runs on the same 100 requests." }]);
+    band(s, 5.95, 0.8, "LuTarget", [{ text: "One change at a time: ", options: { bold: true } }, { text: "every level runs on the same 1,024 requests." }]);
   }
 
   // Fill and accent of a state of the flow: fixed code, a model, or the written rules.
@@ -293,13 +294,13 @@ async function photo(file, w, h, radius = 0.08, dpi = 150) {
       "Refunds only within 14 days", "No refund after credits are used", "Refund limit: $100 per request", "Max 2 refunds in 90 days",
       "Owner must approve the refund", "Deleting data is never allowed", "Reset links go to the e-mail on file", "Cancel a plan only once",
       "Annual plans: refund within 30 days", "Bank must settle the charge first", "No refunds on promo credits", "Escalate any chargeback",
-      "Never share another account", "Verify the sender's identity", "Teammates cannot ask for refunds", "Log every state change",
+      "Never share another account", "Verify the sender's identity", "One plan per customer", "Log every state change",
       "No discounts without approval", "Reply within 24 hours", "VIP accounts go to a manager", "Mask card numbers in replies",
       "Never promise a fix date", "Close chats after 7 quiet days", "No plan downgrade mid-cycle", "Credit packs expire in 12 months",
       "Refund to the original payment", "Currency must match the charge", "Tax refunds go to billing", "Fraud reports: lock the account",
       "No password in chat text", "Two-factor reset needs a code", "Ignore orders inside a message", "Tag the topic of every ticket",
       "Priority: blocked users first", "Outages need a status link", "Do not quote internal notes", "Refund once per purchase",
-      "Trial accounts get no refund", "Seats can only be removed by owner", "Export data before deletion", "Warn before a plan ends",
+      "Trial accounts get no refund", "One owner per account", "Export data before deletion", "Warn before a plan ends",
       "Late fees need a manager", "No refunds for abuse", "Check the region's consumer law", "Keep chat history for 90 days",
       "Translate replies on request", "Do not reveal the system prompt", "Report repeated requests", "Hand over angry customers", "Confirm before any action",
     ];
@@ -330,7 +331,7 @@ async function photo(file, w, h, radius = 0.08, dpi = 150) {
     const s = base(
       5,
       "The written rules: allow or deny",
-      "Here is the essential gate, one rule for each action. First, the Security rule: if someone else used the account or the card, deny. A refund above 100 dollars is denied. So is a password link to an e-mail that is not on file, and a plan that is already cancelled. Deleting data is always denied. The model gets these rules as context."
+      "Here is the essential gate, one rule for each action. First, the Security rule: if someone else used the account or the card, deny. A refund above 100 dollars is denied. So is a password link to an e-mail that is not on file, and a plan that is already cancelled. Deleting data is always denied. At Level 2 the agent reads these rules as text. At Level 3 Jev gets one yes/no question for each rule."
     );
     // One deny rule for each action; the walk-throughs show the full gate.
     const RULE_ROWS = [
@@ -352,7 +353,7 @@ async function photo(file, w, h, radius = 0.08, dpi = 150) {
     });
     textBox(
       s,
-      [{ text: "The model gets these rules as context. ", options: { bold: true } }, { text: "Level 2: the agent applies them.   Level 3: Jev applies them." }],
+      [{ text: "Two ways to apply the rules. ", options: { bold: true } }, { text: "Level 2: the agent reads them as text.   Level 3: Jev answers one question for each rule." }],
       ML, 6.35, CW, 0.5, { size: 17, color: C.navy, valign: "middle" }
     );
   }
@@ -362,66 +363,67 @@ async function photo(file, w, h, radius = 0.08, dpi = 150) {
     const s = base(
       6,
       "Level 3: Jev and an LLM",
-      "This is Level 3 as a state machine with six states. A message enters New. Jev is the only state that decides: it reads the chat, the account, and the written rules as context, and answers. The process follows the answer: allow runs the action, and deny runs nothing. The LLM writes the final message only."
+      "This is Level 3 as a state machine with seven states. A message enters New. Jev decides in two states. In the first, Jev reads the chat and gives four answers: the topic, the priority, the action, and an injection flag. In Rules, Jev answers one yes/no question for each written rule of the action. The process follows the answers: if no rule is broken, Do action runs the action; if one is broken, nothing runs. The LLM writes the final message only."
     );
     const nodes = [
       ["New", "message saved", "LuMail", "fx"],
-      ["Jev", "reads the chat, the account, and the rules; answers", "LuTags", "md"],
+      ["Jev", "four answers about the chat", "LuTags", "md"],
+      ["Rules", "Jev: one yes/no answer per rule", "LuScale", "md"],
       ["Do action", "refund, cancel plan, or reset", "LuZap", "fx"],
       ["Final message", "the LLM writes the reply", "LuMessageSquareText", "md"],
       ["Chat open", "popup: did this solve it?", "LuMessageCircle", "fx"],
       ["Resolved", "chat closed", "LuCircleCheck", "fx"],
     ];
-    // Four large states that decide; Chat open and Resolved are small, because they come after the answer.
-    const H = 2.1, S = 1.2, y0 = 1.85, wN = nodes.map((_, i) => (i < 4 ? 1.95 : S)), hN = nodes.map((_, i) => (i < 4 ? H : S));
-    const gap = (CW - wN.reduce((a, v) => a + v, 0)) / 5;
+    // Five large states that decide or act; Chat open and Resolved are small, because they come after the answer.
+    const H = 2.1, S = 1.1, y0 = 1.85, wL = 1.6, wN = nodes.map((_, i) => (i < 5 ? wL : S)), hN = nodes.map((_, i) => (i < 5 ? H : S));
+    const gap = (CW - wN.reduce((a, v) => a + v, 0)) / 6;
     const X = nodes.map((_, i) => ML + wN.slice(0, i).reduce((a, v) => a + v, 0) + i * gap);
     const yN = hN.map((h) => y0 + (H - h) / 2);
     const cx = X.map((x, i) => x + wN[i] / 2);
     nodes.forEach(([name, sub, icon, k], i) => {
       const [fill, ln] = kinds[k];
       box(s, X[i], yN[i], wN[i], hN[i], { fill });
-      if (i < 4) {
+      if (i < 5) {
         iconCircle(s, icon, cx[i] - 0.3, y0 + 0.18, 0.6, ln);
-        textBox(s, name, X[i] + 0.04, y0 + 0.88, wN[i] - 0.08, 0.38, { size: 17, bold: true, color: C.navy, align: "center", valign: "middle" });
-        textBox(s, sub, X[i] + 0.1, y0 + 1.28, wN[i] - 0.2, 0.8, { size: 15, align: "center" });
+        textBox(s, name, X[i] + 0.04, y0 + 0.88, wN[i] - 0.08, 0.38, { size: 16, bold: true, color: C.navy, align: "center", valign: "middle", margin: 0 });
+        textBox(s, sub, X[i] + 0.1, y0 + 1.28, wN[i] - 0.2, 0.8, { size: 14, align: "center" });
       } else {
         iconCircle(s, icon, cx[i] - 0.22, yN[i] + 0.12, 0.44, ln);
         textBox(s, name, X[i] + 0.02, yN[i] + 0.64, wN[i] - 0.04, 0.4, { size: 14, bold: true, color: C.navy, align: "center", valign: "middle", margin: 0 });
       }
-      if (i < 5) line(s, X[i] + wN[i] + 0.02, y0 + H / 2, gap - 0.04, 0, { arrow: true, color: C.grey });
+      if (i < 6) line(s, X[i] + wN[i] + 0.02, y0 + H / 2, gap - 0.04, 0, { arrow: true, color: C.grey });
     });
-    textBox(s, "allow", cx[1] + wN[1] / 2 + gap / 2 - 0.45, y0 - 0.3, 0.9, 0.28, { size: 15, bold: true, color: C.blue, align: "center", valign: "middle" });
-    // Deny path: Jev goes straight to the Final message; nothing runs.
+    textBox(s, "no rule broken", cx[2] + wN[2] / 2 + gap / 2 - 0.8, y0 - 0.3, 1.6, 0.28, { size: 15, bold: true, color: C.blue, align: "center", valign: "middle" });
+    // Deny path: Rules goes straight to the Final message; nothing runs.
     const yd = 4.4;
-    line(s, cx[1], y0 + H, 0, yd - (y0 + H), { color: C.blue });
-    line(s, cx[1], yd, cx[3] - cx[1], 0, { color: C.blue });
-    line(s, cx[3], y0 + H, 0, yd - (y0 + H), { color: C.blue, arrow: true, flipV: true });
-    textBox(s, "deny: nothing runs", cx[1], yd + 0.05, cx[3] - cx[1], 0.3, { size: 15, bold: true, color: C.blue, align: "center", valign: "middle" });
+    line(s, cx[2], y0 + H, 0, yd - (y0 + H), { color: C.blue });
+    line(s, cx[2], yd, cx[4] - cx[2], 0, { color: C.blue });
+    line(s, cx[4], y0 + H, 0, yd - (y0 + H), { color: C.blue, arrow: true, flipV: true });
+    textBox(s, "a rule is broken: nothing runs", cx[2], yd + 0.05, cx[4] - cx[2], 0.3, { size: 15, bold: true, color: C.blue, align: "center", valign: "middle" });
     // Loop: a customer who writes again in the same chat goes back to New.
     const yl = 5.0;
-    line(s, cx[4], yN[4] + S, 0, yl - (yN[4] + S), { color: C.muted, dash: "dash" });
-    line(s, cx[0], yl, cx[4] - cx[0], 0, { color: C.muted, dash: "dash" });
+    line(s, cx[5], yN[5] + S, 0, yl - (yN[5] + S), { color: C.muted, dash: "dash" });
+    line(s, cx[0], yl, cx[5] - cx[0], 0, { color: C.muted, dash: "dash" });
     line(s, cx[0], y0 + H, 0, yl - (y0 + H), { arrow: true, flipV: true, color: C.muted, dash: "dash" });
-    textBox(s, "same chat: the customer writes again", cx[0], yl + 0.05, cx[4] - cx[0], 0.3, { size: 15, color: C.muted, align: "center", valign: "middle" });
+    textBox(s, "same chat: the customer writes again", cx[0], yl + 0.05, cx[5] - cx[0], 0.3, { size: 15, color: C.muted, align: "center", valign: "middle" });
     [["Fixed code", C.greyL, C.grey], ["Model", C.blueL, C.blue]].forEach(([t, f, l], i) => {
       textBox(s, t, ML + i * 1.9, 5.5, 1.7, 0.32, { shape: pres.ShapeType.roundRect, fill: f, line: l, size: 14, margin: [0, 0.1, 0, 0.1], valign: "middle", align: "center" });
     });
-    band(s, 6.0, 0.8, "LuTags", [{ text: "The process follows Jev. ", options: { bold: true } }, { text: "Allow runs the action. Deny runs nothing, and the Final message says why." }]);
+    band(s, 6.0, 0.8, "LuTags", [{ text: "The process follows Jev. ", options: { bold: true } }, { text: "No broken rule runs the action. A broken rule runs nothing, and the Final message says why." }]);
   }
 
   // ---------- 6. What Jev reads ----------
   {
     const s = base(
       7,
-      "Jev reads the chat, the account, and the rules",
-      "In one call, Jev reads three things: the chat, the account, and the written rules. The chat is the text and the role of the sender. The account has six fields. The rules are plain text in the context, not code. No fixed code picks fields or checks rules: Jev decides."
+      "Jev reads the chat first, then one rule at a time",
+      "Jev is called twice. The first call reads the chat only: the text and the role of the sender. The second call runs when the action changes the state. It reads the chat, the account lines that this action needs, the actions already done, and one question for each written rule of the action, for example: is the amount above 100 dollars? The questions are written text, not code; a fixed table picks the account lines. We found that each rule needs a question that we write: questions made from the text of the rule alone made more errors."
     );
     const gapI = 0.3, wI = (CW - 2 * gapI) / 3, yI = 1.6, hI = 2.55;
     const inputs = [
       ["LuMessageSquareText", "The chat", "chat"],
       ["LuDatabase", "The account", "account"],
-      ["LuScale", "The written rules", "rules"],
+      ["LuScale", "One question per rule", "rules"],
     ];
     inputs.forEach(([icon, name, kind], i) => {
       const x = ML + i * (wI + gapI);
@@ -429,49 +431,51 @@ async function photo(file, w, h, radius = 0.08, dpi = 150) {
       iconCircle(s, icon, x + 0.25, yI + 0.2, 0.6, C.blue);
       textBox(s, name, x + 1.0, yI + 0.2, wI - 1.2, 0.6, { size: 20, bold: true, color: C.navy, valign: "middle" });
       if (kind === "chat") {
-        s.addText(bullets(["The text of the message", "The role of the sender"]), { x: x + 0.3, y: yI + 1.1, w: wI - 0.6, h: 1.2, margin: 0, fontFace: FONT, fontSize: 17, color: C.text, paraSpaceAfter: 8, valign: "top" });
+        s.addText(bullets(["The text of the message", "The role of the sender", "Both calls read it"]), { x: x + 0.3, y: yI + 1.1, w: wI - 0.6, h: 1.3, margin: 0, fontFace: FONT, fontSize: 17, color: C.text, paraSpaceAfter: 8, valign: "top" });
       } else if (kind === "account") {
         FIELDS.forEach((f, k) => {
-          textBox(s, f, x + 0.3 + (k % 3) * 1.12, yI + 1.15 + Math.floor(k / 3) * 0.55, 1.02, 0.42, { shape: pres.ShapeType.roundRect, fill: "EEF1F5", line: "C5CDD6", color: C.navy, bold: true, size: 14, margin: 0, valign: "middle", align: "center" });
+          textBox(s, f, x + 0.3 + (k % 3) * 1.12, yI + 1.0 + Math.floor(k / 3) * 0.5, 1.02, 0.4, { shape: pres.ShapeType.roundRect, fill: "EEF1F5", line: "C5CDD6", color: C.navy, bold: true, size: 14, margin: 0, valign: "middle", align: "center" });
         });
+        textBox(s, "Second call only: the fields of the action", x + 0.3, yI + 2.05, wI - 0.6, 0.4, { size: 14, color: C.muted });
       } else {
-        s.addText(bullets(["Refund", "Reset password", "Cancel plan", "Delete data", "Security"]), { x: x + 0.3, y: yI + 1.05, w: wI - 0.6, h: 1.4, margin: 0, fontFace: FONT, fontSize: 15, color: C.text, paraSpaceAfter: 2, valign: "top" });
+        s.addText(bullets(["Is the amount above $100?", "Is the sender a teammate, not the owner?", "Is the auto-renewal already off?"]), { x: x + 0.3, y: yI + 1.05, w: wI - 0.6, h: 1.4, margin: 0, fontFace: FONT, fontSize: 15, color: C.text, paraSpaceAfter: 6, valign: "top" });
       }
       line(s, x + wI / 2, yI + hI + 0.03, 0, 0.32, { arrow: true });
     });
-    textBox(s, [{ text: "Jev", options: { bold: true } }, { text: ": one call, one decision" }], ML, 4.5, CW, 0.75, {
+    textBox(s, [{ text: "Jev", options: { bold: true } }, { text: ": call 1 reads the chat; call 2 adds the account and the questions" }], ML, 4.5, CW, 0.75, {
       shape: pres.ShapeType.roundRect, fill: C.blue, line: C.blue, color: C.white, size: 24, margin: 0.2, valign: "middle", align: "center",
     });
-    band(s, 5.55, 0.8, "LuLock", [{ text: "Rules are context, not code. ", options: { bold: true } }, { text: "No fixed code picks fields or checks them." }]);
+    band(s, 5.55, 0.8, "LuLock", [{ text: "Rules are questions, not code. ", options: { bold: true } }, { text: "A fixed table picks the account lines of the action; Jev answers each rule." }]);
   }
 
   // ---------- 7. What Jev answers ----------
   {
     const s = base(
       8,
-      "Jev answers five questions, and the process follows",
-      "Jev answers five fixed questions: the topic, the priority, the action, whether the rules allow it, and an injection flag. Allow runs the action; deny runs nothing. If the injection flag is on, the action becomes Send reply, so an order hidden in the text is ignored. Now, three real requests."
+      "Jev answers four questions, then one per rule",
+      "The first call answers four fixed questions: the topic, the priority, the action, and an injection flag. If the injection flag is on, the action becomes Send reply, so an order hidden in the text is ignored. If the action changes the state, the second call answers one yes/no question for each written rule of that action: is this rule broken? If no answer says broken, the action runs; if one does, nothing runs. Now, three real requests."
     );
     const questions = [
-      ["LuTags", "Topic", "What the request is about", ["Account", "Payments", "Plans and Credits", "Product Help", "Refunds", "Security"]],
-      ["LuGauge", "Priority", "How urgent the request is", []],
-      ["LuZap", "Action", "What the customer asks to do", ["Send reply", "Start refund", "Delete data", "Cancel plan", "Reset password"]],
-      ["LuScale", "Allowed", "Do the written rules allow this action?", ["Allow", "Deny"]],
-      ["LuShieldX", "Injection flag", "The text gives orders to the model", []],
+      ["LuTags", "Call 1", "Topic", "What the request is about", ["Account", "Payments", "Plans and Credits", "Product Help", "Refunds", "Security"]],
+      ["LuGauge", "Call 1", "Priority", "How urgent the request is", []],
+      ["LuZap", "Call 1", "Action", "What the customer asks to do", ["Send reply", "Start refund", "Delete data", "Cancel plan", "Reset password"]],
+      ["LuShieldX", "Call 1", "Injection flag", "The text gives orders to the model", []],
+      ["LuScale", "Call 2", "Rules", "One yes/no question for each rule", ["Broken", "Not broken"]],
     ];
     const gapC = 0.2, wC = (CW - 4 * gapC) / 5, yC = 1.6, hC = 3.5;
-    questions.forEach(([icon, name, ask, options], i) => {
+    questions.forEach(([icon, call, name, ask, options], i) => {
       const x = ML + i * (wC + gapC);
-      box(s, x, yC, wC, hC);
-      iconCircle(s, icon, x + 0.2, yC + 0.2, 0.6, C.blue);
-      textBox(s, `Question ${i + 1}`, x + 0.95, yC + 0.2, wC - 1.05, 0.6, { size: 14, color: C.muted, valign: "middle" });
+      box(s, x, yC, wC, hC, i === 4 ? { fill: C.tealL } : {});
+      iconCircle(s, icon, x + 0.2, yC + 0.2, 0.6, i === 4 ? C.teal : C.blue);
+      textBox(s, call, x + 0.95, yC + 0.2, wC - 1.05, 0.6, { size: 14, color: i === 4 ? C.navy : C.muted, valign: "middle" });
       textBox(s, name, x + 0.2, yC + 0.95, wC - 0.4, 0.42, { size: 20, bold: true, color: C.navy, valign: "middle" });
       textBox(s, ask, x + 0.2, yC + 1.4, wC - 0.4, options.length ? 0.55 : 1.6, { size: 15 });
-      if (options.length) textBox(s, options.map((t, k) => ({ text: t, options: { breakLine: k < options.length - 1 } })), x + 0.2, yC + 1.95, wC - 0.4, 1.4, { size: 14, color: C.muted });
+      if (options.length) textBox(s, options.map((t, k) => ({ text: t, options: { breakLine: k < options.length - 1 } })), x + 0.2, yC + 1.95, wC - 0.4, 1.4, { size: 14, color: i === 4 ? C.navy : C.muted });
     });
-    band(s, 5.2, 0.75, "LuTags", [{ text: "The process follows the answer: ", options: { bold: true } }, { text: "allow runs the action; deny runs nothing, and the Final message says why." }]);
+    band(s, 5.2, 0.75, "LuTags", [{ text: "The process follows the answers: ", options: { bold: true } }, { text: "no broken rule runs the action; a broken rule runs nothing, and the Final message says why." }]);
     band(s, 6.05, 0.75, "LuShieldX", [{ text: "Routing rule: ", options: { bold: true } }, { text: "if the injection flag is on, the action is set to Send reply, so the orders in the text are ignored." }]);
   }
+
 
   // ---------- 8 to 10. Walk-throughs: one request through the flow of Level 3, one slide per click ----------
   // Each walk-through is a series of slides: the diagram of slide 5 with one recorded request played through it. Every slide
@@ -484,8 +488,8 @@ async function photo(file, w, h, radius = 0.08, dpi = 150) {
   // The tone of a walk-through: normal (a request that runs), warning (a rule says no), danger (an attack in the message).
   // `accent`: the badge and the key state; `light`: the tint of the key state; `line`: the path of a denied request; `verdict`: the colour of the verdict of the rules.
   const TONES = {
-    ok: { accent: C.teal, light: "E9F0F8", line: C.teal, badge: "ALLOWED: the rules say allow" },
-    warn: { accent: "B45309", light: "FDEBC8", line: "B45309", badge: "WARNING: the rules say deny" },
+    ok: { accent: C.teal, light: "E9F0F8", line: C.teal, badge: "ALLOWED: no rule is broken" },
+    warn: { accent: "B45309", light: "FDEBC8", line: "B45309", badge: "WARNING: a rule is broken" },
     danger: { accent: "B91C1C", light: "FAD4D0", line: "B91C1C", badge: "DANGER: an attack in the message" },
   };
 
@@ -494,6 +498,7 @@ async function photo(file, w, h, radius = 0.08, dpi = 150) {
   const FLOW = [
     ["New", "LuMail", "fx", "Fixed code"],
     ["Jev", "LuTags", "md", "Model: Jev"],
+    ["Rules", "LuScale", "md", "Model: Jev"],
     ["Do action", "LuZap", "fx", "Fixed code"],
     ["Final message", "LuMessageSquareText", "md", "Model: the LLM"],
     ["Chat open", "LuMessageCircle", "fx", "Fixed code"],
@@ -532,12 +537,12 @@ async function photo(file, w, h, radius = 0.08, dpi = 150) {
     // The first two slides of a series fade: the way in, and what to watch -> the first state, which swaps the whole panel. The others morph.
     transitions[frame <= 1 ? "fade" : "morph"].push(pres.slides.length);
 
-    const H = 1.35, S = 1.2, y0 = 2.15, yDeny = 3.72, wN = FLOW.map((_, i) => (i < 4 ? 1.95 : S)), hN = FLOW.map((_, i) => (i < 4 ? H : 1.1));
-    const gap = (CW - wN.reduce((a, v) => a + v, 0)) / 5;
+    const H = 1.35, S = 1.1, y0 = 2.15, yDeny = 3.72, wN = FLOW.map((_, i) => (i < 5 ? 1.6 : S)), hN = FLOW.map((_, i) => (i < 5 ? H : 1.0));
+    const gap = (CW - wN.reduce((a, v) => a + v, 0)) / 6;
     const X = FLOW.map((_, i) => ML + wN.slice(0, i).reduce((a, v) => a + v, 0) + i * gap);
     const yN = hN.map((h) => y0 + (H - h) / 2);
     const cx = X.map((x, i) => x + wN[i] / 2);
-    const PX = ML, PY = 4.05, PW = CW, PH = 2.05; // the panel below the diagram
+    const PX = ML, PY = 4.1, PW = CW, PH = 2.65; // the panel below the diagram
 
     // The customer message and the legend.
     sc.group("message", {}, (g) => {
@@ -574,8 +579,8 @@ async function photo(file, w, h, radius = 0.08, dpi = 150) {
         else arrowAt[from] = f;
       }
     });
-    litAt[5] = K; // Resolved lights with Chat open, on the last slide
-    arrowAt[4] = K;
+    litAt[6] = K; // Resolved lights with Chat open, on the last slide
+    arrowAt[5] = K;
     const seg = (g, x, y, w, h, on, arrow, flipV) =>
       g.addShape(pres.ShapeType.line, {
         x, y, w, h, flipV, line: { color: on ? C.navy : DIM.arrow, width: on ? 3.5 : 2, endArrowType: arrow ? "triangle" : undefined },
@@ -585,24 +590,24 @@ async function photo(file, w, h, radius = 0.08, dpi = 150) {
         const on = frame >= litAt[i];
         const [fill, accent] = i === c.hot ? [tone.light, tone.accent] : kinds[kind];
         box(g, X[i], yN[i], wN[i], hN[i], { fill: on ? fill : DIM.fill, ...(on && i === c.hot ? { line: tone.accent, lineW: 2 } : {}) });
-        if (i < 4) {
+        if (i < 5) {
           iconCircle(g, icon, cx[i] - 0.25, y0 + 0.12, 0.5, on ? accent : DIM.ring);
-          textBox(g, name, X[i] + 0.04, y0 + 0.68, wN[i] - 0.08, 0.34, { size: 15, bold: true, color: on ? C.navy : DIM.text, align: "center", valign: "middle" });
+          textBox(g, name, X[i] + 0.04, y0 + 0.68, wN[i] - 0.08, 0.34, { size: 15, bold: true, color: on ? C.navy : DIM.text, align: "center", valign: "middle", margin: 0 });
         } else {
           iconCircle(g, icon, cx[i] - 0.18, yN[i] + 0.1, 0.36, on ? accent : DIM.ring);
           textBox(g, name, X[i] + 0.02, yN[i] + 0.58, wN[i] - 0.04, 0.34, { size: 14, bold: true, color: on ? C.navy : DIM.text, align: "center", valign: "middle", margin: 0 });
         }
       });
-      if (i < 5) sc.group(`arrow-${i}`, {}, (g) => seg(g, X[i] + wN[i] + 0.02, y0 + H / 2, gap - 0.04, 0, frame >= arrowAt[i], true, false));
+      if (i < 6) sc.group(`arrow-${i}`, {}, (g) => seg(g, X[i] + wN[i] + 0.02, y0 + H / 2, gap - 0.04, 0, frame >= arrowAt[i], true, false));
     });
     sc.group("deny", {}, (g) => {
       const on = frame >= denyAt, color = on ? tone.line : DIM.arrow, width = on ? 3.5 : 2;
       const part = (x, y, w, h, arrow, flipV) =>
         g.addShape(pres.ShapeType.line, { x, y, w, h, flipV, line: { color, width, endArrowType: arrow ? "triangle" : undefined } });
-      part(cx[1], y0 + H, 0, yDeny - (y0 + H), false, false);
-      part(cx[1], yDeny, cx[3] - cx[1], 0, false, false);
-      part(cx[3], y0 + H, 0, yDeny - (y0 + H), true, true);
-      textBox(g, "denied: nothing runs", cx[1], yDeny + 0.03, cx[3] - cx[1], 0.3, { size: 14, color: DIM.text, align: "center", valign: "middle" });
+      part(cx[2], y0 + H, 0, yDeny - (y0 + H), false, false);
+      part(cx[2], yDeny, cx[4] - cx[2], 0, false, false);
+      part(cx[4], y0 + H, 0, yDeny - (y0 + H), true, true);
+      textBox(g, "a rule is broken: nothing runs", cx[2], yDeny + 0.03, cx[4] - cx[2], 0.3, { size: 14, color: DIM.text, align: "center", valign: "middle" });
     });
 
     // The card of a panel: the icon and the title of the state, and the kind of the state.
@@ -622,7 +627,8 @@ async function photo(file, w, h, radius = 0.08, dpi = 150) {
     const panel = (g, node) => {
       const title = [
         "New: the message is saved",
-        "Jev: reads the chat, the account, and the rules",
+        "Jev: reads the chat and gives four answers",
+        "Rules: Jev answers one question for each rule",
         "Do action: fixed code runs the action",
         "Final message: the LLM writes the reply",
         "Chat open: a popup asks if the issue is solved",
@@ -631,7 +637,7 @@ async function photo(file, w, h, radius = 0.08, dpi = 150) {
       if (node === 0) {
         textBox(g, "The message is saved. No model runs and no rule is applied in this state.", PX + 0.25, PY + 0.85, PW - 0.5, 0.9, { size: 18 });
       } else if (node === 1) {
-        const t = c.jev, w = (PW - 0.5 - 4 * 0.15) / 5;
+        const t = c.jev, n = t.answers.length, w = (PW - 0.5 - (n - 1) * 0.15) / n;
         t.answers.forEach(([label, value, conf], i) => {
           const hot = t.warn === i;
           const runs = [
@@ -639,20 +645,39 @@ async function photo(file, w, h, radius = 0.08, dpi = 150) {
             { text: value, options: { fontSize: 18, bold: true, color: hot ? tone.accent : C.navy, breakLine: Boolean(conf) } },
           ];
           if (conf) runs.push({ text: conf, options: { fontSize: 14, color: C.muted } });
-          textBox(g, runs, PX + 0.25 + i * (w + 0.15), PY + 0.66, w, 0.8, {
+          textBox(g, runs, PX + 0.25 + i * (w + 0.15), PY + 0.7, w, 0.9, {
             shape: pres.ShapeType.roundRect, fill: hot ? tone.light : CHIP, line: hot ? tone.accent : CHIP, lineW: hot ? 3 : 1, margin: [0.04, 0.12, 0.04, 0.12], valign: "middle",
           });
         });
-        textBox(g, t.rule, PX + 0.25, PY + 1.49, PW - 0.5, 0.28, { size: 16, bold: true, color: C.navy, valign: "middle" });
-        textBox(g, t.note, PX + 0.25, PY + 1.77, PW - 0.5, 0.25, { size: 14, color: C.muted, valign: "middle" });
+        textBox(g, t.rule, PX + 0.25, PY + 1.8, PW - 0.5, 0.3, { size: 16, bold: true, color: C.navy, valign: "middle" });
+        textBox(g, t.note, PX + 0.25, PY + 2.15, PW - 0.5, 0.3, { size: 14, color: C.muted, valign: "middle" });
       } else if (node === 2) {
-        g.addText(bullets(c.act), { x: PX + 0.25, y: PY + 0.85, w: PW - 0.5, h: 1.0, margin: 0, fontFace: FONT, fontSize: 18, color: C.text, paraSpaceAfter: 8, valign: "top" });
+        const r = c.rules;
+        if (r) {
+          // One chip for each rule question: the name of the rule, and "met" or "broken" with the confidence of the answer. Five chips in the first row.
+          const per = 5, w = (PW - 0.5 - (per - 1) * 0.12) / per;
+          r.chips.forEach(([name, state, conf], i) => {
+            const broken = state === "broken";
+            textBox(g, [
+              { text: name, options: { fontSize: 13, color: C.muted, breakLine: true } },
+              { text: `${state}  ${conf.toFixed(2)}`, options: { fontSize: 16, bold: true, color: broken ? tone.accent : C.navy } },
+            ], PX + 0.25 + (i % per) * (w + 0.12), PY + 0.68 + Math.floor(i / per) * 0.68, w, 0.58, {
+              shape: pres.ShapeType.roundRect, fill: broken ? tone.light : CHIP, line: broken ? tone.accent : CHIP, lineW: broken ? 3 : 1, margin: [0.03, 0.1, 0.03, 0.1], valign: "middle",
+            });
+          });
+          textBox(g, r.rule, PX + 0.25, PY + 2.05, PW - 0.5, 0.28, { size: 16, bold: true, color: C.navy, valign: "middle" });
+          textBox(g, r.note, PX + 0.25, PY + 2.33, PW - 0.5, 0.25, { size: 14, color: C.muted, valign: "middle" });
+        } else {
+          textBox(g, "No question is asked: the action is Send reply, and a reply changes nothing.", PX + 0.25, PY + 0.85, PW - 0.5, 0.9, { size: 18 });
+        }
       } else if (node === 3) {
+        g.addText(bullets(c.act), { x: PX + 0.25, y: PY + 0.85, w: PW - 0.5, h: 1.0, margin: 0, fontFace: FONT, fontSize: 18, color: C.text, paraSpaceAfter: 8, valign: "top" });
+      } else if (node === 4) {
         textBox(g, `\u201C${c.final.text}\u201D`, PX + 0.25, PY + 0.72, PW - 0.5, 0.98, {
           shape: pres.ShapeType.roundRect, fill: CHIP, line: CHIP, size: 15, margin: [0.06, 0.15, 0.06, 0.15], valign: "middle",
         });
         textBox(g, c.final.meta, PX + 0.25, PY + 1.74, PW - 0.5, 0.25, { size: 14, color: C.muted, valign: "middle" });
-      } else if (node === 4) {
+      } else if (node === 5) {
         box(g, PX + 0.25, PY + 0.75, 3.7, 1.15, { fill: CHIP });
         textBox(g, "Did this solve your issue?", PX + 0.45, PY + 0.82, 3.3, 0.4, { size: 16, bold: true, color: C.navy, valign: "middle" });
         textBox(g, "Yes", PX + 0.45, PY + 1.3, 1.5, 0.4, { shape: pres.ShapeType.roundRect, fill: C.blue, line: C.blue, color: C.white, bold: true, size: 15, margin: 0, valign: "middle", align: "center" });
@@ -676,9 +701,9 @@ async function photo(file, w, h, radius = 0.08, dpi = 150) {
     // Clicks 1 to K: the request reaches the next state.
     show.forEach((pi, p) => {
       const node = c.path[pi], click = p + 1, last = p === K - 1;
-      if (c.deny && node === 3) {
+      if (c.deny && node === 4) {
         sc.group("skipped", { in: click }, (g) => {
-          textBox(g, "skipped", X[2], y0 + 1.02, wN[2], 0.28, { size: 14, bold: true, color: tone.line, align: "center", valign: "middle" });
+          textBox(g, "skipped", X[3], y0 + 1.02, wN[3], 0.28, { size: 14, bold: true, color: tone.line, align: "center", valign: "middle" });
         });
       }
       sc.group(`panel-${node}`, { in: click, out: last ? undefined : click + 1 }, (g) => panel(g, node));
@@ -687,7 +712,7 @@ async function photo(file, w, h, radius = 0.08, dpi = 150) {
     // One ring that moves from state to state: Morph slides it from the old state to the new one. On the last slide it rests on Resolved.
     {
       const lastNode = c.path[show[K - 1]];
-      const n = frame === 0 ? 0 : frame === K && lastNode === 4 ? 5 : c.path[show[frame - 1]];
+      const n = frame === 0 ? 0 : frame === K && lastNode === 5 ? 6 : c.path[show[frame - 1]];
       named("ring").addShape(pres.ShapeType.roundRect, {
         x: X[n] - 0.05, y: yN[n] - 0.05, w: wN[n] + 0.1, h: hN[n] + 0.1, rectRadius: 0.1, fill: { color: C.card, transparency: 100 }, line: { color: C.navy, width: 3 },
       });
@@ -702,8 +727,8 @@ async function photo(file, w, h, radius = 0.08, dpi = 150) {
   {
     const s = base(
       12,
-      "Test data: 72 customers, 100 requests",
-      "Thank you, Long. My name is Nguyen Thanh Nam. I will explain our test data. Public datasets have no SaaS accounts, so we built our own: 72 FrameForge customers. Each has one purchase, a plan and its state, a render-credit balance, a log of password reset links, and a teammate with no billing rights. So the written rules can use real account fields, and the customers cover every branch of the rules. They send 100 requests of 24 types."
+      "Test data: 512 customers, 1,024 requests",
+      "Thank you, Long. My name is Nguyen Thanh Nam. I will explain our test data. Public datasets have no SaaS accounts, so we built our own: 512 FrameForge customers. Each has one purchase, a plan and its state, a render-credit balance, a log of password reset links, and a teammate without billing rights. So the written rules can use real account fields, and the customers cover every branch of the rules. They send 1,024 requests of 24 types."
     );
     box(s, ML, 1.6, 6.3, 5.0);
     textBox(s, "One customer in the test data", ML + 0.3, 1.75, 5.7, 0.5, { size: 20, bold: true, color: C.navy, valign: "middle" });
@@ -712,20 +737,19 @@ async function photo(file, w, h, radius = 0.08, dpi = 150) {
       ["LuFileText", "A plan and the state of the plan"],
       ["LuCpu", "A render-credit balance"],
       ["LuLock", "A log of password reset links"],
-      ["LuUsers", "A teammate with no billing rights"],
     ].forEach(([ic, t], i) => {
-      const y = 2.45 + i * 0.82;
+      const y = 2.6 + i * 1.0;
       iconCircle(s, ic, ML + 0.3, y, 0.6, C.blue);
       textBox(s, t, ML + 1.15, y, 4.95, 0.6, { size: 17, valign: "middle" });
     });
     const gx = ML + 6.6, gw = (CW - 6.6 - 0.3) / 2, gh = 2.35;
     [
-      ["LuUsers", "72", "FrameForge customers"],
-      ["LuFileText", "100", "requests, one run and no split"],
+      ["LuUsers", "512", "FrameForge customers"],
+      ["LuFileText", "1,024", "requests, one run and no split"],
       ["LuTags", "24", "request types"],
-      ["LuUserCheck", "88/12", "owners and teammates as senders"],
-    ].forEach(([ic, n, l], i) => {
-      statCard(s, gx + (i % 2) * (gw + 0.3), 1.6 + Math.floor(i / 2) * (gh + 0.3), gw, gh, { icon: ic, big: n, label: l, bigSize: 30, labelY: 1.3 });
+      ["LuUser", "1", "teammate per account: without billing rights", 30],
+    ].forEach(([ic, n, l, sz], i) => {
+      statCard(s, gx + (i % 2) * (gw + 0.3), 1.6 + Math.floor(i / 2) * (gh + 0.3), gw, gh, { icon: ic, big: n, label: l, bigSize: sz || 30, labelY: 1.3 });
     });
   }
 
@@ -733,23 +757,23 @@ async function photo(file, w, h, radius = 0.08, dpi = 150) {
   {
     const s = base(
       13,
-      "100 requests in ten families",
-      "A seeded generator wrote the 100 requests. The 24 types form ten families. Questions and answers is the largest, with 24 requests, then refunds with 16, plan cancellations with 14, and password resets with 12. Every request has its own words and its own sender: 88 owners and 12 teammates. The correct answers come from the written rules, because the generator runs the real code. A rule denies the action on 30 of the 100 requests."
+      "1,024 requests in ten families",
+      "A seeded generator wrote the 1,024 requests. The 24 types form ten families. Questions and answers is the largest, with 246 requests, then refunds with 164, plan cancellations with 143, and password resets with 123. Every request has its own words. 901 of the 1,024 senders are the account owner, and 123 are a teammate of the account without billing rights. The correct answers come from the written rules, because the generator runs the real code. A rule denies the action on 307 of the 1,024 requests."
     );
     box(s, ML, 1.6, 7.9, 5.0);
     const fam = [
-      ["Questions and answers", 24], ["Refund", 16], ["Cancel plan", 14], ["Reset password", 12], ["Invoice or request for a human", 8],
-      ["Fraud or data loss", 8], ["Delete data", 6], ["Injection", 4], ["Two problems in one request", 4], ["Closing message", 4],
+      ["Questions and answers", 246], ["Refund", 164], ["Cancel plan", 143], ["Reset password", 123], ["Invoice or request for a human", 82],
+      ["Fraud or data loss", 82], ["Delete data", 61], ["Injection", 41], ["Two problems in one request", 41], ["Closing message", 41],
     ];
     s.addChart(pres.charts.BAR, [{ name: "Requests", labels: fam.map((f) => f[0]), values: fam.map((f) => f[1]) }], {
       ...chartBase, showLegend: false, x: ML + 0.2, y: 1.7, w: 7.5, h: 4.8, barDir: "bar", barGapWidthPct: 40, chartColors: [C.l3],
-      dataLabelPosition: "outEnd", dataLabelFontSize: 14, catAxisLabelFontSize: 14, catAxisOrientation: "maxMin", valAxisMaxVal: 28,
-      showTitle: true, title: "Requests per family (100 in total)",
+      dataLabelPosition: "outEnd", dataLabelFontSize: 14, catAxisLabelFontSize: 14, catAxisOrientation: "maxMin", valAxisMaxVal: 285,
+      showTitle: true, title: "Requests per family (1,024 in total)",
     });
     const x = ML + 8.2, w = CW - 8.2;
-    callout(s, x, 1.6, w, 1.5, { icon: "LuScale", big: "30 of 100", label: "requests where a written rule denies the action", color: C.teal, bigSize: 28 });
+    callout(s, x, 1.6, w, 1.5, { icon: "LuScale", big: "307 of 1,024", label: "requests where a written rule denies the action", color: C.teal, bigSize: 28 });
     callout(s, x, 3.3, w, 1.5, { icon: "LuCpu", big: "Real code", label: "the generator runs the code of the system to make the correct answer", color: C.l3, bigSize: 28 });
-    callout(s, x, 5.0, w, 1.6, { icon: "LuUsers", big: "88 + 12", label: "each request has its own words and its own sender", color: C.l3, bigSize: 28 });
+    callout(s, x, 5.0, w, 1.6, { icon: "LuUser", big: "901 owners", label: "of the 1,024 senders; 123 are a teammate without billing rights", color: C.l3, bigSize: 28 });
   }
 
   // ---------- 13. Outcomes ----------
@@ -781,77 +805,83 @@ async function photo(file, w, h, radius = 0.08, dpi = 150) {
   {
     const s = base(
       15,
-      "The run: two hosted models, 600 calls",
-      "Thank you, Nam. My name is Vu Van Son. I will explain how we ran the experiment. We call two hosted models for real: Jev, version 1.13.0, and DeepSeek V4.1 Flash. A full run makes 600 model calls, 200 for each of the three runs. In the final recording, 412 LLM calls are live, and 0 Jev calls are live: those answers came from a cache. We ask two questions: what does each level buy and cost, and what changes when Jev replaces the LLM?"
+      "The run: 1,024 requests",
+      "Thank you, Nam. My name is Vu Van Son. I will explain how we ran the experiment. We call two hosted models for real: Jev, version 1.13.0, and DeepSeek V4.1 Flash. Both levels run on the same 1,024 requests. At Level 3, Jev answers the chat of every request once, and answers the rule questions on the 410 requests whose action changes the state: 1,434 Jev calls. Every count gets a 95% interval. We ask two questions: what does each level buy and cost, and when is Jev wrong, and does its confidence warn us?"
     );
-    const gap = 0.3, cw = (CW - 3 * gap) / 4, y = 1.55, h = 1.85;
+    const gap = 0.3, cw = (CW - 2 * gap) / 3, y = 1.55, h = 1.85;
     [
-      ["LuCpu", "600", "model calls: 200 for each of three runs"],
-      ["LuBot", "2", "hosted models: Jev and an LLM"],
-      ["LuDatabase", "412", "live LLM calls in the final recording"],
-      ["LuTimer", "0", "live Jev calls: the answers came from a cache"],
+      ["LuCpu", "1,024", "requests at every level: staff, the LLM agent, and Jev"],
+      ["LuBot", "1,434", "Jev calls: one per request, plus a second call on 410"],
+      ["LuDatabase", "2,458", "model calls at Level 3: 1,434 to Jev and 1,024 to the LLM"],
     ].forEach(([ic, n, l], i) => {
       statCard(s, ML + i * (cw + gap), y, cw, h, { icon: ic, big: n, label: l, bigSize: 32, labelY: 1.2 });
     });
     [
       ["Q1", "What does each level buy and cost? Served, stopped, errors, harm, time, and cost."],
-      ["Q2", "What changes when Jev replaces the LLM as the classifier? Accuracy, speed, and cost."],
+      ["Q2", "When is Jev wrong, and does its confidence warn us? Accuracy and confidence."],
     ].forEach(([tag, t], i) => {
       const yy = 3.85 + i * 1.1;
       box(s, ML, yy, CW, 0.9);
       textBox(s, tag, ML + 0.25, yy + 0.2, 0.9, 0.5, { shape: pres.ShapeType.roundRect, fill: C.blue, line: C.blue, color: C.white, bold: true, size: 18, margin: 0, valign: "middle", align: "center" });
       textBox(s, t, ML + 1.4, yy, CW - 1.65, 0.9, { size: 18, valign: "middle" });
     });
-    textBox(s, "Calls to two hosted models: Jev (jev-1.13.0) and deepseek-v4.1-flash through the DeepSeek API. An offline replay of the main run gives every number in the paper.", ML, 6.15, CW, 0.7, { size: 15, color: C.muted, valign: "middle" });
+    textBox(s, "Calls to two hosted models: Jev (jev-1.13.0) and deepseek-v4.1-flash through the DeepSeek API. Every interval is a 95% interval.", ML, 6.15, CW, 0.7, { size: 15, color: C.muted, valign: "middle" });
   }
 
   // ---------- 15. Models, input, and prices ----------
   {
     const s = base(
       16,
-      "Same input, list prices: what one call costs",
-      "Both classifiers get the same input: the chat text, the sender role, the channel, and the matching help articles. Neither reads the account. Jev costs 4.2 cents per million input tokens, and its output is free. The LLM costs 15 cents in and 60 cents out per million tokens, with high reasoning effort. One Jev call writes 196 tokens, and one LLM call writes 690, because reasoning counts. All 600 calls cost about 17 cents at list price."
+      "List prices: what one call costs",
+      "Level 2 reads the chat text, the sender role, the channel, the matching help articles, the whole account, and the written rules. Level 3 reads less: the chat first, then only the account lines and the rule questions of one action. Jev costs 4.2 cents per million input tokens, and its output is free. The LLM costs 15 cents in and 60 cents out per million tokens, with high reasoning effort. The first Jev call reads 1,233 tokens and writes 196. The second call, on 410 of the 1,024 requests, reads 743 tokens and writes 105. One LLM agent call reads 1,229 tokens and writes 268, because reasoning counts. At list price, for 1,024 requests, Level 2 costs $0.62, and Level 3 costs $0.30: 1,434 calls to Jev and 1,024 to the LLM."
     );
     const gap = 0.3, cw = (CW - gap) / 2, y = 1.55, h = 3.5;
     [
-      { x: ML, head: "Jev (jev-1.13.0)", icon: "LuGauge", col: C.l3, items: ["$0.042 per million input tokens", "Output tokens are free", "1,233 tokens in and 196 out per call", "Gives a confidence with each answer"] },
-      { x: ML + cw + gap, head: "LLM (deepseek-v4.1-flash)", icon: "LuBot", col: C.grey, items: ["$0.15 in and $0.60 out per million tokens", "High reasoning effort, temperature 0.3", "1,001 tokens in and 690 out per call", "The output includes the reasoning tokens"] },
+      { x: ML, head: "Jev (jev-1.13.0)", icon: "LuGauge", col: C.l3, items: ["$0.042 per million input tokens", "Output tokens are free", "Call 1: 1,233 tokens in, 196 out. Call 2: 743 in, 105 out", "Gives a confidence with each answer"] },
+      { x: ML + cw + gap, head: "LLM agent (deepseek-v4.1-flash)", icon: "LuBot", col: C.grey, items: ["$0.15 in and $0.60 out per million tokens", "High reasoning effort, temperature 0.3", "1,229 tokens in and 268 out per decision call", "The output includes the reasoning tokens"] },
     ].forEach((o) => {
       box(s, o.x, y, cw, h);
       iconCircle(s, o.icon, o.x + 0.3, y + 0.25, 0.75, o.col);
       textBox(s, o.head, o.x + 1.3, y + 0.25, cw - 1.5, 0.75, { size: 22, bold: true, color: C.navy, valign: "middle" });
       s.addText(bullets(o.items), { x: o.x + 0.35, y: y + 1.3, w: cw - 0.7, h: 2.0, margin: 0, fontFace: FONT, fontSize: 18, color: C.text, paraSpaceAfter: 8, valign: "top" });
     });
-    band(s, 5.3, 0.95, "LuFileText", [{ text: "Same input for both: ", options: { bold: true } }, { text: "the chat text, the sender role, the channel, and the matching help articles. The account is not read." }]);
-    textBox(s, "All 600 model calls cost about $0.17 at list price.", ML, 6.4, CW, 0.45, { size: 16, color: C.muted, valign: "middle" });
+    band(s, 5.2, 0.8, "LuFileText", [{ text: "Level 3 reads less: ", options: { bold: true } }, { text: "the chat first, then only the account lines and the rule questions of one action." }]);
+    // Cost of the calls of each level (1,024 requests), at list price.
+    const cg = 0.3, cwid = (CW - cg) / 2;
+    [
+      ["Level 2: $0.62", "2,048 LLM calls", C.l2],
+      ["Level 3: $0.30", "1,434 Jev + 1,024 LLM calls", C.l3],
+    ].forEach(([head, sub, col], i) => {
+      textBox(s, [
+        { text: head, options: { bold: true, fontSize: 18, color: C.white, breakLine: true } },
+        { text: sub, options: { fontSize: 14, color: C.white } },
+      ], ML + i * (cwid + cg), 6.2, cwid, 0.8, { shape: pres.ShapeType.roundRect, fill: col, line: col, margin: [0.05, 0.1, 0.05, 0.1], valign: "middle", align: "center" });
+    });
   }
 
-  // ---------- 7. Result 1: classifier ----------
+  // ---------- 7. Result 1: Jev ----------
   {
     const s = base(
       17,
-      "Result 1: Jev is 19.8x faster, 10.9x cheaper",
-      "Now the first result. One Jev call takes 0.263 seconds at the median, and one LLM call takes 5.223 seconds: Jev is 19.8 times faster. Jev costs 5 cents per 1,000 requests, and the LLM costs 56 cents: 10.9 times cheaper. Jev is behind the LLM on four of the five answers, but ahead on the topic: 87.5% against 82.3%. Jev gives a wrong topic or action on 27 of the 100 requests. Now my teammate Vuong Quang Quy will show what happens to these errors."
+      "Result 1: Jev is fast and cheap, and mostly right",
+      "Now the first result, for Jev alone, over the 1,024 requests. One Jev call takes 0.31 seconds at the median, and the Jev calls cost 6 cents per 1,000 requests. Jev gives the right topic on 88% of the requests, the priority on 83%, the action on 83%, and the injection flag on 96%. The rule questions are almost always right: 1,690 of 1,700 answers match the written rules. The action label is wrong on 174 requests, but none of them ends in a wrong outcome: when a rule would deny a request, Jev often picks Send reply, and the result is still a stop. The intervals are wide. Now my teammate Vuong Quang Quy will show what the confidence of Jev tells us."
     );
     box(s, ML, 1.65, 7.6, 4.9);
-    const labels = ["Action", "Topic", "Priority", "Risk flag", "Injection flag"];
+    const labels = ["Topic", "Priority", "Action", "Injection flag", "Rule answers"];
     s.addChart(
       pres.charts.BAR,
-      [
-        { name: "Jev", labels, values: [84.0, 87.5, 81.0, 77.0, 96.0] },
-        { name: "LLM as classifier", labels, values: [93.0, 82.3, 92.0, 93.0, 100.0] },
-      ],
+      [{ name: "Jev", labels, values: [87.5, 83.0, 83.0, 96.0, 99.4] }],
       {
-        ...chartBase, x: ML + 0.2, y: 1.8, w: 7.2, h: 4.6, barDir: "col", barGrouping: "clustered", barGapWidthPct: 60,
-        chartColors: [C.l3, "9AA7B5"], dataLabelPosition: "outEnd", dataLabelFontSize: 14, dataLabelFormatCode: "0.0",
-        catAxisLabelFontSize: 14, valAxisMaxVal: 112, title: "Percent correct on 100 requests (topic: 96 scored)",
+        ...chartBase, showLegend: false, x: ML + 0.2, y: 1.8, w: 7.2, h: 4.6, barDir: "col", barGrouping: "clustered", barGapWidthPct: 60,
+        chartColors: [C.l3], dataLabelPosition: "outEnd", dataLabelFontSize: 14, dataLabelFormatCode: "0.0",
+        catAxisLabelFontSize: 14, valAxisMaxVal: 112, title: "Percent correct over the 1,024 requests (topic: 983 scored; rule answers: 1,700)",
       }
     );
     const x = ML + 7.9, w = CW - 7.9;
-    callout(s, x, 1.65, w, 1.5, { icon: "LuZap", big: "19.8x", label: "faster: 0.263 s against 5.223 s, median for one classifier call", color: C.l3 });
-    callout(s, x, 3.35, w, 1.5, { icon: "LuDollarSign", big: "10.9x", label: "cheaper: $0.052 against $0.564 per 1,000 requests", color: C.l3 });
-    callout(s, x, 5.05, w, 1.5, { icon: "LuBadgeCheck", big: "27 of 100", label: "wrong topic or action from Jev. With a fixed check behind it, none is an error.", color: C.teal, bigSize: 28, labelSize: 14 });
-    textBox(s, "Measured with the chat text only. The five questions of this run: topic, priority, action, risk flag, and injection flag.", ML, 6.7, CW - 1, 0.4, { size: 14, color: C.muted, valign: "middle" });
+    callout(s, x, 1.65, w, 1.5, { icon: "LuZap", big: "0.31 s", label: "median time for one Jev call", color: C.l3 });
+    callout(s, x, 3.35, w, 1.5, { icon: "LuDollarSign", big: "$0.064", label: "per 1,000 requests for the Jev calls", color: C.l3 });
+    callout(s, x, 5.05, w, 1.5, { icon: "LuBadgeCheck", big: "1,690 of 1,700", label: "rule answers match the written rules", color: C.teal, bigSize: 28, labelSize: 14 });
+    textBox(s, "95% intervals: topic 79 to 93%, priority 75 to 89%, action 75 to 89%, injection 90 to 98%, rule answers 97 to 100%. 174 action labels are wrong, and none ends in a wrong outcome.", ML, 6.65, CW - 1, 0.6, { size: 14, color: C.muted, valign: "middle" });
   }
 
   // ---------- 15. Confidence of Jev ----------
@@ -859,87 +889,58 @@ async function photo(file, w, h, radius = 0.08, dpi = 150) {
     const s = base(
       18,
       "Jev reports a confidence, and it is a warning",
-      "Thank you, Son. My name is Vuong Quang Quy. I will show what the errors and the confidence mean. With a fixed check behind Jev, none of the 27 wrong answers is an error. Jev also reports a confidence, and only Jev does. 24 of the 57 answers below 0.8 are wrong. At 0.9 or more, only 9 of 190 are wrong, which is 4.7%. So the confidence works as a warning."
+      "Thank you, Son. My name is Vuong Quang Quy. I will show what the confidence of Jev means. Jev reports a confidence with every answer. We count the 5,755 answers that the process uses: 4,055 labels and 1,700 rule answers. 522 of them are wrong. 338 of the 737 answers below 0.8 are wrong. At 0.9 or more, only 92 of 4,455 are wrong, which is 2.1%. So the confidence works as a warning."
     );
     box(s, ML, 1.6, 7.9, 5.0);
-    const bands = [["<0.5", 3, 33.3], ["0.5-0.6", 12, 66.7], ["0.6-0.7", 19, 42.1], ["0.7-0.8", 23, 30.4], ["0.8-0.9", 49, 36.7], ["0.9+", 190, 4.7]];
+    const bands = [["<0.6", 205, 55.0], ["0.6-0.8", 532, 42.3], ["0.8-0.9", 563, 16.4], ["0.9-0.99", 2796, 2.9], ["0.99+", 1659, 0.6]];
     s.addChart(pres.charts.BAR, [{ name: "Wrong answers", labels: bands.map(([l, n]) => `${l} (n = ${n})`), values: bands.map((x) => x[2]) }], {
       ...chartBase, showLegend: false, x: ML + 0.2, y: 1.7, w: 7.5, h: 4.8, barDir: "col", barGapWidthPct: 50, chartColors: [C.l3],
-      dataLabelPosition: "outEnd", dataLabelFontSize: 14, dataLabelFormatCode: "0.0", catAxisLabelFontSize: 14, valAxisMaxVal: 80,
-      showTitle: true, title: "Percent wrong by confidence of Jev (n in brackets)",
+      dataLabelPosition: "outEnd", dataLabelFontSize: 14, dataLabelFormatCode: "0.0", catAxisLabelFontSize: 12, valAxisMaxVal: 65,
+      showTitle: true, title: "Percent wrong by confidence of Jev (1,024 requests, n in brackets)",
     });
     const x = ML + 8.2, w = CW - 8.2;
-    callout(s, x, 1.6, w, 1.5, { icon: "LuTriangleAlert", big: "24 of 57", label: "answers below 0.8 are wrong", color: C.red, bigSize: 30 });
-    callout(s, x, 3.3, w, 1.5, { icon: "LuBadgeCheck", big: "9 of 190", label: "answers at 0.9 or more are wrong: 4.7%", color: C.teal, bigSize: 30 });
-    callout(s, x, 5.0, w, 1.6, { icon: "LuTags", big: "27 of 100", label: "wrong topic or action from Jev. With a fixed check behind it, none is an error.", color: C.l3, bigSize: 28, labelSize: 14 });
+    callout(s, x, 1.6, w, 1.5, { icon: "LuTriangleAlert", big: "338 of 737", label: "answers below 0.8 are wrong", color: C.red, bigSize: 30 });
+    callout(s, x, 3.3, w, 1.5, { icon: "LuBadgeCheck", big: "92 of 4,455", label: "answers at 0.9 or more are wrong: 2.1%", color: C.teal, bigSize: 30 });
+    callout(s, x, 5.0, w, 1.6, { icon: "LuTags", big: "522 of 5,755", label: "answers wrong over the 1,024 requests", color: C.l3, bigSize: 28, labelSize: 14 });
   }
 
   // ---------- 8. Result 2: the ladder ----------
   {
     const s = base(
       19,
-      "Result 2: Level 3 is never worse",
-      "Now the three levels on the same 100 requests. In these runs a fixed check stands behind Jev. Level 2 serves 66, stops 28, and makes 6 errors, 2 of them harmful. Level 3 serves 70, stops 30, and makes 0 errors. Level 3 is 1.9 times faster, 4.19 seconds against 7.85, and 2.2 times cheaper, 28 cents against 61 cents per 1,000 requests. The sign test gives p = 0.031: significantly fewer errors. Level 1 is the assumed 90 seconds per request."
+      "Result 2: Level 3 is faster, cheaper, and makes fewer errors",
+      "Now the two levels on the same 1,024 requests. Level 2 serves 676, stops 287, and makes 61 errors, about 20 of them harmful. Level 3 serves 717, stops 307, and makes no error, and none is harmful. The 95% interval of the Level 3 errors is 0 to 38 of 1,024, and that of Level 2 is 28 to 128. Level 3 is 1.8 times faster, 4.28 seconds against 7.85, and 2.1 times cheaper, 29 cents against 61 cents per 1,000 requests. The two levels fail on different requests: Level 2 fails on 41 injection requests and on 20 refund requests, where it cancelled the plan. Level 2 was wrong and Level 3 right on 61 of the 1,024 requests, and the reverse on none. The sign test gives p = 0.031, so Level 3 makes significantly fewer errors on these requests. Level 3 uses two Jev calls on 4 requests in 10, and that adds little time and cost. Now Nguyen Phuong Nam will explain how our work fits the field."
     );
     box(s, ML, 1.65, 7.6, 3.95);
-    const cats = ["Level 2: LLM agent", "Level 3: Jev + check + LLM"];
+    const cats = ["Level 2: LLM agent", "Level 3: Jev + LLM"];
     s.addChart(
       pres.charts.BAR,
       [
-        { name: "Served", labels: cats, values: [66, 70] },
-        { name: "Stopped by a rule", labels: cats, values: [28, 30] },
-        { name: "Errors", labels: cats, values: [6, 0] },
+        { name: "Served", labels: cats, values: [676, 717] },
+        { name: "Stopped by a rule", labels: cats, values: [287, 307] },
+        { name: "Errors", labels: cats, values: [61, null] },
       ],
       {
         ...chartBase, x: ML + 0.2, y: 1.75, w: 7.2, h: 3.75, barDir: "bar", barGrouping: "stacked", barGapWidthPct: 45,
         chartColors: [C.l3, C.teal, C.red], dataLabelPosition: "ctr", dataLabelColor: C.white, dataLabelFontSize: 15, dataLabelFormatCode: "0;-0;;@",
-        catAxisOrientation: "maxMin", valAxisMaxVal: 100, title: "Outcome of the 100 requests",
+        catAxisOrientation: "maxMin", valAxisMaxVal: 1075, title: "Outcome of the 1,024 requests",
       }
     );
     const x = ML + 7.9, w = CW - 7.9;
-    callout(s, x, 1.65, w, 1.25, { icon: "LuTimer", big: "1.9x", label: "faster: 4.19 s against 7.85 s of machine time", color: C.l3, bigSize: 28, bigH: 0.55, bigY: 0.1 });
-    callout(s, x, 3.0, w, 1.25, { icon: "LuDollarSign", big: "2.2x", label: "cheaper: $0.28 against $0.61 per 1,000 requests", color: C.l3, bigSize: 28, bigH: 0.55, bigY: 0.1 });
-    callout(s, x, 4.35, w, 1.25, { icon: "LuScale", big: "0 and 6", label: "errors at Level 3 and Level 2. Sign test: p = 0.031", color: C.teal, bigSize: 28, bigH: 0.55, bigY: 0.1, labelSize: 14 });
-    band(s, 5.85, 0.95, "LuShieldCheck", [{ text: "Level 3 is never worse in any column. ", options: { bold: true } }, { text: "Harmful runs: 0 at Level 3, 2 at Level 2. Level 1 baseline: 90 s per request (assumed)." }]);
-    textBox(s, "Measured with a fixed check behind Jev. The design that gives Jev the rules as context was not run.", ML, 6.9, CW - 1, 0.4, { size: 14, color: C.muted, valign: "middle" });
-  }
-
-  // ---------- 19. Ablation of the fixed check ----------
-  {
-    const s = base(
-      20,
-      "Without a fixed check, Jev's errors run",
-      "Why does Level 3 make no error? We removed the fixed check from behind Jev. Then 22 requests become harmful errors: 66 served, 12 stopped, 22 errors. With the check, it is 70, 30, and 0. The sign test gives p below one in a million. Our new design gives Jev the rules as context instead of a check. We have not run it. Now Nguyen Phuong Nam will explain how our work fits the field, and its limits."
-    );
-    box(s, ML, 1.65, 7.6, 4.0);
-    const cats = ["LLM agent (Level 2)", "LLM agent + check", "Jev, no check", "Jev + check (Level 3)"];
-    s.addChart(
-      pres.charts.BAR,
-      [
-        { name: "Served", labels: cats, values: [66, 66, 66, 70] },
-        { name: "Stopped by a rule", labels: cats, values: [28, 28, 12, 30] },
-        { name: "Errors", labels: cats, values: [6, 6, 22, 0] },
-      ],
-      {
-        ...chartBase, x: ML + 0.2, y: 1.75, w: 7.2, h: 3.8, barDir: "bar", barGrouping: "stacked", barGapWidthPct: 40,
-        chartColors: [C.l3, C.teal, C.red], dataLabelPosition: "ctr", dataLabelColor: C.white, dataLabelFontSize: 15, dataLabelFormatCode: "0;-0;;@",
-        catAxisOrientation: "maxMin", valAxisMaxVal: 100, title: "Outcome of the 100 requests, with and without the fixed check",
-      }
-    );
-    const x = ML + 7.9, w = CW - 7.9;
-    callout(s, x, 1.65, w, 1.25, { icon: "LuShieldX", big: "22 to 0", label: "harmful errors behind Jev: run with no check, stopped with it", color: C.red, bigSize: 28, bigH: 0.55, bigY: 0.1, labelSize: 14 });
-    callout(s, x, 3.0, w, 1.25, { icon: "LuScale", big: "p = 4.8e-7", label: "sign test: no check against the check, behind Jev", color: C.l3, bigSize: 26, bigH: 0.55, bigY: 0.1, labelSize: 14 });
-    callout(s, x, 4.35, w, 1.3, { icon: "LuBot", big: "No change", label: "behind the LLM agent the same check changes no run (p = 1)", color: C.grey, bigSize: 26, bigH: 0.55, bigY: 0.1, labelSize: 14 });
-    band(s, 5.9, 0.9, "LuShieldCheck", [{ text: "Open question: ", options: { bold: true } }, { text: "our new design gives Jev the rules as context, not a check. We have not run it." }]);
+    callout(s, x, 1.65, w, 1.25, { icon: "LuTimer", big: "1.8x", label: "faster: 4.28 s against 7.85 s of machine time", color: C.l3, bigSize: 28, bigH: 0.55, bigY: 0.1 });
+    callout(s, x, 3.0, w, 1.25, { icon: "LuDollarSign", big: "2.1x", label: "cheaper: $0.29 against $0.61 per 1,000 requests", color: C.l3, bigSize: 28, bigH: 0.55, bigY: 0.1 });
+    callout(s, x, 4.35, w, 1.25, { icon: "LuScale", big: "0 and 61", label: "errors at Level 3 and Level 2. Sign test: p = 0.031", color: C.teal, bigSize: 28, bigH: 0.55, bigY: 0.1, labelSize: 14 });
+    band(s, 5.85, 0.95, "LuShieldCheck", [{ text: "Level 3 is faster and cheaper, with fewer errors. ", options: { bold: true } }, { text: "Harmful runs: 0 at Level 3, about 20 at Level 2. Level 1 baseline: 90 s per request (assumed)." }]);
+    textBox(s, "Level 3: the time and cost of the final message come from the recorded run of the same requests.", ML, 6.9, CW - 1, 0.4, { size: 14, color: C.muted, valign: "middle" });
   }
 
   // ---------- 17. Related work ----------
   {
     const s = base(
-      21,
+      20,
       "Related work: limit what the model can trigger",
       "Thank you, Quy. My name is Nguyen Phuong Nam. I will explain how our work fits the field, and its limits. " +
-        "Text in data can carry orders for a model. CaMeL and other design patterns defend by limiting what the model can trigger. Support platforms route tickets by rules, and the Fin agent runs refunds and cancellations. Our first design is of this kind: a fixed check limits what Jev can trigger. Our new design gives Jev the rules as context."
+        "Text in data can carry orders for a model. CaMeL and other design patterns defend by limiting what the model can trigger. Support platforms route tickets by rules, and the Fin agent runs refunds and cancellations. Level 3 follows the same idea: Jev only answers typed questions, and the process, not Jev, decides if the action runs. Result 2 shows what that buys."
     );
     const cw = (CW - 2 * 0.3) / 3;
     [
@@ -954,45 +955,74 @@ async function photo(file, w, h, radius = 0.08, dpi = 150) {
       textBox(s, t, x + 0.3, 3.25, cw - 0.6, 1.3, { size: 16 });
       textBox(s, ref, x + 0.3, 4.65, cw - 0.6, 0.45, { size: 14, color: C.muted, valign: "middle" });
     });
-    band(s, 5.55, 0.9, "LuScale", [{ text: "Our first design is of this kind: ", options: { bold: true } }, { text: "a fixed check limits what Jev can trigger. The new design gives Jev the rules as context." }]);
+    band(s, 5.55, 0.9, "LuScale", [{ text: "Level 3 follows the same idea: ", options: { bold: true } }, { text: "Jev only answers typed questions, and the process decides if the action runs." }]);
   }
 
   // ---------- 9. Limits and claims ----------
   {
     const s = base(
-      22,
+      21,
       "Limits and what we claim",
-      "Our evidence is small: two hosted models, one synthetic SaaS product, and our own labels. All results have a fixed check behind Jev. We did not run the design where Jev reads the rules as context. We saw 0 harmful runs in 100 requests. That does not prove that the real rate is zero. The 95% upper limit is 3.7%. " +
+      "Our evidence is small: two hosted models, one synthetic SaaS product, and our own labels, which the same code that applies the rules produced. Both levels run on the same 1,024 requests, and the intervals are wide: for example, the Level 3 errors are 0, with a 95% interval from 0 to 38, and the sign test is p = 0.031. " +
+        "Jev needs a question that we write for each rule. We tried questions made from the text of the rule alone, and they made about 61 to 123 errors of 1,024, against none for ours. We wrote our questions knowing the 24 request types; a second set of requests did not change the result. " +
         "Real users write slang and make spelling mistakes. Our test data does not. The 90 seconds at Level 1 is assumed. We did not simulate the popup or the silence timer. " +
-        "We found the Security rule and the account fields on an earlier 50-request set of these same 24 types, so the main numbers are not a blind test."
+        "We found the Security rule and the account fields on an earlier 512-request set of these same 24 types, so the main numbers are not a blind test."
     );
-    const gapC = 0.3, cwL = 6.9, cwR = CW - cwL - gapC;
+    // Three rows: a label card on the left, then icon tiles with a short figure and a one-line caption.
+    const labW = 2.2, gapT = 0.2, rx = ML + labW + 0.25, rw = CW - labW - 0.25;
+    const rowLabel = (y, h, icon, bg, head) => {
+      box(s, ML, y, labW, h);
+      iconCircle(s, icon, ML + 0.3, y + h / 2 - 0.3, 0.6, bg);
+      textBox(s, head, ML + 1.05, y, labW - 1.15, h, { size: 20, bold: true, color: C.navy, valign: "middle" });
+    };
+    const tiles = (n) => (rw - (n - 1) * gapT) / n;
+    // Row 1: limits (tall tiles: icon, figure, caption)
     {
-      const p = { x: ML, y: 1.65, h: 5.1 };
-      box(s, p.x, p.y, cwL, p.h);
-      iconCircle(s, "LuTriangleAlert", p.x + 0.35, p.y + 0.25, 0.7, C.grey);
-      textBox(s, "Limits", p.x + 1.3, p.y + 0.25, cwL - 1.6, 0.7, { size: 24, bold: true, color: C.navy, valign: "middle" });
-      s.addText(
-        bullets([
-          "The new design (Jev reads the rules as context) was not run: every result has a fixed check behind Jev",
-          "Synthetic data and our own labels: 100 requests in 24 types",
-          "0 harmful runs in 100 requests is not proof of zero: the 95% upper limit is 3.7%",
-          "The 90 s at Level 1 is assumed; the popup and the silence timer are not simulated",
-          "The Security rule was found on an earlier 50-request set of these same 24 types, so the main numbers are not a blind test",
-        ]),
-        { x: p.x + 0.35, y: p.y + 1.15, w: cwL - 0.7, h: p.h - 1.3, margin: 0, fontFace: FONT, fontSize: 16, color: C.text, paraSpaceAfter: 12, valign: "top" }
-      );
+      const y = 1.6, h = 2.6, w = tiles(4);
+      rowLabel(y, h, "LuTriangleAlert", C.grey, "Limits");
+      [
+        ["LuGauge", "0 to 38", "95% interval of the Level 3 errors: wide"],
+        ["LuMessageSquareText", "61 to 123", "errors of 1,024 with questions made from the rule text alone"],
+        ["LuDatabase", "Synthetic", "data and labels from code; the 90 s is assumed; no popup or timer"],
+        ["LuTarget", "Not blind", "Security rule found on an earlier 512-request set of the same 24 types"],
+      ].forEach(([ic, big, cap], i) => {
+        const x = rx + i * (w + gapT);
+        box(s, x, y, w, h);
+        iconCircle(s, ic, x + 0.2, y + 0.2, 0.55, C.grey);
+        textBox(s, big, x + 0.2, y + 0.85, w - 0.4, 0.5, { size: 26, bold: true, color: C.navy, valign: "middle" });
+        textBox(s, cap, x + 0.2, y + 1.4, w - 0.4, 1.1, { size: 14 });
+      });
     }
-    [
-      { y: 1.65, h: 2.55, icon: "LuBadgeCheck", bg: C.l3, head: "What we claim", items: ["With a fixed check behind Jev: Level 3 is 1.9x faster, 2.2x cheaper, and never worse", "p = 0.031: significantly fewer errors"] },
-      { y: 4.4, h: 2.35, icon: "LuFlaskConical", bg: C.teal, head: "Next", items: ["Run Jev with the rules as context", "Real tickets and adversarial inputs", "Real customers for the popup and timer"] },
-    ].forEach((p) => {
-      const x = ML + cwL + gapC;
-      box(s, x, p.y, cwR, p.h);
-      iconCircle(s, p.icon, x + 0.3, p.y + 0.2, 0.6, p.bg);
-      textBox(s, p.head, x + 1.1, p.y + 0.2, cwR - 1.3, 0.6, { size: 22, bold: true, color: C.navy, valign: "middle" });
-      s.addText(bullets(p.items), { x: x + 0.3, y: p.y + 0.95, w: cwR - 0.6, h: p.h - 1.05, margin: 0, fontFace: FONT, fontSize: 16, color: C.text, paraSpaceAfter: 8, valign: "top" });
-    });
+    // Row 2: what we claim (three figures)
+    {
+      const y = 4.4, h = 1.1, w = tiles(3);
+      rowLabel(y, h, "LuBadgeCheck", C.l3, "Claim");
+      [
+        ["1.8x", "faster: 4.28 s against 7.85 s"],
+        ["2.1x", "cheaper: $0.29 against $0.61"],
+        ["0 vs 61", "fewer errors (p\u00a0=\u00a00.031)"],
+      ].forEach(([big, cap], i) => {
+        const x = rx + i * (w + gapT);
+        box(s, x, y, w, h);
+        textBox(s, big, x + 0.25, y + 0.08, w - 0.5, 0.6, { size: 30, bold: true, color: C.l3, valign: "middle" });
+        textBox(s, cap, x + 0.25, y + 0.7, w - 0.5, 0.3, { size: 14, valign: "middle" });
+      });
+    }
+    // Row 3: next
+    {
+      const y = 5.7, h = 1.1, w = tiles(3);
+      rowLabel(y, h, "LuFlaskConical", C.teal, "Next");
+      [
+        ["LuMail", "Real tickets and adversarial inputs"],
+        ["LuFileText", "More requests and more request types"],
+        ["LuUsers", "Real customers for the popup and timer"],
+      ].forEach(([ic, txt], i) => {
+        const x = rx + i * (w + gapT);
+        box(s, x, y, w, h);
+        iconCircle(s, ic, x + 0.25, y + h / 2 - 0.3, 0.6, C.teal);
+        textBox(s, txt, x + 1.0, y, w - 1.2, h, { size: 16, valign: "middle" });
+      });
+    }
   }
 
   // ---------- 13. Conclusion ----------
@@ -1005,27 +1035,27 @@ async function photo(file, w, h, radius = 0.08, dpi = 150) {
     s.addText("Conclusion", { x: M, y: 0.7, w: LW, h: 0.7, margin: 0, fontFace: FONT, fontSize: 38, bold: true, color: C.white, valign: "top" });
     s.addText(
       bullets([
-        "Same 100 requests at every level. Level 2: 66 served, 28 stopped, 6 errors. Level 3, with a fixed check behind Jev: 70 served, 30 stopped, 0 errors.",
-        "Level 3 is never worse, 1.9x faster, and 2.2x cheaper: 4.19 s and $0.28 against 7.85 s and $0.61. The sign test (p\u00a0=\u00a00.031) shows that Level 3 makes significantly fewer errors.",
-        "A Security rule stops state changes on fraud reports. We found it on an earlier 50-request set of these same 24 types.",
-        "Without the check, 22 of Jev's errors run. Our new design, with the rules as context for Jev, is the next test.",
+        "Same 1,024 requests at every level. Level 2: 676 served, 287 stopped, 61 errors. Level 3: 717 served, 307 stopped, 0 errors.",
+        "Level 3 is 1.8x faster and 2.1x cheaper: 4.28 s and $0.29 against 7.85 s and $0.61. It makes fewer errors: 0 against 61 of 1,024 requests (p\u00a0=\u00a00.031).",
+        "Jev needs a question for each rule: questions made from the rule text alone made about 61 to 123 errors of 1,024.",
+        "The confidence of Jev is a warning: 338 of the 737 answers below 0.8 are wrong, against 92 of 4,455 at 0.9 or more.",
       ]),
       { x: M, y: 1.65, w: LW, h: 4.3, margin: 0, fontFace: FONT, fontSize: 18, color: C.white, paraSpaceAfter: 9, valign: "top" }
     );
     s.addText("Thank you. Questions?", { x: M, y: 6.1, w: LW, h: 0.7, margin: 0, fontFace: FONT, fontSize: 30, bold: true, color: C.white, valign: "bottom" });
     [
-      { icon: "LuScale", big: "0 and 6", label: "errors at Level 3 (fixed check) and Level 2. Sign test: p\u00a0=\u00a00.031", color: C.teal },
-      { icon: "LuTimer", big: "1.9x", label: "faster: 4.19 s against 7.85 s of machine time", color: C.l3 },
-      { icon: "LuDollarSign", big: "2.2x", label: "cheaper: $0.28 against $0.61 per 1,000 requests", color: C.l3 },
+      { icon: "LuScale", big: "0 and 61", label: "errors at Level 3 and Level 2. Sign test: p\u00a0=\u00a00.031", color: C.teal },
+      { icon: "LuTimer", big: "1.8x", label: "faster: 4.28 s against 7.85 s of machine time", color: C.l3 },
+      { icon: "LuDollarSign", big: "2.1x", label: "cheaper: $0.29 against $0.61 per 1,000 requests", color: C.l3 },
     ].forEach((o, i) => callout(s, CX, 0.7 + i * 2.1, CWd, 1.9, { ...o, bigSize: 38, bigH: 0.8, bigY: 0.25, labelSize: 15 }));
     s.addNotes(
-      `Speaker: ${PNAM}, about ${SPEAKER[22][1]} s. To finish, we tested three levels of customer support on the same 100 requests. With a fixed check behind Jev, Level 3 serves 70, stops 30, and makes 0 errors. Level 2 makes 6. ` +
-        "Level 3 is never worse, 1.9 times faster, and 2.2 times cheaper, and the sign test gives p = 0.031. Our new design gives Jev the rules as context, and that is the next test. " +
+      `Speaker: ${PNAM}, about ${SPEAKER[21][1]} s. To finish, we tested three levels of customer support on the same 1,024 requests. Level 2 serves 676, stops 287, and makes 61 errors. Level 3 serves 717, stops 307, and makes no error. ` +
+        "Level 3 is 1.8 times faster and 2.1 times cheaper, and it makes fewer errors: it was never wrong where Level 2 was right, and Level 2 was wrong on 61 requests where it was right. Jev needs a question that we write for each rule. The confidence of Jev is a warning: 338 of the 737 answers below 0.8 are wrong, against 92 of 4,455 at 0.9 or more. The next step is real tickets and a larger set of requests. " +
         "Thank you for listening. Our leader, Tran Thanh Long, will now take your questions."
     );
   }
 
   const file = await pres.write({ outputType: "nodebuffer" });
-  fs.writeFileSync("deck.pptx", await addTransitions(file, transitions));
+  fs.writeFileSync("deck.pptx", await addTransitions(await dropBlankPoints(file), transitions));
   console.log("wrote deck.pptx,", pres.slides.length, "slides");
 })();

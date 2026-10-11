@@ -39,3 +39,4 @@ Thumbs.db
 # Generated experiment output (rebuilt by experiment/run.ts and demo/run.py)
 experiment/results/
 demo/results/
+experiment/context_test

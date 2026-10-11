@@ -1,115 +1,140 @@
-# Kế hoạch luyện tập và Danh mục kiểm tra trước giờ thuyết trình (Team Rehearsal and Pre-Talk Checklist)
+# Kế hoạch luyện tập và Danh mục kiểm tra trước giờ thuyết trình
 
-Tài liệu này cung cấp các bài tập khớp giờ, danh mục kiểm tra và bảng tự chấm điểm cho bài thuyết trình nhóm 15 phút. Sử dụng danh mục này trong các buổi luyện tập của nhóm và trong 5 phút cuối cùng trước khi bước lên bục giảng đường.
+Tài liệu này liệt kê các bước tập luyện và bảng tự chấm điểm, dùng để soát lại bài nói trước giờ thuyết trình nhóm. Nhóm năm thành viên chuẩn bị luyện tập với bộ slide mới (31 slide) và chạy thử toàn bộ bài nói trước khi lên lớp.
 
 ---
 
 ## 1. Bài tập kiểm soát thời gian và quy tắc bấm giờ
 
-- **Thời gian thuyết trình mục tiêu:** 15 phút 00 giây (900 giây), đúng bằng giới hạn 15 phút nên không còn thời gian dự phòng; mọi người nói ít nhất 120 giây. Toàn bộ tương tác với khán giả do Long thực hiện ở Slide 1 đến 3, và Long cũng đọc luật, luồng xử lý và ba walk-through (Slide 4 đến 22). Nếu cần thời gian dự phòng, cắt Slide 3 của Long (100 giây) trước.
-- **Thời gian hỏi đáp Q&A mục tiêu:** 5 phút (300 giây), do Long trả lời toàn bộ.
-- **Tổng thời gian:** 18 phút 06 giây (1.086 giây), dưới mức tối đa 20 phút.
+- **Thời gian nói theo kịch bản:** 14 phút 18 giây (858 giây), chia thành các khối nói rõ ràng: Long 7 phút 00 giây, Nam 2 phút 00 giây, Son 2 phút 00 giây, Quy 1 phút 18 giây, Phuong Nam 2 phút 00 giây.
+- **Tổng thời gian dự kiến:** 19 phút 18 giây (858 giây nói + 300 giây hỏi đáp), nằm dưới mức tối đa 20 phút của đề cương. Phần đệm an toàn còn lại khoảng 40 giây cho các lần chuyển slide.
+- **Phần hỏi đáp (Q&A):** 5 phút (300 giây) do Long trả lời toàn bộ.
 
-### Mốc chuẩn thời gian của từng diễn giả:
+### Bảng phân bổ thời gian theo người nói
 
-| Thứ tự | Họ và tên | Vai trò trong bài báo | Tỷ lệ | Thời gian dự kiến | Giới hạn tối thiểu | Giới hạn tối đa |
-| :---: | :--- | :--- | :---: | :---: | :---: | :---: |
-| 1 | **Tran Thanh Long** | Leader; Intro; Ladder; Rules; Flow; walk-through; toàn bộ tương tác với khán giả | 28% | 7 phút 00 giây (420 s) | 6 phút 45 giây | 7 phút 00 giây |
-| 2 | **Nguyen Thanh Nam** | Test Data; Families; Outcomes | 22% | 2 phút 00 giây (120 s) | 1 phút 55 giây | 2 phút 00 giây |
-| 3 | **Vu Van Son** | The Run; Prices; Result 1 | 18% | 2 phút 00 giây (120 s) | 1 phút 55 giây | 2 phút 00 giây |
-| 4 | **Vuong Quang Quy** | Confidence; Result 2; Ablation | 17% | 2 phút 00 giây (120 s) | 1 phút 55 giây | 2 phút 00 giây |
-| 5 | **Nguyen Phuong Nam** | Related Work; Limits; Concl. | 15% | 2 phút 00 giây (120 s) | 1 phút 55 giây | 2 phút 00 giây |
-| **Tổng** | **Cả 5 thành viên** | **Toàn bộ bài thuyết trình** | **100%** | **15 phút 00 giây (900 s)** | **14 phút 30 giây** | **15 phút 00 giây** |
+| Người nói | Số slide phụ trách | Slide | Thời gian nói | Tỷ lệ thời gian |
+| :--- | :---: | :--- | :---: | :---: |
+| **Tran Thanh Long** | 20 slide (8 slide riêng + 12 khung của ba walk-through) | Slide 1 đến 20 (gồm cả các đoạn walk-through) | 420 giây (7 phút 00 giây) | 49% |
+| **Nguyen Thanh Nam** | 3 slide | Slide 21 đến 23 | 120 giây (2 phút 00 giây) | 14% |
+| **Vu Van Son** | 3 slide | Slide 24 đến 26 | 120 giây (2 phút 00 giây) | 14% |
+| **Vuong Quang Quy** | 2 slide | Slide 27 đến 28 | 78 giây (1 phút 18 giây) | 9% |
+| **Nguyen Phuong Nam** | 3 slide | Slide 29 đến 31 | 120 giây (2 phút 00 giây) | 14% |
+| **Tổng cộng** | **31 slide** | **Toàn bộ bài trình bày** | **858 giây (14 phút 18 giây)** | **100%** |
 
-### Quy tắc luyện tập với đồng hồ bấm giờ:
-1. **Thành viên phụ trách bấm giờ:** Diễn giả 5 (Nguyen Phuong Nam) điều khiển đồng hồ bấm giờ chính trong các buổi tập và ra hiệu kín đáo bằng tay:
-   - Thẻ vàng hoặc nắm tay đặt trước ngực: *Còn 1 phút trong phần của bạn.*
-   - Giơ hai ngón tay: *Còn 30 giây.*
-   - Chỉ tay về phía người tiếp theo: *Tóm tắt nhanh và nói câu bàn giao lượt nói.*
-2. **Điều phối quỹ thời gian dự phòng:** Nếu Diễn giả 1 kết thúc sớm 10 giây, thời gian dư đó sẽ được dồn cho các phần kỹ thuật ở giữa. Nếu bất kỳ diễn giả nào nói quá thời gian tối đa 15 giây, các diễn giả tiếp theo phải lược bớt các ví dụ phụ và đi thẳng vào số liệu cốt lõi. Long chờ khán giả phản hồi tối đa 3 giây ở mỗi câu hỏi; không kéo dài thêm.
+### Thời gian chi tiết từng slide
 
----
+| Slide | Nội dung | Người nói | Thời gian | Từ cộng dồn |
+| :---: | :--- | :---: | :---: | :---: |
+| 1 | Title: Human to LLM & Classifier Support Agent | Long | 67 giây | 1 phút 07 giây |
+| 2 | Where we start: staff or one LLM agent | Long | 98 giây | 2 phút 45 giây |
+| 3 | Three levels, one change at each level | Long | 98 giây | 4 phút 23 giây |
+| 4 | Real support policies have many rules | Long | 12 giây | 4 phút 35 giây |
+| 5 | The written rules: allow or deny | Long | 23 giây | 4 phút 58 giây |
+| 6 | Level 3: Jev and an LLM | Long | 26 giây | 5 phút 24 giây |
+| 7 | Jev reads the chat first, then one rule at a time | Long | 26 giây | 5 phút 50 giây |
+| 8 | Jev answers four questions, then one per rule | Long | 24 giây | 6 phút 14 giây |
+| 9 | Walk-through 1: a refund that no rule stops (slide mở đầu của chuỗi 5 slide, Slide 9 đến 13) | Long | 22 giây cho cả chuỗi | 6 phút 36 giây |
+| 10 đến 13 | Bốn lần bấm phím tiếp của walk-through 1: Jev gọi lần một, các câu hỏi luật, hành động chạy, tin nhắn cuối | Long | nằm trong 22 giây của Slide 9 | 6 phút 36 giây |
+| 14 | Walk-through 2: a refund that a rule stops (slide mở đầu của chuỗi 4 slide, Slide 14 đến 17) | Long | 12 giây cho cả chuỗi | 6 phút 48 giây |
+| 15 đến 17 | Ba lần bấm phím tiếp của walk-through 2: luật hạn mức bị phá, không hành động nào chạy, tin nhắn giải thích | Long | nằm trong 12 giây của Slide 14 | 6 phút 48 giây |
+| 18 | Walk-through 3: an order hidden in the message (slide mở đầu của chuỗi 3 slide, Slide 18 đến 20) | Long | 12 giây cho cả chuỗi | 7 phút 00 giây |
+| 19 đến 20 | Hai lần bấm phím tiếp của walk-through 3: cờ injection bật, hành động thành gửi trả lời | Long | nằm trong 12 giây của Slide 18 | 7 phút 00 giây |
+| 21 | Test data: 512 customers, 1,024 requests | Nam | 41 giây | 7 phút 41 giây |
+| 22 | 1,024 requests in ten families | Nam | 39 giây | 8 phút 20 giây |
+| 23 | What we count: three outcomes and one harm flag | Nam | 40 giây | 9 phút 00 giây |
+| 24 | The run: 1,024 requests | Son | 42 giây | 9 phút 42 giây |
+| 25 | List prices: what one call costs | Son | 38 giây | 10 phút 20 giây |
+| 26 | Result 1: Jev is fast and cheap, and mostly right | Son | 40 giây | 11 phút 00 giây |
+| 27 | Jev reports a confidence, and it is a warning | Quy | 40 giây | 11 phút 40 giây |
+| 28 | Result 2: Level 3 is faster, cheaper, and makes fewer errors | Quy | 38 giây | 12 phút 18 giây |
+| 29 | Related work: limit what the model can trigger | Phuong Nam | 30 giây | 12 phút 48 giây |
+| 30 | Limits and what we claim | Phuong Nam | 55 giây | 13 phút 43 giây |
+| 31 | Conclusion | Phuong Nam | 35 giây | 14 phút 18 giây |
 
-## 2. Kiểm tra tên thành viên và phần tự giới thiệu
+**Lưu ý về tốc độ:** thời gian trên là thời gian ghi trong ghi chú của bộ slide hiện tại (`slides/build.js`, hàm `base` và mảng `SPEAKER`). Cả ba walk-through đều được tính là một khối nói liền: Long bấm phím để đi qua từng khung, và toàn bộ chuỗi khung nằm trong số giây của slide mở đầu. Tổng cộng 858 giây nói, tiếp theo là 300 giây hỏi đáp.
 
-Giảng viên học phần đặc biệt nhấn mạnh:
-> *"Also introduce your own names so listeners can evaluate you more easily."*
-
-Mỗi diễn giả phải nói câu giới thiệu một dòng chính xác ở đầu lượt nói của mình. Luyện đọc to các câu này cho đến khi thuần thục:
-
-1. **Speaker 1:** *"Hello everyone. My name is Tran Thanh Long. I am the team leader, and I coordinated our research on the support ladder architecture."*
-2. **Speaker 2:** *"Hello. My name is Nguyen Thanh Nam. I am responsible for the written rules and the state machine flow."*
-3. **Speaker 3:** *"Hello. My name is Vu Van Son. I am responsible for our synthetic dataset and the experiment execution."*
-4. **Speaker 4:** *"Hello. My name is Vuong Quang Quy. I am responsible for the experimental results and statistical analysis."*
-5. **Speaker 5:** *"Hello. My name is Nguyen Phuong Nam. I am responsible for the literature review, research limitations, and our conclusion."*
-
----
-
-## 3. Bài tập kiểm tra câu bàn giao lượt nói (Hand-off)
-
-Chuyển giao lộn xộn sẽ bị trừ điểm ở tiêu chí tổ chức bài thuyết trình. Từng diễn giả phải ghi nhớ câu chuyển tiếp chính xác của mình:
-
-- **Speaker 1 chuyển cho Speaker 2:** *"Now, I hand over to my teammate Nguyen Thanh Nam, who will explain our written rules and the state machine flow."*
-- **Speaker 2 chuyển cho Speaker 3:** *"Next, my teammate Vu Van Son will explain our experimental setup and synthetic benchmark dataset."*
-- **Speaker 3 chuyển cho Speaker 4:** *"Now, my teammate Vuong Quang Quy will present our live experimental results and comparative metrics."*
-- **Speaker 4 chuyển cho Speaker 5:** *"Finally, my teammate Nguyen Phuong Nam will discuss our study limitations and conclude our presentation."*
-- **Speaker 5 chuyển cho Speaker 1 (mở Q&A):** *"Thank you very much for listening. Our leader, Tran Thanh Long, will now take your questions."*
-
----
-
-## 4. Đồng bộ slide và tín hiệu bấm chuyển slide
-
-- **Slide 1:** Tiêu đề và câu chuyện khách hàng mở đầu (Speaker 1).
-- **Slide 2:** `[CHUYỂN SANG SLIDE 2]` Where We Start: Two Old Ways (Speaker 1). Tương tác của Long: giơ tay rồi bình chọn "Which action would you never let a chatbot do alone?".
-- **Slide 3:** `[CHUYỂN SANG SLIDE 3]` The Three-Level Ladder (Speaker 1). Tương tác của Long: câu hỏi dự đoán "Which level do you think is faster and cheaper, Level 2 or Level 3?" (không tiết lộ đáp án).
-- **Slide 4:** `[CHUYỂN SANG SLIDE 4]` Real support policies have many rules: bức tường luật minh họa, "Illustration, not our data" (Speaker 1).
-- **Slide 5:** `[CHUYỂN SANG SLIDE 5]` The Written Rules, gồm Security rule (Speaker 1).
-- **Slide 6:** `[CHUYỂN SANG SLIDE 6]` Level 3: Jev and an LLM (Speaker 1).
-- **Slide 7:** `[CHUYỂN SANG SLIDE 7]` Jev reads the chat, the account, and the rules (Speaker 1).
-- **Slide 8:** `[CHUYỂN SANG SLIDE 8]` Jev answers five questions, and the process follows; cuối slide Long chuyển sang ba walk-through (Speaker 1).
-- **Slide 9 đến 19:** Ba walk-through của Long (Speaker 1): walk-through 1 có 5 slide (9 đến 13), walk-through 2 có 3 slide (14 đến 16), walk-through 3 có 3 slide (17 đến 19). Mỗi lần bấm phím tiếp là một slide; Long nói đúng một câu ngắn cho mỗi slide, và câu cuối ở Slide 19 là câu bàn giao cho Nam.
-- **Slide 20:** `[CHUYỂN SANG SLIDE 20]` Test Data: 72 Customers, 100 Requests (Speaker 2), gồm lời tự giới thiệu của Nam.
-- **Slide 21:** `[CHUYỂN SANG SLIDE 21]` 100 Requests in Ten Families (Speaker 2).
-- **Slide 22:** `[CHUYỂN SANG SLIDE 22]` What We Count: Three Outcomes and One Harm Flag (Speaker 2); cuối slide là câu bàn giao cho Son.
-- **Slide 23:** `[CHUYỂN SANG SLIDE 23]` The Run: Two Hosted Models, 600 Calls (Speaker 3).
-- **Slide 24:** `[CHUYỂN SANG SLIDE 24]` Same Input, List Prices (Speaker 3).
-- **Slide 25:** `[CHUYỂN SANG SLIDE 25]` Result 1: Classifier Stage (Speaker 3); cuối slide là câu bàn giao cho Quy.
-- **Slide 26:** `[CHUYỂN SANG SLIDE 26]` Jev Reports a Confidence (Speaker 4).
-- **Slide 27:** `[CHUYỂN SANG SLIDE 27]` Result 2: Level 3 Is Never Worse (Speaker 4).
-- **Slide 28:** `[CHUYỂN SANG SLIDE 28]` Without a Fixed Check, Jev's Errors Run (Speaker 4); cuối slide là câu bàn giao cho Speaker 5.
-- **Slide 29:** `[CHUYỂN SANG SLIDE 29]` Related Work (Speaker 5).
-- **Slide 30:** `[CHUYỂN SANG SLIDE 30]` Limits and What We Claim (Speaker 5).
-- **Slide 31:** `[CHUYỂN SANG SLIDE 31]` Conclusion; cuối slide là lời cảm ơn và lời mời hỏi Long (Speaker 5). Sau đó Long bước lên giữa sân khấu.
+**Cảnh báo về tốc độ nói:** so với số từ trong ghi chú slide, Son cần nói khoảng 158 từ mỗi phút, Quy khoảng 152 từ mỗi phút và Phuong Nam khoảng 175 từ mỗi phút để kịp khung thời gian; tốc độ nói rõ ràng thông thường là 120 đến 130 từ mỗi phút. Ba bạn này phải bấm giờ khi luyện tập. Nếu vượt khung, rút gọn các câu phụ (các con số token chi tiết ở Slide 25, câu về tập yêu cầu thứ hai ở Slide 30, các câu phân tích ở Slide 28) và giữ nguyên các số liệu chính. Nam (khoảng 115 từ mỗi phút) và Long (khoảng 104 từ mỗi phút) nằm trong tốc độ thoải mái.
 
 ---
 
-## 5. Danh mục kiểm tra 5 phút cuối cùng trước khi bắt đầu
+## 2. Các câu bàn giao lượt nói
 
-Hoàn thành danh mục kiểm tra thực tế này ngay trước khi nhóm được gọi lên thuyết trình:
+Phải thuộc lòng và nói chính xác các câu tiếng Anh sau, không thay đổi từ ngữ:
 
-- [ ] **Trình chiếu slide:** Mở tệp slide PowerPoint ở chế độ toàn màn hình. Kiểm tra chắc chắn Slide 1 hiển thị rõ nét trên máy chiếu của phòng học.
-- [ ] **Kiểm tra bút trình chiếu:** Bấm thử bút chuyển slide tiến và lùi. Đảm bảo Diễn giả 1 cầm bút trước, kèm kế hoạch chuyền tay mượt mà cho các diễn giả sau.
-- [ ] **Đội hình đứng trên sân khấu:** Đứng theo đúng thứ tự nói từ trái sang phải sân khấu: Long, Nam N.T., Son, Quy, Nam N.P. Khi Q&A bắt đầu, Long bước ra giữa; bốn bạn còn lại đứng nghiêm túc ở bên cạnh, lắng nghe, không trả lời nếu Long chưa nhường lời.
-- [ ] **Tương tác chỉ do Long:** Cả nhóm nhớ: Nam, Son, Quy và Phuong Nam không đặt câu hỏi, không bình chọn, không yêu cầu giơ tay.
-- [ ] **Góc nhìn âm thanh và máy chiếu:** Đứng ở vị trí không che màn hình máy chiếu. Nói to, hướng âm thanh về phía bức tường cuối phòng học.
-- [ ] **Hít thở sâu:** Cả nhóm cùng hít thở sâu 2 lần chậm rãi. Nhớ mỉm cười khi mở đầu câu chuyện và giữ tư thế đĩnh đạc trong suốt buổi thuyết trình.
+1. **Long chuyển cho Nam** (cuối phần walk-through thứ ba, sau Slide 11):
+   > "Now Nguyen Thanh Nam will explain our test data."
+
+2. **Nam chuyển cho Son** (cuối Slide 23):
+   > "Now my teammate Vu Van Son will explain the run."
+
+3. **Son chuyển cho Quy** (cuối Slide 26):
+   > "Now my teammate Vuong Quang Quy will show what the confidence of Jev tells us."
+
+4. **Quy chuyển cho Phuong Nam** (cuối Slide 28):
+   > "Now Nguyen Phuong Nam will explain how our work fits the field."
+
+5. **Phuong Nam chuyển sang phần hỏi đáp** (cuối Slide 31):
+   > "Our leader, Tran Thanh Long, will now take your questions."
 
 ---
 
-## 6. Bảng tự chấm điểm trước giờ nói (Theo 10 tiêu chí đánh giá chéo)
+## 3. Quy trình luyện tập
 
-Sử dụng bảng tiêu chí này để tự đánh giá trong các buổi tập trước khi nộp phiếu đánh giá chéo. Mỗi thành viên phải trả lời câu hỏi tự kiểm tra của mình trước khi lên thuyết trình.
+- **Lần 1 - Đọc thầm và thuộc số liệu:** Mỗi người tự đọc kịch bản trong file `speaker_X.md` của mình, tập nhớ ba số liệu quan trọng nhất của phần mình nói.
+- **Lần 2 - Tập theo nhóm, có bấm giờ:** Cả nhóm ngồi cùng nhau, lần lượt nói và bấm thời gian từng slide. Người bấm giờ ghi lại thời gian thực tế của mỗi người để so với bảng ở mục 1.
+- **Lần 3 - Tổng duyệt đầy đủ:** Nói toàn bộ bài trình bày như thật, có máy chiếu, bấm chuyển slide đúng nhịp, và không dừng lại giữa chừng. Ghi âm hoặc quay video để tự xem lại.
+- **Lần 4 - Diễn tập phần hỏi đáp:** Một người trong nhóm đóng vai khán giả, đặt 5 câu hỏi bất kỳ trong `qa_prep.md`. Người trả lời là **Long**, bốn thành viên còn lại thực hành việc giữ im lặng và chỉ nói khi Long nhường lời.
+- **Kiểm tra chéo thiết bị:** Thử máy chiếu, cổng HDMI, độ tương phản của sơ đồ, và bản PDF dự phòng trong trường hợp máy tính không mở được file PowerPoint.
 
-| STT | Tiêu chí đánh giá | Điểm tối đa | Câu hỏi tự kiểm tra trước bài nói | Thành viên chịu trách nhiệm | Trạng thái |
-| :---: | :--- | :---: | :--- | :--- | :---: |
-| **1** | Presentation & organization | 1.0 | "Are all four verbal hand-offs smooth, professional, and naming the next teammate, and does the last speaker hand over to Long for questions?" | Tran Thanh Long | [ ] ĐẠT |
-| **2** | Fluency & pacing | 1.0 | "Did each speaker respect their pace marks without rushing or running over time?" | Cả 5 thành viên | [ ] ĐẠT |
-| **3** | Naturalness & pronunciation | 1.0 | "Did every member review the 10 phonetic pronunciation words in their script?" | Cả 5 thành viên | [ ] ĐẠT |
-| **4** | Audience interaction | 1.0 | "Does Long practice all four interactive moments (story, hand-raise, poll, prediction) with clear fallbacks for a quiet room, and do the other four members only present and listen?" | Tran Thanh Long | [ ] ĐẠT |
-| **5** | Q&A & communication | 1.0 | "Does Long know the 15 answers in `qa_prep.md`, repeat each question, answer in 2 to 4 sentences, and say so when he is not sure?" | Tran Thanh Long | [ ] ĐẠT |
-| **6** | English use & vocabulary | 1.0 | "Are our spoken sentences short, simple, free of em dashes, and strictly using customer support terms?" | Nguyen Thanh Nam | [ ] ĐẠT |
-| **7** | Technical approach | 1.0 | "Is the state machine and deterministic rule execution clearly explained?" | Nguyen Thanh Nam | [ ] ĐẠT |
-| **8** | Experimental results | 1.5 | "Are the speedup (19.8x for one classifier call, 1.9x for the machine time) and the cost reduction (10.9x and 2.2x) numbers exact?" | Vuong Quang Quy | [ ] ĐẠT |
-| **9** | Analysis & discussion | 1.0 | "Do we say plainly that the sign test (p = 0.031) shows significantly fewer errors at Level 3 and that the main numbers are not a blind test?" | Vuong Quang Quy | [ ] ĐẠT |
-| **10** | Slides & visual support | 0.5 | "Are the diagrams legible from the back of the classroom without text clutter?" | Nguyen Phuong Nam | [ ] ĐẠT |
-| **Tổng** | **Mục tiêu điểm số toàn diện** | **10.0** | **Sẵn sàng thuyết trình trước lớp và nhận đánh giá chéo** | **Cả nhóm** | **10.0 / 10** |
+### Điều cần chú ý khi luyện tập
+
+- **Không đọc slide:** Mỗi người chỉ liếc nhanh slide để nhớ ý, hướng mắt về phía khán giả (khoảng 80% thời gian).
+- **Tốc độ nói:** Giữ khoảng 120 đến 130 từ mỗi phút. Chỗ có số liệu quan trọng cần nói chậm hơn, có khoảng nghỉ trước và sau con số.
+- **Cử chỉ:** Chỉ tay về phía sơ đồ hoặc con số trên slide khi đang nói về nó. Không giơ tay ra ngoài màn chiếu gây che chữ.
+- **Số liệu:** Trong bài nói chỉ dùng một con số duy nhất cho tập thử nghiệm: **1.024 yêu cầu**. Nếu nhớ nhầm, dừng lại một nhịp rồi nói lại con số đúng.
+- **Xử lý khi quên:** Nếu quên kịch bản, nói lại ý trước bằng câu ngắn hoặc chuyển ngay sang câu bàn giao sau đó, không đứng im.
+
+---
+
+## 4. Danh mục kiểm tra chất lượng trước khi thuyết trình
+
+Đánh dấu `[x]` cho mọi mục đã đạt được trước khi lên lớp.
+
+### A. Nội dung và cấu trúc
+
+- [ ] **1.** Bảng kế hoạch thời gian trong phần 1 khớp với thời gian thật đã đo (sai số dưới 15 giây mỗi người).
+- [ ] **2.** Mỗi người thuộc câu tự giới thiệu và câu bàn giao của mình trong phần 2, nói chính xác từng từ.
+- [ ] **3.** Bốn người còn lại **không trả lời** câu hỏi trong phần Q&A trừ khi Long nhường lời đúng như mô tả trong `qa_prep.md`.
+- [ ] **4.** Tất cả các con số trong bài nói trùng với ghi chú trên slide: 512 khách hàng, 1.024 yêu cầu, 24 loại, 1.434 lượt gọi Jev, 61 lỗi ở Level 2, 0 lỗi ở Level 3, p = 0,031.
+
+### B. Slide và thiết bị
+
+- [ ] **5.** Mỗi thành viên biết chính xác số slide mình phụ trách và không bấm chuyển slide ngoài danh sách.
+- [ ] **6.** Sơ đồ và biểu đồ trong slide đọc được từ cuối lớp, không có chữ bị chồng hoặc tràn khung.
+- [ ] **7.** Bản PDF dự phòng đã được chuẩn bị sẵn và đã thử mở trên máy trình chiếu.
+- [ ] **8.** Slide 21 và Slide 22 khớp với tập dữ liệu: 512 khách hàng, mỗi tài khoản có một teammate không có quyền thanh toán, 901 trong 1.024 người gửi là chủ tài khoản và 123 là teammate.
+
+### C. Phần hỏi đáp
+
+- [ ] **9.** Long đã trả lời thử ít nhất 10 câu trong `qa_prep.md`, mỗi câu trong 2 đến 4 câu tiếng Anh.
+- [ ] **10.** Cả nhóm biết phần Q&A dành cho Long, và không ai ngắt lời Long khi đang trả lời.
+
+---
+
+## 5. Bảng tự chấm điểm toàn diện
+
+Bảng dưới đây ánh xạ 10 mục đánh giá của giảng viên vào slide tương ứng, kèm câu hỏi tự kiểm tra mà nhóm phải trả lời được và người phụ trách chính.
+
+| # | Mục đánh giá | Trọng số | Câu hỏi tự kiểm tra | Người phụ trách | Kết quả |
+| :---: | :--- | :---: | :--- | :---: | :---: |
+| **1** | Leader, Introduction, Ladder, Rules, Flow | 1.5 | "Do we show why the task has many faces, and does the state machine with its three levels follow from it?" | Tran Thanh Long | [ ] ĐẠT |
+| **2** | Problem statement and motivation | 1.0 | "Do we state the problem in one sentence, and does the audience see why the naive agent fails?" | Tran Thanh Long | [ ] ĐẠT |
+| **3** | Related work | 1.0 | "Do we name the design patterns for prompt injection (CaMeL), the rule-based ticket routing, and the Fin agent, and do we say what is different here?" | Nguyen Phuong Nam | [ ] ĐẠT |
+| **4** | Test data and experimental setup | 1.5 | "Do we say that public datasets have no SaaS accounts, that 512 customers and 1,024 requests of 24 types are ours, and how the gold labels are built?" | Vu Van Son | [ ] ĐẠT |
+| **5** | Measurement and list prices | 1.0 | "Do the token counts and the list prices of both models show how the 61 cents and the 29 cents per 1,000 requests are built?" | Vu Van Son | [ ] ĐẠT |
+| **6** | Jev accuracy and the rule questions | 1.0 | "Do we report the right topic, priority, action, and injection flags, and the 1,690 of 1,700 rule answers, without hiding the 174 wrong action labels?" | Vu Van Son | [ ] ĐẠT |
+| **7** | Confidence and calibration | 1.0 | "Do we show that 338 of the 737 answers below 0.8 are wrong against 92 of 4,455 at 0.9 or more, and call the confidence a warning?" | Vuong Quang Quy | [ ] ĐẠT |
+| **8** | Experimental results | 1.5 | "Are the speedup (1.8 times faster) and the cost reduction (2.1 times cheaper) numbers exact, and are the 61 errors of Level 2 against the 0 errors of Level 3 clear?" | Vuong Quang Quy | [ ] ĐẠT |
+| **9** | Analysis and discussion | 1.0 | "Do we say plainly that the sign test (p = 0.031) shows significantly fewer errors at Level 3, and that the main numbers are not a blind test?" | Vuong Quang Quy | [ ] ĐẠT |
+| **10** | Slides and visual support | 0.5 | "Are the diagrams legible from the back of the classroom without text clutter?" | Nguyen Phuong Nam | [ ] ĐẠT |
+| **Tổng** | **Mục tiêu điểm số toàn diện** | **10.0** | **Sẵn sàng thuyết trình trước lớp và nhận đánh giá chéo** | **Cả nhóm** | **[ ] ĐẠT** |
