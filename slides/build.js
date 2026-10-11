@@ -152,7 +152,7 @@ async function photo(file, w, h, radius = 0.08, dpi = 150) {
   const line = (s, x, y, w, h, o = {}) =>
     s.addShape(pres.ShapeType.line, {
       x, y, w, h, flipH: o.flipH, flipV: o.flipV,
-      line: { color: o.color || C.grey, width: 2, endArrowType: o.arrow ? "triangle" : undefined },
+      line: { color: o.color || C.grey, width: 2, dashType: o.dash, endArrowType: o.arrow ? "triangle" : undefined },
     });
 
   const bullets = (items) =>
@@ -167,7 +167,7 @@ async function photo(file, w, h, radius = 0.08, dpi = 150) {
   const chartBase = {
     showTitle: true, titleFontSize: 15, titleFontFace: FONT, titleColor: C.text,
     showLegend: true, legendPos: "b", legendFontSize: 14, legendFontFace: FONT, legendColor: C.text,
-    showValue: true, dataLabelFontSize: 13, dataLabelFontFace: FONT, dataLabelColor: C.text,
+    showValue: true, dataLabelFontSize: 14, dataLabelFontFace: FONT, dataLabelColor: C.text,
     catAxisLabelColor: C.text, catAxisLabelFontSize: 14, catAxisLabelFontFace: FONT,
     valAxisLabelColor: C.muted, valAxisLabelFontSize: 12, valAxisMinVal: 0, valAxisHidden: true,
     valGridLine: { style: "none" }, catGridLine: { style: "none" },
@@ -316,7 +316,7 @@ async function photo(file, w, h, radius = 0.08, dpi = 150) {
       const rowW = n * cw + (n - 1) * gx;
       for (let i = 0; i < n; i++) {
         textBox(s, RULES[k++], cx - rowW / 2 + i * (cw + gx), y0 + r * pitch, cw, ch, {
-          shape: pres.ShapeType.roundRect, fill: mix(C.card, t), line: mix("C5CDD6", t), color: mix(C.text, t), size: 9, margin: [0.02, 0.06, 0.02, 0.06], valign: "middle", align: "center",
+          shape: pres.ShapeType.roundRect, fill: mix(C.card, t), line: mix("C5CDD6", t), color: mix(C.text, t), size: 10, margin: [0.02, 0.06, 0.02, 0.06], valign: "middle", align: "center",
         });
       }
     });
@@ -372,32 +372,40 @@ async function photo(file, w, h, radius = 0.08, dpi = 150) {
       ["Chat open", "popup: did this solve it?", "LuMessageCircle", "fx"],
       ["Resolved", "chat closed", "LuCircleCheck", "fx"],
     ];
-    const W = 1.7, gap = (CW - 6 * W) / 5, y0 = 1.85, H = 2.1;
-    const X = nodes.map((_, i) => ML + i * (W + gap));
-    const cx = X.map((x) => x + W / 2);
+    // Four large states that decide; Chat open and Resolved are small, because they come after the answer.
+    const H = 2.1, S = 1.2, y0 = 1.85, wN = nodes.map((_, i) => (i < 4 ? 1.95 : S)), hN = nodes.map((_, i) => (i < 4 ? H : S));
+    const gap = (CW - wN.reduce((a, v) => a + v, 0)) / 5;
+    const X = nodes.map((_, i) => ML + wN.slice(0, i).reduce((a, v) => a + v, 0) + i * gap);
+    const yN = hN.map((h) => y0 + (H - h) / 2);
+    const cx = X.map((x, i) => x + wN[i] / 2);
     nodes.forEach(([name, sub, icon, k], i) => {
       const [fill, ln] = kinds[k];
-      box(s, X[i], y0, W, H, { fill });
-      iconCircle(s, icon, cx[i] - 0.28, y0 + 0.15, 0.56, ln);
-      textBox(s, name, X[i] + 0.04, y0 + 0.82, W - 0.08, 0.35, { size: 15, bold: true, color: C.navy, align: "center", valign: "middle" });
-      textBox(s, sub, X[i] + 0.08, y0 + 1.2, W - 0.16, 0.85, { size: 12, align: "center" });
-      if (i < 5) line(s, X[i] + W + 0.02, y0 + H / 2, gap - 0.04, 0, { arrow: true, color: C.grey });
+      box(s, X[i], yN[i], wN[i], hN[i], { fill });
+      if (i < 4) {
+        iconCircle(s, icon, cx[i] - 0.3, y0 + 0.18, 0.6, ln);
+        textBox(s, name, X[i] + 0.04, y0 + 0.88, wN[i] - 0.08, 0.38, { size: 17, bold: true, color: C.navy, align: "center", valign: "middle" });
+        textBox(s, sub, X[i] + 0.1, y0 + 1.28, wN[i] - 0.2, 0.8, { size: 15, align: "center" });
+      } else {
+        iconCircle(s, icon, cx[i] - 0.22, yN[i] + 0.12, 0.44, ln);
+        textBox(s, name, X[i] + 0.02, yN[i] + 0.64, wN[i] - 0.04, 0.4, { size: 14, bold: true, color: C.navy, align: "center", valign: "middle", margin: 0 });
+      }
+      if (i < 5) line(s, X[i] + wN[i] + 0.02, y0 + H / 2, gap - 0.04, 0, { arrow: true, color: C.grey });
     });
-    textBox(s, "allow", cx[1] + W / 2 + gap / 2 - 0.45, y0 - 0.3, 0.9, 0.25, { size: 12, bold: true, color: C.blue, align: "center", valign: "middle" });
+    textBox(s, "allow", cx[1] + wN[1] / 2 + gap / 2 - 0.45, y0 - 0.3, 0.9, 0.28, { size: 15, bold: true, color: C.blue, align: "center", valign: "middle" });
     // Deny path: Jev goes straight to the Final message; nothing runs.
     const yd = 4.4;
     line(s, cx[1], y0 + H, 0, yd - (y0 + H), { color: C.blue });
     line(s, cx[1], yd, cx[3] - cx[1], 0, { color: C.blue });
     line(s, cx[3], y0 + H, 0, yd - (y0 + H), { color: C.blue, arrow: true, flipV: true });
-    textBox(s, "deny: nothing runs", cx[1], yd + 0.05, cx[3] - cx[1], 0.28, { size: 13, bold: true, color: C.blue, align: "center", valign: "middle" });
+    textBox(s, "deny: nothing runs", cx[1], yd + 0.05, cx[3] - cx[1], 0.3, { size: 15, bold: true, color: C.blue, align: "center", valign: "middle" });
     // Loop: a customer who writes again in the same chat goes back to New.
     const yl = 5.0;
-    line(s, cx[4], y0 + H, 0, yl - (y0 + H));
-    line(s, cx[0], yl, cx[4] - cx[0], 0);
-    line(s, cx[0], y0 + H, 0, yl - (y0 + H), { arrow: true, flipV: true });
-    textBox(s, "same chat: the customer writes again", cx[0], yl + 0.05, cx[4] - cx[0], 0.28, { size: 13, color: C.muted, align: "center", valign: "middle" });
+    line(s, cx[4], yN[4] + S, 0, yl - (yN[4] + S), { color: C.muted, dash: "dash" });
+    line(s, cx[0], yl, cx[4] - cx[0], 0, { color: C.muted, dash: "dash" });
+    line(s, cx[0], y0 + H, 0, yl - (y0 + H), { arrow: true, flipV: true, color: C.muted, dash: "dash" });
+    textBox(s, "same chat: the customer writes again", cx[0], yl + 0.05, cx[4] - cx[0], 0.3, { size: 15, color: C.muted, align: "center", valign: "middle" });
     [["Fixed code", C.greyL, C.grey], ["Model", C.blueL, C.blue]].forEach(([t, f, l], i) => {
-      textBox(s, t, ML + i * 1.9, 5.5, 1.7, 0.32, { shape: pres.ShapeType.roundRect, fill: f, line: l, size: 13, margin: [0, 0.1, 0, 0.1], valign: "middle", align: "center" });
+      textBox(s, t, ML + i * 1.9, 5.5, 1.7, 0.32, { shape: pres.ShapeType.roundRect, fill: f, line: l, size: 14, margin: [0, 0.1, 0, 0.1], valign: "middle", align: "center" });
     });
     band(s, 6.0, 0.8, "LuTags", [{ text: "The process follows Jev. ", options: { bold: true } }, { text: "Allow runs the action. Deny runs nothing, and the Final message says why." }]);
   }
@@ -451,7 +459,7 @@ async function photo(file, w, h, radius = 0.08, dpi = 150) {
       ["LuScale", "Allowed", "Do the written rules allow this action?", ["Allow", "Deny"]],
       ["LuShieldX", "Injection flag", "The text gives orders to the model", []],
     ];
-    const gapC = 0.2, wC = (CW - 4 * gapC) / 5, yC = 1.6, hC = 3.4;
+    const gapC = 0.2, wC = (CW - 4 * gapC) / 5, yC = 1.6, hC = 3.5;
     questions.forEach(([icon, name, ask, options], i) => {
       const x = ML + i * (wC + gapC);
       box(s, x, yC, wC, hC);
@@ -459,7 +467,7 @@ async function photo(file, w, h, radius = 0.08, dpi = 150) {
       textBox(s, `Question ${i + 1}`, x + 0.95, yC + 0.2, wC - 1.05, 0.6, { size: 14, color: C.muted, valign: "middle" });
       textBox(s, name, x + 0.2, yC + 0.95, wC - 0.4, 0.42, { size: 20, bold: true, color: C.navy, valign: "middle" });
       textBox(s, ask, x + 0.2, yC + 1.4, wC - 0.4, options.length ? 0.55 : 1.6, { size: 15 });
-      if (options.length) textBox(s, options.map((t, k) => ({ text: t, options: { breakLine: k < options.length - 1 } })), x + 0.2, yC + 1.95, wC - 0.4, 1.2, { size: 13, color: C.muted });
+      if (options.length) textBox(s, options.map((t, k) => ({ text: t, options: { breakLine: k < options.length - 1 } })), x + 0.2, yC + 1.95, wC - 0.4, 1.4, { size: 14, color: C.muted });
     });
     band(s, 5.2, 0.75, "LuTags", [{ text: "The process follows the answer: ", options: { bold: true } }, { text: "allow runs the action; deny runs nothing, and the Final message says why." }]);
     band(s, 6.05, 0.75, "LuShieldX", [{ text: "Routing rule: ", options: { bold: true } }, { text: "if the injection flag is on, the action is set to Send reply, so the orders in the text are ignored." }]);
@@ -524,9 +532,11 @@ async function photo(file, w, h, radius = 0.08, dpi = 150) {
     // The first two slides of a series fade: the way in, and what to watch -> the first state, which swaps the whole panel. The others morph.
     transitions[frame <= 1 ? "fade" : "morph"].push(pres.slides.length);
 
-    const W = 1.7, H = 1.35, gap = (CW - 6 * W) / 5, y0 = 2.15, yDeny = 3.72;
-    const X = FLOW.map((_, i) => ML + i * (W + gap));
-    const cx = X.map((x) => x + W / 2);
+    const H = 1.35, S = 1.2, y0 = 2.15, yDeny = 3.72, wN = FLOW.map((_, i) => (i < 4 ? 1.95 : S)), hN = FLOW.map((_, i) => (i < 4 ? H : 1.1));
+    const gap = (CW - wN.reduce((a, v) => a + v, 0)) / 5;
+    const X = FLOW.map((_, i) => ML + wN.slice(0, i).reduce((a, v) => a + v, 0) + i * gap);
+    const yN = hN.map((h) => y0 + (H - h) / 2);
+    const cx = X.map((x, i) => x + wN[i] / 2);
     const PX = ML, PY = 4.05, PW = CW, PH = 2.05; // the panel below the diagram
 
     // The customer message and the legend.
@@ -535,8 +545,8 @@ async function photo(file, w, h, radius = 0.08, dpi = 150) {
       iconCircle(g, "LuUser", ML + 0.1, 1.5, 0.45, C.l2);
       textBox(g, [{ text: `${c.sender}: `, options: { bold: true } }, { text: `\u201C${c.text}\u201D` }], ML + 0.7, 1.45, 7.65, 0.55, { size: 14, valign: "middle" });
       [["Fixed code", "fx"], ["Model", "md"]].forEach(([t, k], i) => {
-        textBox(g, t, ML + 8.67 + i * 1.18, 1.52, 1.1, 0.4, {
-          shape: pres.ShapeType.roundRect, fill: kinds[k][0], line: kinds[k][1], size: 12, margin: [0, 0.05, 0, 0.05], valign: "middle", align: "center",
+        textBox(g, t, ML + 8.67 + i * 1.7, 1.52, 1.5, 0.4, {
+          shape: pres.ShapeType.roundRect, fill: kinds[k][0], line: kinds[k][1], size: 14, margin: [0, 0.05, 0, 0.05], valign: "middle", align: "center",
         });
       });
     });
@@ -574,11 +584,16 @@ async function photo(file, w, h, radius = 0.08, dpi = 150) {
       sc.group(`state-${i}`, {}, (g) => {
         const on = frame >= litAt[i];
         const [fill, accent] = i === c.hot ? [tone.light, tone.accent] : kinds[kind];
-        box(g, X[i], y0, W, H, { fill: on ? fill : DIM.fill, ...(on && i === c.hot ? { line: tone.accent, lineW: 2 } : {}) });
-        iconCircle(g, icon, cx[i] - 0.25, y0 + 0.12, 0.5, on ? accent : DIM.ring);
-        textBox(g, name, X[i] + 0.04, y0 + 0.68, W - 0.08, 0.34, { size: 14, bold: true, color: on ? C.navy : DIM.text, align: "center", valign: "middle" });
+        box(g, X[i], yN[i], wN[i], hN[i], { fill: on ? fill : DIM.fill, ...(on && i === c.hot ? { line: tone.accent, lineW: 2 } : {}) });
+        if (i < 4) {
+          iconCircle(g, icon, cx[i] - 0.25, y0 + 0.12, 0.5, on ? accent : DIM.ring);
+          textBox(g, name, X[i] + 0.04, y0 + 0.68, wN[i] - 0.08, 0.34, { size: 15, bold: true, color: on ? C.navy : DIM.text, align: "center", valign: "middle" });
+        } else {
+          iconCircle(g, icon, cx[i] - 0.18, yN[i] + 0.1, 0.36, on ? accent : DIM.ring);
+          textBox(g, name, X[i] + 0.02, yN[i] + 0.58, wN[i] - 0.04, 0.34, { size: 14, bold: true, color: on ? C.navy : DIM.text, align: "center", valign: "middle", margin: 0 });
+        }
       });
-      if (i < 5) sc.group(`arrow-${i}`, {}, (g) => seg(g, X[i] + W + 0.02, y0 + H / 2, gap - 0.04, 0, frame >= arrowAt[i], true, false));
+      if (i < 5) sc.group(`arrow-${i}`, {}, (g) => seg(g, X[i] + wN[i] + 0.02, y0 + H / 2, gap - 0.04, 0, frame >= arrowAt[i], true, false));
     });
     sc.group("deny", {}, (g) => {
       const on = frame >= denyAt, color = on ? tone.line : DIM.arrow, width = on ? 3.5 : 2;
@@ -587,7 +602,7 @@ async function photo(file, w, h, radius = 0.08, dpi = 150) {
       part(cx[1], y0 + H, 0, yDeny - (y0 + H), false, false);
       part(cx[1], yDeny, cx[3] - cx[1], 0, false, false);
       part(cx[3], y0 + H, 0, yDeny - (y0 + H), true, true);
-      textBox(g, "denied: nothing runs", cx[1], yDeny + 0.03, cx[3] - cx[1], 0.24, { size: 12, color: DIM.text, align: "center", valign: "middle" });
+      textBox(g, "denied: nothing runs", cx[1], yDeny + 0.03, cx[3] - cx[1], 0.3, { size: 14, color: DIM.text, align: "center", valign: "middle" });
     });
 
     // The card of a panel: the icon and the title of the state, and the kind of the state.
@@ -598,7 +613,7 @@ async function photo(file, w, h, radius = 0.08, dpi = 150) {
       iconCircle(g, icon, PX + 0.25, PY + 0.12, 0.5, accent);
       textBox(g, title, PX + 0.95, PY + 0.12, PW - 3.1, 0.5, { size: 19, bold: true, color: C.navy, valign: "middle" });
       textBox(g, tag, PX + PW - 1.95, PY + 0.19, 1.7, 0.36, {
-        shape: pres.ShapeType.roundRect, fill, line: accent, size: 13, margin: [0, 0.05, 0, 0.05], valign: "middle", align: "center",
+        shape: pres.ShapeType.roundRect, fill, line: accent, size: 14, margin: [0, 0.05, 0, 0.05], valign: "middle", align: "center",
       });
     };
     const lines = (items) => items.map((t, k) => ({ text: t, options: { breakLine: k < items.length - 1 } }));
@@ -620,23 +635,23 @@ async function photo(file, w, h, radius = 0.08, dpi = 150) {
         t.answers.forEach(([label, value, conf], i) => {
           const hot = t.warn === i;
           const runs = [
-            { text: label, options: { fontSize: 13, color: C.muted, breakLine: true } },
+            { text: label, options: { fontSize: 14, color: C.muted, breakLine: true } },
             { text: value, options: { fontSize: 18, bold: true, color: hot ? tone.accent : C.navy, breakLine: Boolean(conf) } },
           ];
-          if (conf) runs.push({ text: conf, options: { fontSize: 13, color: C.muted } });
-          textBox(g, runs, PX + 0.25 + i * (w + 0.15), PY + 0.72, w, 0.74, {
+          if (conf) runs.push({ text: conf, options: { fontSize: 14, color: C.muted } });
+          textBox(g, runs, PX + 0.25 + i * (w + 0.15), PY + 0.66, w, 0.8, {
             shape: pres.ShapeType.roundRect, fill: hot ? tone.light : CHIP, line: hot ? tone.accent : CHIP, lineW: hot ? 3 : 1, margin: [0.04, 0.12, 0.04, 0.12], valign: "middle",
           });
         });
-        textBox(g, t.rule, PX + 0.25, PY + 1.52, PW - 0.5, 0.26, { size: 15, bold: true, color: C.navy, valign: "middle" });
-        textBox(g, t.note, PX + 0.25, PY + 1.78, PW - 0.5, 0.22, { size: 13, color: C.muted, valign: "middle" });
+        textBox(g, t.rule, PX + 0.25, PY + 1.49, PW - 0.5, 0.28, { size: 16, bold: true, color: C.navy, valign: "middle" });
+        textBox(g, t.note, PX + 0.25, PY + 1.77, PW - 0.5, 0.25, { size: 14, color: C.muted, valign: "middle" });
       } else if (node === 2) {
         g.addText(bullets(c.act), { x: PX + 0.25, y: PY + 0.85, w: PW - 0.5, h: 1.0, margin: 0, fontFace: FONT, fontSize: 18, color: C.text, paraSpaceAfter: 8, valign: "top" });
       } else if (node === 3) {
         textBox(g, `\u201C${c.final.text}\u201D`, PX + 0.25, PY + 0.72, PW - 0.5, 0.98, {
           shape: pres.ShapeType.roundRect, fill: CHIP, line: CHIP, size: 15, margin: [0.06, 0.15, 0.06, 0.15], valign: "middle",
         });
-        textBox(g, c.final.meta, PX + 0.25, PY + 1.74, PW - 0.5, 0.25, { size: 13, color: C.muted, valign: "middle" });
+        textBox(g, c.final.meta, PX + 0.25, PY + 1.74, PW - 0.5, 0.25, { size: 14, color: C.muted, valign: "middle" });
       } else if (node === 4) {
         box(g, PX + 0.25, PY + 0.75, 3.7, 1.15, { fill: CHIP });
         textBox(g, "Did this solve your issue?", PX + 0.45, PY + 0.82, 3.3, 0.4, { size: 16, bold: true, color: C.navy, valign: "middle" });
@@ -663,7 +678,7 @@ async function photo(file, w, h, radius = 0.08, dpi = 150) {
       const node = c.path[pi], click = p + 1, last = p === K - 1;
       if (c.deny && node === 3) {
         sc.group("skipped", { in: click }, (g) => {
-          textBox(g, "skipped", X[2], y0 + 1.02, W, 0.26, { size: 13, bold: true, color: tone.line, align: "center", valign: "middle" });
+          textBox(g, "skipped", X[2], y0 + 1.02, wN[2], 0.28, { size: 14, bold: true, color: tone.line, align: "center", valign: "middle" });
         });
       }
       sc.group(`panel-${node}`, { in: click, out: last ? undefined : click + 1 }, (g) => panel(g, node));
@@ -674,7 +689,7 @@ async function photo(file, w, h, radius = 0.08, dpi = 150) {
       const lastNode = c.path[show[K - 1]];
       const n = frame === 0 ? 0 : frame === K && lastNode === 4 ? 5 : c.path[show[frame - 1]];
       named("ring").addShape(pres.ShapeType.roundRect, {
-        x: X[n] - 0.05, y: y0 - 0.05, w: W + 0.1, h: H + 0.1, rectRadius: 0.1, fill: { color: C.card, transparency: 100 }, line: { color: C.navy, width: 3 },
+        x: X[n] - 0.05, y: yN[n] - 0.05, w: wN[n] + 0.1, h: hN[n] + 0.1, rectRadius: 0.1, fill: { color: C.card, transparency: 100 }, line: { color: C.navy, width: 3 },
       });
     }
   }
@@ -728,7 +743,7 @@ async function photo(file, w, h, radius = 0.08, dpi = 150) {
     ];
     s.addChart(pres.charts.BAR, [{ name: "Requests", labels: fam.map((f) => f[0]), values: fam.map((f) => f[1]) }], {
       ...chartBase, showLegend: false, x: ML + 0.2, y: 1.7, w: 7.5, h: 4.8, barDir: "bar", barGapWidthPct: 40, chartColors: [C.l3],
-      dataLabelPosition: "outEnd", dataLabelFontSize: 13, catAxisLabelFontSize: 13, catAxisOrientation: "maxMin", valAxisMaxVal: 28,
+      dataLabelPosition: "outEnd", dataLabelFontSize: 14, catAxisLabelFontSize: 14, catAxisOrientation: "maxMin", valAxisMaxVal: 28,
       showTitle: true, title: "Requests per family (100 in total)",
     });
     const x = ML + 8.2, w = CW - 8.2;
@@ -758,7 +773,7 @@ async function photo(file, w, h, radius = 0.08, dpi = 150) {
       ["LuDollarSign", "API cost", "per 1,000 requests"],
       ["LuScale", "Sign test", "on the errors of the two levels"],
     ].forEach(([ic, big, label], i) => {
-      callout(s, ML + i * (cw + gap), 5.85, cw, 1.0, { icon: ic, big, label, color: C.l3, bigSize: 20, bigH: 0.42, bigY: 0.1, labelSize: 13 });
+      callout(s, ML + i * (cw + gap), 5.85, cw, 1.0, { icon: ic, big, label, color: C.l3, bigSize: 20, bigH: 0.42, bigY: 0.1, labelSize: 14 });
     });
   }
 
@@ -828,15 +843,15 @@ async function photo(file, w, h, radius = 0.08, dpi = 150) {
       ],
       {
         ...chartBase, x: ML + 0.2, y: 1.8, w: 7.2, h: 4.6, barDir: "col", barGrouping: "clustered", barGapWidthPct: 60,
-        chartColors: [C.l3, "9AA7B5"], dataLabelPosition: "outEnd", dataLabelFontSize: 12, dataLabelFormatCode: "0.0",
-        catAxisLabelFontSize: 13, valAxisMaxVal: 112, title: "Percent correct on 100 requests (topic: 96 scored)",
+        chartColors: [C.l3, "9AA7B5"], dataLabelPosition: "outEnd", dataLabelFontSize: 14, dataLabelFormatCode: "0.0",
+        catAxisLabelFontSize: 14, valAxisMaxVal: 112, title: "Percent correct on 100 requests (topic: 96 scored)",
       }
     );
     const x = ML + 7.9, w = CW - 7.9;
     callout(s, x, 1.65, w, 1.5, { icon: "LuZap", big: "19.8x", label: "faster: 0.263 s against 5.223 s, median for one classifier call", color: C.l3 });
     callout(s, x, 3.35, w, 1.5, { icon: "LuDollarSign", big: "10.9x", label: "cheaper: $0.052 against $0.564 per 1,000 requests", color: C.l3 });
     callout(s, x, 5.05, w, 1.5, { icon: "LuBadgeCheck", big: "27 of 100", label: "wrong topic or action from Jev. With a fixed check behind it, none is an error.", color: C.teal, bigSize: 28, labelSize: 14 });
-    textBox(s, "Measured with the chat text only. The five questions of this run: topic, priority, action, risk flag, and injection flag.", ML, 6.7, CW - 1, 0.4, { size: 13, color: C.muted, valign: "middle" });
+    textBox(s, "Measured with the chat text only. The five questions of this run: topic, priority, action, risk flag, and injection flag.", ML, 6.7, CW - 1, 0.4, { size: 14, color: C.muted, valign: "middle" });
   }
 
   // ---------- 15. Confidence of Jev ----------
@@ -850,7 +865,7 @@ async function photo(file, w, h, radius = 0.08, dpi = 150) {
     const bands = [["<0.5", 3, 33.3], ["0.5-0.6", 12, 66.7], ["0.6-0.7", 19, 42.1], ["0.7-0.8", 23, 30.4], ["0.8-0.9", 49, 36.7], ["0.9+", 190, 4.7]];
     s.addChart(pres.charts.BAR, [{ name: "Wrong answers", labels: bands.map(([l, n]) => `${l} (n = ${n})`), values: bands.map((x) => x[2]) }], {
       ...chartBase, showLegend: false, x: ML + 0.2, y: 1.7, w: 7.5, h: 4.8, barDir: "col", barGapWidthPct: 50, chartColors: [C.l3],
-      dataLabelPosition: "outEnd", dataLabelFontSize: 14, dataLabelFormatCode: "0.0", catAxisLabelFontSize: 13, valAxisMaxVal: 80,
+      dataLabelPosition: "outEnd", dataLabelFontSize: 14, dataLabelFormatCode: "0.0", catAxisLabelFontSize: 14, valAxisMaxVal: 80,
       showTitle: true, title: "Percent wrong by confidence of Jev (n in brackets)",
     });
     const x = ML + 8.2, w = CW - 8.2;
@@ -884,9 +899,9 @@ async function photo(file, w, h, radius = 0.08, dpi = 150) {
     const x = ML + 7.9, w = CW - 7.9;
     callout(s, x, 1.65, w, 1.25, { icon: "LuTimer", big: "1.9x", label: "faster: 4.19 s against 7.85 s of machine time", color: C.l3, bigSize: 28, bigH: 0.55, bigY: 0.1 });
     callout(s, x, 3.0, w, 1.25, { icon: "LuDollarSign", big: "2.2x", label: "cheaper: $0.28 against $0.61 per 1,000 requests", color: C.l3, bigSize: 28, bigH: 0.55, bigY: 0.1 });
-    callout(s, x, 4.35, w, 1.25, { icon: "LuScale", big: "0 and 6", label: "errors at Level 3 and Level 2. Sign test: p = 0.031, significant", color: C.teal, bigSize: 28, bigH: 0.55, bigY: 0.1, labelSize: 13 });
+    callout(s, x, 4.35, w, 1.25, { icon: "LuScale", big: "0 and 6", label: "errors at Level 3 and Level 2. Sign test: p = 0.031", color: C.teal, bigSize: 28, bigH: 0.55, bigY: 0.1, labelSize: 14 });
     band(s, 5.85, 0.95, "LuShieldCheck", [{ text: "Level 3 is never worse in any column. ", options: { bold: true } }, { text: "Harmful runs: 0 at Level 3, 2 at Level 2. Level 1 baseline: 90 s per request (assumed)." }]);
-    textBox(s, "Measured with a fixed check behind Jev. The design that gives Jev the rules as context was not run.", ML, 6.9, CW - 1, 0.4, { size: 13, color: C.muted, valign: "middle" });
+    textBox(s, "Measured with a fixed check behind Jev. The design that gives Jev the rules as context was not run.", ML, 6.9, CW - 1, 0.4, { size: 14, color: C.muted, valign: "middle" });
   }
 
   // ---------- 19. Ablation of the fixed check ----------
@@ -912,9 +927,9 @@ async function photo(file, w, h, radius = 0.08, dpi = 150) {
       }
     );
     const x = ML + 7.9, w = CW - 7.9;
-    callout(s, x, 1.65, w, 1.25, { icon: "LuShieldX", big: "22 to 0", label: "harmful errors behind Jev: they run with no check, and stop with it", color: C.red, bigSize: 28, bigH: 0.55, bigY: 0.1, labelSize: 13 });
-    callout(s, x, 3.0, w, 1.25, { icon: "LuScale", big: "p = 4.8e-7", label: "sign test: no check against the check, behind Jev", color: C.l3, bigSize: 26, bigH: 0.55, bigY: 0.1, labelSize: 13 });
-    callout(s, x, 4.35, w, 1.3, { icon: "LuBot", big: "No change", label: "behind the LLM agent the same check changes no run (p = 1)", color: C.grey, bigSize: 26, bigH: 0.55, bigY: 0.1, labelSize: 13 });
+    callout(s, x, 1.65, w, 1.25, { icon: "LuShieldX", big: "22 to 0", label: "harmful errors behind Jev: run with no check, stopped with it", color: C.red, bigSize: 28, bigH: 0.55, bigY: 0.1, labelSize: 14 });
+    callout(s, x, 3.0, w, 1.25, { icon: "LuScale", big: "p = 4.8e-7", label: "sign test: no check against the check, behind Jev", color: C.l3, bigSize: 26, bigH: 0.55, bigY: 0.1, labelSize: 14 });
+    callout(s, x, 4.35, w, 1.3, { icon: "LuBot", big: "No change", label: "behind the LLM agent the same check changes no run (p = 1)", color: C.grey, bigSize: 26, bigH: 0.55, bigY: 0.1, labelSize: 14 });
     band(s, 5.9, 0.9, "LuShieldCheck", [{ text: "Open question: ", options: { bold: true } }, { text: "our new design gives Jev the rules as context, not a check. We have not run it." }]);
   }
 
@@ -937,7 +952,7 @@ async function photo(file, w, h, radius = 0.08, dpi = 150) {
       iconCircle(s, ic, x + 0.3, 1.85, 0.7, C.blue);
       textBox(s, h, x + 0.3, 2.7, cw - 0.6, 0.5, { size: 21, bold: true, color: C.navy, valign: "middle" });
       textBox(s, t, x + 0.3, 3.25, cw - 0.6, 1.3, { size: 16 });
-      textBox(s, ref, x + 0.3, 4.65, cw - 0.6, 0.45, { size: 13, color: C.muted, valign: "middle" });
+      textBox(s, ref, x + 0.3, 4.65, cw - 0.6, 0.45, { size: 14, color: C.muted, valign: "middle" });
     });
     band(s, 5.55, 0.9, "LuScale", [{ text: "Our first design is of this kind: ", options: { bold: true } }, { text: "a fixed check limits what Jev can trigger. The new design gives Jev the rules as context." }]);
   }
