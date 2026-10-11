@@ -6,8 +6,8 @@ Tài liệu này liệt kê các bước tập luyện và bảng tự chấm đ
 
 ## 1. Bài tập kiểm soát thời gian và quy tắc bấm giờ
 
-- **Thời gian nói theo kịch bản:** 14 phút 18 giây (858 giây), chia thành các khối nói rõ ràng: Long 7 phút 00 giây, Nam 2 phút 00 giây, Son 2 phút 00 giây, Quy 1 phút 18 giây, Phuong Nam 2 phút 00 giây.
-- **Tổng thời gian dự kiến:** 19 phút 18 giây (858 giây nói + 300 giây hỏi đáp), nằm dưới mức tối đa 20 phút của đề cương. Phần đệm an toàn còn lại khoảng 40 giây cho các lần chuyển slide.
+- **Thời gian nói theo kịch bản:** 14 phút 23 giây (863 giây), chia thành các khối nói rõ ràng: Long 7 phút 00 giây, Nam 2 phút 00 giây, Son 2 phút 00 giây, Quy 1 phút 18 giây, Phuong Nam 2 phút 05 giây.
+- **Tổng thời gian dự kiến:** 19 phút 23 giây (863 giây nói + 300 giây hỏi đáp), nằm dưới mức tối đa 20 phút của đề cương. Phần đệm an toàn còn lại khoảng 35 giây cho các lần chuyển slide.
 - **Phần hỏi đáp (Q&A):** 5 phút (300 giây) do Long trả lời toàn bộ.
 
 ### Bảng phân bổ thời gian theo người nói
@@ -18,8 +18,8 @@ Tài liệu này liệt kê các bước tập luyện và bảng tự chấm đ
 | **Nguyen Thanh Nam** | 3 slide | Slide 21 đến 23 | 120 giây (2 phút 00 giây) | 14% |
 | **Vu Van Son** | 3 slide | Slide 24 đến 26 | 120 giây (2 phút 00 giây) | 14% |
 | **Vuong Quang Quy** | 1 slide | Slide 27 | 78 giây (1 phút 18 giây) | 9% |
-| **Nguyen Phuong Nam** | 3 slide | Slide 28 đến 30 | 120 giây (2 phút 00 giây) | 14% |
-| **Tổng cộng** | **30 slide (cộng 1 slide phụ lục không nói)** | **Toàn bộ bài trình bày** | **858 giây (14 phút 18 giây)** | **100%** |
+| **Nguyen Phuong Nam** | 3 slide | Slide 28 đến 30 | 125 giây (2 phút 05 giây) | 14% |
+| **Tổng cộng** | **30 slide (cộng Slide 31 là slide câu hỏi)** | **Toàn bộ bài trình bày** | **863 giây (14 phút 23 giây)** | **100%** |
 
 ### Thời gian chi tiết từng slide
 
@@ -46,14 +46,14 @@ Tài liệu này liệt kê các bước tập luyện và bảng tự chấm đ
 | 25 | Level 3 reads less, so it costs about half | Son | 38 giây | 10 phút 20 giây |
 | 26 | Result 1: Jev is fast and cheap, and mostly right | Son | 40 giây | 11 phút 00 giây |
 | 27 | Result 2: Level 3 is faster, cheaper, and makes fewer errors | Quy | 78 giây | 12 phút 18 giây |
-| 28 | Related work: limit what the model can trigger | Phuong Nam | 30 giây | 12 phút 48 giây |
-| 29 | The gain is clear, but our evidence is small | Phuong Nam | 55 giây | 13 phút 43 giây |
-| 30 | Conclusion | Phuong Nam | 35 giây | 14 phút 18 giây |
-| 31 | Appendix: References (dự phòng, không nói) | Không ai | 0 giây | 14 phút 18 giây |
+| 28 | Our idea: limit what each model can trigger | Phuong Nam | 35 giây | 12 phút 53 giây |
+| 29 | The gain is clear, but our evidence is small | Phuong Nam | 55 giây | 13 phút 48 giây |
+| 30 | Conclusion | Phuong Nam | 35 giây | 14 phút 23 giây |
+| 31 | Questions? (Long trả lời; bốn thẻ chỉ slide cần mở) | Long | không tính | 14 phút 23 giây |
 
-**Lưu ý về tốc độ:** thời gian trên là thời gian ghi trong ghi chú của bộ slide hiện tại (`slides/build.js`, hàm `base` và mảng `SPEAKER`). Cả ba walk-through đều được tính là một khối nói liền: Long bấm phím để đi qua từng khung, và toàn bộ chuỗi khung nằm trong số giây của slide mở đầu. Tổng cộng 858 giây nói, tiếp theo là 300 giây hỏi đáp.
+**Lưu ý về tốc độ:** thời gian trên là thời gian ghi trong ghi chú của bộ slide hiện tại (`slides/build.js`, hàm `base` và mảng `SPEAKER`). Cả ba walk-through đều được tính là một khối nói liền: Long bấm phím để đi qua từng khung, và toàn bộ chuỗi khung nằm trong số giây của slide mở đầu. Tổng cộng 863 giây nói, tiếp theo là 300 giây hỏi đáp.
 
-**Cảnh báo về tốc độ nói:** so với số từ trong ghi chú slide, Son cần nói khoảng 170 từ mỗi phút, Quy khoảng 141 từ mỗi phút và Phuong Nam khoảng 182 từ mỗi phút để kịp khung thời gian; tốc độ nói rõ ràng thông thường là 120 đến 130 từ mỗi phút. Ba bạn này phải bấm giờ khi luyện tập. Nếu vượt khung, rút gọn các câu phụ (các con số token chi tiết ở Slide 25, câu về tập yêu cầu thứ hai ở Slide 29, các câu phân tích ở Slide 28) và giữ nguyên các số liệu chính. Nam (khoảng 122 từ mỗi phút) và Long (khoảng 121 từ mỗi phút) nằm trong tốc độ thoải mái.
+**Cảnh báo về tốc độ nói:** so với số từ trong ghi chú slide, Son cần nói khoảng 170 từ mỗi phút, Quy khoảng 141 từ mỗi phút và Phuong Nam khoảng 178 từ mỗi phút để kịp khung thời gian; tốc độ nói rõ ràng thông thường là 120 đến 130 từ mỗi phút. Ba bạn này phải bấm giờ khi luyện tập. Nếu vượt khung, rút gọn các câu phụ (các con số token chi tiết ở Slide 25, câu về tập yêu cầu thứ hai ở Slide 29, các câu phân tích ở Slide 28) và giữ nguyên các số liệu chính. Nam (khoảng 122 từ mỗi phút) và Long (khoảng 121 từ mỗi phút) nằm trong tốc độ thoải mái.
 
 ---
 
@@ -71,7 +71,7 @@ Phải thuộc lòng và nói chính xác các câu tiếng Anh sau, không thay
    > "Now my teammate Vuong Quang Quy will compare the two levels."
 
 4. **Quy chuyển cho Phuong Nam** (cuối Slide 27):
-   > "Now Nguyen Phuong Nam will explain how our work fits the field."
+   > "Now Nguyen Phuong Nam will explain how Level 3 limits each model, and the limits of our work."
 
 5. **Phuong Nam chuyển sang phần hỏi đáp** (cuối Slide 30):
    > "Our leader, Tran Thanh Long, will now take your questions."
@@ -129,7 +129,7 @@ Bảng dưới đây ánh xạ 10 mục đánh giá của giảng viên vào sli
 | :---: | :--- | :---: | :--- | :---: | :---: |
 | **1** | Leader, Introduction, Ladder, Rules, Flow | 1.5 | "Do we show why the task has many faces, and does the state machine with its three levels follow from it?" | Tran Thanh Long | [ ] ĐẠT |
 | **2** | Problem statement and motivation | 1.0 | "Do we state the problem in one sentence, and does the audience see why the naive agent fails?" | Tran Thanh Long | [ ] ĐẠT |
-| **3** | Related work | 1.0 | "Do we name the design patterns for prompt injection (CaMeL), the rule-based ticket routing, and the Fin agent, and do we say what is different here?" | Nguyen Phuong Nam | [ ] ĐẠT |
+| **3** | Our idea (không còn nguồn ngoài) | 1.0 | "Do we show what Jev, the fixed code, and the LLM may and may not do, and do we say what is different here?" | Nguyen Phuong Nam | [ ] ĐẠT |
 | **4** | Test data and experimental setup | 1.5 | "Do we say that public datasets have no SaaS accounts, that 512 customers and 1,024 requests of 24 types are ours, and how the gold labels are built?" | Vu Van Son | [ ] ĐẠT |
 | **5** | Measurement and list prices | 1.0 | "Do the token counts and the list prices of both models show how the 61 cents and the 29 cents per 1,000 requests are built?" | Vu Van Son | [ ] ĐẠT |
 | **6** | Jev accuracy and the rule questions | 1.0 | "Do we report the right topic, priority, action, and injection flags, and the 1,690 of 1,700 rule answers, without hiding the 174 wrong action labels?" | Vu Van Son | [ ] ĐẠT |

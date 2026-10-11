@@ -23,6 +23,7 @@
 - **Tiêu đề slide:** Result 2: Level 3 is faster, cheaper, and makes fewer errors
 - **Thời gian dự kiến trên slide:** 1 phút 18 giây (78 giây, ~184 từ)
 - **Ý chính:** Level 2: 676 phục vụ, 287 chặn, 61 lỗi (khoảng 20 gây hại). Level 3: 717 phục vụ, 307 chặn, 0 lỗi. Nhanh hơn 1,8 lần, rẻ hơn 2,1 lần. Kiểm định dấu p = 0,031.
+- **Ghi chú phương pháp (đã bỏ khỏi slide, chỉ nói nếu được hỏi):** với Level 3, thời gian và chi phí của tin nhắn cuối lấy từ lần chạy đã ghi lại của cùng các yêu cầu; tin nhắn cuối chỉ viết văn bản, không đổi quyết định. Khoảng tin cậy 95% của số lỗi (0 đến 38 ở Level 3, 28 đến 128 ở Level 2) hiện nằm ở dòng chú thích dưới slide.
 
 > Thank you, Son. My name is Vuong Quang Quy. I will compare the two levels on the same one thousand and twenty-four requests. Level Two serves six hundred and seventy-six, stops two hundred and eighty-seven, and makes sixty-one errors, about twenty of them harmful. Level Three serves seven hundred and seventeen, stops three hundred and seven, and makes no error, and none is harmful. The ninety-five percent interval of the Level Three errors is zero to thirty-eight, and that of Level Two is twenty-eight to one hundred and twenty-eight. Level Three is one point eight times faster, four point two eight seconds against seven point eight five, and two point one times cheaper, twenty-nine cents against sixty-one cents per one thousand requests.
 > 
@@ -34,7 +35,7 @@
 > 
 > `[NHÌN SANG NGUYEN PHUONG NAM]`  
 > 
-> Now Nguyen Phuong Nam will explain how our work fits the field.
+> Now Nguyen Phuong Nam will explain how Level 3 limits each model, and the limits of our work.
 
 ---
 
@@ -42,7 +43,7 @@
 
 Nói chính xác câu tiếng Anh này để chuyển tiếp cho Phuong Nam (Diễn giả 5):
 
-> "Now Nguyen Phuong Nam will explain how our work fits the field."
+> "Now Nguyen Phuong Nam will explain how Level 3 limits each model, and the limits of our work."
 
 ---
 

@@ -12,7 +12,7 @@ Thư mục này cung cấp toàn bộ kịch bản nói tiếng Anh từng từ 
 
 - **Tên đề tài (Project Title):** Human to LLM & Classifier Support Agent: A Three-Level Ladder for SaaS Request Triage
 - **Bối cảnh sản phẩm:** FrameForge, dịch vụ phần mềm đám mây dạng thuê bao (SaaS) tạo video bằng trí tuệ nhân tạo (AI). Khách hàng thanh toán qua gói thuê bao hàng tháng hoặc hàng năm và mua thêm gói tín dụng render.
-- **Giới hạn thời gian:** Theo đề cương học phần (15 phút thuyết trình cho mỗi nhóm, tối đa 20 phút bao gồm cả chuẩn bị và hỏi đáp Q&A), bài thuyết trình gồm **30 slide chính** (cộng 1 slide phụ lục không nói) (12 slide trong đó là ba walk-through, mỗi lần bấm phím là một slide) và phần nói dài **14 phút 18 giây (858 giây)**, tiếp nối bởi **5 phút hỏi đáp Q&A (300 giây)**. Tổng cộng khoảng 19 phút 18 giây, còn khoảng 40 giây dự phòng. Toàn bộ tương tác với khán giả do Long thực hiện ở Slide 1 đến 3 và toàn bộ phần Q&A do Long trả lời. Long cũng đọc ba walk-through (Slide 9 đến 20).
+- **Giới hạn thời gian:** Theo đề cương học phần (15 phút thuyết trình cho mỗi nhóm, tối đa 20 phút bao gồm cả chuẩn bị và hỏi đáp Q&A), bài thuyết trình gồm **30 slide chính** (cộng Slide 31 là slide câu hỏi, không nằm trong thời gian nói) (12 slide trong đó là ba walk-through, mỗi lần bấm phím là một slide) và phần nói dài **14 phút 23 giây (863 giây)**, tiếp nối bởi **5 phút hỏi đáp Q&A (300 giây)**. Tổng cộng khoảng 19 phút 23 giây, còn khoảng 35 giây dự phòng. Toàn bộ tương tác với khán giả do Long thực hiện ở Slide 1 đến 3 và toàn bộ phần Q&A do Long trả lời. Long cũng đọc ba walk-through (Slide 9 đến 20).
 - **Tốc độ nói trung bình:** Khoảng 125 đến 130 từ tiếng Anh mỗi phút (~2.1 từ mỗi giây). Tốc độ này đảm bảo phát âm rõ ràng, ngữ điệu tự nhiên, giúp người nghe và người chấm chéo dễ dàng theo dõi.
 
 ---
@@ -27,20 +27,20 @@ Trưởng nhóm (Tran Thanh Long) nói nhiều nhất và có phần trăm đón
 | 2 | **Nguyen Thanh Nam** | 23010056 | Written rules, the rule questions of Level 3, the injection rule, the Security rule | 22% | 2 phút 00 giây (120 s); Slide 21 đến 23 | ~245 từ |
 | 3 | **Vu Van Son** | 23010060 | Synthetic dataset creation (1,024 requests, 24 types), Experiment execution | 18% | 2 phút 00 giây (120 s); Slide 24 đến 26 | ~340 từ |
 | 4 | **Vuong Quang Quy** | 23010039 | Experimental results, Statistical analysis, Tables and chart generation | 17% | 1 phút 18 giây (78 s); Slide 27 | ~184 từ |
-| 5 | **Nguyen Phuong Nam** | 23010028 | Related work, Literature context, Slide visual support, Q&A preparation | 15% | 2 phút 00 giây (120 s); Slide 28 đến 30 | ~364 từ |
-| **Tổng** | **5 thành viên** | | | **100%** | **14 phút 18 giây (858 s)** | **~1.980 từ** |
+| 5 | **Nguyen Phuong Nam** | 23010028 | Related work, Literature context, Slide visual support, Q&A preparation | 15% | 2 phút 05 giây (125 s); Slide 28 đến 30 | ~370 từ |
+| **Tổng** | **5 thành viên** | | | **100%** | **14 phút 23 giây (863 s)** | **~1.997 từ** |
 
 *Ghi chú về phần Q&A:* Trong 5 phút hỏi đáp (300 giây), **Long trả lời tất cả câu hỏi** theo `qa_prep.md`. Bốn bạn còn lại đứng bên cạnh, lắng nghe và chỉ nói khi Long nhường lời.
 
 *Ghi chú về tương tác:* Chỉ Long tương tác với khán giả (câu chuyện, giơ tay, bình chọn, câu hỏi dự đoán). Kịch bản của Nam, Son, Quy và Phuong Nam không có câu hỏi cho khán giả và không có yêu cầu giơ tay.
 
-*Ghi chú về số từ thực tế:* Số từ tiếng Anh của lời thoại nằm trong ghi chú slide (`slides/build.js`, `slides/cases.js`), đã bao gồm câu tự giới thiệu: **Nam 245** (Slide 21: 78, Slide 22: 87, Slide 23: 80), **Son 340** (Slide 24: 84, Slide 25: 136, Slide 26: 120), **Quy 184** (Slide 27: 184), **Phuong Nam 364** (Slide 28: 84, Slide 29: 174, Slide 30: 106), **Long 845** (Slide 1 đến 8: 42, 124, 119, 27, 77, 83, 99, 78; Slide 9 đến 20, tất cả khung walk-through: 196). Tổng 1.978 từ tiếng Anh, tương đương 138 từ mỗi phút khi nói liền 858 giây. Các con số này chỉ để luyện tập: hãy bấm giờ, vì thời gian mới là tiêu chí.
+*Ghi chú về số từ thực tế:* Số từ tiếng Anh của lời thoại nằm trong ghi chú slide (`slides/build.js`, `slides/cases.js`), đã bao gồm câu tự giới thiệu: **Nam 258** (Slide 21: 78, Slide 22: 87, Slide 23: 93), **Son 340** (Slide 24: 84, Slide 25: 136, Slide 26: 120), **Quy 184** (Slide 27: 184), **Phuong Nam 370** (Slide 28: 90, Slide 29: 174, Slide 30: 106), **Long 845** (Slide 1 đến 8: 42, 124, 119, 27, 77, 83, 99, 78; Slide 9 đến 20, tất cả khung walk-through: 196). Tổng 1.997 từ tiếng Anh, tương đương 139 từ mỗi phút khi nói liền 863 giây. Các con số này chỉ để luyện tập: hãy bấm giờ, vì thời gian mới là tiêu chí.
 
 ---
 
 ## 3. Bảng phân chia slide cho từng diễn giả
 
-30 slide thuyết trình, cộng Slide 31 là phụ lục Tài liệu tham khảo (không nói, 0 giây) (Slide 4 là bức tường luật minh họa, Slide 5 đến 8 giải thích luật, luồng xử lý, Jev đọc gì và trả lời gì, Slide 9 đến 20 là ba walk-through, do Long nói liền).
+30 slide thuyết trình, cộng Slide 31 là slide câu hỏi (Long trả lời, không tính vào thời gian nói) (Slide 4 là bức tường luật minh họa, Slide 5 đến 8 giải thích luật, luồng xử lý, Jev đọc gì và trả lời gì, Slide 9 đến 20 là ba walk-through, do Long nói liền).
 
 | Số slide | Tiêu đề slide | Nội dung trọng tâm | Người trình bày | Thời lượng slide |
 | :---: | :--- | :--- | :--- | :---: |
@@ -60,10 +60,10 @@ Trưởng nhóm (Tran Thanh Long) nói nhiều nhất và có phần trăm đón
 | **25** | Level 3 reads less, so it costs about half | Số token mỗi lượt gọi, giá niêm yết của Jev và của LLM, chi phí mỗi 1.000 yêu cầu: Level 2 là 0,61 đô và Level 3 là 0,29 đô | Vu Van Son | 38 s |
 | **26** | Result 1: Jev is fast and cheap, and mostly right | Jev: 0,31 s mỗi lượt gọi, 0,064 đô mỗi 1.000 yêu cầu; độ đúng theo từng câu trả lời; 1.690 trên 1.700 câu trả lời luật đúng | Vu Van Son | 40 s |
 | **27** | Result 2: Level 3 is faster, cheaper, and makes fewer errors | Level 3: 717 phục vụ, 307 chặn, 0 lỗi; Level 2: 676 phục vụ, 287 chặn, 61 lỗi; nhanh hơn 1,8 lần, rẻ hơn 2,1 lần; kiểm định dấu p = 0,031 | Vuong Quang Quy | 78 s |
-| **28** | Related work: limit what the model can trigger | Prompt injection (Greshake 2023), phòng thủ bằng thiết kế (CaMeL, các mẫu thiết kế), nền tảng hỗ trợ định tuyến bằng quy tắc (Zendesk, Intercom Fin) | Nguyen Phuong Nam | 30 s |
+| **28** | Our idea: limit what each model can trigger | Ba vai trò trong Level 3: Jev chỉ trả lời câu hỏi có kiểu, quy trình (process) kiểm tra luật và chạy hành động, LLM chỉ viết tin nhắn cuối; không dùng nguồn ngoài | Nguyen Phuong Nam | 35 s |
 | **29** | The gain is clear, but our evidence is small | Dữ liệu tổng hợp và nhãn do chính mã áp luật sinh ra; khoảng tin cậy rộng; mỗi luật cần một câu hỏi do nhóm viết; Security rule được tìm thấy trên tập 512 yêu cầu trước đó nên số liệu chính không phải kiểm tra mù | Nguyen Phuong Nam | 55 s |
 | **30** | Conclusion | Tóm tắt các phát hiện cốt lõi, cảm ơn và mời khán giả đặt câu hỏi cho Long | Nguyen Phuong Nam | 35 s |
-| **31** | Appendix: References | Slide dự phòng, không nói: năm nguồn được trích ở Slide 28 (Greshake 2023, Debenedetti 2025, Beurer-Kellner 2025, Zendesk, Intercom) | Không ai | 0 s |
+| **31** | Questions? | Slide câu hỏi: bốn thẻ chỉ slide cần mở khi bị hỏi (Slide 6, Slide 21 đến 23, Slide 26 và 27, Slide 29) | Long trả lời | không tính vào 863 s |
 
 ---
 
@@ -94,7 +94,7 @@ Mẫu đánh giá chéo phân bổ **6.0 điểm cho Kỹ năng giao tiếp ti�
 - `speaker_2.md`: Kịch bản và ghi chú cho **Nguyen Thanh Nam** (Slide 21 đến 23; 2 phút 00 giây).
 - `speaker_3.md`: Kịch bản và ghi chú cho **Vu Van Son** (Slide 24 đến 26; 2 phút 00 giây).
 - `speaker_4.md`: Kịch bản và ghi chú cho **Vuong Quang Quy** (Slide 27; 1 phút 18 giây).
-- `speaker_5.md`: Kịch bản và ghi chú cho **Nguyen Phuong Nam** (Slide 28 đến 30; 2 phút 00 giây; mời khán giả hỏi Long).
+- `speaker_5.md`: Kịch bản và ghi chú cho **Nguyen Phuong Nam** (Slide 28 đến 30; 2 phút 05 giây; mời khán giả hỏi Long).
 - `interaction.md`: Cẩm nang tương tác với khán giả (4 thời điểm, tất cả do Long thực hiện ở Slide 1 đến 3; phương án dự phòng; phần Q&A do Long phụ trách; quy tắc lắng nghe tích cực của bốn bạn còn lại; ngôn ngữ cơ thể).
 - `qa_prep.md`: 18 câu hỏi hóc búa nhất của khán giả kèm câu trả lời ngắn gọn; Long trả lời tất cả; có gợi ý cho Long.
 - `rehearsal_checklist.md`: Kế hoạch luyện tập, mốc kiểm tra thời gian, danh mục kiểm tra 5 phút trước giờ diễn và bảng tự chấm điểm theo 10 tiêu chí.

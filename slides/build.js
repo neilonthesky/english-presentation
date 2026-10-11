@@ -44,8 +44,8 @@ const SPEAKER = [
   [NAM, 41], [NAM, 39], [NAM, 40], // test data, request families, outcomes
   [SON, 42], [SON, 38], [SON, 40], // the run, models and prices, Result 1
   [QUY, 78], // Result 2
-  [PNAM, 30], [PNAM, 55], [PNAM, 35], // related work, limits, conclusion
-  [PNAM, 0], // backup: references (not spoken)
+  [PNAM, 35], [PNAM, 55], [PNAM, 35], // our idea, limits, conclusion
+  [LONG, 0], // questions (Long answers; not part of the timed talk)
 ];
 
 // ---------- icon and illustration helpers ----------
@@ -89,7 +89,7 @@ async function photo(file, w, h, radius = 0.08, dpi = 150) {
     "LuBot", "LuUsers", "LuTags", "LuScale", "LuMessageSquareText", "LuUserCheck", "LuShieldCheck",
     "LuMail", "LuDatabase", "LuZap", "LuFileText", "LuTarget", "LuTimer", "LuBadgeCheck", "LuHourglass",
     "LuTriangleAlert", "LuFlaskConical", "LuShieldX", "LuDollarSign", "LuMessageCircle", "LuCircleCheck",
-    "LuCpu", "LuGauge", "LuLock", "LuUser",
+    "LuCpu", "LuGauge", "LuLock", "LuUser", "LuListChecks", "LuWorkflow",
   ];
   const img = {};
   for (const n of ICONS) img[n] = await iconPng(n);
@@ -797,7 +797,7 @@ async function photo(file, w, h, radius = 0.08, dpi = 150) {
     const s = base(
       14,
       "Every request ends served, stopped, or in error",
-      "Now, how we score a request. We look at what the customer gets. Served means the run ends with the correct result. Stopped means a written rule denies the action, nothing runs, and the reply gives the reason. Error is every other run. A run is harmful if it changes money, data, the plan, or the password against the written rules. We also report time and cost per 1,000 requests. Now my teammate Vu Van Son will explain the run."
+      "Now, how we score a request. We look at what the customer gets. Served means the run ends with the correct result. Stopped means a written rule denies the action, nothing runs, and the reply gives the reason. Error is every other run. A run is harmful if it changes money, data, the plan, or the password against the written rules. We also report the machine time of one request, the API cost per 1,000 requests, and a sign test on the errors. Now my teammate Vu Van Son will explain the run."
     );
     const gap = 0.3, cw = (CW - 2 * gap) / 3, y = 1.6, h = 2.75;
     [
@@ -914,7 +914,7 @@ async function photo(file, w, h, radius = 0.08, dpi = 150) {
     const s = base(
       18,
       "Result 2: Level 3 is faster, cheaper, and makes fewer errors",
-      "Thank you, Son. My name is Vuong Quang Quy. I will compare the two levels on the same 1,024 requests. Level 2 serves 676, stops 287, and makes 61 errors, about 20 of them harmful. Level 3 serves 717, stops 307, and makes no error, and none is harmful. The 95% interval of the Level 3 errors is 0 to 38 of 1,024, and that of Level 2 is 28 to 128. Level 3 is 1.8 times faster, 4.28 seconds against 7.85, and 2.1 times cheaper, 29 cents against 61 cents per 1,000 requests. The two levels fail on different requests: Level 2 fails on 41 injection requests and on 20 refund requests, where it cancelled the plan. Level 2 was wrong and Level 3 right on 61 of the 1,024 requests, and the reverse on none. The sign test gives p = 0.031, so Level 3 makes significantly fewer errors on these requests. Level 3 uses two Jev calls on 4 requests in 10, and that adds little time and cost. Now Nguyen Phuong Nam will explain how our work fits the field."
+      "Thank you, Son. My name is Vuong Quang Quy. I will compare the two levels on the same 1,024 requests. Level 2 serves 676, stops 287, and makes 61 errors, about 20 of them harmful. Level 3 serves 717, stops 307, and makes no error, and none is harmful. The 95% interval of the Level 3 errors is 0 to 38 of 1,024, and that of Level 2 is 28 to 128. Level 3 is 1.8 times faster, 4.28 seconds against 7.85, and 2.1 times cheaper, 29 cents against 61 cents per 1,000 requests. The two levels fail on different requests: Level 2 fails on 41 injection requests and on 20 refund requests, where it cancelled the plan. Level 2 was wrong and Level 3 right on 61 of the 1,024 requests, and the reverse on none. The sign test gives p = 0.031, so Level 3 makes significantly fewer errors on these requests. Level 3 uses two Jev calls on 4 requests in 10, and that adds little time and cost. Now Nguyen Phuong Nam will explain how Level 3 limits each model, and the limits of our work."
     );
     box(s, ML, 1.65, 7.6, 3.95);
     const cats = ["Level 2: LLM agent", "Level 3: Jev + LLM"];
@@ -928,39 +928,43 @@ async function photo(file, w, h, radius = 0.08, dpi = 150) {
       {
         ...chartBase, x: ML + 0.2, y: 1.75, w: 7.2, h: 3.75, barDir: "bar", barGrouping: "stacked", barGapWidthPct: 45,
         chartColors: [C.l3, C.teal, C.red], dataLabelPosition: "ctr", dataLabelColor: C.white, dataLabelFontSize: 15, dataLabelFormatCode: "0;-0;;@",
-        catAxisOrientation: "maxMin", valAxisMaxVal: 1075, title: "Outcome of the 1,024 requests",
+        catAxisOrientation: "maxMin", valAxisMaxVal: 1300, title: "Outcome of the 1,024 requests",
       }
     );
     const x = ML + 7.9, w = CW - 7.9;
     callout(s, x, 1.65, w, 1.25, { icon: "LuTimer", big: "1.8x", label: "faster: 4.28 s against 7.85 s of machine time", color: C.l3, bigSize: 28, bigH: 0.55, bigY: 0.1 });
     callout(s, x, 3.0, w, 1.25, { icon: "LuDollarSign", big: "2.1x", label: "cheaper: $0.29 against $0.61 per 1,000 requests", color: C.l3, bigSize: 28, bigH: 0.55, bigY: 0.1 });
-    callout(s, x, 4.35, w, 1.25, { icon: "LuBadgeCheck", big: "0 and 61", label: "errors at Level 3 and Level 2. Sign test: p = 0.031", color: C.teal, bigSize: 28, bigH: 0.55, bigY: 0.1, labelSize: 14 });
-    band(s, 5.85, 0.95, "LuShieldCheck", [{ text: "Level 3 is faster and cheaper, with fewer errors. ", options: { bold: true } }, { text: "Harmful runs: 0 at Level 3, about 20 at Level 2. Level 1 baseline: 90 s per request (assumed)." }]);
-    textBox(s, "Level 3: the time and cost of the final message come from the recorded run of the same requests.", ML, 6.9, CW - 1, 0.4, { size: 14, color: C.muted, valign: "middle" });
+    callout(s, x, 4.35, w, 1.25, { icon: "LuBadgeCheck", big: "61 vs 0", label: "errors at Level 2 and Level 3. Sign test: p = 0.031", color: C.teal, bigSize: 28, bigH: 0.55, bigY: 0.1, labelSize: 14 });
+    // The result of Level 3 has no bar, so it gets a label at the end of its row.
+    textBox(s, "0 errors", ML + 6.4, 4.1, 0.95, 0.5, { size: 16, bold: true, color: C.teal, valign: "middle", align: "right", margin: 0 });
+    band(s, 5.85, 0.95, "LuShieldCheck", [{ text: "Harmful runs: ", options: { bold: true } }, { text: "0 at Level 3, about 20 at Level 2." }]);
+    textBox(s, "95% interval of the errors: 0 to 38 at Level 3, 28 to 128 at Level 2.", ML, 6.9, CW - 1, 0.4, { size: 14, color: C.muted, valign: "middle" });
   }
 
-  // ---------- 17. Related work ----------
+  // ---------- 17. Our idea: limit each model ----------
+  // Our own design only, no outside source: what each part of Level 3 may do, and what it may not do.
   {
     const s = base(
       19,
-      "Related work: limit what the model can trigger",
-      "Thank you, Quy. My name is Nguyen Phuong Nam. I will explain how our work fits the field, and its limits. " +
-        "Text in data can carry orders for a model. CaMeL and other design patterns defend by limiting what the model can trigger. Support platforms route tickets by rules, and the Fin agent runs refunds and cancellations. Level 3 follows the same idea: Jev only answers typed questions, and the process, not Jev, decides if the action runs. Result 2 shows what that buys."
+      "Our idea: limit what each model can trigger",
+      "Thank you, Quy. My name is Nguyen Phuong Nam. I will explain how Level 3 limits each model, and the limits of our work. " +
+        "Text in a request can give orders to a model. So at Level 3, no model decides alone. " +
+        "Jev only answers typed questions. It cannot run an action. The process checks the written rules and runs the action. One broken rule is enough to stop it. " +
+        "The LLM only writes the final message. It does not change any decision. Result 2 shows what this design buys."
     );
-    const cw = (CW - 2 * 0.3) / 3;
+    const gap = 0.3, cw = (CW - 2 * gap) / 3, y0 = 1.6, h0 = 3.95;
     [
-      ["LuShieldX", "Prompt injection", "Text in data can carry orders for a model.", "Greshake et al., 2023"],
-      ["LuLock", "Defenses by design", "CaMeL and design patterns for LLM agents defend by limiting what the model can trigger.", "Debenedetti et al., 2025; Beurer-Kellner et al., 2025"],
-      ["LuBot", "Support platforms", "Platforms route tickets by rules. The Fin agent runs refunds, cancellations, and password resets, and reports 76 percent resolution without a human.", "Zendesk Help Center; Intercom Learning Center, 2026"],
-    ].forEach(([ic, h, t, ref], i) => {
-      const x = ML + i * (cw + 0.3);
-      box(s, x, 1.6, cw, 3.6);
-      iconCircle(s, ic, x + 0.3, 1.85, 0.7, C.blue);
-      textBox(s, h, x + 0.3, 2.7, cw - 0.6, 0.5, { size: 21, bold: true, color: C.navy, valign: "middle" });
-      textBox(s, t, x + 0.3, 3.25, cw - 0.6, 1.3, { size: 16 });
-      textBox(s, ref, x + 0.3, 4.65, cw - 0.6, 0.45, { size: 14, color: C.muted, valign: "middle" });
+      ["LuTags", "Jev", C.l3, "Answers typed questions: topic, priority, action, injection flag, and one yes or no for each rule. It cannot run an action."],
+      ["LuShieldCheck", "Process", C.teal, "Reads the account, checks the written rules, and runs the action. One broken rule is enough to stop it."],
+      ["LuBot", "LLM", C.blue, "Writes the final message. It does not change any decision."],
+    ].forEach(([ic, big, col, text], i) => {
+      const x = ML + i * (cw + gap);
+      box(s, x, y0, cw, h0);
+      iconCircle(s, ic, x + 0.3, y0 + 0.3, 0.9, col);
+      textBox(s, big, x + 1.45, y0 + 0.3, cw - 1.65, 0.9, { size: 30, bold: true, color: col, valign: "middle" });
+      textBox(s, text, x + 0.3, y0 + 1.6, cw - 0.6, 2.2, { size: 22 });
     });
-    band(s, 5.55, 0.9, "LuShieldCheck", [{ text: "Level 3 follows the same idea: ", options: { bold: true } }, { text: "Jev only answers typed questions, and the process decides if the action runs." }]);
+    band(s, 5.85, 0.95, "LuShieldCheck", [{ text: "No model decides alone: ", options: { bold: true } }, { text: "the process decides if an action runs." }]);
   }
 
   // ---------- 9. Limits and claims ----------
@@ -1046,9 +1050,9 @@ async function photo(file, w, h, radius = 0.08, dpi = 150) {
       ]),
       { x: M, y: 1.65, w: LW, h: 4.3, margin: 0, fontFace: FONT, fontSize: 18, color: C.white, paraSpaceAfter: 9, valign: "top" }
     );
-    s.addText("Thank you. Questions?", { x: M, y: 6.1, w: LW, h: 0.7, margin: 0, fontFace: FONT, fontSize: 30, bold: true, color: C.white, valign: "bottom" });
+    s.addText("Next: real tickets and a larger set of requests.", { x: M, y: 6.0, w: LW, h: 0.8, margin: 0, fontFace: FONT, fontSize: 22, bold: true, color: C.white, valign: "bottom" });
     [
-      { icon: "LuBadgeCheck", big: "0 and 61", label: "errors at Level 3 and Level 2. Sign test: p\u00a0=\u00a00.031", color: C.teal },
+      { icon: "LuBadgeCheck", big: "61 vs 0", label: "errors at Level 2 and Level 3. Sign test: p\u00a0=\u00a00.031", color: C.teal },
       { icon: "LuTimer", big: "1.8x", label: "faster: 4.28 s against 7.85 s of machine time", color: C.l3 },
       { icon: "LuDollarSign", big: "2.1x", label: "cheaper: $0.29 against $0.61 per 1,000 requests", color: C.l3 },
     ].forEach((o, i) => callout(s, CX, 0.7 + i * 2.1, CWd, 1.9, { ...o, bigSize: 38, bigH: 0.8, bigY: 0.25, labelSize: 15 }));
@@ -1060,27 +1064,28 @@ async function photo(file, w, h, radius = 0.08, dpi = 150) {
   }
 
 
-  // ---------- Backup: references ----------
+  // ---------- Questions ----------
+  // The same grid as the title and the conclusion: the invitation on the deep blue field, and on the light panel the slides to open for the
+  // four kinds of question that we expect.
   {
-    const s = base(
-      22,
-      "Appendix: References",
-      "Backup slide, not spoken. These are the sources cited on the related-work slide.",
-      false
-    );
-    const refs = [
-      ["Greshake et al., 2023", "Not What You've Signed Up For: Compromising Real-World LLM-Integrated Applications with Indirect Prompt Injection. AISec '23, ACM, 79-90."],
-      ["Debenedetti et al., 2025", "Defeating Prompt Injections by Design (CaMeL). arXiv:2503.18813."],
-      ["Beurer-Kellner et al., 2025", "Design Patterns for Securing LLM Agents against Prompt Injections. arXiv:2506.08837."],
-      ["Zendesk, n.d.", "Routing and automation options for incoming tickets. Zendesk Help Center. Accessed 5 October 2026."],
-      ["Intercom, n.d.", "AI Agent That Takes Action: Refunds and Cancellations. Intercom Learning Center. Accessed 7 October 2026."],
-    ];
-    refs.forEach(([who, what], i) => {
-      const y = 1.65 + i * 1.0;
-      box(s, ML, y, CW, 0.85);
-      textBox(s, who, ML + 0.3, y, 3.2, 0.85, { size: 18, bold: true, color: C.navy, valign: "middle" });
-      textBox(s, what, ML + 3.7, y, CW - 4.0, 0.85, { size: 16, valign: "middle" });
+    const s = pres.addSlide();
+    s.background = { color: C.l3 };
+    const M = 0.7, LW = 5.9, PX = 6.9, CX = PX + 0.7, CWd = 13.333 - 0.7 - CX;
+    s.addShape(pres.ShapeType.rect, { x: PX, y: 0, w: 13.333 - PX, h: 7.5, fill: { color: C.bg }, line: { color: C.bg, width: 0 } });
+    s.addText("Questions?", { x: M, y: 0.7, w: LW, h: 1.2, margin: 0, fontFace: FONT, fontSize: 60, bold: true, color: C.white, valign: "top" });
+    s.addText("Thank you for listening.", { x: M, y: 2.0, w: LW, h: 0.6, margin: 0, fontFace: FONT, fontSize: 24, color: "E3ECF6", valign: "top" });
+    s.addText("Team", { x: M, y: 4.98, w: LW, h: 0.32, margin: 0, fontFace: FONT, fontSize: 16, bold: true, color: "E3ECF6", valign: "middle" });
+    const team = [LONG, NAM, SON, QUY, PNAM];
+    s.addText(team.map((n, i) => ({ text: n, options: { breakLine: i < team.length - 1 } })), {
+      x: M, y: 5.3, w: LW, h: 1.5, margin: 0, fontFace: FONT, fontSize: 18, color: C.white, valign: "top",
     });
+    [
+      { icon: "LuWorkflow", big: "Slide 6", label: "The flow of Level 3: why a state machine", color: C.l3 },
+      { icon: "LuDatabase", big: "Slides 21 to 23", label: "Test data and how we score", color: C.l3 },
+      { icon: "LuBadgeCheck", big: "Slides 26 and 27", label: "Results: Jev, and the two levels", color: C.teal },
+      { icon: "LuScale", big: "Slide 29", label: "Limits: what our evidence cannot show", color: C.red },
+    ].forEach((o, i) => callout(s, CX, 0.7 + i * 1.55, CWd, 1.35, { ...o, bigSize: 28, bigH: 0.55, bigY: 0.12, labelSize: 15 }));
+    s.addNotes("Question slide, not part of the timed talk. Tran Thanh Long answers; the other four stand beside him. The cards on the right say which slide to open for each kind of question.");
   }
 
   const file = await pres.write({ outputType: "nodebuffer" });

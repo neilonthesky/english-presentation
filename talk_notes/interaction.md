@@ -1,6 +1,6 @@
 # Kế hoạch tương tác với khán giả (Audience Interaction Plan)
 
-Tài liệu này chi tiết hóa chiến lược tương tác với khán giả trong bài thuyết trình 30 slide (cộng 1 slide phụ lục không nói; 858 giây nói, tức 14 phút 18 giây, cộng 300 giây hỏi đáp). Mục tiêu là duy trì sự tập trung tích cực của người nghe, đáp ứng trọn vẹn tiêu chí 4 trong mẫu đánh giá chéo (Interaction with audience, 1.0 điểm), và bám sát lời khuyên của giảng viên:
+Tài liệu này chi tiết hóa chiến lược tương tác với khán giả trong bài thuyết trình 30 slide (cộng Slide 31 là slide câu hỏi; 863 giây nói, tức 14 phút 23 giây, cộng 300 giây hỏi đáp). Mục tiêu là duy trì sự tập trung tích cực của người nghe, đáp ứng trọn vẹn tiêu chí 4 trong mẫu đánh giá chéo (Interaction with audience, 1.0 điểm), và bám sát lời khuyên của giảng viên:
 
 > *"Trong lúc thuyết trình nên có sự tương tác với khán giả, ví dụ đặt câu hỏi hoặc mở đầu bằng một câu chuyện, để bài nói hấp dẫn hơn. Đồng thời hãy giới thiệu rõ tên từng người để người nghe dễ đánh giá."*
 
