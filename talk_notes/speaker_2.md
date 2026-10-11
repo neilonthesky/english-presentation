@@ -4,7 +4,7 @@
 - **Vai trò trong đề tài:** Quy tắc bằng văn bản (Written rules); Các câu hỏi luật của Level 3; Quy tắc điều hướng khi phát hiện injection; Security rule
 - **Tỷ lệ phân công:** 22% tổng thời lượng thuyết trình trong bài báo; về thời gian nói, Nam nói 120 giây trên tổng 858 giây.
 - **Thời gian nói được phân bổ:** 2 phút 00 giây (120 giây) cho ba slide: Slide 21 (41 giây), Slide 22 (39 giây), Slide 23 (40 giây).
-- **Số từ mục tiêu:** ~230 từ, tức khoảng 115 từ mỗi phút: tốc độ thoải mái, nói rõ từng số liệu
+- **Số từ mục tiêu:** ~245 từ, tức khoảng 115 từ mỗi phút: tốc độ thoải mái, nói rõ từng số liệu
 - **Các slide phụ trách:** Slide 21 (41 giây): dữ liệu thử nghiệm; Slide 22 (39 giây): mười nhóm yêu cầu; Slide 23 (40 giây): cách chấm (ba kết cục và cờ gây hại). Nam nói ngay sau ba walk-through của Long. Nam **không đặt câu hỏi** và **không tổ chức bình chọn** với khán giả: mọi tương tác do Long thực hiện ở Slide 1 đến 3.
 
 ---

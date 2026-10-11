@@ -1,6 +1,6 @@
 # Kế hoạch luyện tập và Danh mục kiểm tra trước giờ thuyết trình
 
-Tài liệu này liệt kê các bước tập luyện và bảng tự chấm điểm, dùng để soát lại bài nói trước giờ thuyết trình nhóm. Nhóm năm thành viên chuẩn bị luyện tập với bộ slide mới (31 slide) và chạy thử toàn bộ bài nói trước khi lên lớp.
+Tài liệu này liệt kê các bước tập luyện và bảng tự chấm điểm, dùng để soát lại bài nói trước giờ thuyết trình nhóm. Nhóm năm thành viên chuẩn bị luyện tập với bộ slide mới (30 slide chính và 1 slide phụ lục) và chạy thử toàn bộ bài nói trước khi lên lớp.
 
 ---
 
@@ -17,9 +17,9 @@ Tài liệu này liệt kê các bước tập luyện và bảng tự chấm đ
 | **Tran Thanh Long** | 20 slide (8 slide riêng + 12 khung của ba walk-through) | Slide 1 đến 20 (gồm cả các đoạn walk-through) | 420 giây (7 phút 00 giây) | 49% |
 | **Nguyen Thanh Nam** | 3 slide | Slide 21 đến 23 | 120 giây (2 phút 00 giây) | 14% |
 | **Vu Van Son** | 3 slide | Slide 24 đến 26 | 120 giây (2 phút 00 giây) | 14% |
-| **Vuong Quang Quy** | 2 slide | Slide 27 đến 28 | 78 giây (1 phút 18 giây) | 9% |
-| **Nguyen Phuong Nam** | 3 slide | Slide 29 đến 31 | 120 giây (2 phút 00 giây) | 14% |
-| **Tổng cộng** | **31 slide (cộng 1 slide phụ lục không nói)** | **Toàn bộ bài trình bày** | **858 giây (14 phút 18 giây)** | **100%** |
+| **Vuong Quang Quy** | 1 slide | Slide 27 | 78 giây (1 phút 18 giây) | 9% |
+| **Nguyen Phuong Nam** | 3 slide | Slide 28 đến 30 | 120 giây (2 phút 00 giây) | 14% |
+| **Tổng cộng** | **30 slide (cộng 1 slide phụ lục không nói)** | **Toàn bộ bài trình bày** | **858 giây (14 phút 18 giây)** | **100%** |
 
 ### Thời gian chi tiết từng slide
 
@@ -45,16 +45,15 @@ Tài liệu này liệt kê các bước tập luyện và bảng tự chấm đ
 | 24 | Both levels run on the same 1,024 requests | Son | 42 giây | 9 phút 42 giây |
 | 25 | Level 3 reads less, so it costs about half | Son | 38 giây | 10 phút 20 giây |
 | 26 | Result 1: Jev is fast and cheap, and mostly right | Son | 40 giây | 11 phút 00 giây |
-| 27 | Jev reports a confidence, and it is a warning | Quy | 40 giây | 11 phút 40 giây |
-| 28 | Result 2: Level 3 is faster, cheaper, and makes fewer errors | Quy | 38 giây | 12 phút 18 giây |
-| 29 | Related work: limit what the model can trigger | Phuong Nam | 30 giây | 12 phút 48 giây |
-| 30 | The gain is clear, but our evidence is small | Phuong Nam | 55 giây | 13 phút 43 giây |
-| 31 | Conclusion | Phuong Nam | 35 giây | 14 phút 18 giây |
-| 32 | Appendix: References (dự phòng, không nói) | Không ai | 0 giây | 14 phút 18 giây |
+| 27 | Result 2: Level 3 is faster, cheaper, and makes fewer errors | Quy | 78 giây | 12 phút 18 giây |
+| 28 | Related work: limit what the model can trigger | Phuong Nam | 30 giây | 12 phút 48 giây |
+| 29 | The gain is clear, but our evidence is small | Phuong Nam | 55 giây | 13 phút 43 giây |
+| 30 | Conclusion | Phuong Nam | 35 giây | 14 phút 18 giây |
+| 31 | Appendix: References (dự phòng, không nói) | Không ai | 0 giây | 14 phút 18 giây |
 
 **Lưu ý về tốc độ:** thời gian trên là thời gian ghi trong ghi chú của bộ slide hiện tại (`slides/build.js`, hàm `base` và mảng `SPEAKER`). Cả ba walk-through đều được tính là một khối nói liền: Long bấm phím để đi qua từng khung, và toàn bộ chuỗi khung nằm trong số giây của slide mở đầu. Tổng cộng 858 giây nói, tiếp theo là 300 giây hỏi đáp.
 
-**Cảnh báo về tốc độ nói:** so với số từ trong ghi chú slide, Son cần nói khoảng 158 từ mỗi phút, Quy khoảng 152 từ mỗi phút và Phuong Nam khoảng 175 từ mỗi phút để kịp khung thời gian; tốc độ nói rõ ràng thông thường là 120 đến 130 từ mỗi phút. Ba bạn này phải bấm giờ khi luyện tập. Nếu vượt khung, rút gọn các câu phụ (các con số token chi tiết ở Slide 25, câu về tập yêu cầu thứ hai ở Slide 30, các câu phân tích ở Slide 28) và giữ nguyên các số liệu chính. Nam (khoảng 115 từ mỗi phút) và Long (khoảng 104 từ mỗi phút) nằm trong tốc độ thoải mái.
+**Cảnh báo về tốc độ nói:** so với số từ trong ghi chú slide, Son cần nói khoảng 170 từ mỗi phút, Quy khoảng 141 từ mỗi phút và Phuong Nam khoảng 182 từ mỗi phút để kịp khung thời gian; tốc độ nói rõ ràng thông thường là 120 đến 130 từ mỗi phút. Ba bạn này phải bấm giờ khi luyện tập. Nếu vượt khung, rút gọn các câu phụ (các con số token chi tiết ở Slide 25, câu về tập yêu cầu thứ hai ở Slide 29, các câu phân tích ở Slide 28) và giữ nguyên các số liệu chính. Nam (khoảng 122 từ mỗi phút) và Long (khoảng 121 từ mỗi phút) nằm trong tốc độ thoải mái.
 
 ---
 
@@ -69,12 +68,12 @@ Phải thuộc lòng và nói chính xác các câu tiếng Anh sau, không thay
    > "Now my teammate Vu Van Son will explain the run."
 
 3. **Son chuyển cho Quy** (cuối Slide 26):
-   > "Now my teammate Vuong Quang Quy will show what the confidence of Jev tells us."
+   > "Now my teammate Vuong Quang Quy will compare the two levels."
 
-4. **Quy chuyển cho Phuong Nam** (cuối Slide 28):
+4. **Quy chuyển cho Phuong Nam** (cuối Slide 27):
    > "Now Nguyen Phuong Nam will explain how our work fits the field."
 
-5. **Phuong Nam chuyển sang phần hỏi đáp** (cuối Slide 31):
+5. **Phuong Nam chuyển sang phần hỏi đáp** (cuối Slide 30):
    > "Our leader, Tran Thanh Long, will now take your questions."
 
 ---
@@ -134,7 +133,7 @@ Bảng dưới đây ánh xạ 10 mục đánh giá của giảng viên vào sli
 | **4** | Test data and experimental setup | 1.5 | "Do we say that public datasets have no SaaS accounts, that 512 customers and 1,024 requests of 24 types are ours, and how the gold labels are built?" | Vu Van Son | [ ] ĐẠT |
 | **5** | Measurement and list prices | 1.0 | "Do the token counts and the list prices of both models show how the 61 cents and the 29 cents per 1,000 requests are built?" | Vu Van Son | [ ] ĐẠT |
 | **6** | Jev accuracy and the rule questions | 1.0 | "Do we report the right topic, priority, action, and injection flags, and the 1,690 of 1,700 rule answers, without hiding the 174 wrong action labels?" | Vu Van Son | [ ] ĐẠT |
-| **7** | Confidence and calibration | 1.0 | "Do we show that 338 of the 737 answers below 0.8 are wrong against 92 of 4,455 at 0.9 or more, and call the confidence a warning?" | Vuong Quang Quy | [ ] ĐẠT |
+| **7** | Confidence and calibration | 1.0 | "Is the confidence of Jev kept out of the slides, and is the answer ready in qa_prep.md (338 of 737 below 0.8 wrong, 92 of 4,455 at 0.9 or more)?" | Tran Thanh Long | [ ] ĐẠT |
 | **8** | Experimental results | 1.5 | "Are the speedup (1.8 times faster) and the cost reduction (2.1 times cheaper) numbers exact, and are the 61 errors of Level 2 against the 0 errors of Level 3 clear?" | Vuong Quang Quy | [ ] ĐẠT |
 | **9** | Analysis and discussion | 1.0 | "Do we say plainly that the sign test (p = 0.031) shows significantly fewer errors at Level 3, and that the main numbers are not a blind test?" | Vuong Quang Quy | [ ] ĐẠT |
 | **10** | Slides and visual support | 0.5 | "Are the diagrams legible from the back of the classroom without text clutter?" | Nguyen Phuong Nam | [ ] ĐẠT |

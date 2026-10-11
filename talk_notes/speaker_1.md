@@ -4,7 +4,7 @@
 - **Vai trò trong đề tài:** Trưởng nhóm; Điều phối đề tài; Tóm tắt (Abstract), Mở đầu (Introduction) và Kết luận (Conclusion); Kiến trúc bậc thang hỗ trợ; Biên tập hoàn thiện
 - **Tỷ lệ phân công:** 28% tổng thời lượng thuyết trình (trong bài báo). Về thời gian nói, Long nói 420 giây trên tổng 858 giây: toàn bộ tương tác với khán giả, phần giải thích luật và luồng xử lý, ba walk-through và toàn bộ phần hỏi đáp.
 - **Thời gian nói được phân bổ:** 7 phút 00 giây (420 giây) = 263 giây ở Slide 1 đến 3 (gồm khoảng 50 giây tương tác) + 12 giây ở Slide 4 (bức tường luật) + 99 giây ở Slide 5 đến 8 (luật, luồng xử lý, Jev đọc gì, Jev trả lời gì) + 46 giây cho ba walk-through (Slide 9 đến 20).
-- **Số từ mục tiêu:** ~730 từ tiếng Anh trong ghi chú slide cho toàn bộ phần nói, tức khoảng 104 từ mỗi phút; ở Slide 1 đến 3 tốc độ chậm hơn vì có bốn lần chờ khán giả phản hồi
+- **Số từ mục tiêu:** ~845 từ tiếng Anh trong ghi chú slide cho toàn bộ phần nói, tức khoảng 121 từ mỗi phút; ở Slide 1 đến 3 tốc độ chậm hơn vì có bốn lần chờ khán giả phản hồi
 - **Các slide phụ trách:** Slide 1 (67 giây), Slide 2 (98 giây), Slide 3 (98 giây), Slide 4 (12 giây), Slide 5 đến 8 (23 + 26 + 26 + 24 giây), ba walk-through ở Slide 9 đến 20 (46 giây), cộng toàn bộ phần Q&A sau bài nói (5 phút, xem `qa_prep.md`). Long nói liền một mạch từ Slide 1 đến Slide 20: luật và luồng xử lý được giải thích trước, rồi ba yêu cầu thật đi qua đúng luồng đó. Sau Slide 20, Long không nói nữa cho đến phần Q&A.
 - **Quy ước tương tác:** Toàn bộ tương tác với khán giả của cả nhóm do Long thực hiện ngay ở đầu bài (Slide 1 đến 3): câu chuyện mở đầu, giơ tay, bình chọn và câu hỏi dự đoán. Bốn bạn còn lại chỉ trình bày, không hỏi khán giả. Chi tiết nằm trong `interaction.md`.
 

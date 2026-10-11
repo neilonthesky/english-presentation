@@ -1,6 +1,6 @@
 # Kế hoạch tương tác với khán giả (Audience Interaction Plan)
 
-Tài liệu này chi tiết hóa chiến lược tương tác với khán giả trong bài thuyết trình 31 slide (cộng 1 slide phụ lục không nói; 858 giây nói, tức 14 phút 18 giây, cộng 300 giây hỏi đáp). Mục tiêu là duy trì sự tập trung tích cực của người nghe, đáp ứng trọn vẹn tiêu chí 4 trong mẫu đánh giá chéo (Interaction with audience, 1.0 điểm), và bám sát lời khuyên của giảng viên:
+Tài liệu này chi tiết hóa chiến lược tương tác với khán giả trong bài thuyết trình 30 slide (cộng 1 slide phụ lục không nói; 858 giây nói, tức 14 phút 18 giây, cộng 300 giây hỏi đáp). Mục tiêu là duy trì sự tập trung tích cực của người nghe, đáp ứng trọn vẹn tiêu chí 4 trong mẫu đánh giá chéo (Interaction with audience, 1.0 điểm), và bám sát lời khuyên của giảng viên:
 
 > *"Trong lúc thuyết trình nên có sự tương tác với khán giả, ví dụ đặt câu hỏi hoặc mở đầu bằng một câu chuyện, để bài nói hấp dẫn hơn. Đồng thời hãy giới thiệu rõ tên từng người để người nghe dễ đánh giá."*
 
@@ -73,7 +73,7 @@ Nếu cả lớp ngồi yên và không ai phản ứng:
 
 ## Thời điểm 4: Câu hỏi dự đoán trước khi công bố kết quả (Slide 3)
 
-Phần này được **chuyển từ Vuong Quang Quy sang Long (Slide 3)**. Long hỏi ngay sau khi giới thiệu ba cấp độ. Long **không được tiết lộ đáp án**, kể cả bằng con số hay gợi ý; chỉ nói rằng dữ liệu sẽ cho biết ở phần kết quả. Khi đến Slide 27 và 28, Quy chỉ trình bày số liệu và không hỏi lại khán giả.
+Phần này được **chuyển từ Vuong Quang Quy sang Long (Slide 3)**. Long hỏi ngay sau khi giới thiệu ba cấp độ. Long **không được tiết lộ đáp án**, kể cả bằng con số hay gợi ý; chỉ nói rằng dữ liệu sẽ cho biết ở phần kết quả. Khi đến Slide 27, Quy chỉ trình bày số liệu và không hỏi lại khán giả.
 
 - **Người thực hiện:** Tran Thanh Long (Trưởng nhóm)
 - **Thời điểm trong bài nói:** khoảng 4:05 – 4:25 (25 giây; slide 3 bắt đầu ở 2:50)

@@ -43,7 +43,7 @@ const SPEAKER = [
   [LONG, 22], [LONG, 12], [LONG, 12], // the three walk-throughs (CASES in cases.js): every click is its own slide, so these seconds cover all of them
   [NAM, 41], [NAM, 39], [NAM, 40], // test data, request families, outcomes
   [SON, 42], [SON, 38], [SON, 40], // the run, models and prices, Result 1
-  [QUY, 40], [QUY, 38], // the confidence of Jev, Result 2
+  [QUY, 78], // Result 2
   [PNAM, 30], [PNAM, 55], [PNAM, 35], // related work, limits, conclusion
   [PNAM, 0], // backup: references (not spoken)
 ];
@@ -822,7 +822,7 @@ async function photo(file, w, h, radius = 0.08, dpi = 150) {
     const s = base(
       15,
       "Both levels run on the same 1,024 requests",
-      "Thank you, Nam. My name is Vu Van Son. I will explain how we ran the experiment. We call two hosted models for real: Jev, version 1.13.0, and DeepSeek V4.1 Flash. Both levels run on the same 1,024 requests. At Level 3, Jev answers the chat of every request once, and answers the rule questions on the 410 requests whose action changes the state: 1,434 Jev calls. Every count gets a 95% interval. We ask two questions: what does each level buy and cost, and when is Jev wrong, and does its confidence warn us?"
+      "Thank you, Nam. My name is Vu Van Son. I will explain how we ran the experiment. We call two hosted models for real: Jev, version 1.13.0, and DeepSeek V4.1 Flash. Both levels run on the same 1,024 requests. At Level 3, Jev answers the chat of every request once, and answers the rule questions on the 410 requests whose action changes the state: 1,434 Jev calls. Every count gets a 95% interval. We ask one question: what does each level buy and cost?"
     );
     const gap = 0.3, cw = (CW - 2 * gap) / 3, y = 1.55, h = 1.85;
     [
@@ -832,15 +832,12 @@ async function photo(file, w, h, radius = 0.08, dpi = 150) {
     ].forEach(([ic, n, l], i) => {
       statCard(s, ML + i * (cw + gap), y, cw, h, { icon: ic, big: n, label: l, bigSize: 32, labelY: 1.2 });
     });
-    [
-      ["Q1", "What does each level buy and cost? Served, stopped, errors, harm, time, and cost."],
-      ["Q2", "When is Jev wrong, and does its confidence warn us? Accuracy and confidence."],
-    ].forEach(([tag, t], i) => {
-      const yy = 3.85 + i * 1.1;
-      box(s, ML, yy, CW, 0.9);
-      textBox(s, tag, ML + 0.25, yy + 0.2, 0.9, 0.5, { shape: pres.ShapeType.roundRect, fill: C.blue, line: C.blue, color: C.white, bold: true, size: 18, margin: 0, valign: "middle", align: "center" });
-      textBox(s, t, ML + 1.4, yy, CW - 1.65, 0.9, { size: 18, valign: "middle" });
-    });
+    {
+      const yy = 3.9;
+      box(s, ML, yy, CW, 1.5);
+      textBox(s, "Q1", ML + 0.35, yy + 0.4, 1.1, 0.7, { shape: pres.ShapeType.roundRect, fill: C.blue, line: C.blue, color: C.white, bold: true, size: 24, margin: 0, valign: "middle", align: "center" });
+      textBox(s, "What does each level buy and cost? Served, stopped, errors, harm, time, and cost.", ML + 1.85, yy, CW - 2.15, 1.5, { size: 24, valign: "middle" });
+    }
     textBox(s, "Calls to two hosted models: Jev (jev-1.13.0) and deepseek-v4.1-flash through the DeepSeek API. Every interval is a 95% interval.", ML, 6.15, CW, 0.7, { size: 15, color: C.muted, valign: "middle" });
   }
 
@@ -851,27 +848,40 @@ async function photo(file, w, h, radius = 0.08, dpi = 150) {
       "Level 3 reads less, so it costs about half",
       "Level 2 reads the chat text, the sender role, the channel, the matching help articles, the whole account, and the written rules. Level 3 reads less: the chat first, then only the account lines and the rule questions of one action. Jev costs 4.2 cents per million input tokens, and its output is free. The LLM costs 15 cents in and 60 cents out per million tokens, with high reasoning effort. The first Jev call reads 1,233 tokens and writes 196. The second call, on 410 of the 1,024 requests, reads 743 tokens and writes 105. One LLM agent call reads 1,229 tokens and writes 268, because reasoning counts. At list price, for 1,000 requests, Level 2 costs $0.61, and Level 3 costs $0.29: for each request, 1.4 calls to Jev and 1 to the LLM."
     );
-    const gap = 0.3, cw = (CW - gap) / 2, y = 1.55, h = 3.5;
+    // One card for each level: the cost per 1,000 requests, a bar in proportion, the calls that one request makes, and what the level reads.
+    const gap = 0.3, cw = (CW - gap) / 2, y = 1.6, h = 3.6, barW = cw - 0.7;
     [
-      { x: ML, head: "Jev (jev-1.13.0)", icon: "LuGauge", col: C.l3, items: ["$0.042 per million input tokens", "Output tokens are free", "Call 1: 1,233 tokens in, 196 out. Call 2: 743 in, 105 out", "Gives a confidence with each answer"] },
-      { x: ML + cw + gap, head: "LLM agent (deepseek-v4.1-flash)", icon: "LuBot", col: C.grey, items: ["$0.15 in and $0.60 out per million tokens", "High reasoning effort, temperature 0.3", "1,229 tokens in and 268 out per decision call", "The output includes the reasoning tokens"] },
+      { x: ML, head: "Level 2: LLM agent", icon: "LuBot", col: C.l2, cost: "$0.61", share: 1, calls: [["LLM call", C.grey, 1.4], ["LLM call", C.grey, 1.4]], reads: "Reads the whole account and all the rules" },
+      { x: ML + cw + gap, head: "Level 3: Jev + LLM", icon: "LuTags", col: C.l3, cost: "$0.29", share: 0.29 / 0.61, calls: [["Jev call \u00d7 1.4", C.l3, 2.0], ["LLM call", C.grey, 1.4]], reads: "Reads the chat first, then the rules of one action" },
     ].forEach((o) => {
       box(s, o.x, y, cw, h);
-      iconCircle(s, o.icon, o.x + 0.3, y + 0.25, 0.75, o.col);
-      textBox(s, o.head, o.x + 1.3, y + 0.25, cw - 1.5, 0.75, { size: 22, bold: true, color: C.navy, valign: "middle" });
-      s.addText(bullets(o.items), { x: o.x + 0.35, y: y + 1.3, w: cw - 0.7, h: 2.0, margin: 0, fontFace: FONT, fontSize: 18, color: C.text, paraSpaceAfter: 8, valign: "top" });
+      iconCircle(s, o.icon, o.x + 0.35, y + 0.25, 0.65, o.col);
+      textBox(s, o.head, o.x + 1.2, y + 0.25, cw - 1.5, 0.65, { size: 22, bold: true, color: C.navy, valign: "middle" });
+      textBox(s, o.cost, o.x + 0.35, y + 1.0, 2.3, 0.95, { size: 54, bold: true, color: o.col, valign: "middle", margin: 0 });
+      textBox(s, "per 1,000 requests", o.x + 2.7, y + 1.0, cw - 3.0, 0.95, { size: 18, color: C.muted, valign: "middle" });
+      s.addShape(pres.ShapeType.roundRect, { x: o.x + 0.35, y: y + 2.05, w: barW, h: 0.3, rectRadius: 0.05, fill: { color: "E9EDF2" }, line: { color: "E9EDF2", width: 0 } });
+      s.addShape(pres.ShapeType.roundRect, { x: o.x + 0.35, y: y + 2.05, w: barW * o.share, h: 0.3, rectRadius: 0.05, fill: { color: o.col }, line: { color: o.col, width: 0 } });
+      let cx = o.x + 0.35;
+      o.calls.forEach(([txt, fill, w]) => {
+        textBox(s, txt, cx, y + 2.55, w, 0.36, { shape: pres.ShapeType.roundRect, fill, line: fill, color: C.white, bold: true, size: 14, margin: 0, valign: "middle", align: "center" });
+        cx += w + 0.15;
+      });
+      textBox(s, "for each request", cx + 0.05, y + 2.55, 1.8, 0.36, { size: 14, color: C.muted, valign: "middle" });
+      textBox(s, o.reads, o.x + 0.35, y + 3.0, cw - 0.7, 0.4, { size: 16, valign: "middle" });
     });
-    // Cost of the calls of each level (per 1,000 requests), at list price.
-    const cg = 0.3, cwid = (CW - cg) / 2;
-    [
-      ["Level 2: $0.61 per 1,000 requests", "2 LLM calls for each request", C.l2],
-      ["Level 3: $0.29 per 1,000 requests", "1.4 Jev calls and 1 LLM call for each request", C.l3],
-    ].forEach(([head, sub, col], i) => {
-      textBox(s, [
-        { text: head, options: { bold: true, fontSize: 24, color: C.white, breakLine: true } },
-        { text: sub, options: { fontSize: 16, color: C.white } },
-      ], ML + i * (cwid + cg), 5.35, cwid, 1.3, { shape: pres.ShapeType.roundRect, fill: col, line: col, margin: [0.05, 0.1, 0.05, 0.1], valign: "middle", align: "center" });
-    });
+    // The list prices that the costs come from.
+    {
+      const py = 5.45, ph = 1.1;
+      box(s, ML, py, CW, ph);
+      [
+        ["LuTags", C.l3, "Jev: $0.042 per million input tokens, output free"],
+        ["LuBot", C.grey, "LLM agent (deepseek-v4.1-flash): $0.15 in, $0.60 out per million tokens"],
+      ].forEach(([ic, col, txt], i) => {
+        const x = ML + 0.35 + i * (CW / 2);
+        iconCircle(s, ic, x, py + ph / 2 - 0.3, 0.6, col);
+        textBox(s, txt, x + 0.8, py, CW / 2 - 1.4, ph, { size: 16, valign: "middle" });
+      });
+    }
   }
 
   // ---------- 7. Result 1: Jev ----------
@@ -879,7 +889,7 @@ async function photo(file, w, h, radius = 0.08, dpi = 150) {
     const s = base(
       17,
       "Result 1: Jev is fast and cheap, and mostly right",
-      "Now the first result, for Jev alone, over the 1,024 requests. One Jev call takes 0.31 seconds at the median, and the Jev calls cost 6 cents per 1,000 requests. Jev gives the right topic on 88% of the requests, the priority on 83%, the action on 83%, and the injection flag on 96%. The rule questions are almost always right: 1,690 of 1,700 answers match the written rules. The action label is wrong on 174 requests, but none of them ends in a wrong outcome: when a rule would deny a request, Jev often picks Send reply, and the result is still a stop. The intervals are wide. Now my teammate Vuong Quang Quy will show what the confidence of Jev tells us."
+      "Now the first result, for Jev alone, over the 1,024 requests. One Jev call takes 0.31 seconds at the median, and the Jev calls cost 6 cents per 1,000 requests. Jev gives the right topic on 88% of the requests, the priority on 83%, the action on 83%, and the injection flag on 96%. The rule questions are almost always right: 1,690 of 1,700 answers match the written rules. The action label is wrong on 174 requests, but none of them ends in a wrong outcome: when a rule would deny a request, Jev often picks Send reply, and the result is still a stop. The intervals are wide. Now my teammate Vuong Quang Quy will compare the two levels."
     );
     box(s, ML, 1.65, 7.6, 4.9);
     const labels = ["Topic", "Priority", "Action", "Injection flag", "Rule answers"];
@@ -899,32 +909,12 @@ async function photo(file, w, h, radius = 0.08, dpi = 150) {
     textBox(s, "95% intervals: topic 79 to 93%, priority 75 to 89%, action 75 to 89%, injection 90 to 98%, rule answers 97 to 100%. 174 action labels are wrong, and none ends in a wrong outcome.", ML, 6.65, CW - 1, 0.6, { size: 14, color: C.muted, valign: "middle" });
   }
 
-  // ---------- 15. Confidence of Jev ----------
-  {
-    const s = base(
-      18,
-      "Jev reports a confidence, and it is a warning",
-      "Thank you, Son. My name is Vuong Quang Quy. I will show what the confidence of Jev means. Jev reports a confidence with every answer. We count the 5,755 answers that the process uses: 4,055 labels and 1,700 rule answers. 522 of them are wrong. 338 of the 737 answers below 0.8 are wrong. At 0.9 or more, only 92 of 4,455 are wrong, which is 2.1%. So the confidence works as a warning."
-    );
-    box(s, ML, 1.6, 7.9, 5.0);
-    const bands = [["<0.6", 205, 55.0], ["0.6-0.8", 532, 42.3], ["0.8-0.9", 563, 16.4], ["0.9-0.99", 2796, 2.9], ["0.99+", 1659, 0.6]];
-    s.addChart(pres.charts.BAR, [{ name: "Wrong answers", labels: bands.map(([l, n]) => `${l} (n = ${n})`), values: bands.map((x) => x[2]) }], {
-      ...chartBase, showLegend: false, x: ML + 0.2, y: 1.7, w: 7.5, h: 4.8, barDir: "col", barGapWidthPct: 50, chartColors: [C.red, C.red, C.blueL, C.teal, C.teal],
-      dataLabelPosition: "outEnd", dataLabelFontSize: 14, dataLabelFormatCode: "0.0", catAxisLabelFontSize: 12, valAxisMaxVal: 65,
-      showTitle: true, title: "Percent wrong by confidence of Jev (1,024 requests, n in brackets)",
-    });
-    const x = ML + 8.2, w = CW - 8.2;
-    callout(s, x, 1.6, w, 1.5, { icon: "LuTriangleAlert", big: "338 of 737", label: "answers below 0.8 are wrong", color: C.red, bigSize: 30 });
-    callout(s, x, 3.3, w, 1.5, { icon: "LuBadgeCheck", big: "92 of 4,455", label: "answers at 0.9 or more are wrong: 2.1%", color: C.teal, bigSize: 30 });
-    callout(s, x, 5.0, w, 1.6, { icon: "LuTags", big: "522 of 5,755", label: "answers wrong over the 1,024 requests", color: C.l3, bigSize: 28, labelSize: 14 });
-  }
-
   // ---------- 8. Result 2: the ladder ----------
   {
     const s = base(
-      19,
+      18,
       "Result 2: Level 3 is faster, cheaper, and makes fewer errors",
-      "Now the two levels on the same 1,024 requests. Level 2 serves 676, stops 287, and makes 61 errors, about 20 of them harmful. Level 3 serves 717, stops 307, and makes no error, and none is harmful. The 95% interval of the Level 3 errors is 0 to 38 of 1,024, and that of Level 2 is 28 to 128. Level 3 is 1.8 times faster, 4.28 seconds against 7.85, and 2.1 times cheaper, 29 cents against 61 cents per 1,000 requests. The two levels fail on different requests: Level 2 fails on 41 injection requests and on 20 refund requests, where it cancelled the plan. Level 2 was wrong and Level 3 right on 61 of the 1,024 requests, and the reverse on none. The sign test gives p = 0.031, so Level 3 makes significantly fewer errors on these requests. Level 3 uses two Jev calls on 4 requests in 10, and that adds little time and cost. Now Nguyen Phuong Nam will explain how our work fits the field."
+      "Thank you, Son. My name is Vuong Quang Quy. I will compare the two levels on the same 1,024 requests. Level 2 serves 676, stops 287, and makes 61 errors, about 20 of them harmful. Level 3 serves 717, stops 307, and makes no error, and none is harmful. The 95% interval of the Level 3 errors is 0 to 38 of 1,024, and that of Level 2 is 28 to 128. Level 3 is 1.8 times faster, 4.28 seconds against 7.85, and 2.1 times cheaper, 29 cents against 61 cents per 1,000 requests. The two levels fail on different requests: Level 2 fails on 41 injection requests and on 20 refund requests, where it cancelled the plan. Level 2 was wrong and Level 3 right on 61 of the 1,024 requests, and the reverse on none. The sign test gives p = 0.031, so Level 3 makes significantly fewer errors on these requests. Level 3 uses two Jev calls on 4 requests in 10, and that adds little time and cost. Now Nguyen Phuong Nam will explain how our work fits the field."
     );
     box(s, ML, 1.65, 7.6, 3.95);
     const cats = ["Level 2: LLM agent", "Level 3: Jev + LLM"];
@@ -952,7 +942,7 @@ async function photo(file, w, h, radius = 0.08, dpi = 150) {
   // ---------- 17. Related work ----------
   {
     const s = base(
-      20,
+      19,
       "Related work: limit what the model can trigger",
       "Thank you, Quy. My name is Nguyen Phuong Nam. I will explain how our work fits the field, and its limits. " +
         "Text in data can carry orders for a model. CaMeL and other design patterns defend by limiting what the model can trigger. Support platforms route tickets by rules, and the Fin agent runs refunds and cancellations. Level 3 follows the same idea: Jev only answers typed questions, and the process, not Jev, decides if the action runs. Result 2 shows what that buys."
@@ -976,7 +966,7 @@ async function photo(file, w, h, radius = 0.08, dpi = 150) {
   // ---------- 9. Limits and claims ----------
   {
     const s = base(
-      21,
+      20,
       "The gain is clear, but our evidence is small",
       "Our evidence is small: two hosted models, one synthetic SaaS product, and our own labels, which the same code that applies the rules produced. Both levels run on the same 1,024 requests, and the intervals are wide: for example, the Level 3 errors are 0, with a 95% interval from 0 to 38, and the sign test is p = 0.031. " +
         "Jev needs a question that we write for each rule. We tried questions made from the text of the rule alone, and they made about 61 to 123 errors of 1,024, against none for ours. We wrote our questions knowing the 24 request types; a second set of requests did not change the result. " +
@@ -1053,7 +1043,6 @@ async function photo(file, w, h, radius = 0.08, dpi = 150) {
         "Same 1,024 requests at every level. Level 2: 676 served, 287 stopped, 61 errors. Level 3: 717 served, 307 stopped, 0 errors.",
         "Level 3 is 1.8x faster and 2.1x cheaper, with fewer errors (p\u00a0=\u00a00.031).",
         "Jev needs a question for each rule: questions from the rule text alone made 61 to 123 errors.",
-        "The confidence of Jev is a warning: 338 of 737 answers below 0.8 are wrong, against 92 of 4,455 at 0.9 or more.",
       ]),
       { x: M, y: 1.65, w: LW, h: 4.3, margin: 0, fontFace: FONT, fontSize: 18, color: C.white, paraSpaceAfter: 9, valign: "top" }
     );
@@ -1064,8 +1053,8 @@ async function photo(file, w, h, radius = 0.08, dpi = 150) {
       { icon: "LuDollarSign", big: "2.1x", label: "cheaper: $0.29 against $0.61 per 1,000 requests", color: C.l3 },
     ].forEach((o, i) => callout(s, CX, 0.7 + i * 2.1, CWd, 1.9, { ...o, bigSize: 38, bigH: 0.8, bigY: 0.25, labelSize: 15 }));
     s.addNotes(
-      `Speaker: ${PNAM}, about ${SPEAKER[21][1]} s. To finish, we tested three levels of customer support on the same 1,024 requests. Level 2 serves 676, stops 287, and makes 61 errors. Level 3 serves 717, stops 307, and makes no error. ` +
-        "Level 3 is 1.8 times faster and 2.1 times cheaper, and it makes fewer errors: it was never wrong where Level 2 was right, and Level 2 was wrong on 61 requests where it was right. Jev needs a question that we write for each rule. The confidence of Jev is a warning: 338 of the 737 answers below 0.8 are wrong, against 92 of 4,455 at 0.9 or more. The next step is real tickets and a larger set of requests. " +
+      `Speaker: ${PNAM}, about ${SPEAKER[20][1]} s. To finish, we tested three levels of customer support on the same 1,024 requests. Level 2 serves 676, stops 287, and makes 61 errors. Level 3 serves 717, stops 307, and makes no error. ` +
+        "Level 3 is 1.8 times faster and 2.1 times cheaper, and it makes fewer errors: it was never wrong where Level 2 was right, and Level 2 was wrong on 61 requests where it was right. Jev needs a question that we write for each rule. The next step is real tickets and a larger set of requests. " +
         "Thank you for listening. Our leader, Tran Thanh Long, will now take your questions."
     );
   }

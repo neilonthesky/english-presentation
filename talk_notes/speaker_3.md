@@ -4,7 +4,7 @@
 - **Vai trò trong đề tài:** Xây dựng tập dữ liệu tổng hợp (1.024 yêu cầu qua 24 loại); Thiết kế thế giới khách hàng FrameForge; Thực thi thực nghiệm và đo lường API trực tiếp
 - **Tỷ lệ phân công:** 18% tổng thời lượng thuyết trình trong bài báo; về thời gian nói, Son nói 120 giây trên tổng 858 giây.
 - **Thời gian nói được phân bổ:** 2 phút 00 giây (120 giây) cho ba slide: Slide 24 (42 giây), Slide 25 (38 giây), Slide 26 (40 giây).
-- **Số từ mục tiêu:** ~315 từ trong 120 giây, tức khoảng 158 từ mỗi phút: nhanh hơn tốc độ nói rõ ràng thông thường (120 đến 130 từ/phút), nên phải bấm giờ khi luyện. Nếu vượt khung, giữ các số liệu chính và bỏ bớt các con số token chi tiết ở Slide 25
+- **Số từ mục tiêu:** ~340 từ trong 120 giây, tức khoảng 170 từ mỗi phút: nhanh hơn tốc độ nói rõ ràng thông thường (120 đến 130 từ/phút), nên phải bấm giờ khi luyện. Nếu vượt khung, giữ các số liệu chính và bỏ bớt các con số token chi tiết ở Slide 25
 - **Slide phụ trách:** Slide 24 (42 giây): lần chạy thí nghiệm; Slide 25 (38 giây): số token và giá niêm yết; Slide 26 (40 giây): Kết quả 1 (Jev nhanh, rẻ và phần lớn đúng). Câu bàn giao cho Quy nằm ở cuối Slide 26. Son **không đặt câu hỏi** cho khán giả.
 
 ---
@@ -28,7 +28,7 @@
 > 
 > `[NGHỈ 1 GIÂY]`  
 > 
-> Every count gets a ninety-five percent interval. We ask two questions: what does each level buy and cost, and when is Jev wrong, and does its confidence warn us?
+> Every count gets a ninety-five percent interval. We ask one question: what does each level buy and cost?
 > 
 > `[NGHỈ 1 GIÂY]`  
 > 
@@ -66,7 +66,7 @@
 > 
 > `[NHÌN SANG VUONG QUANG QUY]`  
 > 
-> Now my teammate Vuong Quang Quy will show what the confidence of Jev tells us.
+> Now my teammate Vuong Quang Quy will compare the two levels.
 
 ---
 
@@ -74,7 +74,7 @@
 
 Nói chính xác câu tiếng Anh này để chuyển tiếp cho Quy (Diễn giả 4):
 
-> "Now my teammate Vuong Quang Quy will show what the confidence of Jev tells us."
+> "Now my teammate Vuong Quang Quy will compare the two levels."
 
 ---
 

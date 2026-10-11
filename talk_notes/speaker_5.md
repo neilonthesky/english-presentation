@@ -3,9 +3,9 @@
 - **Họ và tên diễn giả:** Nguyen Phuong Nam
 - **Vai trò trong đề tài:** Tổng quan tài liệu nghiên cứu liên quan; Thảo luận hạn chế nghiên cứu; Thiết kế trực quan slide; Hỗ trợ chuẩn bị tài liệu hỏi đáp cho Long
 - **Tỷ lệ phân công:** 15% tổng thời lượng thuyết trình trong bài báo; về thời gian nói, Phuong Nam nói 120 giây trên tổng 858 giây.
-- **Thời gian nói được phân bổ:** 2 phút 00 giây (120 giây) cho ba slide: Slide 29 (30 giây), Slide 30 (55 giây), Slide 31 (35 giây).
-- **Số từ mục tiêu:** ~350 từ trong 120 giây, tức khoảng 175 từ mỗi phút: nhanh hơn tốc độ nói rõ ràng thông thường, nên phải bấm giờ khi luyện. Nếu vượt khung, bỏ bớt câu phụ ở Slide 30 (ví dụ câu về tập yêu cầu thứ hai) và giữ nguyên các số liệu chính
-- **Các slide phụ trách:** Slide 29 (30 giây), Slide 30 (55 giây) và Slide 31 (35 giây). Cuối Slide 31, Phuong Nam mời khán giả hỏi Long. Phuong Nam **không đặt câu hỏi** cho khán giả.
+- **Thời gian nói được phân bổ:** 2 phút 00 giây (120 giây) cho ba slide: Slide 28 (30 giây), Slide 29 (55 giây), Slide 30 (35 giây).
+- **Số từ mục tiêu:** ~364 từ trong 120 giây, tức khoảng 182 từ mỗi phút: nhanh hơn tốc độ nói rõ ràng thông thường, nên phải bấm giờ khi luyện. Nếu vượt khung, bỏ bớt câu phụ ở Slide 29 (ví dụ câu về tập yêu cầu thứ hai) và giữ nguyên các số liệu chính
+- **Các slide phụ trách:** Slide 28 (30 giây), Slide 29 (55 giây) và Slide 30 (35 giây). Cuối Slide 30, Phuong Nam mời khán giả hỏi Long. Phuong Nam **không đặt câu hỏi** cho khán giả.
 
 ---
 
@@ -19,7 +19,7 @@
 
 ## 2. Kịch bản nói chi tiết từng từ (Word-for-Word Spoken Script)
 
-### Slide 29: Công trình liên quan
+### Slide 28: Công trình liên quan
 - **Tiêu đề slide:** Related work: limit what the model can trigger
 - **Thời gian dự kiến trên slide:** 0 phút 30 giây (30 giây, ~78 từ)
 
@@ -28,11 +28,11 @@
 > 
 > `[NGHỈ 1 GIÂY]`  
 > 
-> `[CHUYỂN SANG SLIDE 30]`
+> `[CHUYỂN SANG SLIDE 29]`
 
 ---
 
-### Slide 30: Giới hạn nghiên cứu và điều chúng tôi khẳng định
+### Slide 29: Giới hạn nghiên cứu và điều chúng tôi khẳng định
 - **Tiêu đề slide:** The gain is clear, but our evidence is small
 - **Thời gian dự kiến trên slide:** 0 phút 55 giây (55 giây, ~140 từ)
 
@@ -52,11 +52,11 @@
 > 
 > `[NGHỈ 1 GIÂY]`  
 > 
-> `[CHUYỂN SANG SLIDE 31]`
+> `[CHUYỂN SANG SLIDE 30]`
 
 ---
 
-### Slide 31: Kết luận và chuyển sang Q&A
+### Slide 30: Kết luận và chuyển sang Q&A
 - **Tiêu đề slide:** Conclusion
 - **Thời gian dự kiến trên slide:** 0 phút 35 giây (35 giây, ~110 từ)
 
@@ -64,7 +64,7 @@
 > 
 > `[NGHỈ 1 GIÂY]`  
 > 
-> Jev needs a question that we write for each rule. The confidence of Jev is a warning: three hundred and thirty-eight of the seven hundred and thirty-seven answers below zero point eight are wrong, against ninety-two of four thousand four hundred and fifty-five at zero point nine or more. The next step is real tickets and a larger set of requests.
+> Jev needs a question that we write for each rule. The next step is real tickets and a larger set of requests.
 > 
 > `[NGHỈ 1 GIÂY]`  
 > 
