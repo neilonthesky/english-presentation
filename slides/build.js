@@ -898,15 +898,15 @@ async function photo(file, w, h, radius = 0.08, dpi = 150) {
       [{ name: "Jev", labels, values: [87.5, 83.0, 83.0, 96.0, 99.4] }],
       {
         ...chartBase, showLegend: false, x: ML + 0.2, y: 1.8, w: 7.2, h: 4.6, barDir: "col", barGrouping: "clustered", barGapWidthPct: 60,
-        chartColors: [C.l3, C.l3, C.l3, C.l3, C.teal], dataLabelPosition: "outEnd", dataLabelFontSize: 14, dataLabelFormatCode: "0.0",
-        catAxisLabelFontSize: 14, valAxisMaxVal: 112, title: "Percent correct over the 1,024 requests (topic: 983 scored; rule answers: 1,700)",
+        chartColors: [C.l3, C.l3, C.l3, C.l3, C.teal], dataLabelPosition: "outEnd", dataLabelFontSize: 15, dataLabelFormatCode: "0.0",
+        catAxisLabelFontSize: 14, valAxisHidden: false, valAxisMaxVal: 110, valAxisMajorUnit: 20, valAxisLabelFontSize: 14, valAxisLabelColor: C.text,
+        valAxisLabelFormatCode: '0"%"', valAxisLineShow: true, valGridLine: { color: "D5DBE3", size: 0.75 }, title: "Percent correct over the 1,024 requests",
       }
     );
     const x = ML + 7.9, w = CW - 7.9;
     callout(s, x, 1.65, w, 1.5, { icon: "LuZap", big: "0.31 s", label: "median time for one Jev call", color: C.l3 });
     callout(s, x, 3.35, w, 1.5, { icon: "LuDollarSign", big: "$0.064", label: "per 1,000 requests for the Jev calls", color: C.l3 });
-    callout(s, x, 5.05, w, 1.5, { icon: "LuBadgeCheck", big: "1,690 of 1,700", label: "rule answers match the written rules", color: C.teal, bigSize: 28, labelSize: 14 });
-    textBox(s, "95% intervals: topic 79 to 93%, priority 75 to 89%, action 75 to 89%, injection 90 to 98%, rule answers 97 to 100%. 174 action labels are wrong, and none ends in a wrong outcome.", ML, 6.65, CW - 1, 0.6, { size: 14, color: C.muted, valign: "middle" });
+    callout(s, x, 5.05, w, 1.5, { icon: "LuBadgeCheck", big: "0 of 174", label: "wrong action labels end in a wrong outcome", color: C.teal, bigSize: 30, labelSize: 14 });
   }
 
   // ---------- 8. Result 2: the ladder ----------
