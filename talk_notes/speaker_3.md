@@ -20,7 +20,7 @@
 ## 2. Kịch bản nói chi tiết từng từ (Word-for-Word Spoken Script)
 
 ### Slide 24: Lần chạy: 1.024 yêu cầu
-- **Tiêu đề slide:** The run: 1,024 requests
+- **Tiêu đề slide:** Both levels run on the same 1,024 requests
 - **Thời gian dự kiến trên slide:** 0 phút 42 giây (42 giây, ~90 từ)
 
 > `[NHÌN KHÁN GIẢ - MỈM CƯỜI]`  
@@ -37,14 +37,14 @@
 ---
 
 ### Slide 25: Số token và giá niêm yết: một lần gọi tốn bao nhiêu
-- **Tiêu đề slide:** List prices: what one call costs
+- **Tiêu đề slide:** Level 3 reads less, so it costs about half
 - **Thời gian dự kiến trên slide:** 0 phút 38 giây (38 giây, ~110 từ)
 
 > Level Two reads the chat text, the sender role, the channel, the help articles, the whole account, and the written rules. Level Three reads less: the chat first, then only the account lines and the rule questions of one action. Jev costs four point two cents per million input tokens, and its output is free. The LLM costs fifteen cents in and sixty cents out per million tokens, with high reasoning effort. The first Jev call reads one thousand two hundred and thirty-three tokens and writes one hundred and ninety-six. The second call, on four hundred and ten of the requests, reads seven hundred and forty-three tokens and writes one hundred and five. One LLM agent call reads one thousand two hundred and twenty-nine tokens and writes two hundred and sixty-eight, because reasoning counts.
 > 
 > `[NGHỈ 1 GIÂY]`  
 > 
-> At list price, for one thousand and twenty-four requests, Level Two costs sixty-two cents, and Level Three costs thirty cents: one thousand four hundred and thirty-four calls to Jev, and one thousand and twenty-four to the LLM.
+> At list price, for one thousand requests, Level Two costs sixty-one cents, and Level Three costs twenty-nine cents: for each request, one point four calls to Jev, and one to the LLM.
 > 
 > `[NGHỈ 1 GIÂY]`  
 > 

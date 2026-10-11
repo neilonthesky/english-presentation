@@ -40,7 +40,7 @@ Trưởng nhóm (Tran Thanh Long) nói nhiều nhất và có phần trăm đón
 
 ## 3. Bảng phân chia slide cho từng diễn giả
 
-31 slide thuyết trình (Slide 4 là bức tường luật minh họa, Slide 5 đến 8 giải thích luật, luồng xử lý, Jev đọc gì và trả lời gì, Slide 9 đến 20 là ba walk-through, do Long nói liền).
+31 slide thuyết trình, cộng Slide 32 là phụ lục Tài liệu tham khảo (không nói, 0 giây) (Slide 4 là bức tường luật minh họa, Slide 5 đến 8 giải thích luật, luồng xử lý, Jev đọc gì và trả lời gì, Slide 9 đến 20 là ba walk-through, do Long nói liền).
 
 | Số slide | Tiêu đề slide | Nội dung trọng tâm | Người trình bày | Thời lượng slide |
 | :---: | :--- | :--- | :--- | :---: |
@@ -48,22 +48,23 @@ Trưởng nhóm (Tran Thanh Long) nói nhiều nhất và có phần trăm đón
 | **2** | Where we start: staff or one LLM agent | Nhân viên hỗ trợ đối chiếu với một LLM agent tự do; câu hỏi nghiên cứu. Tương tác: giơ tay và bình chọn "Which action would you never let a chatbot do alone?" | Tran Thanh Long | 98 s |
 | **3** | Three levels, one change at each level | Ba cấp độ, mỗi cấp thay đổi một thứ; mọi cấp chạy trên cùng 1.024 yêu cầu. Tương tác: câu hỏi dự đoán "Which level do you think is faster and cheaper, Level 2 or Level 3?" (không tiết lộ đáp án) | Tran Thanh Long | 98 s |
 | **4** | Real support policies have many rules | Bức tường luật minh họa, ghi rõ "Illustration, not our data"; Long nói "many rules, but today only the essential rules gate" | Tran Thanh Long | 12 s |
-| **5** | The written rules: allow or deny | Năm luật cốt lõi: Security rule, hoàn tiền quá 100 đô, link đổi mật khẩu sang địa chỉ khác, gói đã hủy, xóa dữ liệu luôn bị từ chối; hai cách áp luật của Level 2 và Level 3 | Tran Thanh Long | 23 s |
-| **6** | Level 3: Jev and an LLM | Máy trạng thái bảy trạng thái (New, Jev, Rules, Do action, Final message, Chat open, Resolved); Jev quyết định ở hai trạng thái, quy trình đi theo câu trả lời | Tran Thanh Long | 26 s |
+| **5** | Every action meets a written rule: allow or deny | Năm luật cốt lõi: Security rule, hoàn tiền quá 100 đô, link đổi mật khẩu sang địa chỉ khác, gói đã hủy, xóa dữ liệu luôn bị từ chối; hai cách áp luật của Level 2 và Level 3 | Tran Thanh Long | 23 s |
+| **6** | Level 3: Jev answers, and the process decides | Máy trạng thái bảy trạng thái (New, Jev, Rules, Do action, Final message, Chat open, Resolved); Jev quyết định ở hai trạng thái, quy trình đi theo câu trả lời | Tran Thanh Long | 26 s |
 | **7** | Jev reads the chat first, then one rule at a time | Hai lần gọi Jev: lần một chỉ đọc chat; lần hai đọc chat, các dòng tài khoản mà hành động cần, và một câu hỏi cho mỗi luật | Tran Thanh Long | 26 s |
 | **8** | Jev answers four questions, then one per rule | Bốn câu hỏi của lần gọi một (chủ đề, ưu tiên, hành động, cờ injection) và một câu hỏi cho mỗi luật ở lần gọi hai; cờ injection bật thì hành động là Send reply; chuyển sang ba walk-through | Tran Thanh Long | 24 s |
 | **9 đến 20** | Ba walk-through (9 đến 13, 14 đến 17, 18 đến 20) | Ba yêu cầu thật đi qua luồng Level 3, mỗi lần bấm phím tiếp là một slide. Walk-through 1 đi qua mọi trạng thái (5 slide): hoàn tiền không luật nào chặn (R0037). Walk-through 2 (4 slide): hoàn tiền bị luật hạn mức chặn (R0041). Walk-through 3 (3 slide): lệnh ẩn trong tin nhắn (R0086). Mọi câu trả lời của Jev là dữ liệu ghi lại thật | Tran Thanh Long | 22 + 12 + 12 = 46 s |
 | **21** | Test data: 512 customers, 1,024 requests | Một khách hàng trong dữ liệu thử nghiệm; 512 khách hàng, mỗi tài khoản có một teammate không có quyền thanh toán; 1.024 yêu cầu, 24 loại | Nguyen Thanh Nam | 41 s |
 | **22** | 1,024 requests in ten families | Biểu đồ số yêu cầu theo mười nhóm; 901 trong 1.024 yêu cầu do chủ tài khoản gửi và 123 do teammate; 307 trong 1.024 yêu cầu bị một luật từ chối; bộ sinh dữ liệu chạy mã thật của hệ thống | Nguyen Thanh Nam | 39 s |
-| **23** | What we count: three outcomes and one harm flag | Served, Stopped, Error; một lần chạy gây hại là lần làm thay đổi tiền, dữ liệu, gói hoặc mật khẩu trái luật; thêm thời gian máy, chi phí API và kiểm định dấu | Nguyen Thanh Nam | 40 s |
-| **24** | The run: 1,024 requests | 1.024 yêu cầu ở mỗi cấp; 1.434 lượt gọi Jev và 1.024 lượt gọi LLM ở Level 3; hai câu hỏi nghiên cứu | Vu Van Son | 42 s |
-| **25** | List prices: what one call costs | Số token mỗi lượt gọi, giá niêm yết của Jev và của LLM, chi phí mỗi 1.024 yêu cầu: Level 2 là 0,62 đô và Level 3 là 0,30 đô | Vu Van Son | 38 s |
+| **23** | Every request ends served, stopped, or in error | Served, Stopped, Error; một lần chạy gây hại là lần làm thay đổi tiền, dữ liệu, gói hoặc mật khẩu trái luật; thêm thời gian máy, chi phí API và kiểm định dấu | Nguyen Thanh Nam | 40 s |
+| **24** | Both levels run on the same 1,024 requests | 1.024 yêu cầu ở mỗi cấp; 1.434 lượt gọi Jev và 1.024 lượt gọi LLM ở Level 3; hai câu hỏi nghiên cứu | Vu Van Son | 42 s |
+| **25** | Level 3 reads less, so it costs about half | Số token mỗi lượt gọi, giá niêm yết của Jev và của LLM, chi phí mỗi 1.000 yêu cầu: Level 2 là 0,61 đô và Level 3 là 0,29 đô | Vu Van Son | 38 s |
 | **26** | Result 1: Jev is fast and cheap, and mostly right | Jev: 0,31 s mỗi lượt gọi, 0,064 đô mỗi 1.000 yêu cầu; độ đúng theo từng câu trả lời; 1.690 trên 1.700 câu trả lời luật đúng | Vu Van Son | 40 s |
 | **27** | Jev reports a confidence, and it is a warning | 5.755 câu trả lời, 522 câu sai; 338 trong 737 câu dưới 0,8 sai, so với 92 trong 4.455 câu từ 0,9 trở lên (2,1%) | Vuong Quang Quy | 40 s |
 | **28** | Result 2: Level 3 is faster, cheaper, and makes fewer errors | Level 3: 717 phục vụ, 307 chặn, 0 lỗi; Level 2: 676 phục vụ, 287 chặn, 61 lỗi; nhanh hơn 1,8 lần, rẻ hơn 2,1 lần; kiểm định dấu p = 0,031 | Vuong Quang Quy | 38 s |
 | **29** | Related work: limit what the model can trigger | Prompt injection (Greshake 2023), phòng thủ bằng thiết kế (CaMeL, các mẫu thiết kế), nền tảng hỗ trợ định tuyến bằng quy tắc (Zendesk, Intercom Fin) | Nguyen Phuong Nam | 30 s |
-| **30** | Limits and what we claim | Dữ liệu tổng hợp và nhãn do chính mã áp luật sinh ra; khoảng tin cậy rộng; mỗi luật cần một câu hỏi do nhóm viết; Security rule được tìm thấy trên tập 512 yêu cầu trước đó nên số liệu chính không phải kiểm tra mù | Nguyen Phuong Nam | 55 s |
+| **30** | The gain is clear, but our evidence is small | Dữ liệu tổng hợp và nhãn do chính mã áp luật sinh ra; khoảng tin cậy rộng; mỗi luật cần một câu hỏi do nhóm viết; Security rule được tìm thấy trên tập 512 yêu cầu trước đó nên số liệu chính không phải kiểm tra mù | Nguyen Phuong Nam | 55 s |
 | **31** | Conclusion | Tóm tắt các phát hiện cốt lõi, cảm ơn và mời khán giả đặt câu hỏi cho Long | Nguyen Phuong Nam | 35 s |
+| **32** | Appendix: References | Slide dự phòng, không nói: năm nguồn được trích ở Slide 29 (Greshake 2023, Debenedetti 2025, Beurer-Kellner 2025, Zendesk, Intercom) | Không ai | 0 s |
 
 ---
 

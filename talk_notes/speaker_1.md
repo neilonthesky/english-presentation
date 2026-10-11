@@ -119,7 +119,7 @@
 ---
 
 ### Slide 5: Các quy tắc bằng văn bản
-- **Tiêu đề slide:** The written rules: allow or deny
+- **Tiêu đề slide:** Every action meets a written rule: allow or deny
 - **Thời gian dự kiến trên slide:** 0 phút 23 giây (23 giây, ~63 từ)
 
 > Here is the essential gate, one rule for each action. First, the Security rule: if someone else used the account or the card, deny. A refund above one hundred dollars is denied. So is a password link to an e-mail that is not on file, and a plan that is already cancelled. Deleting data is always denied. At Level Two the agent reads these rules as text. At Level Three Jev gets one yes/no question for each rule.
@@ -131,7 +131,7 @@
 ---
 
 ### Slide 6: Luồng xử lý của Level 3
-- **Tiêu đề slide:** Level 3: Jev and an LLM
+- **Tiêu đề slide:** Level 3: Jev answers, and the process decides
 - **Thời gian dự kiến trên slide:** 0 phút 26 giây (26 giây, ~56 từ)
 
 > This is Level Three as a state machine with seven states. A message enters New. Jev decides in two states. In the first, Jev reads the chat and gives four answers: the topic, the priority, the action, and an injection flag. In Rules, Jev answers one yes/no question for each written rule of the action. The process follows the answers: if no rule is broken, Do action runs the action; if one is broken, nothing runs. The LLM writes the final message only.

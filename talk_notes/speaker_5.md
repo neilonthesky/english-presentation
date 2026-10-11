@@ -33,7 +33,7 @@
 ---
 
 ### Slide 30: Giới hạn nghiên cứu và điều chúng tôi khẳng định
-- **Tiêu đề slide:** Limits and what we claim
+- **Tiêu đề slide:** The gain is clear, but our evidence is small
 - **Thời gian dự kiến trên slide:** 0 phút 55 giây (55 giây, ~140 từ)
 
 > Our evidence is small: two hosted models, one synthetic SaaS product, and our own labels, which the same code that applies the rules produced. Both levels run on the same one thousand and twenty-four requests, and the intervals are wide: for example, the Level Three errors are zero, with a ninety-five percent interval from zero to thirty-eight, and the sign test gives p equal to zero point zero three one.

@@ -45,6 +45,7 @@ const SPEAKER = [
   [SON, 42], [SON, 38], [SON, 40], // the run, models and prices, Result 1
   [QUY, 40], [QUY, 38], // the confidence of Jev, Result 2
   [PNAM, 30], [PNAM, 55], [PNAM, 35], // related work, limits, conclusion
+  [PNAM, 0], // backup: references (not spoken)
 ];
 
 // ---------- icon and illustration helpers ----------
@@ -330,7 +331,7 @@ async function photo(file, w, h, radius = 0.08, dpi = 150) {
   {
     const s = base(
       5,
-      "The written rules: allow or deny",
+      "Every action meets a written rule: allow or deny",
       "Here is the essential gate, one rule for each action. First, the Security rule: if someone else used the account or the card, deny. A refund above 100 dollars is denied. So is a password link to an e-mail that is not on file, and a plan that is already cancelled. Deleting data is always denied. At Level 2 the agent reads these rules as text. At Level 3 Jev gets one yes/no question for each rule."
     );
     // One deny rule for each action; the walk-throughs show the full gate.
@@ -362,7 +363,7 @@ async function photo(file, w, h, radius = 0.08, dpi = 150) {
   {
     const s = base(
       6,
-      "Level 3: Jev and an LLM",
+      "Level 3: Jev answers, and the process decides",
       "This is Level 3 as a state machine with seven states. A message enters New. Jev decides in two states. In the first, Jev reads the chat and gives four answers: the topic, the priority, the action, and an injection flag. In Rules, Jev answers one yes/no question for each written rule of the action. The process follows the answers: if no rule is broken, Do action runs the action; if one is broken, nothing runs. The LLM writes the final message only."
     );
     const nodes = [
@@ -375,7 +376,7 @@ async function photo(file, w, h, radius = 0.08, dpi = 150) {
       ["Resolved", "chat closed", "LuCircleCheck", "fx"],
     ];
     // Five large states that decide or act; Chat open and Resolved are small, because they come after the answer.
-    const H = 2.1, S = 1.1, y0 = 1.85, wL = 1.6, wN = nodes.map((_, i) => (i < 5 ? wL : S)), hN = nodes.map((_, i) => (i < 5 ? H : S));
+    const H = 2.1, S = 1.1, y0 = 2.2, wL = 1.6, wN = nodes.map((_, i) => (i < 5 ? wL : S)), hN = nodes.map((_, i) => (i < 5 ? H : S));
     const gap = (CW - wN.reduce((a, v) => a + v, 0)) / 6;
     const X = nodes.map((_, i) => ML + wN.slice(0, i).reduce((a, v) => a + v, 0) + i * gap);
     const yN = hN.map((h) => y0 + (H - h) / 2);
@@ -395,21 +396,20 @@ async function photo(file, w, h, radius = 0.08, dpi = 150) {
     });
     textBox(s, "no rule broken", cx[2] + wN[2] / 2 + gap / 2 - 0.8, y0 - 0.3, 1.6, 0.28, { size: 15, bold: true, color: C.blue, align: "center", valign: "middle" });
     // Deny path: Rules goes straight to the Final message; nothing runs.
-    const yd = 4.4;
+    const yd = 4.75;
     line(s, cx[2], y0 + H, 0, yd - (y0 + H), { color: C.blue });
     line(s, cx[2], yd, cx[4] - cx[2], 0, { color: C.blue });
     line(s, cx[4], y0 + H, 0, yd - (y0 + H), { color: C.blue, arrow: true, flipV: true });
     textBox(s, "a rule is broken: nothing runs", cx[2], yd + 0.05, cx[4] - cx[2], 0.3, { size: 15, bold: true, color: C.blue, align: "center", valign: "middle" });
     // Loop: a customer who writes again in the same chat goes back to New.
-    const yl = 5.0;
+    const yl = 5.35;
     line(s, cx[5], yN[5] + S, 0, yl - (yN[5] + S), { color: C.muted, dash: "dash" });
     line(s, cx[0], yl, cx[5] - cx[0], 0, { color: C.muted, dash: "dash" });
     line(s, cx[0], y0 + H, 0, yl - (y0 + H), { arrow: true, flipV: true, color: C.muted, dash: "dash" });
     textBox(s, "same chat: the customer writes again", cx[0], yl + 0.05, cx[5] - cx[0], 0.3, { size: 15, color: C.muted, align: "center", valign: "middle" });
     [["Fixed code", C.greyL, C.grey], ["Model", C.blueL, C.blue]].forEach(([t, f, l], i) => {
-      textBox(s, t, ML + i * 1.9, 5.5, 1.7, 0.32, { shape: pres.ShapeType.roundRect, fill: f, line: l, size: 14, margin: [0, 0.1, 0, 0.1], valign: "middle", align: "center" });
+      textBox(s, t, ML + i * 1.9, 6.0, 1.7, 0.32, { shape: pres.ShapeType.roundRect, fill: f, line: l, size: 14, margin: [0, 0.1, 0, 0.1], valign: "middle", align: "center" });
     });
-    band(s, 6.0, 0.8, "LuTags", [{ text: "The process follows Jev. ", options: { bold: true } }, { text: "No broken rule runs the action. A broken rule runs nothing, and the Final message says why." }]);
   }
 
   // ---------- 6. What Jev reads ----------
@@ -455,25 +455,41 @@ async function photo(file, w, h, radius = 0.08, dpi = 150) {
       "Jev answers four questions, then one per rule",
       "The first call answers four fixed questions: the topic, the priority, the action, and an injection flag. If the injection flag is on, the action becomes Send reply, so an order hidden in the text is ignored. If the action changes the state, the second call answers one yes/no question for each written rule of that action: is this rule broken? If no answer says broken, the action runs; if one does, nothing runs. Now, three real requests."
     );
+    // Call 1 answers the first four questions; Call 2 answers one question per rule. A bar over the cards names each call.
     const questions = [
-      ["LuTags", "Call 1", "Topic", "What the request is about", ["Account", "Payments", "Plans and Credits", "Product Help", "Refunds", "Security"]],
-      ["LuGauge", "Call 1", "Priority", "How urgent the request is", []],
-      ["LuZap", "Call 1", "Action", "What the customer asks to do", ["Send reply", "Start refund", "Delete data", "Cancel plan", "Reset password"]],
-      ["LuShieldX", "Call 1", "Injection flag", "The text gives orders to the model", []],
-      ["LuScale", "Call 2", "Rules", "One yes/no question for each rule", ["Broken", "Not broken"]],
+      ["LuTags", "Topic", "What the request is about", ["Account", "Payments", "Plans and Credits", "Product Help", "Refunds", "Security"]],
+      ["LuGauge", "Priority", "How urgent the request is", ["Low", "Medium", "High", "Critical"]],
+      ["LuZap", "Action", "What the customer asks to do", ["Send reply", "Start refund", "Delete data", "Cancel plan", "Reset password"]],
+      ["LuShieldX", "Injection flag", "The text gives orders to the model", ["on", "off"]],
+      ["LuScale", "Rules", "One yes/no question for each rule", ["Broken", "Not broken"]],
     ];
-    const gapC = 0.2, wC = (CW - 4 * gapC) / 5, yC = 1.6, hC = 3.5;
-    questions.forEach(([icon, call, name, ask, options], i) => {
-      const x = ML + i * (wC + gapC);
-      box(s, x, yC, wC, hC, i === 4 ? { fill: C.tealL } : {});
-      iconCircle(s, icon, x + 0.2, yC + 0.2, 0.6, i === 4 ? C.teal : C.blue);
-      textBox(s, call, x + 0.95, yC + 0.2, wC - 1.05, 0.6, { size: 14, color: i === 4 ? C.navy : C.muted, valign: "middle" });
-      textBox(s, name, x + 0.2, yC + 0.95, wC - 0.4, 0.42, { size: 20, bold: true, color: C.navy, valign: "middle" });
-      textBox(s, ask, x + 0.2, yC + 1.4, wC - 0.4, options.length ? 0.55 : 1.6, { size: 15 });
-      if (options.length) textBox(s, options.map((t, k) => ({ text: t, options: { breakLine: k < options.length - 1 } })), x + 0.2, yC + 1.95, wC - 0.4, 1.4, { size: 14, color: i === 4 ? C.navy : C.muted });
+    const gapC = 0.2, gapX = 0.55, wC = (CW - 3 * gapC - gapX) / 5, yB = 1.5, yC = 1.95, hC = 3.9;
+    const xOf = (i) => ML + i * (wC + gapC) + (i === 4 ? gapX - gapC : 0);
+    const pill = (txt, x, y, w, fill, color, size = 13, h = 0.3) =>
+      s.addText(txt, { shape: pres.ShapeType.roundRect, rectRadius: 0.14, x, y, w, h, fill: { color: fill }, margin: 0, fontFace: FONT, fontSize: size, color, align: "center", valign: "middle", wrap: false });
+    pill("Call 1: Jev answers four questions", ML, yB, xOf(3) + wC - ML, C.blue, C.white, 14, 0.36);
+    pill("Call 2: one per rule", xOf(4), yB, wC, C.teal, C.white, 14, 0.36);
+    s.addShape(pres.ShapeType.rightArrow, { x: xOf(3) + wC + 0.1, y: yC + hC / 2 - 0.2, w: gapX - 0.2 + gapC - 0.1, h: 0.4, fill: { color: C.grey }, line: { color: C.grey, width: 0 } });
+    questions.forEach(([icon, name, ask, options], i) => {
+      const last = i === 4, x = xOf(i), inner = wC - 0.4;
+      box(s, x, yC, wC, hC, last ? { fill: C.tealL } : {});
+      iconCircle(s, icon, x + 0.2, yC + 0.2, 0.6, last ? C.teal : C.blue);
+      textBox(s, name, x + 0.2, yC + 0.95, inner, 0.42, { size: 20, bold: true, color: C.navy, valign: "middle" });
+      textBox(s, ask, x + 0.2, yC + 1.4, inner, 0.55, { size: 15 });
+      // The values as chips, packed left to right and wrapped to the width of the card.
+      let cx = 0, cy = yC + 1.95;
+      options.forEach((o) => {
+        const w = o.length * 0.078 + 0.22;
+        if (cx > 0 && cx + w > inner) { cx = 0; cy += 0.36; }
+        const bad = o === "on" || o === "Broken"; // the value that changes what the process does
+        pill(o, x + 0.2 + cx, cy, w, bad ? "FAD4D0" : last ? C.white : "E9F0F8", bad ? "B91C1C" : C.navy);
+        cx += w + 0.08;
+      });
+      cy += 0.45;
+      if (i === 3) textBox(s, [{ text: "If on: ", options: { bold: true, color: "B91C1C" } }, { text: "the action is Send reply, so the orders in the text are ignored." }], x + 0.2, cy, inner, 1.1, { size: 14 });
+      if (last) textBox(s, "Only if the action changes the state", x + 0.2, cy, inner, 0.7, { size: 14, color: C.navy });
     });
-    band(s, 5.2, 0.75, "LuTags", [{ text: "The process follows the answers: ", options: { bold: true } }, { text: "no broken rule runs the action; a broken rule runs nothing, and the Final message says why." }]);
-    band(s, 6.05, 0.75, "LuShieldX", [{ text: "Routing rule: ", options: { bold: true } }, { text: "if the injection flag is on, the action is set to Send reply, so the orders in the text are ignored." }]);
+    band(s, 6.05, 0.8, "LuShieldCheck", [{ text: "The process follows the answers: ", options: { bold: true } }, { text: "no broken rule runs the action; a broken rule runs nothing, and the Final message says why." }]);
   }
 
 
@@ -659,7 +675,7 @@ async function photo(file, w, h, radius = 0.08, dpi = 150) {
           r.chips.forEach(([name, state, conf], i) => {
             const broken = state === "broken";
             textBox(g, [
-              { text: name, options: { fontSize: 13, color: C.muted, breakLine: true } },
+              { text: name, options: { fontSize: 14, color: C.muted, breakLine: true } },
               { text: `${state}  ${conf.toFixed(2)}`, options: { fontSize: 16, bold: true, color: broken ? tone.accent : C.navy } },
             ], PX + 0.25 + (i % per) * (w + 0.12), PY + 0.68 + Math.floor(i / per) * 0.68, w, 0.58, {
               shape: pres.ShapeType.roundRect, fill: broken ? tone.light : CHIP, line: broken ? tone.accent : CHIP, lineW: broken ? 3 : 1, margin: [0.03, 0.1, 0.03, 0.1], valign: "middle",
@@ -733,7 +749,7 @@ async function photo(file, w, h, radius = 0.08, dpi = 150) {
     box(s, ML, 1.6, 6.3, 5.0);
     textBox(s, "One customer in the test data", ML + 0.3, 1.75, 5.7, 0.5, { size: 20, bold: true, color: C.navy, valign: "middle" });
     [
-      ["LuTags", "One purchase: a monthly plan, an annual plan, or a credit pack"],
+      ["LuDollarSign", "One purchase: a monthly plan, an annual plan, or a credit pack"],
       ["LuFileText", "A plan and the state of the plan"],
       ["LuCpu", "A render-credit balance"],
       ["LuLock", "A log of password reset links"],
@@ -780,7 +796,7 @@ async function photo(file, w, h, radius = 0.08, dpi = 150) {
   {
     const s = base(
       14,
-      "What we count: three outcomes and one harm flag",
+      "Every request ends served, stopped, or in error",
       "Now, how we score a request. We look at what the customer gets. Served means the run ends with the correct result. Stopped means a written rule denies the action, nothing runs, and the reply gives the reason. Error is every other run. A run is harmful if it changes money, data, the plan, or the password against the written rules. We also report time and cost per 1,000 requests. Now my teammate Vu Van Son will explain the run."
     );
     const gap = 0.3, cw = (CW - 2 * gap) / 3, y = 1.6, h = 2.75;
@@ -795,7 +811,7 @@ async function photo(file, w, h, radius = 0.08, dpi = 150) {
     [
       ["LuTimer", "Machine time", "of one request"],
       ["LuDollarSign", "API cost", "per 1,000 requests"],
-      ["LuScale", "Sign test", "on the errors of the two levels"],
+      ["LuBadgeCheck", "Sign test", "on the errors of the two levels"],
     ].forEach(([ic, big, label], i) => {
       callout(s, ML + i * (cw + gap), 5.85, cw, 1.0, { icon: ic, big, label, color: C.l3, bigSize: 20, bigH: 0.42, bigY: 0.1, labelSize: 14 });
     });
@@ -805,7 +821,7 @@ async function photo(file, w, h, radius = 0.08, dpi = 150) {
   {
     const s = base(
       15,
-      "The run: 1,024 requests",
+      "Both levels run on the same 1,024 requests",
       "Thank you, Nam. My name is Vu Van Son. I will explain how we ran the experiment. We call two hosted models for real: Jev, version 1.13.0, and DeepSeek V4.1 Flash. Both levels run on the same 1,024 requests. At Level 3, Jev answers the chat of every request once, and answers the rule questions on the 410 requests whose action changes the state: 1,434 Jev calls. Every count gets a 95% interval. We ask two questions: what does each level buy and cost, and when is Jev wrong, and does its confidence warn us?"
     );
     const gap = 0.3, cw = (CW - 2 * gap) / 3, y = 1.55, h = 1.85;
@@ -832,8 +848,8 @@ async function photo(file, w, h, radius = 0.08, dpi = 150) {
   {
     const s = base(
       16,
-      "List prices: what one call costs",
-      "Level 2 reads the chat text, the sender role, the channel, the matching help articles, the whole account, and the written rules. Level 3 reads less: the chat first, then only the account lines and the rule questions of one action. Jev costs 4.2 cents per million input tokens, and its output is free. The LLM costs 15 cents in and 60 cents out per million tokens, with high reasoning effort. The first Jev call reads 1,233 tokens and writes 196. The second call, on 410 of the 1,024 requests, reads 743 tokens and writes 105. One LLM agent call reads 1,229 tokens and writes 268, because reasoning counts. At list price, for 1,024 requests, Level 2 costs $0.62, and Level 3 costs $0.30: 1,434 calls to Jev and 1,024 to the LLM."
+      "Level 3 reads less, so it costs about half",
+      "Level 2 reads the chat text, the sender role, the channel, the matching help articles, the whole account, and the written rules. Level 3 reads less: the chat first, then only the account lines and the rule questions of one action. Jev costs 4.2 cents per million input tokens, and its output is free. The LLM costs 15 cents in and 60 cents out per million tokens, with high reasoning effort. The first Jev call reads 1,233 tokens and writes 196. The second call, on 410 of the 1,024 requests, reads 743 tokens and writes 105. One LLM agent call reads 1,229 tokens and writes 268, because reasoning counts. At list price, for 1,000 requests, Level 2 costs $0.61, and Level 3 costs $0.29: for each request, 1.4 calls to Jev and 1 to the LLM."
     );
     const gap = 0.3, cw = (CW - gap) / 2, y = 1.55, h = 3.5;
     [
@@ -845,17 +861,16 @@ async function photo(file, w, h, radius = 0.08, dpi = 150) {
       textBox(s, o.head, o.x + 1.3, y + 0.25, cw - 1.5, 0.75, { size: 22, bold: true, color: C.navy, valign: "middle" });
       s.addText(bullets(o.items), { x: o.x + 0.35, y: y + 1.3, w: cw - 0.7, h: 2.0, margin: 0, fontFace: FONT, fontSize: 18, color: C.text, paraSpaceAfter: 8, valign: "top" });
     });
-    band(s, 5.2, 0.8, "LuFileText", [{ text: "Level 3 reads less: ", options: { bold: true } }, { text: "the chat first, then only the account lines and the rule questions of one action." }]);
-    // Cost of the calls of each level (1,024 requests), at list price.
+    // Cost of the calls of each level (per 1,000 requests), at list price.
     const cg = 0.3, cwid = (CW - cg) / 2;
     [
-      ["Level 2: $0.62", "2,048 LLM calls", C.l2],
-      ["Level 3: $0.30", "1,434 Jev + 1,024 LLM calls", C.l3],
+      ["Level 2: $0.61 per 1,000 requests", "2 LLM calls for each request", C.l2],
+      ["Level 3: $0.29 per 1,000 requests", "1.4 Jev calls and 1 LLM call for each request", C.l3],
     ].forEach(([head, sub, col], i) => {
       textBox(s, [
-        { text: head, options: { bold: true, fontSize: 18, color: C.white, breakLine: true } },
-        { text: sub, options: { fontSize: 14, color: C.white } },
-      ], ML + i * (cwid + cg), 6.2, cwid, 0.8, { shape: pres.ShapeType.roundRect, fill: col, line: col, margin: [0.05, 0.1, 0.05, 0.1], valign: "middle", align: "center" });
+        { text: head, options: { bold: true, fontSize: 24, color: C.white, breakLine: true } },
+        { text: sub, options: { fontSize: 16, color: C.white } },
+      ], ML + i * (cwid + cg), 5.35, cwid, 1.3, { shape: pres.ShapeType.roundRect, fill: col, line: col, margin: [0.05, 0.1, 0.05, 0.1], valign: "middle", align: "center" });
     });
   }
 
@@ -873,7 +888,7 @@ async function photo(file, w, h, radius = 0.08, dpi = 150) {
       [{ name: "Jev", labels, values: [87.5, 83.0, 83.0, 96.0, 99.4] }],
       {
         ...chartBase, showLegend: false, x: ML + 0.2, y: 1.8, w: 7.2, h: 4.6, barDir: "col", barGrouping: "clustered", barGapWidthPct: 60,
-        chartColors: [C.l3], dataLabelPosition: "outEnd", dataLabelFontSize: 14, dataLabelFormatCode: "0.0",
+        chartColors: [C.l3, C.l3, C.l3, C.l3, C.teal], dataLabelPosition: "outEnd", dataLabelFontSize: 14, dataLabelFormatCode: "0.0",
         catAxisLabelFontSize: 14, valAxisMaxVal: 112, title: "Percent correct over the 1,024 requests (topic: 983 scored; rule answers: 1,700)",
       }
     );
@@ -894,7 +909,7 @@ async function photo(file, w, h, radius = 0.08, dpi = 150) {
     box(s, ML, 1.6, 7.9, 5.0);
     const bands = [["<0.6", 205, 55.0], ["0.6-0.8", 532, 42.3], ["0.8-0.9", 563, 16.4], ["0.9-0.99", 2796, 2.9], ["0.99+", 1659, 0.6]];
     s.addChart(pres.charts.BAR, [{ name: "Wrong answers", labels: bands.map(([l, n]) => `${l} (n = ${n})`), values: bands.map((x) => x[2]) }], {
-      ...chartBase, showLegend: false, x: ML + 0.2, y: 1.7, w: 7.5, h: 4.8, barDir: "col", barGapWidthPct: 50, chartColors: [C.l3],
+      ...chartBase, showLegend: false, x: ML + 0.2, y: 1.7, w: 7.5, h: 4.8, barDir: "col", barGapWidthPct: 50, chartColors: [C.red, C.red, C.blueL, C.teal, C.teal],
       dataLabelPosition: "outEnd", dataLabelFontSize: 14, dataLabelFormatCode: "0.0", catAxisLabelFontSize: 12, valAxisMaxVal: 65,
       showTitle: true, title: "Percent wrong by confidence of Jev (1,024 requests, n in brackets)",
     });
@@ -929,7 +944,7 @@ async function photo(file, w, h, radius = 0.08, dpi = 150) {
     const x = ML + 7.9, w = CW - 7.9;
     callout(s, x, 1.65, w, 1.25, { icon: "LuTimer", big: "1.8x", label: "faster: 4.28 s against 7.85 s of machine time", color: C.l3, bigSize: 28, bigH: 0.55, bigY: 0.1 });
     callout(s, x, 3.0, w, 1.25, { icon: "LuDollarSign", big: "2.1x", label: "cheaper: $0.29 against $0.61 per 1,000 requests", color: C.l3, bigSize: 28, bigH: 0.55, bigY: 0.1 });
-    callout(s, x, 4.35, w, 1.25, { icon: "LuScale", big: "0 and 61", label: "errors at Level 3 and Level 2. Sign test: p = 0.031", color: C.teal, bigSize: 28, bigH: 0.55, bigY: 0.1, labelSize: 14 });
+    callout(s, x, 4.35, w, 1.25, { icon: "LuBadgeCheck", big: "0 and 61", label: "errors at Level 3 and Level 2. Sign test: p = 0.031", color: C.teal, bigSize: 28, bigH: 0.55, bigY: 0.1, labelSize: 14 });
     band(s, 5.85, 0.95, "LuShieldCheck", [{ text: "Level 3 is faster and cheaper, with fewer errors. ", options: { bold: true } }, { text: "Harmful runs: 0 at Level 3, about 20 at Level 2. Level 1 baseline: 90 s per request (assumed)." }]);
     textBox(s, "Level 3: the time and cost of the final message come from the recorded run of the same requests.", ML, 6.9, CW - 1, 0.4, { size: 14, color: C.muted, valign: "middle" });
   }
@@ -946,7 +961,7 @@ async function photo(file, w, h, radius = 0.08, dpi = 150) {
     [
       ["LuShieldX", "Prompt injection", "Text in data can carry orders for a model.", "Greshake et al., 2023"],
       ["LuLock", "Defenses by design", "CaMeL and design patterns for LLM agents defend by limiting what the model can trigger.", "Debenedetti et al., 2025; Beurer-Kellner et al., 2025"],
-      ["LuBot", "Support platforms", "Platforms route tickets by rules. The Fin agent runs refunds, cancellations, and password resets, and reports 76 percent resolution without a human.", "Zendesk; Intercom"],
+      ["LuBot", "Support platforms", "Platforms route tickets by rules. The Fin agent runs refunds, cancellations, and password resets, and reports 76 percent resolution without a human.", "Zendesk Help Center; Intercom Learning Center, 2026"],
     ].forEach(([ic, h, t, ref], i) => {
       const x = ML + i * (cw + 0.3);
       box(s, x, 1.6, cw, 3.6);
@@ -955,14 +970,14 @@ async function photo(file, w, h, radius = 0.08, dpi = 150) {
       textBox(s, t, x + 0.3, 3.25, cw - 0.6, 1.3, { size: 16 });
       textBox(s, ref, x + 0.3, 4.65, cw - 0.6, 0.45, { size: 14, color: C.muted, valign: "middle" });
     });
-    band(s, 5.55, 0.9, "LuScale", [{ text: "Level 3 follows the same idea: ", options: { bold: true } }, { text: "Jev only answers typed questions, and the process decides if the action runs." }]);
+    band(s, 5.55, 0.9, "LuShieldCheck", [{ text: "Level 3 follows the same idea: ", options: { bold: true } }, { text: "Jev only answers typed questions, and the process decides if the action runs." }]);
   }
 
   // ---------- 9. Limits and claims ----------
   {
     const s = base(
       21,
-      "Limits and what we claim",
+      "The gain is clear, but our evidence is small",
       "Our evidence is small: two hosted models, one synthetic SaaS product, and our own labels, which the same code that applies the rules produced. Both levels run on the same 1,024 requests, and the intervals are wide: for example, the Level 3 errors are 0, with a 95% interval from 0 to 38, and the sign test is p = 0.031. " +
         "Jev needs a question that we write for each rule. We tried questions made from the text of the rule alone, and they made about 61 to 123 errors of 1,024, against none for ours. We wrote our questions knowing the 24 request types; a second set of requests did not change the result. " +
         "Real users write slang and make spelling mistakes. Our test data does not. The 90 seconds at Level 1 is assumed. We did not simulate the popup or the silence timer. " +
@@ -1036,15 +1051,15 @@ async function photo(file, w, h, radius = 0.08, dpi = 150) {
     s.addText(
       bullets([
         "Same 1,024 requests at every level. Level 2: 676 served, 287 stopped, 61 errors. Level 3: 717 served, 307 stopped, 0 errors.",
-        "Level 3 is 1.8x faster and 2.1x cheaper: 4.28 s and $0.29 against 7.85 s and $0.61. It makes fewer errors: 0 against 61 of 1,024 requests (p\u00a0=\u00a00.031).",
-        "Jev needs a question for each rule: questions made from the rule text alone made about 61 to 123 errors of 1,024.",
-        "The confidence of Jev is a warning: 338 of the 737 answers below 0.8 are wrong, against 92 of 4,455 at 0.9 or more.",
+        "Level 3 is 1.8x faster and 2.1x cheaper, with fewer errors (p\u00a0=\u00a00.031).",
+        "Jev needs a question for each rule: questions from the rule text alone made 61 to 123 errors.",
+        "The confidence of Jev is a warning: 338 of 737 answers below 0.8 are wrong, against 92 of 4,455 at 0.9 or more.",
       ]),
       { x: M, y: 1.65, w: LW, h: 4.3, margin: 0, fontFace: FONT, fontSize: 18, color: C.white, paraSpaceAfter: 9, valign: "top" }
     );
     s.addText("Thank you. Questions?", { x: M, y: 6.1, w: LW, h: 0.7, margin: 0, fontFace: FONT, fontSize: 30, bold: true, color: C.white, valign: "bottom" });
     [
-      { icon: "LuScale", big: "0 and 61", label: "errors at Level 3 and Level 2. Sign test: p\u00a0=\u00a00.031", color: C.teal },
+      { icon: "LuBadgeCheck", big: "0 and 61", label: "errors at Level 3 and Level 2. Sign test: p\u00a0=\u00a00.031", color: C.teal },
       { icon: "LuTimer", big: "1.8x", label: "faster: 4.28 s against 7.85 s of machine time", color: C.l3 },
       { icon: "LuDollarSign", big: "2.1x", label: "cheaper: $0.29 against $0.61 per 1,000 requests", color: C.l3 },
     ].forEach((o, i) => callout(s, CX, 0.7 + i * 2.1, CWd, 1.9, { ...o, bigSize: 38, bigH: 0.8, bigY: 0.25, labelSize: 15 }));
@@ -1053,6 +1068,30 @@ async function photo(file, w, h, radius = 0.08, dpi = 150) {
         "Level 3 is 1.8 times faster and 2.1 times cheaper, and it makes fewer errors: it was never wrong where Level 2 was right, and Level 2 was wrong on 61 requests where it was right. Jev needs a question that we write for each rule. The confidence of Jev is a warning: 338 of the 737 answers below 0.8 are wrong, against 92 of 4,455 at 0.9 or more. The next step is real tickets and a larger set of requests. " +
         "Thank you for listening. Our leader, Tran Thanh Long, will now take your questions."
     );
+  }
+
+
+  // ---------- Backup: references ----------
+  {
+    const s = base(
+      22,
+      "Appendix: References",
+      "Backup slide, not spoken. These are the sources cited on the related-work slide.",
+      false
+    );
+    const refs = [
+      ["Greshake et al., 2023", "Not What You've Signed Up For: Compromising Real-World LLM-Integrated Applications with Indirect Prompt Injection. AISec '23, ACM, 79-90."],
+      ["Debenedetti et al., 2025", "Defeating Prompt Injections by Design (CaMeL). arXiv:2503.18813."],
+      ["Beurer-Kellner et al., 2025", "Design Patterns for Securing LLM Agents against Prompt Injections. arXiv:2506.08837."],
+      ["Zendesk, n.d.", "Routing and automation options for incoming tickets. Zendesk Help Center. Accessed 5 October 2026."],
+      ["Intercom, n.d.", "AI Agent That Takes Action: Refunds and Cancellations. Intercom Learning Center. Accessed 7 October 2026."],
+    ];
+    refs.forEach(([who, what], i) => {
+      const y = 1.65 + i * 1.0;
+      box(s, ML, y, CW, 0.85);
+      textBox(s, who, ML + 0.3, y, 3.2, 0.85, { size: 18, bold: true, color: C.navy, valign: "middle" });
+      textBox(s, what, ML + 3.7, y, CW - 4.0, 0.85, { size: 16, valign: "middle" });
+    });
   }
 
   const file = await pres.write({ outputType: "nodebuffer" });

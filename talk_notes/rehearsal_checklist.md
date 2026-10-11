@@ -19,7 +19,7 @@ Tài liệu này liệt kê các bước tập luyện và bảng tự chấm đ
 | **Vu Van Son** | 3 slide | Slide 24 đến 26 | 120 giây (2 phút 00 giây) | 14% |
 | **Vuong Quang Quy** | 2 slide | Slide 27 đến 28 | 78 giây (1 phút 18 giây) | 9% |
 | **Nguyen Phuong Nam** | 3 slide | Slide 29 đến 31 | 120 giây (2 phút 00 giây) | 14% |
-| **Tổng cộng** | **31 slide** | **Toàn bộ bài trình bày** | **858 giây (14 phút 18 giây)** | **100%** |
+| **Tổng cộng** | **31 slide (cộng 1 slide phụ lục không nói)** | **Toàn bộ bài trình bày** | **858 giây (14 phút 18 giây)** | **100%** |
 
 ### Thời gian chi tiết từng slide
 
@@ -29,8 +29,8 @@ Tài liệu này liệt kê các bước tập luyện và bảng tự chấm đ
 | 2 | Where we start: staff or one LLM agent | Long | 98 giây | 2 phút 45 giây |
 | 3 | Three levels, one change at each level | Long | 98 giây | 4 phút 23 giây |
 | 4 | Real support policies have many rules | Long | 12 giây | 4 phút 35 giây |
-| 5 | The written rules: allow or deny | Long | 23 giây | 4 phút 58 giây |
-| 6 | Level 3: Jev and an LLM | Long | 26 giây | 5 phút 24 giây |
+| 5 | Every action meets a written rule: allow or deny | Long | 23 giây | 4 phút 58 giây |
+| 6 | Level 3: Jev answers, and the process decides | Long | 26 giây | 5 phút 24 giây |
 | 7 | Jev reads the chat first, then one rule at a time | Long | 26 giây | 5 phút 50 giây |
 | 8 | Jev answers four questions, then one per rule | Long | 24 giây | 6 phút 14 giây |
 | 9 | Walk-through 1: a refund that no rule stops (slide mở đầu của chuỗi 5 slide, Slide 9 đến 13) | Long | 22 giây cho cả chuỗi | 6 phút 36 giây |
@@ -41,15 +41,16 @@ Tài liệu này liệt kê các bước tập luyện và bảng tự chấm đ
 | 19 đến 20 | Hai lần bấm phím tiếp của walk-through 3: cờ injection bật, hành động thành gửi trả lời | Long | nằm trong 12 giây của Slide 18 | 7 phút 00 giây |
 | 21 | Test data: 512 customers, 1,024 requests | Nam | 41 giây | 7 phút 41 giây |
 | 22 | 1,024 requests in ten families | Nam | 39 giây | 8 phút 20 giây |
-| 23 | What we count: three outcomes and one harm flag | Nam | 40 giây | 9 phút 00 giây |
-| 24 | The run: 1,024 requests | Son | 42 giây | 9 phút 42 giây |
-| 25 | List prices: what one call costs | Son | 38 giây | 10 phút 20 giây |
+| 23 | Every request ends served, stopped, or in error | Nam | 40 giây | 9 phút 00 giây |
+| 24 | Both levels run on the same 1,024 requests | Son | 42 giây | 9 phút 42 giây |
+| 25 | Level 3 reads less, so it costs about half | Son | 38 giây | 10 phút 20 giây |
 | 26 | Result 1: Jev is fast and cheap, and mostly right | Son | 40 giây | 11 phút 00 giây |
 | 27 | Jev reports a confidence, and it is a warning | Quy | 40 giây | 11 phút 40 giây |
 | 28 | Result 2: Level 3 is faster, cheaper, and makes fewer errors | Quy | 38 giây | 12 phút 18 giây |
 | 29 | Related work: limit what the model can trigger | Phuong Nam | 30 giây | 12 phút 48 giây |
-| 30 | Limits and what we claim | Phuong Nam | 55 giây | 13 phút 43 giây |
+| 30 | The gain is clear, but our evidence is small | Phuong Nam | 55 giây | 13 phút 43 giây |
 | 31 | Conclusion | Phuong Nam | 35 giây | 14 phút 18 giây |
+| 32 | Appendix: References (dự phòng, không nói) | Không ai | 0 giây | 14 phút 18 giây |
 
 **Lưu ý về tốc độ:** thời gian trên là thời gian ghi trong ghi chú của bộ slide hiện tại (`slides/build.js`, hàm `base` và mảng `SPEAKER`). Cả ba walk-through đều được tính là một khối nói liền: Long bấm phím để đi qua từng khung, và toàn bộ chuỗi khung nằm trong số giây của slide mở đầu. Tổng cộng 858 giây nói, tiếp theo là 300 giây hỏi đáp.
 
