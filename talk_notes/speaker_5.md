@@ -2,10 +2,10 @@
 
 - **Họ và tên diễn giả:** Nguyen Phuong Nam
 - **Vai trò trong đề tài:** Tổng quan tài liệu nghiên cứu liên quan; Thảo luận hạn chế nghiên cứu; Thiết kế trực quan slide; Hỗ trợ chuẩn bị tài liệu hỏi đáp cho Long
-- **Tỷ lệ phân công:** 15% tổng thời lượng thuyết trình
-- **Thời gian nói được phân bổ:** 1 phút 55 giây (115 giây). Giảm 20 giây so với bản trước (135 giây) vì câu hỏi suy ngẫm kết thúc ở Slide 10 đã bị bỏ.
-- **Số từ mục tiêu:** ~249 từ (tốc độ ~130 từ/phút)
-- **Các slide phụ trách:** Slide 9 (75 giây) và Slide 10 (40 giây). Phương Nam **không đặt câu hỏi** cho khán giả. Slide cuối kết thúc bằng lời cảm ơn và mời mọi người đặt câu hỏi cho Long; toàn bộ phần Q&A do Long trả lời. Các phần nói về kiểm chứng riêng cho Security rule và về dữ liệu giả mạo đã bị bỏ khỏi cả hai slide; hạn chế nay nói thẳng rằng Security rule được thêm sau khi thấy lỗi gian lận trên 50 yêu cầu nên số liệu chính không phải kiểm tra mù.
+- **Tỷ lệ phân công:** 13% tổng thời lượng thuyết trình (120 giây trên tổng 900 giây)
+- **Thời gian nói được phân bổ:** 2 phút 00 giây (120 giây). Phuong Nam có ba slide (thêm slide công trình liên quan), đọc ít chữ hơn bản trước nhưng đủ 120 giây: nói chậm và rõ.
+- **Số từ mục tiêu:** ~283 từ (nói chậm hơn 130 từ/phút một chút)
+- **Các slide phụ trách:** Slide 29 (30 giây), Slide 30 (55 giây) và Slide 31 (35 giây). Cuối Slide 31, Phuong Nam mời khán giả hỏi Long.
 
 ---
 
@@ -13,64 +13,76 @@
 
 Đọc to và rõ ràng câu giới thiệu này khi nhận lượt nói:
 
-> "Thank you, Quy. My name is Nguyen Phuong Nam. I will explain our limits and our conclusion."
+> "Thank you, Quy. My name is Nguyen Phuong Nam. I will explain how our work fits the field, and its limits."
 
 ---
 
 ## 2. Kịch bản nói chi tiết từng từ (Word-for-Word Spoken Script)
 
-### Slide 9: Thảo luận và các hạn chế nghiên cứu
-- **Tiêu đề slide:** Limits and what we claim
-- **Thời gian dự kiến trên slide:** 1 phút 15 giây (75 giây, ~160 từ)
+### Slide 29: Công trình liên quan
+- **Tiêu đề slide:** Related work: limit what the model can trigger
+- **Thời gian dự kiến trên slide:** 0 phút 30 giây (30 giây, ~81 từ)
 
-> `[NHÌN KHÁN GIẢ - GIAO TIẾP ÁNH MẮT TRÁI VÀ PHẢI]`  
-> Thank you, Quy. My name is Nguyen Phuong Nam. I will explain our limits and our conclusion.  
+> `[NHÌN KHÁN GIẢ - MỈM CƯỜI]`  
+> Thank you, Quy. My name is Nguyen Phuong Nam. I will explain how our work fits the field, and its limits.  
 > 
 > `[NGHỈ 1 GIÂY]`  
 > 
-> Intercom Fin says it solves over seventy-five percent of chats without a human. Companies rarely say how their systems fail.  
+> Text in data can carry orders for a model. CaMeL and other design patterns defend by limiting what the model can trigger. Support platforms route tickets by rules, and the Fin agent runs refunds and cancellations. Our first design is of this kind: a fixed check limits what Jev can trigger. Our new design gives Jev the rules as context.  
 > 
 > `[NGHỈ 1 GIÂY]`  
 > 
-> First, our evidence is small. We use two hosted models, one synthetic product, and our own labels. We have fifty requests in twenty-four types. We saw zero harmful runs. That does not prove the real rate is zero. The upper limit is about six percent.  
-> 
-> `[NGHỈ 1 GIÂY]`  
-> 
-> Second, real users write slang and make spelling mistakes. Our test data does not. Third, we assume ninety seconds per request at Level One. We did not simulate the popup or the silence timer.  
-> 
-> `[NGHỈ 1 GIÂY]`  
-> 
-> Last, we added the Security rule after fraud reports showed a defect on these fifty requests. So the main numbers are not a blind test. The prompt cache covered 22.3 percent of the input tokens. So the real costs are lower than ours.  
-> 
-> `[NGHỈ 1 GIÂY]`  
-> `[CHUYỂN SANG SLIDE 10]`
+> `[CHUYỂN SANG SLIDE 30]`
 
 ---
 
-### Slide 10: Kết luận và chuyển sang Q&A
-- **Tiêu đề slide:** Conclusion
-- **Thời gian dự kiến trên slide:** 0 phút 40 giây (40 giây, ~85 từ)
+### Slide 30: Giới hạn nghiên cứu và điều chúng tôi khẳng định
+- **Tiêu đề slide:** Limits and what we claim
+- **Thời gian dự kiến trên slide:** 0 phút 55 giây (55 giây, ~119 từ)
 
-> To finish, we tested three levels of customer support on the same fifty requests.  
+> Our evidence is small: two hosted models, one synthetic SaaS product, and our own labels. All results have a fixed check behind Jev. We did not run the design where Jev reads the rules as context. We saw 0 harmful runs in 100 requests. That does not prove that the real rate is zero. The 95% upper limit is 3.7%.  
 > 
 > `[NGHỈ 1 GIÂY]`  
 > 
-> First, Level Three, with Jev and the LLM, is 2.2 times faster and 2.4 times cheaper than Level Two. It is never worse.  
-> Second, Jev gives a confidence number with every answer.  
-> Third, the written rules catch the wrong answers that Jev gives.  
+> Real users write slang and make spelling mistakes. Our test data does not. The 90 seconds at Level 1 is assumed. We did not simulate the popup or the silence timer.  
 > 
 > `[NGHỈ 1 GIÂY]`  
+> 
+> We found the Security rule and the account fields on an earlier 50-request set of these same 24 types, so the main numbers are not a blind test.  
+> 
+> `[NGHỈ 1 GIÂY]`  
+> 
+> `[CHUYỂN SANG SLIDE 31]`
+
+---
+
+### Slide 31: Kết luận và chuyển sang Q&A
+- **Tiêu đề slide:** Conclusion
+- **Thời gian dự kiến trên slide:** 0 phút 35 giây (35 giây, ~83 từ)
+
+> To finish, we tested three levels of customer support on the same 100 requests. With a fixed check behind Jev, Level 3 serves 70, stops 30, and makes 0 errors. Level 2 makes 6.  
+> 
+> `[NGHỈ 1 GIÂY]`  
+> 
+> Level 3 is never worse, 1.9 times faster, and 2.2 times cheaper, and the sign test gives p = 0.031. Our new design gives Jev the rules as context, and that is the next test.  
+> 
+> `[NGHỈ 1 GIÂY]`  
+> 
+> Thank you for listening.  
+> 
+> `[NGHỈ 1 GIÂY]`  
+> 
 > `[NHÌN SANG TRAN THANH LONG]`  
 > 
-> Thank you for listening. Our leader, Tran Thanh Long, will now take your questions.
+> Our leader, Tran Thanh Long, will now take your questions.
 
 ---
 
 ## 3. Câu nói chuyển tiếp sang phần hỏi đáp (Q&A)
 
-Nói chính xác câu tiếng Anh này để mở đầu phần hỏi đáp, rồi lùi sang bên và lắng nghe. Long trả lời toàn bộ câu hỏi:
+Nói chính xác câu tiếng Anh này để chuyển tiếp cho Long (Q&A):
 
-> "Thank you for listening. Our leader, Tran Thanh Long, will now take your questions."
+> "Our leader, Tran Thanh Long, will now take your questions."
 
 ---
 

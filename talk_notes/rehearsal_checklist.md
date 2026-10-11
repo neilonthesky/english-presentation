@@ -6,7 +6,7 @@ Tài liệu này cung cấp các bài tập khớp giờ, danh mục kiểm tra 
 
 ## 1. Bài tập kiểm soát thời gian và quy tắc bấm giờ
 
-- **Thời gian thuyết trình mục tiêu:** 13 phút 06 giây (786 giây). Toàn bộ tương tác với khán giả do Long thực hiện ở Slide 1 đến 3, nên thời gian tương tác của các bạn khác được chuyển sang Long: Nam giảm 25 s, Quy giảm 25 s, Phuong Nam giảm 20 s; Long tăng 50 s. Son giữ nguyên.
+- **Thời gian thuyết trình mục tiêu:** 15 phút 00 giây (900 giây), đúng bằng giới hạn 15 phút nên không còn thời gian dự phòng; mọi người nói ít nhất 120 giây. Toàn bộ tương tác với khán giả do Long thực hiện ở Slide 1 đến 3, và Long cũng đọc luật, luồng xử lý và ba walk-through (Slide 4 đến 22). Nếu cần thời gian dự phòng, cắt Slide 3 của Long (100 giây) trước.
 - **Thời gian hỏi đáp Q&A mục tiêu:** 5 phút (300 giây), do Long trả lời toàn bộ.
 - **Tổng thời gian:** 18 phút 06 giây (1.086 giây), dưới mức tối đa 20 phút.
 
@@ -14,12 +14,12 @@ Tài liệu này cung cấp các bài tập khớp giờ, danh mục kiểm tra 
 
 | Thứ tự | Họ và tên | Vai trò trong bài báo | Tỷ lệ | Thời gian dự kiến | Giới hạn tối thiểu | Giới hạn tối đa |
 | :---: | :--- | :--- | :---: | :---: | :---: | :---: |
-| 1 | **Tran Thanh Long** | Leader; Intro; Ladder; toàn bộ tương tác với khán giả | 28% | 5 phút 02 giây (302 s) | 4 phút 50 giây | 5 phút 15 giây |
-| 2 | **Nguyen Thanh Nam** | Rules; Flow; Security rule | 22% | 1 phút 57 giây (117 s) | 1 phút 50 giây | 2 phút 05 giây |
-| 3 | **Vu Van Son** | Synthetic Data; Setup | 18% | 2 phút 42 giây (162 s) | 2 phút 35 giây | 2 phút 50 giây |
-| 4 | **Vuong Quang Quy** | Results; Tables; Charts | 17% | 1 phút 30 giây (90 s) | 1 phút 25 giây | 1 phút 35 giây |
-| 5 | **Nguyen Phuong Nam** | Related Work; Limits; Concl. | 15% | 1 phút 55 giây (115 s) | 1 phút 50 giây | 2 phút 05 giây |
-| **Tổng** | **Cả 5 thành viên** | **Toàn bộ bài thuyết trình** | **100%** | **13 phút 06 giây (786 s)** | **12 phút 30 giây** | **13 phút 50 giây** |
+| 1 | **Tran Thanh Long** | Leader; Intro; Ladder; Rules; Flow; walk-through; toàn bộ tương tác với khán giả | 28% | 7 phút 00 giây (420 s) | 6 phút 45 giây | 7 phút 00 giây |
+| 2 | **Nguyen Thanh Nam** | Test Data; Families; Outcomes | 22% | 2 phút 00 giây (120 s) | 1 phút 55 giây | 2 phút 00 giây |
+| 3 | **Vu Van Son** | The Run; Prices; Result 1 | 18% | 2 phút 00 giây (120 s) | 1 phút 55 giây | 2 phút 00 giây |
+| 4 | **Vuong Quang Quy** | Confidence; Result 2; Ablation | 17% | 2 phút 00 giây (120 s) | 1 phút 55 giây | 2 phút 00 giây |
+| 5 | **Nguyen Phuong Nam** | Related Work; Limits; Concl. | 15% | 2 phút 00 giây (120 s) | 1 phút 55 giây | 2 phút 00 giây |
+| **Tổng** | **Cả 5 thành viên** | **Toàn bộ bài thuyết trình** | **100%** | **15 phút 00 giây (900 s)** | **14 phút 30 giây** | **15 phút 00 giây** |
 
 ### Quy tắc luyện tập với đồng hồ bấm giờ:
 1. **Thành viên phụ trách bấm giờ:** Diễn giả 5 (Nguyen Phuong Nam) điều khiển đồng hồ bấm giờ chính trong các buổi tập và ra hiệu kín đáo bằng tay:
@@ -62,13 +62,24 @@ Chuyển giao lộn xộn sẽ bị trừ điểm ở tiêu chí tổ chức bà
 - **Slide 1:** Tiêu đề và câu chuyện khách hàng mở đầu (Speaker 1).
 - **Slide 2:** `[CHUYỂN SANG SLIDE 2]` Where We Start: Two Old Ways (Speaker 1). Tương tác của Long: giơ tay rồi bình chọn "Which action would you never let a chatbot do alone?".
 - **Slide 3:** `[CHUYỂN SANG SLIDE 3]` The Three-Level Ladder (Speaker 1). Tương tác của Long: câu hỏi dự đoán "Which level do you think is faster and cheaper, Level 2 or Level 3?" (không tiết lộ đáp án).
-- **Slide 4:** `[CHUYỂN SANG SLIDE 4]` Level 2 & The Written Rules, gồm Security rule (Speaker 2).
-- **Slide 5:** `[CHUYỂN SANG SLIDE 5]` Level 3 Architecture & Flow; cuối slide là câu bàn giao cho Speaker 3 (Speaker 2).
-- **Slide 6:** `[CHUYỂN SANG SLIDE 6]` Experimental Setup: Synthetic Data, Real Calls (Speaker 3).
-- **Slide 7:** `[CHUYỂN SANG SLIDE 7]` Result 1: Classifier Stage (Speaker 4).
-- **Slide 8:** `[CHUYỂN SANG SLIDE 8]` Result 2: The Three-Level Ladder Comparison; cuối slide là câu bàn giao cho Speaker 5 (Speaker 4).
-- **Slide 9:** `[CHUYỂN SANG SLIDE 9]` Discussion and Study Limitations (Speaker 5).
-- **Slide 10:** `[CHUYỂN SANG SLIDE 10]` Conclusion and Open Q&A; cuối slide là lời cảm ơn và lời mời hỏi Long (Speaker 5). Sau đó Long bước lên giữa sân khấu.
+- **Slide 4:** `[CHUYỂN SANG SLIDE 4]` Real support policies have many rules: bức tường luật minh họa, "Illustration, not our data" (Speaker 1).
+- **Slide 5:** `[CHUYỂN SANG SLIDE 5]` The Written Rules, gồm Security rule (Speaker 1).
+- **Slide 6:** `[CHUYỂN SANG SLIDE 6]` Level 3: Jev and an LLM (Speaker 1).
+- **Slide 7:** `[CHUYỂN SANG SLIDE 7]` Jev reads the chat, the account, and the rules (Speaker 1).
+- **Slide 8:** `[CHUYỂN SANG SLIDE 8]` Jev answers five questions, and the process follows; cuối slide Long chuyển sang ba walk-through (Speaker 1).
+- **Slide 9 đến 19:** Ba walk-through của Long (Speaker 1): walk-through 1 có 5 slide (9 đến 13), walk-through 2 có 3 slide (14 đến 16), walk-through 3 có 3 slide (17 đến 19). Mỗi lần bấm phím tiếp là một slide; Long nói đúng một câu ngắn cho mỗi slide, và câu cuối ở Slide 19 là câu bàn giao cho Nam.
+- **Slide 20:** `[CHUYỂN SANG SLIDE 20]` Test Data: 72 Customers, 100 Requests (Speaker 2), gồm lời tự giới thiệu của Nam.
+- **Slide 21:** `[CHUYỂN SANG SLIDE 21]` 100 Requests in Ten Families (Speaker 2).
+- **Slide 22:** `[CHUYỂN SANG SLIDE 22]` What We Count: Three Outcomes and One Harm Flag (Speaker 2); cuối slide là câu bàn giao cho Son.
+- **Slide 23:** `[CHUYỂN SANG SLIDE 23]` The Run: Two Hosted Models, 600 Calls (Speaker 3).
+- **Slide 24:** `[CHUYỂN SANG SLIDE 24]` Same Input, List Prices (Speaker 3).
+- **Slide 25:** `[CHUYỂN SANG SLIDE 25]` Result 1: Classifier Stage (Speaker 3); cuối slide là câu bàn giao cho Quy.
+- **Slide 26:** `[CHUYỂN SANG SLIDE 26]` Jev Reports a Confidence (Speaker 4).
+- **Slide 27:** `[CHUYỂN SANG SLIDE 27]` Result 2: Level 3 Is Never Worse (Speaker 4).
+- **Slide 28:** `[CHUYỂN SANG SLIDE 28]` Without a Fixed Check, Jev's Errors Run (Speaker 4); cuối slide là câu bàn giao cho Speaker 5.
+- **Slide 29:** `[CHUYỂN SANG SLIDE 29]` Related Work (Speaker 5).
+- **Slide 30:** `[CHUYỂN SANG SLIDE 30]` Limits and What We Claim (Speaker 5).
+- **Slide 31:** `[CHUYỂN SANG SLIDE 31]` Conclusion; cuối slide là lời cảm ơn và lời mời hỏi Long (Speaker 5). Sau đó Long bước lên giữa sân khấu.
 
 ---
 
@@ -98,7 +109,7 @@ Sử dụng bảng tiêu chí này để tự đánh giá trong các buổi tậ
 | **5** | Q&A & communication | 1.0 | "Does Long know the 15 answers in `qa_prep.md`, repeat each question, answer in 2 to 4 sentences, and say so when he is not sure?" | Tran Thanh Long | [ ] ĐẠT |
 | **6** | English use & vocabulary | 1.0 | "Are our spoken sentences short, simple, free of em dashes, and strictly using customer support terms?" | Nguyen Thanh Nam | [ ] ĐẠT |
 | **7** | Technical approach | 1.0 | "Is the state machine and deterministic rule execution clearly explained?" | Nguyen Thanh Nam | [ ] ĐẠT |
-| **8** | Experimental results | 1.5 | "Are the speedup (18x classifier, 2.2x machine time) and cost reduction numbers exact?" | Vuong Quang Quy | [ ] ĐẠT |
-| **9** | Analysis & discussion | 1.0 | "Do we say plainly that the sign test is not significant and that the main numbers are not a blind test?" | Vuong Quang Quy | [ ] ĐẠT |
+| **8** | Experimental results | 1.5 | "Are the speedup (19.8x for one classifier call, 1.9x for the machine time) and the cost reduction (10.9x and 2.2x) numbers exact?" | Vuong Quang Quy | [ ] ĐẠT |
+| **9** | Analysis & discussion | 1.0 | "Do we say plainly that the sign test (p = 0.031) shows significantly fewer errors at Level 3 and that the main numbers are not a blind test?" | Vuong Quang Quy | [ ] ĐẠT |
 | **10** | Slides & visual support | 0.5 | "Are the diagrams legible from the back of the classroom without text clutter?" | Nguyen Phuong Nam | [ ] ĐẠT |
 | **Tổng** | **Mục tiêu điểm số toàn diện** | **10.0** | **Sẵn sàng thuyết trình trước lớp và nhận đánh giá chéo** | **Cả nhóm** | **10.0 / 10** |

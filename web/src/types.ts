@@ -126,6 +126,22 @@ export interface Timed {
   latencyS: number
 }
 
+/**
+ * One model call as it went over the network: the exact JSON body that the server sent and the exact JSON that came back. The
+ * demo shows it in the payload inspector. The cost is the list price of the tokens (the experiment's price table).
+ */
+export interface CallTrace {
+  service: "jev" | "llm"
+  url: string
+  model: string
+  request: unknown
+  response: unknown
+  latencyS: number
+  inputTokens: number
+  outputTokens: number
+  costUsd: number
+}
+
 // One response per step. The server keeps the request between the steps; the browser sends sessionId + requestId.
 /** New: the message is saved. With a requestId the text is a new message of the customer in the open chat: it joins the chat of that request. */
 export interface ReceiveResponse {
@@ -159,6 +175,11 @@ export interface RulesResponse {
   next: "act" | "final"
 }
 
+/** Triage, part 1: the answers of Jev, and the call as it went over the network (the payload inspector reads `trace`). */
+export interface ClassifyResponse extends Classifier {
+  trace: CallTrace
+}
+
 /** Final message: the text the customer reads. answer: the LLM answers a question from the help articles and the account. result: the LLM tells the result of Do action or why nothing ran. */
 export interface FinalResponse extends Timed {
   text: string
@@ -167,6 +188,41 @@ export interface FinalResponse extends Timed {
   sources: string[]
   /** Why nothing ran, when it did not (kind "result"): the reasons of the written rules, or the rule of Triage that stopped the flow. */
   blocked: string[] | null
+  trace: CallTrace
+}
+
+/** The gold answers of a request of the dataset (experiment/data/requests.csv). */
+export interface PresetGold {
+  /** The request type, for example "refund_in_window_small". */
+  category: string
+  /** The gold action of Triage. */
+  action: string
+  /** The gold final action: what the customer needs, or null when a written rule denies the gold action. */
+  finalAction: string | null
+  injection: boolean
+}
+
+/** One message of the palette: the text, who sends it, and for a request of the dataset its gold answers. */
+export interface Preset {
+  id: string
+  group: string
+  label: string
+  customerId: string
+  role: Role
+  text: string
+  gold: PresetGold | null
+}
+
+/** What Jev says about the injection flag of a preset. `chance` is the chance of "injection" (the chance of yes). */
+export interface InjectionScore {
+  chance: number | null
+  error: string | null
+}
+
+export interface PresetsResponse {
+  presets: Preset[]
+  /** The scores that the server already has, by preset id. */
+  scores: Record<string, InjectionScore>
 }
 
 /** A scenario in the drop-down list of the chat: who sends which text, and what a good run shows. */
@@ -179,4 +235,53 @@ export interface Scenario {
   text: string
   /** What a good run shows. */
   note: string
+  /** The id of the preset of the palette, when the scenario comes from it. */
+  presetId?: string
+  /** The gold answers, when the scenario is a request of the dataset. */
+  gold?: PresetGold | null
+}
+
+/** How a request ended against its gold final action: the headline of the experiment. */
+export type RequestOutcome = "served" | "stopped" | "error"
+
+/** One step of a level in the side-by-side compare: a model call (latency, tokens, cost) or fixed code (milliseconds, no cost). */
+export interface CompareStep {
+  name: string
+  kind: "model" | "code"
+  latencyS: number
+  inputTokens: number
+  outputTokens: number
+  costUsd: number
+  /** What the step did, in one line. */
+  summary: string
+  /** The call as it went over the network, for a model step. */
+  trace: CallTrace | null
+}
+
+/** One level that ran the message in the compare. Level 2: one LLM call chooses the action and applies the rules. Level 3: Jev, fixed rules, and the LLM that writes the text. */
+export interface CompareLevel {
+  level: 2 | 3
+  name: string
+  steps: CompareStep[]
+  /** The action that the model chose (the action of Triage at Level 3, "run" of the agent at Level 2), or null. */
+  chosen: string | null
+  /** The answer of the model that chose the action, in one line. */
+  decision: string
+  /** How the request ended: an answer, an action that ran, nothing ran because a written rule denies, or an answer that is not valid. */
+  end: "answer" | "act" | "blocked" | "invalid"
+  executed: Executed | null
+  /** The written rules that stopped the action. At Level 2 it is the rule that the agent named; nothing checks it. */
+  stoppedBy: string[]
+  message: string | null
+  /** Against the gold final action. Null when the message is not a request of the dataset, or when the level failed. */
+  outcome: RequestOutcome | null
+  totals: { latencyS: number; inputTokens: number; outputTokens: number; costUsd: number }
+  /** The error of a call, when the level stopped. */
+  error: string | null
+}
+
+export interface CompareResponse {
+  gold: PresetGold | null
+  level2: CompareLevel
+  level3: CompareLevel
 }

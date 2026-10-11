@@ -60,7 +60,7 @@ export async function writeTables(out: string, results: Results): Promise<string
           s.totalSeconds.toFixed(1),
         ]
   written["ladder.tex"] = table(
-    "The three levels on the 50 requests. Served counts a request that ends with the result it needs. Stopped counts a request " +
+    "The three levels on the " + results.requests + " requests. Served counts a request that ends with the result it needs. Stopped counts a request " +
       "whose correct action a written rule denies and the check of the level stopped (the fixed rules check at Level 3, the agent itself at Level 2): the flow runs nothing and the Final message tells the customer what the chat cannot do. " +
       "Errors counts every other run, and Harm the errors that run an action which changes money, a plan, stored data, or a password. Mach.~s is the machine " +
       "time, \\$/1k the API cost for 1,000 requests, and Total s the total time (the assumed 90~s of staff work at Level 1). " +
@@ -75,7 +75,7 @@ export async function writeTables(out: string, results: Results): Promise<string
   const { jev, llm } = results.systems
   const quality = results.classifier
   written["stage.tex"] = table(
-    `Jev against the LLM as classifier, over every classifier call of the 50 requests. The tokens are the ` +
+    `Jev against the LLM as classifier, over every classifier call of the ${results.requests} requests. The tokens are the ` +
       "mean of one call and the cost is for 1,000 requests. Wrong in any field is the share of requests with at least one wrong " +
       "scored field. Only Jev reports a confidence, which the calibration table reads.",
     "tab:stage",

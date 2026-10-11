@@ -150,14 +150,14 @@ async function main(): Promise<void> {
     if (request.finalAction === null && request.finalReason.length === 0) problems.push(`${request.id}: a denied action needs a reason`)
   }
 
-  // Every request type needs at least 2 requests, and every action needs at least 3 gold answers, so each row of the action
+  // Every request type needs at least 4 requests, and every action needs at least 3 gold answers, so each row of the action
   // confusion has support.
   for (const action of ACTIONS) {
     const count = requests.filter((request) => request.gold.action === action).length
     if (count < 3) problems.push(`gold action "${action}" appears ${count} time(s), at least 3 are required`)
   }
   for (const [category, count] of countBy(requests, (r) => r.category)) {
-    if (count < 2) problems.push(`category ${category}: ${count} requests, at least 2 are required`)
+    if (count < 4) problems.push(`category ${category}: ${count} requests, at least 4 are required`)
   }
   if (!world.customers.some((customer) => customer.planCancelled)) {
     problems.push(`${WORLD_FILE}: no customer has the auto-renewal off, so the cancellation rule has nothing to deny`)

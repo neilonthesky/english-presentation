@@ -5,8 +5,9 @@
 // The presenter plays the customer (popup answer, a message in the chat, silence for T).
 import { assign, enqueueActions, fromPromise, setup } from "xstate"
 import { api } from "./api"
+import { recordCost } from "./costs"
 import type {
-  Classifier, Executed, FinalResponse, GatherResponse, RequestInfo, RulesResponse, Role, TriageResponse,
+  ClassifyResponse, Executed, FinalResponse, GatherResponse, RequestInfo, RulesResponse, Role, TriageResponse,
 } from "./types"
 
 export type NodeId = "new" | "triage" | "gather" | "rules" | "act" | "final" | "chat" | "resolved"
@@ -43,7 +44,7 @@ export interface Ctx {
   noCount: number
   requestId: string | null
   request: RequestInfo | null
-  classifier: Classifier | null
+  classifier: ClassifyResponse | null
   triage: TriageResponse | null
   gather: GatherResponse | null
   rules: RulesResponse | null
@@ -98,6 +99,8 @@ async function runStep(step: Call, c: Ctx): Promise<Partial<Ctx>> {
       return { executed: await api("act", id) }
     case "final": {
       const final = await api("final", id)
+      // One Level 3 request of the session is done: the cost of its two model calls, Jev and the Final message.
+      recordCost(3, c.classifier!.trace.costUsd + final.trace.costUsd)
       return { final, messages: [...c.messages, { from: "bot", text: final.text }] }
     }
   }

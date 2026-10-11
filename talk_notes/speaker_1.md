@@ -2,10 +2,10 @@
 
 - **Họ và tên diễn giả:** Tran Thanh Long
 - **Vai trò trong đề tài:** Trưởng nhóm; Điều phối đề tài; Tóm tắt (Abstract), Mở đầu (Introduction) và Kết luận (Conclusion); Kiến trúc bậc thang hỗ trợ; Biên tập hoàn thiện
-- **Tỷ lệ phân công:** 28% tổng thời lượng thuyết trình (trong bài báo). Về thời gian nói, Long nói nhiều nhất vì phụ trách toàn bộ phần tương tác với khán giả và toàn bộ phần hỏi đáp.
-- **Thời gian nói được phân bổ:** 5 phút 02 giây (302 giây) = 252 giây cũ + 50 giây tương tác chuyển từ các bạn khác sang (+25 giây ở Slide 2, +25 giây ở Slide 3)
-- **Số từ mục tiêu:** ~600 từ (tốc độ ~130 từ/phút, đã tính cả các lần nghỉ để khán giả phản hồi)
-- **Các slide phụ trách:** Slide 1 (75 giây), Slide 2 (110 giây) và Slide 3 (117 giây), cộng toàn bộ phần Q&A sau bài nói (5 phút, xem `qa_prep.md`)
+- **Tỷ lệ phân công:** 28% tổng thời lượng thuyết trình (trong bài báo). Về thời gian nói, Long nói 420 giây trên tổng 900 giây: toàn bộ tương tác với khán giả, phần giải thích luật và luồng xử lý, ba walk-through và toàn bộ phần hỏi đáp.
+- **Thời gian nói được phân bổ:** 7 phút 00 giây (420 giây) = 263 giây ở Slide 1 đến 3 (gồm khoảng 50 giây tương tác) + 12 giây ở Slide 4 (bức tường luật) + 99 giây ở Slide 5 đến 8 (luật, luồng xử lý, Jev đọc gì, Jev trả lời gì) + 46 giây cho ba walk-through (Slide 9 đến 19).
+- **Số từ mục tiêu:** ~355 từ ở Slide 4 đến 19, cộng phần nói ở Slide 1 đến 3 (tốc độ ~125 từ/phút, đã tính cả các lần nghỉ để khán giả phản hồi)
+- **Các slide phụ trách:** Slide 1 (67 giây), Slide 2 (98 giây), Slide 3 (98 giây), Slide 4 (12 giây), Slide 5 đến 8 (23 + 26 + 26 + 24 giây), ba walk-through ở Slide 9 đến 19 (46 giây), cộng toàn bộ phần Q&A sau bài nói (5 phút, xem `qa_prep.md`). Long nói liền một mạch từ Slide 1 đến Slide 19: luật và luồng xử lý được giải thích trước, rồi ba yêu cầu thật đi qua đúng luồng đó. Sau Slide 19, Long không nói nữa cho đến phần Q&A.
 - **Quy ước tương tác:** Toàn bộ tương tác với khán giả của cả nhóm do Long thực hiện ngay ở đầu bài (Slide 1 đến 3): câu chuyện mở đầu, giơ tay, bình chọn và câu hỏi dự đoán. Bốn bạn còn lại chỉ trình bày, không hỏi khán giả. Chi tiết nằm trong `interaction.md`.
 
 ---
@@ -22,14 +22,14 @@
 
 ### Slide 1: Tiêu đề và câu chuyện mở đầu
 - **Tiêu đề slide:** Human to LLM & Classifier Support Agent: A Three-Level Ladder for SaaS Request Triage
-- **Thời gian dự kiến trên slide:** 1 phút 15 giây (75 giây, ~160 từ)
+- **Thời gian dự kiến trên slide:** 1 phút 07 giây (67 giây, ~145 từ)
 
 > `[NHÌN KHÁN GIẢ - MỈM CƯỜI]`  
-> Good morning, teacher and classmates. My name is Tran Thanh Long, and I am presenting today with my four group members: Nguyen Thanh Nam, Vu Van Son, Vuong Quang Quy, and Nguyen Phuong Nam. We are third-year computing students from Phenikaa University.
+> Good morning, teacher and classmates. My name is Tran Thanh Long, and I am presenting today with my four group members: Nguyen Thanh Nam, Vu Van Son, Vuong Quang Quy, and Nguyen Phuong Nam.
 > 
 > `[NGHỈ 1 GIÂY]`  
 > 
-> Let me start with a quick story. Imagine this common situation. `[NGHỈ 1 GIÂY]` It is Friday evening. You subscribed to an AI video creation service for forty dollars, but the render failed completely. You open the support chat and ask for a refund. The chat window tells you: *Your request is in the queue.* You wait ten minutes. You wait one hour. You wait two whole days until Monday morning just to get your money back!  
+> Let me start with a quick story. `[NGHỈ 1 GIÂY]` It is Friday evening. You subscribed to an AI video creation service for forty dollars, but the render failed completely. You open the support chat and ask for a refund. The chat window tells you: *Your request is in the queue.* You wait ten minutes. You wait two whole days until Monday morning just to get your money back!  
 > 
 > `[NGHỈ 1 GIÂY]`  
 > 
@@ -42,21 +42,21 @@
 
 ### Slide 2: Khởi điểm: Hai cách tiếp cận truyền thống
 - **Tiêu đề slide:** Where We Start: Two Old Ways
-- **Thời gian dự kiến trên slide:** 1 phút 50 giây (110 giây, ~235 từ gồm cả phần nghỉ chờ khán giả giơ tay và bình chọn)
+- **Thời gian dự kiến trên slide:** 1 phút 38 giây (98 giây, ~205 từ gồm cả phần nghỉ chờ khán giả giơ tay và bình chọn)
 
 > On this slide, we look at the two traditional extremes of customer support.  
 > 
 > `[NGHỈ 1 GIÂY]`  
 > 
-> Please raise your hand: have you ever waited more than twenty-four hours to get an answer from online customer support? `[GIƠ TAY PHẢI VÀ NGHỈ 3 GIÂY]` Look around the room. Almost every hand is up!  
+> Please raise your hand: have you ever waited more than twenty-four hours to get an answer from online customer support? `[GIƠ TAY PHẢI VÀ NGHỈ 3 GIÂY]`  
 > 
 > `[NGHỈ 1 GIÂY]`  
 > 
-> That slow speed is the problem with Level One on the left. Human support staff read every single request. They make very few errors, but each request takes about ninety seconds of staff time. Waiting times explode, and labor costs grow with every customer.  
+> That slow speed is the problem with Level One on the left. Human support staff read every single request. They make very few errors, but each request takes about ninety seconds of staff time, so waiting times and costs grow with every customer.  
 > 
 > `[NGHỈ 1 GIÂY]`  
 > 
-> To cut costs, many companies jump to the opposite extreme on the right: an unconstrained LLM chatbot, which we study as Level Two. It acts immediately, but it can make confident mistakes. A wrong refund costs real money, and deleted video projects destroy customer trust.  
+> To cut costs, many companies jump to the opposite extreme on the right: an unconstrained LLM chatbot, which we study as Level Two. It acts immediately, but it can make confident mistakes. A wrong refund costs real money.  
 > 
 > `[NGHỈ 1 GIÂY]`  
 > 
@@ -73,44 +73,143 @@
 
 ### Slide 3: Mô hình bậc thang 3 cấp độ
 - **Tiêu đề slide:** Three levels, one new part at each level (The Three-Level Ladder)
-- **Thời gian dự kiến trên slide:** 1 phút 57 giây (117 giây, ~250 từ gồm cả phần nghỉ chờ khán giả)
+- **Thời gian dự kiến trên slide:** 1 phút 38 giây (98 giây, ~205 từ gồm cả phần nghỉ chờ khán giả)
 
 > This trade-off leads to our central research question: can we build an automated support system that is fast and cheap, without risking customer money or data?  
 > 
 > `[NGHỈ 1 GIÂY]`  
 > 
-> To answer this question, our study organizes customer support into a three-level ladder. At each level, we add exactly one new component, and we test every level on the exact same requests.  
+> To answer it, our study organizes customer support into a three-level ladder. At each level, we add exactly one new component, and we test every level on the exact same requests.  
 > 
 > `[NGHỈ 1 GIÂY]`  
 > 
-> Level One is our baseline: human support staff handle every request. No models run, so no automated errors occur, but every request requires ninety seconds of human effort.  
+> Level One is our baseline: human staff handle every request, ninety seconds each, with no model error. Level Two is one LLM agent that does the whole job: it reads the account and the chat, applies the written rules itself, and runs one action or denies it.
 > 
 > `[NGHỈ 1 GIÂY]`  
 > 
-> Level Two introduces one LLM agent that does the whole job. The agent reads the customer account and the chat, applies the written rules itself, and answers with one action to run, or one denial with the reason.
+> Level Three introduces Jev, a fast, lightweight classifier. Jev reads the chat, the account, and the written rules as context, and decides. The process follows its answer. The LLM then only writes the final message.
 > 
 > `[NGHỈ 1 GIÂY]`  
 > 
-> Level Three introduces Jev, a fast, lightweight classifier. Jev replaces the agent as the step that chooses the action. It reads the chat only, predicts five structured labels with calibrated confidence in less than a quarter of a second, and never reads the account. The LLM then only writes the final polite message.
+> Now I have one question for you. Which level do you think is faster and cheaper, Level Two or Level Three? `[NHÌN KHÁN GIẢ - NGHỈ 3 GIÂY]` The data will show the answer later.  
 > 
 > `[NGHỈ 1 GIÂY]`  
+> `[CHUYỂN SANG SLIDE 4]`  
 > 
-> Now I have one question for you. Which level do you think is faster and cheaper, Level Two or Level Three? `[NHÌN KHÁN GIẢ - NGHỈ 3 GIÂY]` Please keep your guess in mind. The data will show the answer later.  
-> 
-> `[NGHỈ 1 GIÂY]`  
-> `[NHÌN SANG NGUYEN THANH NAM]`  
-> 
-> Now, I hand over to my teammate Nguyen Thanh Nam, who will explain our written rules and the state machine flow.
+> Now, the rules.
 
 **Phương án dự phòng khi cả phòng im lặng (câu hỏi dự đoán):** Long không tiết lộ đáp án và không nêu con số nào. Nếu không ai trả lời sau 3 giây, nói: *"No guess yet? That is fine. Please keep the question in mind. The results will show the answer."*
+
+
+
+
+
+
+
+
+
+
+
+---
+
+### Slide 4: Nhiều luật: một bức tường luật
+- **Tiêu đề slide:** Real support policies have many rules
+- **Thời gian dự kiến trên slide:** 0 phút 12 giây (12 giây, ~27 từ)
+
+> Real support policies have many rules, like this. There are many rules to apply, but today we will make it simple, with the essential rules gate only.  
+> 
+> `[NGHỈ 1 GIÂY]`  
+> 
+> `[CHUYỂN SANG SLIDE 5]`
+
+---
+
+### Slide 5: Các quy tắc bằng văn bản
+- **Tiêu đề slide:** The written rules: allow or deny
+- **Thời gian dự kiến trên slide:** 0 phút 23 giây (23 giây, ~63 từ)
+
+> Here is the essential gate, one rule for each action. First, the Security rule: if someone else used the account or the card, deny. A refund above 100 dollars is denied. So is a password link to an e-mail that is not on file, and a plan that is already cancelled. Deleting data is always denied. The model gets these rules as context.  
+> 
+> `[NGHỈ 1 GIÂY]`  
+> 
+> `[CHUYỂN SANG SLIDE 6]`
+
+---
+
+### Slide 6: Luồng xử lý của Level 3
+- **Tiêu đề slide:** Level 3: Jev and an LLM
+- **Thời gian dự kiến trên slide:** 0 phút 26 giây (26 giây, ~56 từ)
+
+> This is Level 3 as a state machine with six states. A message enters New. Jev is the only state that decides: it reads the chat, the account, and the written rules as context, and answers. The process follows the answer: allow runs the action, and deny runs nothing. The LLM writes the final message only.  
+> 
+> `[NGHỈ 1 GIÂY]`  
+> 
+> `[CHUYỂN SANG SLIDE 7]`
+
+---
+
+### Slide 7: Jev đọc cuộc chat, tài khoản và các luật
+- **Tiêu đề slide:** Jev reads the chat, the account, and the rules
+- **Thời gian dự kiến trên slide:** 0 phút 26 giây (26 giây, ~51 từ)
+
+> In one call, Jev reads three things: the chat, the account, and the written rules. The chat is the text and the role of the sender. The account has six fields. The rules are plain text in the context, not code. No fixed code picks fields or checks rules: Jev decides.  
+> 
+> `[NGHỈ 1 GIÂY]`  
+> 
+> `[CHUYỂN SANG SLIDE 8]`
+
+---
+
+### Slide 8: Jev trả lời năm câu hỏi và quy trình đi theo
+- **Tiêu đề slide:** Jev answers five questions, and the process follows
+- **Thời gian dự kiến trên slide:** 0 phút 24 giây (24 giây, ~51 từ)
+
+> Jev answers five fixed questions: the topic, the priority, the action, whether the rules allow it, and an injection flag. Allow runs the action; deny runs nothing. If the injection flag is on, the action becomes Send reply, so an order hidden in the text is ignored.  
+> 
+> `[NGHỈ 1 GIÂY]`  
+> 
+> `[CHUYỂN SANG SLIDE 9]`  
+> 
+> Now, three real requests.
+
+
+---
+
+### Slide 9 đến 19: Ba walk-through (mỗi lần bấm phím tiếp là một slide)
+- **Tiêu đề slide:** Walk-through 1, 2 và 3 (giữ cùng tiêu đề cho mọi slide trong một walk-through)
+- **Thời gian dự kiến:** 22 giây + 12 giây + 12 giây = 46 giây (~107 từ). Walk-through 1 dùng 5 slide (đủ mọi trạng thái); walk-through 2 và 3 chỉ 3 slide mỗi cái (Jev, Final message), vì các trạng thái còn lại đã thấy ở walk-through 1. Mỗi dòng dưới đây là một câu rất ngắn nói đúng lúc bấm sang slide đó. Slide chỉ ra rằng đáp án "Allowed" của Jev trong ba ví dụ này là minh họa theo kết quả kiểm tra luật đã ghi lại, vì thiết kế mới chưa được chạy; Long không cần đọc dòng đó.
+
+Bấm phím tiếp **một lần cho mỗi dòng**. Walk-through 1 nối ngay sau câu cuối của Slide 8; câu cuối của walk-through 3 (Slide 19) là câu bàn giao cho Nam.
+
+#### Walk-through 1: a refund that the rules allow (Slide 9 đến 13; 22 giây, ~32 từ)
+
+> **Slide 9:** A customer asks for a refund. The message is saved.  
+> **Slide 10:** Jev: Start refund, and the rules allow it.  
+> **Slide 11:** Do action: the refund starts.  
+> **Slide 12:** Final message: the LLM replies.  
+> **Slide 13:** Chat open, then Resolved.  
+
+#### Walk-through 2: a refund that the rules deny (Slide 14 đến 16; 12 giây, ~34 từ)
+
+> **Slide 14:** A second customer asks to refund a charge. Watch for the warning.  
+> **Slide 15:** Jev: Start refund, but the rules say deny. 300 dollars, the limit is 100. Nothing runs.  
+> **Slide 16:** Final message: the LLM explains why.  
+
+#### Walk-through 3: an order hidden in the message (Slide 17 đến 19; 12 giây, ~41 từ)
+
+> **Slide 17:** A third customer orders a refund of everything. Watch for the danger.  
+> **Slide 18:** Jev: danger. The injection flag is on, so the action is Send reply.  
+> **Slide 19:** Final message: the LLM ignores the order. Now Nguyen Thanh Nam will explain our test data.
 
 ---
 
 ## 3. Câu nói bàn giao lượt thuyết trình (Hand-off)
 
-Nói chính xác câu tiếng Anh này để chuyển tiếp cho Diễn giả 2:
+Long chỉ bàn giao **một lần**, ở cuối Slide 19 (câu cuối của walk-through 3), cho Nam (Diễn giả 2):
 
-> "Now, I hand over to my teammate Nguyen Thanh Nam, who will explain our written rules and the state machine flow."
+> "Now Nguyen Thanh Nam will explain our test data."
+
+Giữa Slide 3 và Slide 4, Long không chuyển lượt: Long kết Slide 3 bằng "Now, the rules." rồi bấm sang Slide 4.
 
 ---
 

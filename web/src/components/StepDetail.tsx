@@ -1,5 +1,7 @@
 import { Check, LoaderCircle, X } from "lucide-react"
 import type { ReactNode } from "react"
+import { lowAnswers } from "@/cascade"
+import { CallInspector } from "@/components/Inspector"
 import { cn } from "@/lib/utils"
 import { NO_LIMIT, POPUP_DELAY_MS, type Ctx, type NodeId, type Phase } from "@/machine"
 import type { AccountField, Policy, PolicyRule, TriageRule } from "@/types"
@@ -33,15 +35,22 @@ function Callout({ title, children, tone = "default" }: { title: string; childre
   )
 }
 
-/** The chance that Jev gives to one answer. */
-function Chance({ value }: { value: number }) {
+/** One answer of Jev with its chance as a bar. The tick marks the threshold of the cascade demo; an answer below it is highlighted. */
+function Answer({ k, value, chance, threshold }: { k: string; value: string; chance: number; threshold: number }) {
+  const low = chance < threshold
   return (
-    <span className="ml-2 inline-flex items-center gap-1.5 align-middle text-xs font-normal text-muted-foreground">
-      <span className="inline-block h-1.5 w-12 overflow-hidden rounded bg-system">
-        <span className="block h-full bg-model-strong" style={{ width: `${value * 100}%` }} />
+    <div className={cn("flex items-center justify-between gap-4 border-b py-1.5 text-sm last:border-0", low && "rounded-md bg-warn px-2")}>
+      <span className={low ? "text-ink" : "text-muted-foreground"}>{k}</span>
+      <span className="flex items-center gap-3 font-medium">
+        {value}
+        <span className="relative inline-block h-2 w-28 rounded bg-system">
+          <span className={cn("absolute inset-y-0 left-0 rounded", low ? "bg-warn-strong" : "bg-model-strong")} style={{ width: `${chance * 100}%` }} />
+          <span className="absolute -top-0.5 h-3 w-0.5 bg-ink" style={{ left: `${threshold * 100}%` }} title={`Threshold ${threshold.toFixed(2)}`} />
+        </span>
+        <span className="w-9 text-xs font-normal tabular-nums">{chance.toFixed(2)}</span>
+        <span className={cn("w-24 rounded px-1.5 py-0.5 text-center text-[11px] font-semibold text-white", low ? "bg-warn-strong" : "invisible")}>low confidence</span>
       </span>
-      {value.toFixed(2)}
-    </span>
+    </div>
   )
 }
 
@@ -147,12 +156,15 @@ interface Props {
   current: NodeId | null
   phase: Phase | null
   ctx: Ctx
+  /** The confidence threshold of the cascade demo. */
+  threshold: number
 }
 
-export function StepDetail({ node, current, phase, ctx }: Props) {
+export function StepDetail({ node, current, phase, ctx, threshold }: Props) {
   const info = INFO[node]
   const status = node === current ? phase : null
   const f = ctx.classifier?.fields
+  const low = lowAnswers(f, threshold)
 
   let content: ReactNode = null
   switch (node) {
@@ -174,12 +186,19 @@ export function StepDetail({ node, current, phase, ctx }: Props) {
         content = (
           <>
             <Label>Jev gives five answers</Label>
-            <Row k="Topic">{f.queue.value}<Chance value={f.queue.confidence} /></Row>
-            <Row k="Action">{f.action.value}<Chance value={f.action.confidence} /></Row>
-            <Row k="Priority">{f.priority.value}<Chance value={f.priority.confidence} /></Row>
-            <Row k="Risk flag">{f.risk.value ? "on" : "off"}<Chance value={f.risk.confidence} /></Row>
-            <Row k="Injection flag">{f.injection.value ? "on" : "off"}<Chance value={f.injection.confidence} /></Row>
-            <Note>{ctx.classifier.model} · {ctx.classifier.latencyS.toFixed(2)} s · {ctx.classifier.inputTokens}+{ctx.classifier.outputTokens} tokens</Note>
+            <Answer k="Topic" value={f.queue.value} chance={f.queue.confidence} threshold={threshold} />
+            <Answer k="Action" value={f.action.value} chance={f.action.confidence} threshold={threshold} />
+            <Answer k="Priority" value={f.priority.value} chance={f.priority.confidence} threshold={threshold} />
+            <Answer k="Risk flag" value={f.risk.value ? "on" : "off"} chance={f.risk.confidence} threshold={threshold} />
+            <Answer k="Injection flag" value={f.injection.value ? "on" : "off"} chance={f.injection.confidence} threshold={threshold} />
+            {low.length > 0 ? (
+              <Callout title={`Cascade demo (advisory): ${low.length} answer${low.length === 1 ? "" : "s"} below ${threshold.toFixed(2)}`}>
+                {low.join(", ")}. A cascade would send this request to the LLM or to staff. This is a picture of the idea only: the flow below does not use the threshold.
+              </Callout>
+            ) : (
+              <Note>Cascade demo (advisory): every answer is at least {threshold.toFixed(2)}, so no request would go to the LLM or to staff. The flow below does not use the threshold.</Note>
+            )}
+            <CallInspector title="Payload inspector: the call to Jev" trace={ctx.classifier.trace} />
             <Label>Triage rules: the first match wins</Label>
             <ol className="list-decimal space-y-1 pl-5 text-sm">
               {TRIAGE_RULES.map((r) => (
@@ -236,7 +255,7 @@ export function StepDetail({ node, current, phase, ctx }: Props) {
             <Label>Written rules for "{ctx.rules.policy.action}"</Label>
             <PolicyTable policy={ctx.rules.policy} />
             <Callout
-              title={{ allow: "The rules allow it", deny: "A rule forbids it" }[ctx.rules.policy.verdict]}
+              title={ctx.rules.policy.verdict === "allow" ? "The rules allow it" : `Blocked by ${[...new Set(ctx.rules.policy.rules.filter((r) => r.outcome === "deny").map((r) => r.source))].join(" + ")}`}
               tone={ctx.rules.policy.verdict === "allow" ? "default" : "destructive"}
             >
               Next: {next}.
@@ -267,6 +286,7 @@ export function StepDetail({ node, current, phase, ctx }: Props) {
             <Note>
               {ctx.final.kind === "answer" ? "An answer from the help articles and the account" : blocked ? "Written by the LLM from the reason why nothing ran" : "Written by the LLM from the result of Do action"} · {ctx.final.latencyS.toFixed(1)} s
             </Note>
+            <CallInspector title="Payload inspector: the call that wrote this message" trace={ctx.final.trace} />
             {ctx.final.kind === "answer" && (
               <>
                 <Label>Help articles given to the LLM</Label>

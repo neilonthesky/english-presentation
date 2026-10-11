@@ -1,5 +1,5 @@
 \begin{table}[t]
-\caption{The three levels on the 50 requests. Served counts a request that ends with the result it needs. Stopped counts a request whose correct action a written rule denies and the check of the level stopped (the fixed rules check at Level 3, the agent itself at Level 2): the flow runs nothing and the Final message tells the customer what the chat cannot do. Errors counts every other run, and Harm the errors that run an action which changes money, a plan, stored data, or a password. Mach.~s is the machine time, \$/1k the API cost for 1,000 requests, and Total s the total time (the assumed 90~s of staff work at Level 1). Level 1 is the baseline, so its outcome columns are marked --.}
+\caption{The three levels on the 100 requests. Served counts a request that ends with the result it needs. Stopped counts a request whose correct action a written rule denies and the check of the level stopped (the fixed rules check at Level 3, the agent itself at Level 2): the flow runs nothing and the Final message tells the customer what the chat cannot do. Errors counts every other run, and Harm the errors that run an action which changes money, a plan, stored data, or a password. Mach.~s is the machine time, \$/1k the API cost for 1,000 requests, and Total s the total time (the assumed 90~s of staff work at Level 1). Level 1 is the baseline, so its outcome columns are marked --.}
 \label{tab:ladder}
 \small
 \setlength{\tabcolsep}{1.5pt}
@@ -8,8 +8,8 @@
 Level & Served & Stopped & Errors & Harm & Mach. s & \$/1k & Total s \\
 \midrule
 1 Staff only & -- & -- & -- & -- & -- & -- & 90.0 \\
-2 LLM agent & 32 & 15 & 3 & 0 & 6.8 & 0.71 & 6.8 \\
-3 Jev + LLM + rules & 35 & 15 & 0 & 0 & 3.2 & 0.30 & 3.2 \\
+2 LLM agent & 66 & 28 & 6 & 2 & 7.9 & 0.61 & 7.9 \\
+3 Jev + LLM + rules & 70 & 30 & 0 & 0 & 4.2 & 0.28 & 4.2 \\
 \bottomrule
 \end{tabular}
 \end{table}

@@ -1,6 +1,6 @@
 # Kế hoạch tương tác với khán giả (Audience Interaction Plan)
 
-Tài liệu này chi tiết hóa chiến lược tương tác với khán giả trong bài thuyết trình 10 slide (13 phút 06 giây, 786 giây). Mục tiêu là duy trì sự tập trung tích cực của người nghe, đáp ứng trọn vẹn tiêu chí 4 trong mẫu đánh giá chéo (Interaction with audience, 1.0 điểm), và bám sát lời khuyên của giảng viên:
+Tài liệu này chi tiết hóa chiến lược tương tác với khán giả trong bài thuyết trình 31 slide (15 phút 00 giây, 900 giây). Mục tiêu là duy trì sự tập trung tích cực của người nghe, đáp ứng trọn vẹn tiêu chí 4 trong mẫu đánh giá chéo (Interaction with audience, 1.0 điểm), và bám sát lời khuyên của giảng viên:
 
 > *"Trong lúc thuyết trình nên có sự tương tác với khán giả, ví dụ đặt câu hỏi hoặc mở đầu bằng một câu chuyện, để bài nói hấp dẫn hơn. Đồng thời hãy giới thiệu rõ tên từng người để người nghe dễ đánh giá."*
 
@@ -17,7 +17,7 @@ Tài liệu này chi tiết hóa chiến lược tương tác với khán giả 
 | **3** | Slide 2 | **Tran Thanh Long** | Bình chọn nhanh: "Which action would you never let a chatbot do alone?" (chuyển từ Nam) | 25 s | "For FrameForge, data deletion cannot be undone, so our written rules always deny it in chat." |
 | **4** | Slide 3 | **Tran Thanh Long** | Câu hỏi dự đoán: "Which level do you think is faster and cheaper, Level 2 or Level 3?" (chuyển từ Quy) | 25 s | "No guess yet? That is fine. The results will show the answer." (không tiết lộ số liệu) |
 
-Thời gian cộng thêm: Slide 2 của Long tăng từ 85 lên 110 giây (+25 giây), Slide 3 tăng từ 92 lên 117 giây (+25 giây). Slide 4 của Nam giảm 25 giây (70 xuống 45), Slide 7 của Quy giảm 25 giây (55 xuống 30), Slide 10 của Phuong Nam giảm 20 giây (60 xuống 40). Câu hỏi suy ngẫm cuối bài của Phuong Nam đã bị bỏ và không chuyển sang đâu khác, vì phần bình chọn đã bao phủ chủ đề an toàn của AI.
+Thời gian cộng thêm ở phần tương tác: Slide 2 của Long là 100 giây và Slide 3 là 100 giây (đã gồm khoảng 50 giây tương tác). Phần bình chọn và câu hỏi dự đoán trước đây thuộc về Nam và Quy nay do Long đọc, và câu hỏi suy ngẫm cuối bài của Phuong Nam đã bị bỏ. Số giây hiện tại của từng người nằm trong `README.md`.
 
 ---
 
@@ -40,7 +40,7 @@ Nếu người nghe ngồi yên hoặc chưa phản ứng, Long dừng lại 2 g
 ## Thời điểm 2: Câu hỏi giơ tay biểu quyết (Slide 2)
 
 - **Người thực hiện:** Tran Thanh Long (Trưởng nhóm)
-- **Thời điểm trong bài nói:** khoảng 1:20 – 1:40 (20 giây; slide 2 bắt đầu ở 1:15)
+- **Thời điểm trong bài nói:** khoảng 1:15 – 1:35 (20 giây; slide 2 bắt đầu ở 1:10)
 - **Vùng giao tiếp ánh mắt:** Nhìn thẳng vào khu vực trung tâm lớp học, chạm ánh mắt trực tiếp với 2–3 bạn sinh viên cụ thể.
 - **Cử chỉ hình thể:** Giơ cao tay phải qua vai một cách dứt khoát để làm mẫu cho cả lớp cùng làm theo.
 
@@ -55,10 +55,10 @@ Nếu sau 3 giây không ai giơ tay:
 
 ## Thời điểm 3: Bình chọn nhanh về hành động nguy hiểm (Slide 2)
 
-Phần này được **chuyển từ Nguyen Thanh Nam (Slide 4) sang Long (Slide 2)**; lời thoại giữ nguyên. Long đặt câu hỏi sau khi giới thiệu Level Two (chatbot LLM tự do), vì lúc đó khán giả vừa nghe về rủi ro khi để chatbot xử lý tiền và dữ liệu.
+Phần này được **chuyển từ Nguyen Thanh Nam sang Long (Slide 2)**; lời thoại giữ nguyên. Long đặt câu hỏi sau khi giới thiệu Level Two (chatbot LLM tự do), vì lúc đó khán giả vừa nghe về rủi ro khi để chatbot xử lý tiền và dữ liệu.
 
 - **Người thực hiện:** Tran Thanh Long (Trưởng nhóm)
-- **Thời điểm trong bài nói:** khoảng 2:25 – 2:55 (25 giây; slide 2 bắt đầu ở 1:15)
+- **Thời điểm trong bài nói:** khoảng 2:20 – 2:45 (25 giây; slide 2 bắt đầu ở 1:10)
 - **Vùng giao tiếp ánh mắt:** Tập trung vào nửa bên trái của phòng học, sau đó chuyển sang nửa bên phải.
 - **Cử chỉ hình thể:** Hơi nghiêng người về phía trước; mở lòng bàn tay hướng nhẹ về phía người nghe. Giơ tay phải khi nói "Hands up", để khán giả làm theo.
 
@@ -73,10 +73,10 @@ Nếu cả lớp ngồi yên và không ai phản ứng:
 
 ## Thời điểm 4: Câu hỏi dự đoán trước khi công bố kết quả (Slide 3)
 
-Phần này được **chuyển từ Vuong Quang Quy (Slide 7) sang Long (Slide 3)**. Long hỏi ngay sau khi giới thiệu ba cấp độ. Long **không được tiết lộ đáp án**, kể cả bằng con số hay gợi ý; chỉ nói rằng dữ liệu sẽ cho biết ở phần kết quả. Khi đến Slide 7 và Slide 8, Quy chỉ trình bày số liệu và không hỏi lại khán giả.
+Phần này được **chuyển từ Vuong Quang Quy sang Long (Slide 3)**. Long hỏi ngay sau khi giới thiệu ba cấp độ. Long **không được tiết lộ đáp án**, kể cả bằng con số hay gợi ý; chỉ nói rằng dữ liệu sẽ cho biết ở phần kết quả. Khi đến Slide 34 đến 36, Quy chỉ trình bày số liệu và không hỏi lại khán giả.
 
 - **Người thực hiện:** Tran Thanh Long (Trưởng nhóm)
-- **Thời điểm trong bài nói:** khoảng 4:35 – 4:55 (25 giây; slide 3 bắt đầu ở 3:05)
+- **Thời điểm trong bài nói:** khoảng 4:05 – 4:25 (25 giây; slide 3 bắt đầu ở 2:50)
 - **Vùng giao tiếp ánh mắt:** Giao tiếp ánh mắt trực tiếp với giảng viên và các bạn sinh viên ngồi ở hàng ghế đầu.
 - **Cử chỉ hình thể:** Giơ 2 ngón tay khi nhắc đến Level Two, sau đó giơ 3 ngón tay khi nhắc đến Level Three.
 

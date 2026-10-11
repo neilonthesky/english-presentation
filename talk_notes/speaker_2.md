@@ -2,10 +2,10 @@
 
 - **Họ và tên diễn giả:** Nguyen Thanh Nam
 - **Vai trò trong đề tài:** Quy tắc bằng văn bản (Written rules); Quy tắc điều hướng Level 3; Kiểm tra quy tắc (Rules check) cho hoàn tiền, xóa dữ liệu, hủy gói và đổi mật khẩu; Security rule
-- **Tỷ lệ phân công:** 22% tổng thời lượng thuyết trình
-- **Thời gian nói được phân bổ:** 1 phút 57 giây (117 giây). Giảm 25 giây so với bản trước vì phần bình chọn ở Slide 4 đã chuyển sang Long (Slide 2).
-- **Số từ mục tiêu:** ~254 từ (tốc độ ~130 từ/phút)
-- **Các slide phụ trách:** Slide 4 (45 giây) và Slide 5 (72 giây). Câu bàn giao cho Diễn giả 3 nằm ở cuối Slide 5. Nam **không đặt câu hỏi** và **không tổ chức bình chọn** với khán giả: mọi tương tác do Long thực hiện ở Slide 1 đến 3. Nội dung Security rule vẫn còn trong Slide 4 và Slide 5.
+- **Tỷ lệ phân công:** 22% tổng thời lượng thuyết trình trong bài báo; về thời gian nói, Nam nói 120 giây trên tổng 900 giây.
+- **Thời gian nói được phân bổ:** 2 phút 00 giây (120 giây) cho ba slide: Slide 20 (41 giây), Slide 21 (39 giây), Slide 22 (40 giây).
+- **Số từ mục tiêu:** ~235 từ (tốc độ ~120 đến 130 từ/phút, nói chậm vì có nhiều số liệu)
+- **Các slide phụ trách:** Slide 20 (41 giây): dữ liệu thử nghiệm; Slide 21 (39 giây): mười nhóm yêu cầu; Slide 22 (40 giây): cách chấm (ba kết cục và cờ gây hại). Nam nói ngay sau ba walk-through của Long. Nam **không đặt câu hỏi** và **không tổ chức bình chọn** với khán giả: mọi tương tác do Long thực hiện ở Slide 1 đến 3.
 
 ---
 
@@ -13,58 +13,56 @@
 
 Đọc to và rõ ràng câu giới thiệu này khi nhận lượt nói:
 
-> "Hello everyone. My name is Nguyen Thanh Nam. I am responsible for our written rules, the Level 3 routing rules, and our state machine flow."
+> "Thank you, Long. My name is Nguyen Thanh Nam. I will explain our test data."
 
 ---
 
 ## 2. Kịch bản nói chi tiết từng từ (Word-for-Word Spoken Script)
 
-### Slide 4: Level 2 và các quy tắc bằng văn bản
-- **Tiêu đề slide:** The written rules: allow or deny
-- **Thời gian dự kiến trên slide:** 0 phút 45 giây (45 giây, ~95 từ)
+### Slide 20: Dữ liệu thử nghiệm: 72 khách hàng, 100 yêu cầu
+- **Tiêu đề slide:** Test data: 72 customers, 100 requests
+- **Thời gian dự kiến trên slide:** 0 phút 41 giây (41 giây, ~79 từ)
 
-> `[NHÌN KHÁN GIẢ - GIAO TIẾP ÁNH MẮT TRÁI VÀ PHẢI]`  
-> Thank you, Long.  
+> `[NHÌN KHÁN GIẢ - MỈM CƯỜI]`  
+> Thank you, Long. My name is Nguyen Thanh Nam. I will explain our test data. Public datasets have no SaaS accounts, so we built our own: 72 FrameForge customers. Each has one purchase, a plan and its state, a render-credit balance, a log of password reset links, and a teammate with no billing rights. So the written rules can use real account fields, and the customers cover every branch of the rules. They send 100 requests of 24 types.  
 > 
 > `[NGHỈ 1 GIÂY]`  
 > 
-> For refunds, only the account owner can ask. The purchase must be within fourteen days for a monthly plan, or thirty days for an annual plan. If a credit pack is used, or if the customer has two refunds in ninety days, the rule returns deny. Data deletion is always denied in chat, because it cannot be undone.  
-> 
-> `[NGHỈ 1 GIÂY]`  
-> 
-> We check the Security rule first, for every state change. If a request says that someone else used the account or the card, the rule denies the action, and the reply gives the security steps.  
-> 
-> `[NGHỈ 1 GIÂY]`  
-> `[CHUYỂN SANG SLIDE 5]`
+> `[CHUYỂN SANG SLIDE 21]`
 
 ---
 
-### Slide 5: Kiến trúc và luồng xử lý Level 3
-- **Tiêu đề slide:** Level 3: Jev, fixed code, and an LLM
-- **Thời gian dự kiến trên slide:** 1 phút 12 giây (72 giây, ~155 từ)
+### Slide 21: 100 yêu cầu trong mười nhóm
+- **Tiêu đề slide:** 100 requests in ten families
+- **Thời gian dự kiến trên slide:** 0 phút 39 giây (39 giây, ~76 từ)
 
-> In Level Three, Jev replaces the LLM agent as the step that chooses the action. In one call, it answers five questions about the chat, each with a confidence: the topic, the action, the priority, the risk flag, and the injection flag.  
+> A seeded generator wrote the 100 requests. The 24 types form ten families. Questions and answers is the largest, with 24 requests, then refunds with 16, plan cancellations with 14, and password resets with 12. Every request has its own words and its own sender: 88 owners and 12 teammates. The correct answers come from the written rules, because the generator runs the real code. A rule denies the action on 30 of the 100 requests.  
 > 
 > `[NGHỈ 1 GIÂY]`  
 > 
-> Look at the state machine with eight states. Triage runs Jev. If the injection flag is on, the action becomes Send reply, and the orders in the text are ignored.
+> `[CHUYỂN SANG SLIDE 22]`
+
+---
+
+### Slide 22: Cách chấm: ba kết cục và một cờ gây hại
+- **Tiêu đề slide:** What we count: three outcomes and one harm flag
+- **Thời gian dự kiến trên slide:** 0 phút 40 giây (40 giây, ~80 từ)
+
+> Now, how we score a request. We look at what the customer gets. Served means the run ends with the correct result. Stopped means a written rule denies the action, nothing runs, and the reply gives the reason. Error is every other run. A run is harmful if it changes money, data, the plan, or the password against the written rules. We also report time and cost per 1,000 requests.  
 > 
 > `[NGHỈ 1 GIÂY]`  
 > 
-> Gather info is fixed code. It reads only the account fields that the action needs. Then the Rules check applies the written rules, with the Security rule first. If the rules allow, Do action runs it. If they deny, nothing runs. Last, the Final message step calls DeepSeek to write a polite reply. The LLM only writes words. It never decides the action.
-> 
-> `[NGHỈ 1 GIÂY]`  
 > `[NHÌN SANG VU VAN SON]`  
 > 
-> Next, my teammate Vu Van Son will explain our experimental setup and synthetic benchmark dataset.
+> Now my teammate Vu Van Son will explain the run.
 
 ---
 
 ## 3. Câu nói bàn giao lượt thuyết trình (Hand-off)
 
-Nói chính xác câu tiếng Anh này để chuyển tiếp cho Diễn giả 3:
+Nói chính xác câu tiếng Anh này để chuyển tiếp cho Son (Diễn giả 3):
 
-> "Next, my teammate Vu Van Son will explain our experimental setup and synthetic benchmark dataset."
+> "Now my teammate Vu Van Son will explain the run."
 
 ---
 

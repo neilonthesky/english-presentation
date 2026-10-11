@@ -99,6 +99,14 @@ export function useWorld(w: World): void {
   world = w
 }
 
+/** The date of "today" in the world that the rules read. */
+export const worldToday = (): string => world.today
+
+/** Add customers to the world (the demo presets of the dataset), after the customers that are already there. */
+export function addCustomers(customers: readonly Customer[]): void {
+  world = { ...world, customers: [...world.customers, ...customers] }
+}
+
 export const findCustomer = (id: unknown): Customer | undefined => world.customers.find((c) => c.id === id)
 
 function customerOf(id: string): Customer {
@@ -134,7 +142,7 @@ export const accountOf = (customerId: string): Account => accountFrom(customerOf
 
 /**
  * Gather info at Level 3: the account fields that each action of Triage reads. A fixed table, built from what the written rules
- * of the action check and from what the replies of the 50 requests use. Level 2 reads every field: the agent has an account tool.
+ * of the action check and from what the replies of the requests of the dataset use. Level 2 reads every field: the agent has an account tool.
  * The password reset log is read by no written rule and by no reply, so no row has it.
  */
 export const ACCOUNT_FIELDS_OF: Record<string, readonly AccountField[]> = {

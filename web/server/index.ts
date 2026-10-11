@@ -4,12 +4,17 @@
 import { Hono } from "hono"
 import { HTTPException } from "hono/http-exception"
 import type {
-  Classifier, Executed, FinalResponse, GatherResponse, ReceiveResponse, Requester, Role,
+  ClassifyResponse, CompareResponse, Executed, FinalResponse, GatherResponse, PresetsResponse, ReceiveResponse, Requester, Role,
   RulesResponse, TriageResponse,
 } from "../src/types"
 import { accountFieldsFor, misuseReport, accountOf, accountText, accountsOf, extractFacts, findArticles, findCustomer, requesterFor, triage } from "./saas"
 import { ApiError, answerQuestion, classify, writeReply } from "./models"
 import { actStep, rulesStep } from "./steps"
+import { compare } from "./compare"
+import { knownScores, presetById, presets, scorePresets } from "./presets"
+import { installTrace, onlyCall, traced } from "./trace"
+
+installTrace()
 
 interface Req {
   customerId: string
@@ -17,7 +22,7 @@ interface Req {
   receivedUtc: string
   /** What the customer wrote in this request: the first message, then the messages that follow in the same chat. */
   lines: string[]
-  classifier?: Classifier
+  classifier?: ClassifyResponse
   triage?: TriageResponse
   gather?: GatherResponse
   rules?: RulesResponse
@@ -73,9 +78,11 @@ app.post("/api/receive", async (c) => {
 })
 
 // Triage, part 1: the classifier (Jev) gives five answers on the whole chat of the customer. The account is not an input.
+// The answer carries the call as it went over the network (the payload inspector of the UI).
 app.post("/api/classify", async (c) => {
   const { r } = await load(c)
-  r.classifier = await classify(textOf(r), r.who)
+  const { result, calls } = await traced(() => classify(textOf(r), r.who))
+  r.classifier = { ...result, trace: onlyCall(calls) }
   return c.json(r.classifier)
 })
 
@@ -123,14 +130,35 @@ app.post("/api/final", async (c) => {
     const text = textOf(r)
     const articles = findArticles(text)
     if (r.executed.action === "Send reply") {
-      const a = await answerQuestion(text, accountText(r.customerId, r.who, r.gather!.fields), articles)
-      r.final = { text: a.text, latencyS: a.latencyS, kind: "answer", sources: articles.map((x) => x.title), blocked: null }
+      const { result: a, calls } = await traced(() => answerQuestion(text, accountText(r.customerId, r.who, r.gather!.fields), articles))
+      r.final = { text: a.text, latencyS: a.latencyS, kind: "answer", sources: articles.map((x) => x.title), blocked: null, trace: onlyCall(calls) }
     } else {
-      const w = await writeReply(text, r.executed, rules.policy, articles, accountText(r.customerId, r.who, r.gather!.fields))
-      r.final = { text: w.text, latencyS: w.latencyS, kind: "result", sources: [], blocked: r.executed.blocked }
+      const { result: w, calls } = await traced(() => writeReply(text, r.executed!, rules.policy, articles, accountText(r.customerId, r.who, r.gather!.fields)))
+      r.final = { text: w.text, latencyS: w.latencyS, kind: "result", sources: [], blocked: r.executed.blocked, trace: onlyCall(calls) }
     }
   }
   return c.json(r.final)
+})
+
+// The palette of messages: the prompt-injection ladder and one request of each request type of the dataset, with the Jev scores
+// that the server already has.
+app.get("/api/presets", (c) => c.json({ presets, scores: knownScores() } satisfies PresetsResponse))
+
+// Jev scores every preset: the chance of the injection flag. The scores stay in the memory of the server, so each preset costs
+// one Jev call per start of the server.
+app.post("/api/presets/score", async (c) => c.json({ presets, scores: await scorePresets() } satisfies PresetsResponse))
+
+// Compare: the same message through Level 2 (one LLM call decides) and Level 3 (Jev, fixed rules, LLM text), at the same time.
+// Nothing changes in the account of the session. `presetId` is sent only when the text is the text of a preset; the gold answers of a
+// dataset preset are used to judge the outcome.
+app.post("/api/compare", async (c) => {
+  const { s, body } = await load(c)
+  const { text, role, customerId, presetId } = body as { text: string; role: Role; customerId: string; presetId?: string }
+  if (!findCustomer(customerId)) throw new HTTPException(400, { message: `unknown customer ${customerId}` })
+  if (!text?.trim()) throw new HTTPException(400, { message: "the message is empty" })
+  const preset = presetId ? presetById(presetId) : undefined
+  const gold = preset && preset.text === text ? preset.gold : null
+  return c.json(await compare(text, customerId, role, s.ledger, gold) satisfies CompareResponse)
 })
 
 // The demo customers. Each has one purchase. The chat shows them from the start.

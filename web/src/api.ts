@@ -1,5 +1,6 @@
 import type {
-  Account, Classifier, Executed, FinalResponse, GatherResponse, ReceiveResponse, RulesResponse, TriageResponse,
+  Account, ClassifyResponse, CompareResponse, Executed, FinalResponse, GatherResponse, PresetsResponse, ReceiveResponse, RulesResponse,
+  TriageResponse,
 } from "./types"
 
 /** One id per browser tab. The server keeps the requests and the ledger of actions that ran under this id. */
@@ -8,13 +9,15 @@ export const SESSION_ID = crypto.randomUUID()
 /** The POST endpoints of the server and what each one returns. A state of the flow calls the endpoint with its own name. */
 interface Endpoints {
   receive: ReceiveResponse
-  classify: Classifier
+  classify: ClassifyResponse
   triage: TriageResponse
   gather: GatherResponse
   rules: RulesResponse
   act: Executed
   final: FinalResponse
+  compare: CompareResponse
   reset: { ok: true }
+  "presets/score": PresetsResponse
 }
 
 export async function api<K extends keyof Endpoints>(step: K, body: Record<string, unknown> = {}): Promise<Endpoints[K]> {
@@ -31,4 +34,9 @@ export async function api<K extends keyof Endpoints>(step: K, body: Record<strin
 /** The demo customers, each with one purchase. Loaded once; the chat reads it with `use`. */
 export const customersPromise: Promise<Account[] | null> = fetch("/api/customers")
   .then((res) => (res.ok ? (res.json() as Promise<Account[]>) : null))
+  .catch(() => null)
+
+/** The palette of messages: the prompt-injection ladder and one request of each request type, with the Jev scores the server has. Loaded once. */
+export const presetsPromise: Promise<PresetsResponse | null> = fetch("/api/presets")
+  .then((res) => (res.ok ? (res.json() as Promise<PresetsResponse>) : null))
   .catch(() => null)

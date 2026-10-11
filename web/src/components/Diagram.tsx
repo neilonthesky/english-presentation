@@ -72,12 +72,23 @@ const FILL_ACTIVE: Record<Kind, string> = {
   model: "bg-model-strong", system: "bg-system-strong", resolved: "bg-system-strong", rules: "bg-rules-strong",
 }
 
-type BlockData = { spec: BlockSpec; status: Status }
-type ArrowData = { spec: ArrowSpec; taken: boolean; faded: boolean }
+/** The advisory cascade of the demo: the answers of Jev below the threshold. It only draws a branch; no flow decision reads it. */
+export type Cascade = {
+  threshold: number
+  /** The answers below the threshold, such as "Action 0.62". */
+  low: string[]
+  /** True when Jev has answered, so the branch has something to show. */
+  answered: boolean
+}
+
+type BlockData = { spec: BlockSpec; status: Status; /** The written rules that deny the action, on Rules check only. */ blockedBy: string[] | null }
+type ArrowData = { spec: ArrowSpec; taken: boolean; faded: boolean; blockedBy: string[] | null }
 type BlockNode = Node<BlockData, "block">
 type DotNode = Node<Record<string, never>, "start">
 type LegendNode = Node<Record<string, never>, "legend">
+type CascadeNode = Node<Cascade, "cascade">
 type ArrowEdge = Edge<ArrowData, "arrow"> & { data: ArrowData }
+type AdvisoryEdge = Edge<Cascade, "advisory"> & { data: Cascade }
 
 // An arrow needs a handle on each end to exist in React Flow, but the arrow draws its own path, so the handles stay hidden.
 const HANDLES = (
@@ -87,23 +98,50 @@ const HANDLES = (
   </>
 )
 
-function Block({ data: { spec, status } }: NodeProps<BlockNode>) {
+function Block({ data: { spec, status, blockedBy } }: NodeProps<BlockNode>) {
   const active = status === "active"
+  const line = blockedBy ? `blocked by ${blockedBy.join(" + ")}` : spec.line
   return (
     <div
       className={cn(
         "flex h-full w-full cursor-pointer flex-col items-center justify-center gap-1 rounded-[12px] px-1.5 text-center",
-        active ? FILL_ACTIVE[spec.kind] : FILL[spec.kind],
-        active ? "text-white" : "text-ink",
-        status === "todo" && "opacity-60",
+        blockedBy ? "bg-destructive" : active ? FILL_ACTIVE[spec.kind] : FILL[spec.kind],
+        blockedBy || active ? "text-white" : "text-ink",
+        status === "todo" && !blockedBy && "opacity-60",
       )}
     >
       <span className="text-[18px] font-bold leading-tight">{spec.title}</span>
-      {spec.line && (
-        <span className={cn(spec.wrap ? "text-[12px] leading-[15px]" : "whitespace-nowrap text-[14px] leading-tight", active ? "text-white" : "text-ink-soft")}>
-          {spec.line}
+      {line && (
+        <span
+          className={cn(
+            spec.wrap || blockedBy ? "text-[12px] font-semibold leading-[15px]" : "whitespace-nowrap text-[14px] leading-tight",
+            blockedBy || active ? "text-white" : "text-ink-soft",
+          )}
+        >
+          {line}
         </span>
       )}
+      {HANDLES}
+    </div>
+  )
+}
+
+/** The low-confidence branch of the cascade demo: lit when an answer of Jev is below the threshold, faint otherwise. */
+function CascadeBlock({ data: { threshold, low, answered } }: NodeProps<CascadeNode>) {
+  const lit = low.length > 0
+  return (
+    <div
+      className={cn(
+        "flex h-full w-full cursor-default flex-col items-center justify-center gap-0.5 rounded-[12px] border-2 border-dashed px-2 text-center text-ink",
+        lit ? "border-warn-strong bg-warn" : "border-line bg-pane",
+        !lit && "opacity-50",
+      )}
+    >
+      <span className="text-[16px] font-bold leading-tight">{lit ? "Low confidence" : "Cascade demo (advisory)"}</span>
+      <span className="whitespace-nowrap text-[13px] leading-tight">
+        {lit ? `would go to LLM or staff · ${low.join(", ")}` : answered ? `every answer is at least ${threshold.toFixed(2)}` : `answers below ${threshold.toFixed(2)} go here`}
+      </span>
+      {lit && <span className="text-[11px] leading-tight text-ink-soft">advisory only: the flow below is unchanged</span>}
       {HANDLES}
     </div>
   )
@@ -129,35 +167,40 @@ function Legend() {
       {chip("bg-model", "Model")}
       {chip("bg-system", "System (fixed code)")}
       {chip("bg-rules", "Written rules")}
+      {chip("bg-warn", "Advisory (cascade demo)")}
+      {chip("bg-destructive", "Blocked by a rule")}
     </div>
   )
 }
 
-function Arrow({ data: { spec, taken, faded } }: EdgeProps<ArrowEdge>) {
+function Arrow({ data: { spec, taken, faded, blockedBy } }: EdgeProps<ArrowEdge>) {
+  const text = blockedBy ? `blocked by ${blockedBy.join(" + ")}` : spec.label?.[0]
+  const lit = taken || blockedBy !== null
   return (
     <>
       <path
         d={spec.d}
         fill="none"
-        stroke="var(--color-line)"
-        strokeWidth={taken ? 3.4 : 1.8}
-        opacity={faded ? 0.45 : 1}
-        markerEnd="url(#head-line)"
+        stroke={blockedBy ? "var(--color-destructive)" : "var(--color-line)"}
+        strokeWidth={blockedBy ? 4 : taken ? 3.4 : 1.8}
+        opacity={faded && !blockedBy ? 0.45 : 1}
+        markerEnd={blockedBy ? "url(#head-blocked)" : "url(#head-line)"}
       />
-      {spec.label && (
+      {spec.label && text && (
         <EdgeLabelRenderer>
           <div
             className={cn(
               "pointer-events-none absolute whitespace-pre-line rounded bg-pane px-[3px] text-center text-[14px] leading-[20px] text-ink",
-              taken && "font-bold",
-              faded && "opacity-60",
+              lit && "font-bold",
+              blockedBy && "text-destructive",
+              faded && !blockedBy && "opacity-60",
             )}
             style={{
               transform: `translate(-50%, -50%) translate(${spec.label[1]}px, ${spec.label[2]}px)`,
               ...(spec.label[3] ? { fontSize: `${spec.label[3]}px`, lineHeight: `${Math.round(spec.label[3] * 1.45)}px` } : {}),
             }}
           >
-            {spec.label[0]}
+            {text}
           </div>
         </EdgeLabelRenderer>
       )}
@@ -165,8 +208,34 @@ function Arrow({ data: { spec, taken, faded } }: EdgeProps<ArrowEdge>) {
   )
 }
 
-const nodeTypes = { block: Block, start: StartDot, legend: Legend }
-const edgeTypes = { arrow: Arrow }
+/** The dashed arrow from Triage to the low-confidence branch of the cascade demo. */
+function AdvisoryArrow({ data: { threshold, low } }: EdgeProps<AdvisoryEdge>) {
+  const lit = low.length > 0
+  return (
+    <>
+      <path
+        d="M300,134 V203"
+        fill="none"
+        stroke={lit ? "var(--color-warn-strong)" : "var(--color-line)"}
+        strokeWidth={lit ? 3.4 : 1.8}
+        strokeDasharray="7 5"
+        opacity={lit ? 1 : 0.45}
+        markerEnd={lit ? "url(#head-warn)" : "url(#head-line)"}
+      />
+      <EdgeLabelRenderer>
+        <div
+          className={cn("pointer-events-none absolute rounded bg-pane px-[3px] text-[13px] leading-[18px] text-ink", lit ? "font-bold" : "opacity-60")}
+          style={{ transform: "translate(0, -50%) translate(308px, 168px)" }}
+        >
+          below {threshold.toFixed(2)}
+        </div>
+      </EdgeLabelRenderer>
+    </>
+  )
+}
+
+const nodeTypes = { block: Block, start: StartDot, legend: Legend, cascade: CascadeBlock }
+const edgeTypes = { arrow: Arrow, advisory: AdvisoryArrow }
 
 /** Zoom buttons and a fit button, drawn over the pane. `fit` is the whole-diagram view of the pane. */
 function DiagramControls({ fit }: { fit: { zoom: number; x: number; y: number } }) {
@@ -193,9 +262,13 @@ interface Props {
   active: NodeId | null
   visited: NodeId[]
   taken: EdgeId[]
+  /** The advisory cascade: the answers of Jev below the confidence threshold. */
+  cascade: Cascade
+  /** The written rules that deny the action of this request (Rules check answered "deny"), or null. */
+  blockedBy: string[] | null
   onSelect: (node: NodeId) => void
 }
-export function Diagram({ active, visited, taken, onSelect }: Props) {
+export function Diagram({ active, visited, taken, cascade, blockedBy, onSelect }: Props) {
   // The pane starts with the whole diagram in view at a small padding. After that the user zooms and pans freely.
   const [size, setSize] = useState<{ w: number; h: number } | null>(null)
   const measure = useCallback((el: HTMLDivElement | null) => {
@@ -211,28 +284,30 @@ export function Diagram({ active, visited, taken, onSelect }: Props) {
 
   // Before the first message every block and arrow shows its own color. After it, what the flow did not reach fades.
   const started = visited.length > 0
-  const nodes: (BlockNode | DotNode | LegendNode)[] = [
+  const nodes: (BlockNode | DotNode | LegendNode | CascadeNode)[] = [
     ...(Object.entries(BLOCKS) as [NodeId, BlockSpec][]).map(([id, spec]): BlockNode => {
       const status: Status = id === active ? "active" : visited.includes(id) ? "visited" : started ? "todo" : "idle"
       return {
         id, type: "block", position: { x: spec.x, y: spec.y }, style: { width: spec.w, height: spec.h },
-        data: { spec, status }, draggable: false, selectable: false,
+        data: { spec, status, blockedBy: id === "rules" ? blockedBy : null }, draggable: false, selectable: false,
       }
     }),
     { id: "start", type: "start", position: { x: 2, y: 97 }, style: { width: 16, height: 16 }, data: {}, draggable: false, selectable: false },
     { id: "legend", type: "legend", position: { x: 24, y: 2 }, data: {}, draggable: false, selectable: false },
+    { id: "cascade", type: "cascade", position: { x: 120, y: 205 }, style: { width: 360, height: 70 }, data: cascade, draggable: false, selectable: false },
   ]
   // An arrow that the flow took is drawn last, so it lies over the arrows that the flow did not take. No z-index is used:
   // a non-zero one moves the arrow into the viewport portal of React Flow, above the labels of the other arrows.
-  const edges: ArrowEdge[] = (Object.entries(ARROWS) as [EdgeId, ArrowSpec][])
+  const arrows: ArrowEdge[] = (Object.entries(ARROWS) as [EdgeId, ArrowSpec][])
     .map(([id, spec]): ArrowEdge => {
       const isTaken = taken.includes(id)
       return {
         id, type: "arrow", source: spec.from, target: spec.to,
-        data: { spec, taken: isTaken, faded: started && !isTaken },
+        data: { spec, taken: isTaken, faded: started && !isTaken, blockedBy: id === "rules-final" ? blockedBy : null },
       }
     })
-    .toSorted((a, b) => Number(a.data.taken) - Number(b.data.taken))
+    .toSorted((a, b) => Number(a.data.taken || a.data.blockedBy !== null) - Number(b.data.taken || b.data.blockedBy !== null))
+  const edges: (ArrowEdge | AdvisoryEdge)[] = [...arrows, { id: "cascade", type: "advisory", source: "triage", target: "cascade", data: cascade }]
 
   return (
     <div ref={measure} className="relative size-full overflow-hidden bg-pane">
@@ -241,10 +316,16 @@ export function Diagram({ active, visited, taken, onSelect }: Props) {
           <marker id="head-line" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="12" markerHeight="12" markerUnits="userSpaceOnUse" orient="auto">
             <path d="M0,0 L10,5 L0,10 z" style={{ fill: "var(--color-line)" }} />
           </marker>
+          <marker id="head-blocked" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="14" markerHeight="14" markerUnits="userSpaceOnUse" orient="auto">
+            <path d="M0,0 L10,5 L0,10 z" style={{ fill: "var(--color-destructive)" }} />
+          </marker>
+          <marker id="head-warn" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="12" markerHeight="12" markerUnits="userSpaceOnUse" orient="auto">
+            <path d="M0,0 L10,5 L0,10 z" style={{ fill: "var(--color-warn-strong)" }} />
+          </marker>
         </defs>
       </svg>
       {size && (
-        <ReactFlow<BlockNode | DotNode | LegendNode, ArrowEdge>
+        <ReactFlow<BlockNode | DotNode | LegendNode | CascadeNode, ArrowEdge | AdvisoryEdge>
           nodes={nodes}
           edges={edges}
           nodeTypes={nodeTypes}

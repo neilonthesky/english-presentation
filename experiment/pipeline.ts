@@ -53,13 +53,13 @@ export type SystemName = ClassifierSystem | "llm_agent"
 export const STAFF_SECONDS = 90
 
 /**
- * The list price of one million tokens, in US dollars.
+ * The list price of one million tokens, in US dollars:
  * Jev: https://docs.typesafe.ai/models and https://typesafe.ai/blog/introducing-system-one-models-and-jev . One million input
  * tokens cost $0.042, and output tokens are free.
- * DeepSeek V4.1 Flash (the LLM of this project): https://api-docs.deepseek.com/quick_start/pricing/ . One million input tokens
+ * DeepSeek V4.1 Flash (the LLM of every run): https://api-docs.deepseek.com/quick_start/pricing/ . One million input tokens
  * cost $0.15 when the prompt is not cached, and one million output tokens cost $0.60; at peak the price is twice these values.
- * The experiment applies the off-peak list price of the two sources above and charges every input token at the cache-miss
- * price, so the cost of one LLM call is an upper bound (the section Cost and Tokens of the README has the details).
+ * The experiment applies the off-peak list price and charges every input token at the cache-miss price, so the cost of one
+ * LLM call is an upper bound (the section Cost and Tokens of the README has the details).
  */
 export const PRICE: Record<Service, { input: number; output: number }> = {
   jev: { input: 0.042, output: 0 },

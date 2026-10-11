@@ -16,6 +16,8 @@
     --color-ink-soft: #33466b;
     --color-line: #3a4d73;
     --color-pane: #edf3fc;
+    --color-warn: #f6d58e;
+    --color-warn-strong: #b45309;
 }
 
 @theme inline {

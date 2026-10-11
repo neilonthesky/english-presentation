@@ -2,7 +2,7 @@
 // Run the request triage experiment and write the evidence files.
 //
 //   bun run experiment/run.ts --help
-//   bun run experiment/run.ts                      # the 50 requests, live calls (recorded on disk)
+//   bun run experiment/run.ts                      # the whole request set, live calls (recorded on disk)
 //   bun run experiment/run.ts --offline            # replay the recorded calls, no network
 //   bun run experiment/run.ts --limit 20 --out /tmp/twenty
 //
@@ -51,7 +51,7 @@ interface Args {
 
 const USAGE = `Usage: bun run experiment/run.ts [options]
 
-Runs the request triage experiment on the 50 requests of experiment/data/requests.csv and writes the evidence files:
+Runs the request triage experiment on the requests of experiment/data/requests.csv and writes the evidence files:
 results.json, per_case.json, provenance.json, tables/*.tex, figures/.
 
 Options:

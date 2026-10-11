@@ -1,8 +1,41 @@
+# Office lock files
 .~lock.*
-/slides/node_modules/
-/slides/.venv/
-# Anthropic pptx skill is proprietary (no redistribution)
-/.omp/skills/pptx/
+
+# LaTeX build output (paper.pdf stays tracked: it is the deliverable)
+*.aux
+*.log
+*.out
+*.toc
+*.bbl
+*.blg
+*.fls
+*.fdb_latexmk
+*.synctex.gz
+
+# Dependencies, caches, compiled output
+node_modules/
+.venv/
+__pycache__/
+*.pyc
+*.tsbuildinfo
+dist/
+
+# Secrets
+.env
+.env.*
+
+# OS and editor files
+.DS_Store
+Thumbs.db
+
+# Slides: renders for visual checks are rebuilt by slides/render.sh
 /slides/preview-*.jpg
 /slides/deck.pdf
-experiment/results
+/slides/variants/
+
+# Anthropic pptx skill is proprietary (no redistribution)
+/.omp/skills/pptx/
+
+# Generated experiment output (rebuilt by experiment/run.ts and demo/run.py)
+experiment/results/
+demo/results/
