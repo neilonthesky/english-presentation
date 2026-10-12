@@ -2,10 +2,10 @@
 
 - **Họ và tên diễn giả:** Vuong Quang Quy
 - **Vai trò trong đề tài:** Phân tích kết quả thực nghiệm; Kiểm định thống kê; Tạo các bảng biểu LaTeX và đồ thị trực quan
-- **Tỷ lệ phân công:** 17% tổng thời lượng thuyết trình trong bài báo; về thời gian nói, Quy nói 78 giây trên tổng 858 giây.
-- **Thời gian nói được phân bổ:** 1 phút 18 giây (78 giây) cho một slide: Slide 27.
-- **Số từ mục tiêu:** ~184 từ trong 78 giây, tức khoảng 141 từ mỗi phút: nhanh hơn tốc độ nói rõ ràng thông thường, nên phải bấm giờ khi luyện. Nếu vượt khung, bỏ bớt các câu phân tích ở Slide 27 và giữ nguyên các số liệu chính
-- **Slide phụ trách:** Slide 27 (78 giây): Kết quả 2 (hai cấp độ trên cùng 1.024 yêu cầu). Câu bàn giao cho Phuong Nam nằm ở cuối Slide 27. Quy **không đặt câu hỏi** cho khán giả: Quy chỉ trình bày số liệu.
+- **Tỷ lệ đóng góp trong bài báo:** 17% (đây không phải tỷ lệ thời gian nói). Về thời gian nói, Quy nói 120 giây trên tổng 940 giây (12,8%).
+- **Thời gian nói được phân bổ:** 2 phút 00 giây (120 giây) cho hai slide: Slide 26 (60 giây) và Slide 27 (60 giây).
+- **Số từ mục tiêu:** ~254 từ tiếng Anh (133 + 121) trong 120 giây, tức khoảng 127 từ mỗi phút, đã gồm câu tự giới thiệu và câu bàn giao. Số từ đếm trên lời nói thật, các số viết thành chữ. Nếu chậm hơn, cắt theo dòng "Nếu vượt khung" của từng slide.
+- **Các slide phụ trách:** Slide 26 (60 giây): Kết quả 2 (hai level trên cùng 1.024 yêu cầu); Slide 27 (60 giây): nhãn hành động sai nhưng kết cục đúng (ba bằng chứng quan sát được). Câu bàn giao cho Phuong Nam nằm ở cuối Slide 27. Quy **không đặt câu hỏi** cho khán giả: Quy chỉ trình bày số liệu.
 
 ---
 
@@ -19,23 +19,50 @@
 
 ## 2. Kịch bản nói chi tiết từng từ (Word-for-Word Spoken Script)
 
-### Slide 27: Kết quả 2: Level 3 nhanh hơn, rẻ hơn và ít lỗi hơn
-- **Tiêu đề slide:** Result 2: Level 3 is faster, cheaper, and makes fewer errors
-- **Thời gian dự kiến trên slide:** 1 phút 18 giây (78 giây, ~184 từ)
-- **Ý chính:** Level 2: 728 phục vụ, 235 chặn, 61 lỗi (khoảng 13 gây hại). Level 3: 776 phục vụ, 248 chặn, 0 lỗi. Nhanh hơn 1,8 lần, rẻ hơn 2,1 lần. Kiểm định dấu p = 0,031.
-- **Ghi chú phương pháp (đã bỏ khỏi slide, chỉ nói nếu được hỏi):** với Level 3, thời gian và chi phí của tin nhắn cuối lấy từ lần chạy đã ghi lại của cùng các yêu cầu; tin nhắn cuối chỉ viết văn bản, không đổi quyết định.
+### Slide 26: Kết quả 2: Level 3 nhanh hơn, rẻ hơn và ít lỗi hơn
+- **Tiêu đề slide:** On our SaaS test set: lower time, cost, and error count
+- **Thời gian dự kiến trên slide:** 1 phút 00 giây (60 giây, ~133 từ)
+- **Ý chính:** Level 2: 795 phục vụ, 198 chặn, 31 lỗi (10 gây hại: 5 hoàn tiền, 5 hủy gói). Level 3: 825 phục vụ, 199 chặn, 0 lỗi, 0 gây hại. Thời gian máy trung bình 5,89 s so với 12,45 s (2,1 lần); chi phí API 0,30 đô so với 0,64 đô cho 1.000 yêu cầu (2,2 lần).
+- **Nếu vượt khung:** bỏ câu "Of the 31 Level Two errors..." và giữ nguyên các số của hai level.
 
-> Thank you, Son. My name is Vuong Quang Quy. I will compare the two levels on the same one thousand and twenty-four requests. Level Two serves seven hundred and twenty-eight, stops two hundred and thirty-five, and makes sixty-one errors, about thirteen of them harmful. Level Three serves seven hundred and seventy-six, stops two hundred and forty-eight, and makes no error, and none is harmful. Level Three is one point eight times faster, four point two eight seconds against seven point eight five, and two point one times cheaper, twenty-nine cents against sixty-one cents per one thousand requests.
+> `[NHÌN KHÁN GIẢ - MỈM CƯỜI]`  
+> Thank you, Son. My name is Vuong Quang Quy. I will compare the two levels on the same one thousand and twenty-four requests. Level Two serves seven hundred and ninety-five, stops one hundred and ninety-eight, and makes thirty-one errors, ten of them harmful. Level Three serves eight hundred and twenty-five, stops one hundred and ninety-nine, and makes zero errors and zero harmful runs.
 > 
 > `[NGHỈ 1 GIÂY]`  
 > 
-> The two levels fail on different requests. Level Two fails on forty-eight injection requests and on thirteen refund requests, where it cancelled the plan. Level Two was wrong and Level Three right on sixty-one of the one thousand and twenty-four requests, and the reverse on none. The sign test gives p equal to zero point zero three one, so Level Three makes significantly fewer errors on these requests. Level Three uses two Jev calls on four requests in ten, and that adds little time and cost.
+> Level Three has two point one times lower mean machine time, five point eight nine seconds against twelve point four five, and two point two times lower API cost, thirty cents against sixty-four cents per one thousand requests.
+> 
+> `[NGHỈ 1 GIÂY]`  
+> 
+> Of the thirty-one Level Two errors, twenty-seven are injection requests. The harmful errors run five refunds and five plan cancellations. These are outcomes on this synthetic set, not a guarantee of safety.
+> 
+> `[NGHỈ 1 GIÂY]`  
+> 
+> `[CHUYỂN SANG SLIDE 27]`
+
+---
+
+### Slide 27: Nhãn hành động sai, kết cục đúng
+- **Tiêu đề slide:** Wrong action labels, correct outcomes on this test set
+- **Thời gian dự kiến trên slide:** 1 phút 00 giây (60 giây, ~121 từ)
+- **Ý chính:** cờ injection đúng 98,4%; 2.050 trên 2.050 câu trả lời luật khớp luật; 278 nhãn hành động sai ở lần gọi đầu và 0 dẫn tới kết cục sai; Level 3: 0 lỗi, 0 gây hại; hai đầu vào hoàn tiền đã đổi sau các lần chạy đầu nên đây không phải đánh giá mù.
+- **Nếu vượt khung:** bỏ câu về cờ injection; giữ nguyên câu về nhãn hành động sai và câu "not a blind evaluation".
+
+> These are observed results, not three independent safety guards. The injection flag and the rule answers both come from Jev. First, Jev sets the injection flag right on ninety-eight point four percent of the requests, and when it is on, the process sends a reply.
+> 
+> `[NGHỈ 1 GIÂY]`  
+> 
+> Second, two thousand and fifty of two thousand and fifty rule answers match the written rules on this set. Third, the first-call action label is wrong on two hundred and seventy-eight requests, and none of them end in a wrong outcome.
+> 
+> `[NGHỈ 1 GIÂY]`  
+> 
+> Level Three makes zero errors and zero harmful runs on this set. Two refund inputs were changed after earlier failures, so this is not a blind evaluation.
 > 
 > `[NGHỈ 1 GIÂY]`  
 > 
 > `[NHÌN SANG NGUYEN PHUONG NAM]`  
 > 
-> Now Nguyen Phuong Nam will explain how Level 3 limits each model, and why it stays safe.
+> Now Nguyen Phuong Nam will explain our idea.
 
 ---
 
@@ -43,7 +70,7 @@
 
 Nói chính xác câu tiếng Anh này để chuyển tiếp cho Phuong Nam (Diễn giả 5):
 
-> "Now Nguyen Phuong Nam will explain how Level 3 limits each model, and why it stays safe."
+> "Now Nguyen Phuong Nam will explain our idea."
 
 ---
 
@@ -51,42 +78,43 @@ Nói chính xác câu tiếng Anh này để chuyển tiếp cho Phuong Nam (Di�
 
 ### Câu hỏi 1:
 **"What is a 'harmful' run in your metrics?"**
-- **Câu trả lời ngắn (2 câu):**
-  > "A harmful run is a wrong action that changes money, data, the plan, or the password against a written rule. At Level Two about twenty runs of one thousand and twenty-four are harmful, and at Level Three there are none."
+- **Câu trả lời ngắn (3 câu):**
+  > "A harmful run is an error that runs an action which changes money, data, the plan, or the password against a written rule. At Level Two ten of the one thousand and twenty-four runs are harmful: five refunds and five plan cancellations. At Level Three there are none."
 
 ### Câu hỏi 2:
 **"Why is Level 3 faster if the LLM still writes the final message?"**
 - **Câu trả lời ngắn (3 câu):**
-  > "At Level Two the agent call reads the chat and the whole account and reasons about all the rules, and it takes about four seconds of the seven point eight. At Level Three that work is gone: Jev answers in about zero point three seconds per call, and the second call only runs on four requests in ten. The final message call is the same in both levels, so the difference comes from the decision step."
+  > "At Level Two the agent call reads the chat and the whole account and reasons about all the written rules, and it takes four point nine seven seconds at the median. At Level Three the Jev calls take zero point four seven seconds at the median for one request. The final message takes about five point five to five point eight seconds in the two levels, so almost all of the difference of about six and a half seconds in the mean machine time comes from the decision."
 
 ### Câu hỏi 3:
 **"Is zero errors out of 1,024 a real zero, or overfitting?"**
-- **Câu trả lời ngắn (3 câu):**
-  > "It is a result on this set, not proof of a rate of zero. The design is also tuned on the same twenty-four request types that we know, and the labels come from the code that applies the rules. So we claim fewer errors than Level Two on this set, which the sign test supports with p equal to zero point zero three one."
+- **Câu trả lời ngắn (4 câu):**
+  > "It is a result on this set, not proof of a zero rate: with zero errors in one thousand and twenty-four requests, the upper limit of a ninety-five percent interval is about zero point four percent. The set is a challenge set that we built, the labels come from the code that applies the rules, and two refund inputs were changed after earlier failures. So we claim lower time, cost, and error count on this set. On the thirty-one requests where the levels differ, only Level Two makes an error, and an exact sign test gives p below one in a billion."
 
 ---
 
-## 5. Hướng dẫn phát âm (9 từ kỹ thuật khó)
+## 5. Hướng dẫn phát âm (10 từ kỹ thuật khó)
 
-Luyện phát âm 9 từ vựng này theo phiên âm đơn giản dưới đây:
+Luyện phát âm 10 từ vựng này theo phiên âm đơn giản dưới đây:
 
 | Từ tiếng Anh | Phiên âm đơn giản | Hướng dẫn phát âm và trọng âm |
 | :--- | :--- | :--- |
-| **Interval** | **IN-ter-vul** | Có 3 âm tiết; nhấn vào 'IN'; đuôi 'vul' đọc rõ. |
-| **Significantly** | **sig-NIF-ih-kunt-lee** | Có 5 âm tiết; nhấn vào 'NIF'; các âm còn lại đọc lướt. |
 | **Harmful** | **HARM-ful** | Có 2 âm tiết; nhấn vào 'HARM'; đuôi 'ful' đọc nhẹ. |
-| **Label** | **LAY-bul** | Có 2 âm tiết; nhấn vào 'LAY'; đuôi 'bul' đọc nhẹ. |
-| **Accuracy** | **AK-yuh-ruh-see** | Có 4 âm tiết; nhấn vào 'AK'; đuôi 'see' rõ ràng. |
-| **Errors** | **ER-erz** | Có 2 âm tiết; nhấn vào 'ER'; đuôi 'erz' đọc nhẹ. |
-| **Level** | **LEV-ul** | Có 2 âm tiết; nhấn vào 'LEV'; không đọc 'le-vel' thành 'lơ-ven'. |
-| **Cheaper** | **CHEE-per** | Có 2 âm tiết; nhấn vào 'CHEE'; đuôi 'per' đọc nhẹ. |
+| **Cancellations** | **kan-suh-LAY-shunz** | Có 4 âm tiết; nhấn vào 'LAY'; kết thúc bằng âm 'z'. |
 | **Injection** | **in-JEK-shun** | Có 3 âm tiết; nhấn vào 'JEK'; đuôi 'shun' đọc nhẹ. |
+| **Machine** | **muh-SHEEN** | Có 2 âm tiết; nhấn vào 'SHEEN'; 'ch' đọc như 'sh'. |
+| **Guarantee** | **gar-un-TEE** | Có 3 âm tiết; nhấn vào 'TEE'; âm đầu như 'gar'. |
+| **Synthetic** | **sin-THET-ik** | Có 3 âm tiết; nhấn vào 'THET'; đuôi 'ik' ngắn. |
+| **Observed** | **ub-ZURVD** | Có 2 âm tiết; nhấn vào 'ZURVD'; 's' đọc như 'z'. |
+| **Independent** | **in-dih-PEN-dunt** | Có 4 âm tiết; nhấn vào 'PEN'; đuôi 'dunt' đọc nhẹ. |
+| **Outcome** | **OWT-kum** | Có 2 âm tiết; nhấn vào 'OWT'; đuôi 'kum' đọc nhẹ. |
+| **Evaluation** | **ih-val-yoo-AY-shun** | Có 5 âm tiết; nhấn vào 'AY'; đuôi 'shun' đọc nhẹ. |
 
 ---
 
 ## 6. Ký hiệu tốc độ và cử chỉ biểu diễn
 
 - `[NHÌN KHÁN GIẢ - MỈM CƯỜI]`: Thể hiện sự tự tin trước khi công bố số liệu thực nghiệm.
-- `[NGHỈ 1 GIÂY]`: Giúp người nghe tiếp thu các số liệu so sánh (nhanh hơn 1,8 lần, rẻ hơn 2,1 lần, 0 lỗi so với 61 lỗi).
+- `[NGHỈ 1 GIÂY]`: Giúp người nghe tiếp thu các số liệu so sánh (2,1 lần nhanh hơn, 2,2 lần rẻ hơn, 0 lỗi so với 31 lỗi).
 - `[NHÌN SANG NGUYEN PHUONG NAM]`: Nhìn sang người nói tiếp theo khi đọc câu bàn giao lượt nói.
 - `[CHUYỂN SANG SLIDE X]`: Bấm chuyển slide trình chiếu chuẩn xác theo kịch bản.

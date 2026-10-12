@@ -1,7 +1,7 @@
 // Builds slides/deck.pptx from the independent Level 2 and Level 3 experiment results.
 // Claims apply only to the stored synthetic SaaS set and the measured hosted API configurations.
 // Fixed execution follows Jev's answers; it is not independent policy verification or a safety guarantee.
-// Slide 31 links the Red Hat guardrail benchmark as external context, not replacement experiment data.
+// Slide 29 links the Red Hat guardrail benchmark as external context, not replacement experiment data.
 // Run: node build.js   (from the slides/ directory), or ./render.sh to also validate and render.
 // Style: light-to-mid blue/grey/teal tones, borderless cards, solid fills, no glow or shadow,
 // no dark theme, no yellow/orange. Photographs live in assets/ and are generated for this deck.
@@ -48,7 +48,6 @@ if (new Set(sentBy.values()).size !== 1 || sentBy.size !== data.customers) throw
 const requestsPerCustomer = [...sentBy.values()][0];
 // The refund inputs that were changed after a failure. Every slide that shows rule results says so: the rule evaluation was not blind.
 const CHANGED_SHORT = "Two refund inputs were changed after earlier failures";
-const CHANGED_NOTE = `The refund-credits question was revised after an earlier failure. After a first run on this set, the refund-window answer stopped two valid refunds, so code now states the days since the charge in the account, and both levels ran again on the same ${sampleSize} requests. This is not a blind evaluation of those two rules.`;
 const cost2 = level2.apiCostPer1000.toFixed(2), cost3 = level3.apiCostPer1000.toFixed(2);
 const time2 = level2.machineSeconds.mean.toFixed(2), time3 = level3.machineSeconds.mean.toFixed(2);
 const speedRatio = (level2.machineSeconds.mean / level3.machineSeconds.mean).toFixed(1);
@@ -61,24 +60,15 @@ const ruleCalls = records3.filter((record) => record.ruleCall).map((record) => r
 const jevCalls = level3.requests + ruleCalls.length;
 const wrongActions = records3.filter((record) => record.classifierWrongFields.includes("action"));
 const wrongActionOutcomes = wrongActions.filter((record) => record.outcome === "error").length;
-const strictOnWrongActions = records3.filter((record) => record.labelOutcome === "error" && record.classifierWrongFields.includes("action")).length;
 const byId3 = new Map(records3.map((record) => [record.id, record]));
 if (level2.requests !== level3.requests || records2.length !== records3.length ||
     records2.some((record) => !byId3.has(record.id))) {
   throw new Error("The two independent runs must cover the same request set");
 }
-const errors2Only = records2.filter((record) => record.outcome === "error" && byId3.get(record.id).outcome !== "error").length;
-const errors3Only = records2.filter((record) => record.outcome !== "error" && byId3.get(record.id).outcome === "error").length;
 const errorsAt2 = records2.filter((record) => record.outcome === "error");
 const injectionErrors2 = errorsAt2.filter((record) => record.category === "inj_refund_everything").length;
-const refundErrors2 = errorsAt2.filter((record) => record.category.startsWith("refund_")).length;
-const otherErrors2 = errorsAt2.length - injectionErrors2 - refundErrors2;
 const harmfulRefunds2 = records2.filter((record) => record.harmful && record.executed.action === "Start refund").length;
 const harmfulCancellations2 = records2.filter((record) => record.harmful && record.executed.action === "Cancel plan").length;
-const firstInput = Math.round(records3.reduce((sum, record) => sum + record.classifier.raw.usage.input_tokens, 0) / records3.length);
-const firstOutput = Math.round(records3.reduce((sum, record) => sum + record.classifier.raw.usage.output_tokens, 0) / records3.length);
-const ruleInput = Math.round(ruleCalls.reduce((sum, call) => sum + call.inputTokens, 0) / ruleCalls.length);
-const ruleOutput = Math.round(ruleCalls.reduce((sum, call) => sum + call.outputTokens, 0) / ruleCalls.length);
 
 const C = {
   bg: "D6DDE5", // soft cool light tone (slide background)
@@ -109,10 +99,11 @@ const SPEAKER = [
   [LONG, 12], // many rules
   [LONG, 23], [LONG, 40], [LONG, 26], [LONG, 26], [LONG, 24], // written rules, Level 2 flow, Level 3 flow, inputs, typed answers
   [LONG, 22], [LONG, 12], [LONG, 12], // the three walk-throughs (CASES in cases.js): every click is its own slide, so these seconds cover all of them
-  [NAM, 41], [NAM, 39], [NAM, 40], // test data, request families, outcomes
-  [SON, 42], [SON, 38], [SON, 40], // the run, models and prices, Result 1
-  [QUY, 78], // Result 2
-  [PNAM, 35], [PNAM, 55], [PNAM, 35], // our idea, limits, conclusion
+  // Each of the four other speakers has two slides and 120 s.
+  [NAM, 60], [NAM, 60], // test data, outcomes
+  [SON, 60], [SON, 60], // the run and the price, Result 1 (Jev)
+  [QUY, 60], [QUY, 60], // Result 2 (the two levels), wrong action labels and correct outcomes
+  [PNAM, 60], [PNAM, 60], // our idea, conclusion
   [LONG, 0], // questions (Long answers; not part of the timed talk)
 ];
 
@@ -863,58 +854,35 @@ async function photo(file, w, h, radius = 0.08, dpi = 150) {
   });
 
   // ---------- 11. Test data ----------
+  // One slide for Nam: the five groups of the request set and the facts of the set that the talk must state.
   {
     const s = base(
       13,
       `Test data: ${data.customers} customers, ${sampleSize} requests`,
-      `Thank you, Long. My name is Nguyen Thanh Nam. I will explain our test data. Public datasets have no SaaS accounts, so we built our own: ${data.customers} FrameForge customers. Each has one purchase of a personal plan (Plus, Pro, or Max), the state of the plan, a render-credit balance, and a log of password reset links. So the written rules can use real account fields, and the customers cover every branch of the rules. Each customer sends ${requestsPerCustomer} requests: ${sampleSize} requests of ${data.categories} types. We made the set hard on purpose: it stresses actions that change money, data, or the plan, active security incidents, and requests where time matters. It is a challenge set, not an estimate of production traffic.`
+      `Thank you, Long. My name is Nguyen Thanh Nam. I will explain our test data. Public datasets have no SaaS accounts, so we built our own: ${data.customers} FrameForge customers, each with one purchase, a credit balance, and a log of password reset links. Each customer sends ${requestsPerCustomer} requests, so we have ${sampleSize} requests of ${data.categories} types in five groups. High-impact actions are the largest group, with ${groupSize[0]} requests. We made the set hard on purpose: a written rule denies the action on ${data.finalDenied} requests, and ${injectionRequests} requests hide an order in the message. A seeded generator writes the requests and runs the real code of the system to make the correct answers. This is a challenge set, not production traffic.`
     );
-    box(s, ML, 1.6, 6.3, 5.0);
-    textBox(s, "One customer in the test data", ML + 0.3, 1.75, 5.7, 0.5, { size: 20, bold: true, color: C.navy, valign: "middle" });
-    [
-      ["LuDollarSign", "One purchase: a monthly or an annual plan (Plus, Pro, or Max)"],
-      ["LuFileText", "A plan and the state of the plan"],
-      ["LuCpu", "A render-credit balance"],
-      ["LuLock", "A log of password reset links"],
-    ].forEach(([ic, t], i) => {
-      const y = 2.6 + i * 1.0;
-      iconCircle(s, ic, ML + 0.3, y, 0.6, C.blue);
-      textBox(s, t, ML + 1.15, y, 4.95, 0.6, { size: 17, valign: "middle" });
-    });
-    const gx = ML + 6.6, gw = (CW - 6.6 - 0.3) / 2, gh = 2.35;
-    [
-      ["LuUsers", String(data.customers), "FrameForge customers"],
-      ["LuFileText", sampleSize, "requests, one run and no split"],
-      ["LuTags", String(data.categories), "request types"],
-      ["LuUser", String(requestsPerCustomer), "requests from each customer", 30],
-    ].forEach(([ic, n, l, sz], i) => {
-      statCard(s, gx + (i % 2) * (gw + 0.3), 1.6 + Math.floor(i / 2) * (gh + 0.3), gw, gh, { icon: ic, big: n, label: l, bigSize: sz || 30, labelY: 1.3 });
-    });
-  }
-
-  // ---------- 12. Request families ----------
-  {
-    const s = base(
-      14,
-      `${sampleSize} requests in five groups`,
-      `A seeded generator wrote the ${sampleSize} requests. The ${data.categories} types form five groups. High-impact actions are the largest group, with ${groupSize[0]} requests: refunds, plan cancellations, password resets, and data deletions. Security incidents come next, with ${groupSize[1]}: card fraud, destroyed data, and account takeover. Then mixed and time-sensitive requests, ${groupSize[2]}; routine support, ${groupSize[3]}; and injection attempts with look-alikes, ${groupSize[4]}. Every request has its own words. The correct answers come from the written rules, because the generator runs the real code. A rule denies the action on ${data.finalDenied} of the ${sampleSize} requests. The mix is a design for a challenge set, not production traffic.`
-    );
-    box(s, ML, 1.6, 7.9, 5.0);
+    const cardH = 4.05;
+    box(s, ML, 1.6, 7.9, cardH);
     s.addChart(pres.charts.BAR, [{ name: "Requests", labels: GROUPS.map(([name]) => name), values: groupSize }], {
-      ...chartBase, showLegend: false, x: ML + 0.2, y: 1.7, w: 7.5, h: 4.8, barDir: "bar", barGapWidthPct: 40, chartColors: [C.l3],
+      ...chartBase, showLegend: false, x: ML + 0.2, y: 1.7, w: 7.5, h: cardH - 0.2, barDir: "bar", barGapWidthPct: 40, chartColors: [C.l3],
       dataLabelPosition: "outEnd", dataLabelFontSize: 14, catAxisLabelFontSize: 14, catAxisOrientation: "maxMin", valAxisMaxVal: 430,
-      showTitle: true, title: `Requests per group (${sampleSize} in total)`,
+      title: `Requests per group (${sampleSize} in total)`,
     });
-    const x = ML + 8.2, w = CW - 8.2;
-    callout(s, x, 1.6, w, 1.5, { icon: "LuScale", big: `${data.finalDenied} of ${sampleSize}`, label: "requests where a written rule denies the action", color: C.teal, bigSize: 28 });
-    callout(s, x, 3.3, w, 1.5, { icon: "LuCpu", big: "Real code", label: "the generator runs the code of the system to make the correct answer", color: C.l3, bigSize: 28 });
-    callout(s, x, 5.0, w, 1.6, { icon: "LuShieldX", big: `${injectionRequests} attacks`, label: "requests that hide an order in the message", color: C.l3, bigSize: 28 });
+    const x = ML + 8.2, w = CW - 8.2, h = 1.2, gap = (cardH - 3 * h) / 2;
+    [
+      ["LuUsers", `${data.customers} customers`, `${requestsPerCustomer} requests each: ${sampleSize} requests of ${data.categories} types`, C.l3],
+      ["LuScale", `${data.finalDenied} of ${sampleSize}`, "requests where a written rule denies the action", C.teal],
+      ["LuShieldX", `${injectionRequests} attacks`, "requests that hide an order in the message", C.l3],
+    ].forEach(([icon, big, label, color], i) => {
+      callout(s, x, 1.6 + i * (h + gap), w, h, { icon, big, label, color, bigSize: 24, bigH: 0.5, bigY: 0.1 });
+    });
+    band(s, 5.9, 0.9, "LuCpu", [{ text: "Real code: ", options: { bold: true } }, { text: "the generator runs the code of the system to make the correct answer. A challenge set, not production traffic." }]);
   }
 
   // ---------- 13. Outcomes ----------
   {
     const s = base(
-      15,
+      14,
       "Every request ends served, stopped, or in error",
       "Now, how we score a request. We look at what the customer gets. Served means the run ends with the correct result. Stopped means a written rule denies the action, nothing runs, and the reply gives the reason. Error is every other run. A run is harmful if it changes money, data, the plan, or the password against the written rules. We also report the machine time of one request, the API cost per 1,000 requests, and the error counts on this request set. Now my teammate Vu Van Son will explain the run."
     );
@@ -936,61 +904,51 @@ async function photo(file, w, h, radius = 0.08, dpi = 150) {
     });
   }
 
-  // ---------- 13. The run ----------
+  // ---------- 12. The run and the price ----------
+  // One slide for Son: how the two levels ran, the two hosted models, the list prices, and the cost that follows.
   {
     const s = base(
-      16,
+      15,
       `Both levels run on the same ${sampleSize} requests`,
-      `Thank you, Nam. My name is Vu Van Son. I will explain how we ran the experiment. We call two hosted models for real: Jev, version 1.13.0, and DeepSeek V4.1 Flash. Both automated levels run on the same ${sampleSize} requests, with their results stored separately. At Level 3, Jev answers the chat of every request once, and answers the rule questions on ${count(ruleCalls.length)} requests: ${count(jevCalls)} Jev calls in total. Level 2 uses two LLM calls per request: the agent and the final message. We ask one question: what does each level buy and cost?`
+      `Thank you, Nam. My name is Vu Van Son. I will explain how we ran the experiment. We call two hosted models for real: Jev, version 1.13.0, and DeepSeek V4.1 Flash. Both levels run on the same ${sampleSize} requests, in separate runs. Level 2 makes two LLM calls for each request. Level 3 makes ${(jevCalls / level3.requests).toFixed(1)} Jev calls and one LLM call. Jev costs 4.2 cents per million input tokens, and its output is free. The LLM costs 15 cents in and 60 cents out per million tokens. At list price, 1,000 requests cost $${cost2} at Level 2 and $${cost3} at Level 3. These are API token charges, not total operating cost.`
     );
-    const gap = 0.3, cw = (CW - 2 * gap) / 3, y = 1.55, h = 1.85;
-    [
-      ["LuCpu", sampleSize, "requests in each independent run: Level 2 and Level 3"],
-      ["LuBot", count(jevCalls), `Jev calls: one per request, plus a second call on ${count(ruleCalls.length)}`],
-      ["LuDatabase", count(jevCalls + level3.requests), `model calls at Level 3: ${count(jevCalls)} to Jev and ${sampleSize} to the LLM`],
-    ].forEach(([ic, n, l], i) => {
-      statCard(s, ML + i * (cw + gap), y, cw, h, { icon: ic, big: n, label: l, bigSize: 32, labelY: 1.2 });
-    });
+    // The run in one strip: the requests of each run and the two hosted models.
     {
-      const yy = 3.9;
-      box(s, ML, yy, CW, 1.5);
-      textBox(s, "Q1", ML + 0.35, yy + 0.4, 1.1, 0.7, { shape: pres.ShapeType.roundRect, fill: C.blue, line: C.blue, color: C.white, bold: true, size: 24, margin: 0, valign: "middle", align: "center" });
-      textBox(s, "What does each level buy and cost? Served, stopped, errors, harm, time, and cost.", ML + 1.85, yy, CW - 2.15, 1.5, { size: 24, valign: "middle" });
+      const ry = 1.55, rh = 0.8;
+      box(s, ML, ry, CW, rh);
+      [
+        ["LuCpu", C.l3, `${sampleSize} requests in each independent run, at Level 2 and at Level 3`],
+        ["LuBot", C.grey, "Two hosted models: Jev (jev-1.13.0) and DeepSeek V4.1 Flash"],
+      ].forEach(([ic, col, txt], i) => {
+        const x = ML + 0.3 + i * (CW / 2);
+        iconCircle(s, ic, x, ry + (rh - 0.6) / 2, 0.6, col);
+        textBox(s, txt, x + 0.8, ry, CW / 2 - 1.3, rh, { size: 16, valign: "middle" });
+      });
     }
-    textBox(s, "Calls to two hosted models: Jev (jev-1.13.0) and DeepSeek V4.1 Flash through the Factory Droid gateway. Staff time is an assumed reference, not a measured run.", ML, 6.15, CW, 0.7, { size: 15, color: C.muted, valign: "middle" });
-  }
-
-  // ---------- 15. Models, input, and prices ----------
-  {
-    const s = base(
-      17,
-      "On our SaaS test set, Level 3 costs less",
-      `Level 2 reads the chat text, the sender, the channel, the matching help articles, the whole account, and the written rules. Level 3 reads less: the chat first, then only the account lines and the rule questions of one action. Jev costs 4.2 cents per million input tokens, and its output is free. The LLM costs 15 cents in and 60 cents out per million tokens, with high reasoning effort. The first Jev call reads ${count(firstInput)} tokens and writes ${count(firstOutput)}. The second call, on ${count(ruleCalls.length)} of the ${sampleSize} requests, reads ${count(ruleInput)} tokens and writes ${count(ruleOutput)}. One LLM agent call reads ${count(Math.round(level2.decisionTokens.inputPerCall))} tokens and writes ${count(Math.round(level2.decisionTokens.outputPerCall))}, including reasoning. At list price, for 1,000 requests, Level 2 costs $${cost2}, and Level 3 costs $${cost3}: for each request, ${(jevCalls / level3.requests).toFixed(1)} calls to Jev and one to the LLM. These are API token charges at the listed prices, not total operating cost. Model choice, input scope, and orchestration all differ between these designs; this is not a single-variable model benchmark.`
-    );
     // One card for each level: the cost per 1,000 requests, a bar in proportion, the calls that one request makes, and what the level reads.
-    const gap = 0.3, cw = (CW - gap) / 2, y = 1.6, h = 3.6, barW = cw - 0.7;
+    const gap = 0.3, cw = (CW - gap) / 2, y = 2.55, h = 3.0, barW = cw - 0.7;
     [
       { x: ML, head: "Level 2: LLM agent", icon: "LuBot", col: C.l2, cost: `$${cost2}`, share: 1, calls: [["LLM call", C.grey, 1.4], ["LLM call", C.grey, 1.4]], reads: "Reads the chat, the whole account, and all the rules" },
       { x: ML + cw + gap, head: "Level 3: Jev + LLM", icon: "LuTags", col: C.l3, cost: `$${cost3}`, share: level3.apiCostPer1000 / level2.apiCostPer1000, calls: [[`Jev call × ${(jevCalls / level3.requests).toFixed(1)}`, C.l3, 2.0], ["LLM call", C.grey, 1.4]], reads: "Reads the chat first, then the rules of one action" },
     ].forEach((o) => {
       box(s, o.x, y, cw, h);
-      iconCircle(s, o.icon, o.x + 0.35, y + 0.25, 0.65, o.col);
-      textBox(s, o.head, o.x + 1.2, y + 0.25, cw - 1.5, 0.65, { size: 22, bold: true, color: C.navy, valign: "middle" });
-      textBox(s, o.cost, o.x + 0.35, y + 1.0, 2.3, 0.95, { size: 54, bold: true, color: o.col, valign: "middle", margin: 0 });
-      textBox(s, "per 1,000 requests", o.x + 2.7, y + 1.0, cw - 3.0, 0.95, { size: 18, color: C.muted, valign: "middle" });
-      s.addShape(pres.ShapeType.roundRect, { x: o.x + 0.35, y: y + 2.05, w: barW, h: 0.3, rectRadius: 0.05, fill: { color: "E9EDF2" }, line: { color: "E9EDF2", width: 0 } });
-      s.addShape(pres.ShapeType.roundRect, { x: o.x + 0.35, y: y + 2.05, w: barW * o.share, h: 0.3, rectRadius: 0.05, fill: { color: o.col }, line: { color: o.col, width: 0 } });
+      iconCircle(s, o.icon, o.x + 0.35, y + 0.2, 0.6, o.col);
+      textBox(s, o.head, o.x + 1.15, y + 0.2, cw - 1.45, 0.6, { size: 22, bold: true, color: C.navy, valign: "middle" });
+      textBox(s, o.cost, o.x + 0.35, y + 0.9, 2.3, 0.8, { size: 48, bold: true, color: o.col, valign: "middle", margin: 0 });
+      textBox(s, "per 1,000 requests", o.x + 2.7, y + 0.9, cw - 3.0, 0.8, { size: 18, color: C.muted, valign: "middle" });
+      s.addShape(pres.ShapeType.roundRect, { x: o.x + 0.35, y: y + 1.8, w: barW, h: 0.28, rectRadius: 0.05, fill: { color: "E9EDF2" }, line: { color: "E9EDF2", width: 0 } });
+      s.addShape(pres.ShapeType.roundRect, { x: o.x + 0.35, y: y + 1.8, w: barW * o.share, h: 0.28, rectRadius: 0.05, fill: { color: o.col }, line: { color: o.col, width: 0 } });
       let cx = o.x + 0.35;
       o.calls.forEach(([txt, fill, w]) => {
-        textBox(s, txt, cx, y + 2.55, w, 0.36, { shape: pres.ShapeType.roundRect, fill, line: fill, color: C.white, bold: true, size: 14, margin: 0, valign: "middle", align: "center" });
+        textBox(s, txt, cx, y + 2.2, w, 0.36, { shape: pres.ShapeType.roundRect, fill, line: fill, color: C.white, bold: true, size: 14, margin: 0, valign: "middle", align: "center" });
         cx += w + 0.15;
       });
-      textBox(s, "for each request", cx + 0.05, y + 2.55, 1.8, 0.36, { size: 14, color: C.muted, valign: "middle" });
-      textBox(s, o.reads, o.x + 0.35, y + 3.0, cw - 0.7, 0.4, { size: 16, valign: "middle" });
+      textBox(s, "for each request", cx + 0.05, y + 2.2, 1.8, 0.36, { size: 14, color: C.muted, valign: "middle" });
+      textBox(s, o.reads, o.x + 0.35, y + 2.6, cw - 0.7, 0.35, { size: 16, valign: "middle" });
     });
     // The list prices that the costs come from.
     {
-      const py = 5.45, ph = 1.1;
+      const py = 5.7, ph = 1.0;
       box(s, ML, py, CW, ph);
       [
         ["LuTags", C.l3, "Jev: $0.042 per million input tokens, output free"],
@@ -1001,15 +959,15 @@ async function photo(file, w, h, radius = 0.08, dpi = 150) {
         textBox(s, txt, x + 0.8, py, CW / 2 - 1.4, ph, { size: 16, valign: "middle" });
       });
     }
-    textBox(s, "API token charges at the listed prices; not total operating cost.", ML, 6.7, CW, 0.25, { size: 13, color: C.muted });
+    textBox(s, "API token charges at the listed prices; not total operating cost.", ML, 6.78, CW, 0.22, { size: 13, color: C.muted });
   }
 
   // ---------- 7. Result 1: Jev ----------
   {
     const s = base(
-      18,
+      16,
       "Jev on our SaaS test set: speed, cost, and accuracy",
-      `Now the first result, for Jev alone, over ${sampleSize} requests. The median Jev time per request, including rule calls when present, is ${level3.decisionLatency.median.toFixed(2)} seconds. All Jev calls cost $${level3.decisionCostPer1000.toFixed(3)} per 1,000 requests. The first call gives the right topic on ${(100 * quality.queue.accuracy).toFixed(1)} percent of ${count(quality.queue.n)} scored requests, the priority on ${(100 * quality.priority.accuracy).toFixed(1)} percent, the action on ${(100 * quality.action.accuracy).toFixed(1)} percent, and the injection flag on ${(100 * quality.injection.accuracy).toFixed(1)} percent. ${count(ruleStats.matching)} of ${count(ruleStats.answers)} rule answers match the written rules on this set. The first-call action label is wrong on ${wrongActions.length} requests; ${wrongActionOutcomes} of these end in a wrong outcome. The strict final-label metric compares the action that ran with the correct action: it counts ${level3.labelErrors} mismatches, ${strictOnWrongActions} of them on requests with a wrong first-call action label. ${CHANGED_NOTE} These figures describe our synthetic SaaS requests, not a universal model ranking. Typed outputs do not guarantee correct decisions, and we did not compare trained classifiers or other decision models. Now my teammate Vuong Quang Quy will compare the two levels.`
+      `Now the first result, for Jev alone. The median Jev time per request, including rule calls, is ${level3.decisionLatency.median.toFixed(2)} seconds, and all Jev calls cost $${level3.decisionCostPer1000.toFixed(3)} per 1,000 requests. The first call gives the right topic on ${(100 * quality.queue.accuracy).toFixed(1)} percent of the scored requests, the priority on ${(100 * quality.priority.accuracy).toFixed(1)} percent, the action on ${(100 * quality.action.accuracy).toFixed(1)} percent, and the injection flag on ${(100 * quality.injection.accuracy).toFixed(1)} percent. ${count(ruleStats.matching)} of ${count(ruleStats.answers)} rule answers match the written rules. The first-call action label is wrong on ${wrongActions.length} requests, and ${wrongActionOutcomes === 0 ? "none" : wrongActionOutcomes} of these end in a wrong outcome. ${CHANGED_SHORT}, so the rule evaluation was not blind. Now my teammate Vuong Quang Quy will compare the two levels.`
     );
     box(s, ML, 1.65, 7.6, 4.9);
     const labels = ["Topic", "Priority", "Action", "Injection flag", "Rule answers"];
@@ -1034,9 +992,9 @@ async function photo(file, w, h, radius = 0.08, dpi = 150) {
   // ---------- 8. Result 2: the ladder ----------
   {
     const s = base(
-      19,
+      17,
       "On our SaaS test set: lower time, cost, and error count",
-      `Thank you, Son. My name is Vuong Quang Quy. I will compare the two independent runs on the same ${sampleSize} requests. Level 2 serves ${level2.served}, stops ${level2.stopped}, and makes ${level2.errors} errors, ${level2.harmful} of them harmful. Level 3 serves ${level3.served}, stops ${level3.stopped}, and makes ${level3.errors} errors, ${level3.harmful} of them harmful. Level 3 has ${speedRatio} times lower mean machine time: ${time3} seconds against ${time2}. It has ${costRatio} times lower API cost: $${cost3} against $${cost2} per 1,000 requests. Of the ${level2.errors} Level 2 errors, ${injectionErrors2} ${injectionErrors2 === 1 ? "is an injection request" : "are injection requests"}, ${refundErrors2} ${refundErrors2 === 1 ? "is a refund request" : "are refund requests"}, and ${otherErrors2} ${otherErrors2 === 1 ? "is another request" : "are other requests"}. The harmful errors run ${harmfulRefunds2} refunds and ${harmfulCancellations2} plan cancellations. Level 2 was wrong and Level 3 right on ${errors2Only} requests, and the reverse on ${errors3Only}. Level 3 asks a second Jev call on ${(100 * ruleCalls.length / level3.requests).toFixed(1)} percent of requests. These are outcomes on this synthetic set and these hosted API configurations, not a guarantee of safety or a universal ranking of models. Mean machine time sums the decision and final-message calls; it is not the median round-trip latency of a guardrail judgment. Now Nguyen Phuong Nam will explain how Level 3 limits each model.`
+      `Thank you, Son. My name is Vuong Quang Quy. I will compare the two levels on the same ${sampleSize} requests. Level 2 serves ${level2.served}, stops ${level2.stopped}, and makes ${level2.errors} errors, ${level2.harmful} of them harmful. Level 3 serves ${level3.served}, stops ${level3.stopped}, and makes ${level3.errors} errors and ${level3.harmful} harmful runs. Level 3 has ${speedRatio} times lower mean machine time, ${time3} seconds against ${time2}, and ${costRatio} times lower API cost, $${cost3} against $${cost2} per 1,000 requests. Of the ${level2.errors} Level 2 errors, ${injectionErrors2} are injection requests. The harmful errors run ${harmfulRefunds2} refunds and ${harmfulCancellations2} plan cancellations. These are outcomes on this synthetic set, not a guarantee of safety.`
     );
     box(s, ML, 1.65, 7.6, 3.95);
     const cats = ["Level 2: LLM agent", "Level 3: Jev + LLM"];
@@ -1064,43 +1022,18 @@ async function photo(file, w, h, radius = 0.08, dpi = 150) {
     band(s, 5.85, 0.95, "LuShieldCheck", [{ text: "Harmful runs: ", options: { bold: true } }, { text: `${level3.harmful} at Level 3, ${level2.harmful} at Level 2. Observed on this synthetic set, not a safety guarantee.` }]);
   }
 
-  // ---------- 17. Our idea: limit each model ----------
-  // Our own design only, no outside source: what each part of Level 3 may do, and what it may not do.
-  {
-    const s = base(
-      20,
-      "Our idea: limit what each model can trigger",
-      "Thank you, Quy. My name is Nguyen Phuong Nam. I will explain what Level 3 constrains, and what it still trusts. " +
-        "Jev has no action tool. It answers typed questions about the chat and the rules. Fixed code runs the selected action only when no model answer reports a broken rule. " +
-        "This is fixed execution, not independent policy verification: the code does not recheck the policy facts against the account. A wrong rule answer can still allow an unsafe action. " +
-        "The LLM writes the final message after the action or refusal and cannot change that action decision. Our measured results do not establish a general safety guarantee."
-    );
-    const gap = 0.3, cw = (CW - 2 * gap) / 3, y0 = 1.6, h0 = 3.95;
-    [
-      ["LuTags", "Jev", C.l3, "Answers typed questions about the chat and each rule. It has no action tool, but its answers control which code branch runs."],
-      ["LuShieldCheck", "Process", C.teal, "Runs an action only when Jev reports no broken rule. It does not independently verify policy facts against the account."],
-      ["LuBot", "LLM", C.blue, "Writes the final message after the action or refusal. It does not change the action decision. Its reply is not a policy check."],
-    ].forEach(([ic, big, col, text], i) => {
-      const x = ML + i * (cw + gap);
-      box(s, x, y0, cw, h0);
-      iconCircle(s, ic, x + 0.3, y0 + 0.3, 0.9, col);
-      textBox(s, big, x + 1.45, y0 + 0.3, cw - 1.65, 0.9, { size: 30, bold: true, color: col, valign: "middle" });
-      textBox(s, text, x + 0.3, y0 + 1.6, cw - 0.6, 2.2, { size: 22 });
-    });
-    band(s, 5.85, 0.95, "LuShieldCheck", [{ text: "Fixed execution is not fixed policy verification: ", options: { bold: true } }, { text: "a wrong Jev rule answer can still allow an unsafe action." }]);
-  }
-
   // Observed action-label and outcome results, not independent safety guards.
-  // Every numerical result is also on slide 27; the rule evaluation was not blind.
+  // Every numerical result is also on slide 25; the rule evaluation was not blind.
   {
     const s = base(
-      21,
+      18,
       "Wrong action labels, correct outcomes on this test set",
       "These are observed results, not three independent safety guards. The injection flag and the rule answers both come from Jev. " +
-        `First, the injection flag. Jev sets it right on ${(100 * quality.injection.accuracy).toFixed(1)} percent of the requests. When it is on, the process sets the action to Send reply. ` +
-        `Second, the rule questions. ${count(ruleStats.matching)} of ${count(ruleStats.answers)} answers match the written rules on this set. An answer that reports a broken rule stops the action; a missed violation can still allow it. ` +
-        `Third, the outcome. The first-call action label is wrong on ${wrongActions.length} requests; ${wrongActionOutcomes} of them end in a wrong outcome. ` +
-        `Level 3 makes ${level3.errors} errors and ${level3.harmful} harmful runs on this synthetic set. ${CHANGED_NOTE}`
+        `First, Jev sets the injection flag right on ${(100 * quality.injection.accuracy).toFixed(1)} percent of the requests, and when it is on, the process sends a reply. ` +
+        `Second, ${count(ruleStats.matching)} of ${count(ruleStats.answers)} rule answers match the written rules on this set. ` +
+        `Third, the first-call action label is wrong on ${wrongActions.length} requests, and ${wrongActionOutcomes === 0 ? "none" : wrongActionOutcomes} of them end in a wrong outcome. ` +
+        `Level 3 makes ${level3.errors} errors and ${level3.harmful} harmful runs on this set. ${CHANGED_SHORT}, so this is not a blind evaluation. ` +
+        "Now Nguyen Phuong Nam will explain our idea."
     );
     const gap = 0.3, cw = (CW - 2 * gap) / 3, y0 = 1.6, h0 = 3.95;
     [
@@ -1116,6 +1049,32 @@ async function photo(file, w, h, radius = 0.08, dpi = 150) {
       textBox(s, text, x + 0.3, y0 + 2.3, cw - 0.6, 1.5, { size: 18 });
     });
     band(s, 5.85, 0.95, "LuShieldCheck", [{ text: "The result: ", options: { bold: true } }, { text: `Level 3: ${level3.errors} errors and ${level3.harmful} harmful runs on this synthetic set. Not a safety guarantee.` }]);
+  }
+
+  // ---------- 17. Our idea: limit each model ----------
+  // Our own design only, no outside source: what each part of Level 3 may do, and what it may not do.
+  {
+    const s = base(
+      19,
+      "Our idea: limit what each model can trigger",
+      "Thank you, Quy. My name is Nguyen Phuong Nam. I will explain our idea: limit what each model can trigger. " +
+        "Jev has no action tool. It answers typed questions about the chat and the rules. Fixed code runs the action only when no answer reports a broken rule. " +
+        "The LLM writes the final message after the action or the refusal, and it cannot change that decision. " +
+        "This is fixed execution, not independent policy verification: the code does not recheck the policy facts against the account, so a wrong rule answer can still allow an unsafe action."
+    );
+    const gap = 0.3, cw = (CW - 2 * gap) / 3, y0 = 1.6, h0 = 3.95;
+    [
+      ["LuTags", "Jev", C.l3, "Answers typed questions about the chat and each rule. It has no action tool, but its answers control which code branch runs."],
+      ["LuShieldCheck", "Process", C.teal, "Runs an action only when Jev reports no broken rule. It does not independently verify policy facts against the account."],
+      ["LuBot", "LLM", C.blue, "Writes the final message after the action or refusal. It does not change the action decision. Its reply is not a policy check."],
+    ].forEach(([ic, big, col, text], i) => {
+      const x = ML + i * (cw + gap);
+      box(s, x, y0, cw, h0);
+      iconCircle(s, ic, x + 0.3, y0 + 0.3, 0.9, col);
+      textBox(s, big, x + 1.45, y0 + 0.3, cw - 1.65, 0.9, { size: 30, bold: true, color: col, valign: "middle" });
+      textBox(s, text, x + 0.3, y0 + 1.6, cw - 0.6, 2.2, { size: 22 });
+    });
+    band(s, 5.85, 0.95, "LuShieldCheck", [{ text: "Fixed execution is not fixed policy verification: ", options: { bold: true } }, { text: "a wrong Jev rule answer can still allow an unsafe action." }]);
   }
 
   // ---------- 13. Conclusion ----------
@@ -1143,9 +1102,9 @@ async function photo(file, w, h, radius = 0.08, dpi = 150) {
       { icon: "LuDollarSign", big: `${costRatio}x`, label: `lower API cost: $${cost3} vs $${cost2} per 1,000 requests`, color: C.l3 },
     ].forEach((o, i) => callout(s, CX, 0.7 + i * 2.1, CWd, 1.9, { ...o, bigSize: 38, bigH: 0.8, bigY: 0.25, labelSize: 15 }));
     s.addNotes(
-      `Speaker: ${PNAM}, about ${SPEAKER[21][1]} s. To finish, we measured two automated levels of customer support in separate runs on the same ${sampleSize} requests; staff time is an assumed reference. Level 2 serves ${level2.served}, stops ${level2.stopped}, and makes ${level2.errors} errors. Level 3 serves ${level3.served}, stops ${level3.stopped}, and makes ${level3.errors} errors. ` +
-        `Level 3 has ${speedRatio} times lower mean machine time and ${costRatio} times lower API cost. Level 2 alone was wrong on ${errors2Only} requests, and Level 3 alone on ${errors3Only}. Jev needs a question that we write for each rule. ${CHANGED_NOTE} We did not compare trained classifiers or other decision models. These findings compare our two designs, not all models. The next evaluation needs real tickets, a held-out request set, and stronger baselines. ` +
-        `External context: Red Hat Developer, "Benchmarking AI decision models against traditional guardrails", 2 October 2026, ${RED_HAT_BENCHMARK_URL}. That benchmark uses block/allow guardrail judgments, not SaaS actions. Jev does not win every task or latency comparison; its strongest result there is content safety. It supplies no like-for-like API token-cost comparison for our design. ` +
+      `Speaker: ${PNAM}, about ${SPEAKER[19][1]} s. To finish, we measured two automated levels of customer support in separate runs on the same ${sampleSize} requests. Level 2 serves ${level2.served}, stops ${level2.stopped}, and makes ${level2.errors} errors. Level 3 serves ${level3.served}, stops ${level3.stopped}, and makes ${level3.errors} errors. ` +
+        `Level 3 has ${speedRatio} times lower mean machine time and ${costRatio} times lower API cost. Jev needs a question that we write for each rule. ${CHANGED_SHORT}, so this rule evaluation was not blind. We did not test trained classifiers or other decision models. Next, we need real tickets, a held-out request set, and stronger baselines. ` +
+        "The Red Hat link on this slide is outside context, not our data. " +
         "Thank you for listening. Our leader, Tran Thanh Long, will now take your questions."
     );
   }
@@ -1168,9 +1127,9 @@ async function photo(file, w, h, radius = 0.08, dpi = 150) {
     });
     [
       { icon: "LuWorkflow", big: "Slides 6 and 7", label: "The flows of Level 2 and Level 3", color: C.l3 },
-      { icon: "LuDatabase", big: "Slides 22 to 24", label: "Test data and how we score", color: C.l3 },
-      { icon: "LuBadgeCheck", big: "Slides 27 and 28", label: "Results: Jev, and the two levels", color: C.teal },
-      { icon: "LuScale", big: "Slide 30", label: "Wrong action labels and observed outcomes", color: C.blue },
+      { icon: "LuDatabase", big: "Slides 22 and 23", label: "Test data and how we score", color: C.l3 },
+      { icon: "LuBadgeCheck", big: "Slides 25 and 26", label: "Results: Jev, and the two levels", color: C.teal },
+      { icon: "LuScale", big: "Slide 27", label: "Wrong action labels and observed outcomes", color: C.blue },
     ].forEach((o, i) => callout(s, CX, 0.7 + i * 1.55, CWd, 1.35, { ...o, bigSize: 28, bigH: 0.55, bigY: 0.12, labelSize: 15 }));
     s.addNotes("Question slide, not part of the timed talk. Tran Thanh Long answers; the other four stand beside him. The cards on the right say which slide to open for each kind of question.");
   }

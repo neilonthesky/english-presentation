@@ -1,6 +1,6 @@
 # Cẩm nang chuẩn bị hỏi đáp (Master Q&A Preparation Guide)
 
-Tài liệu này chuẩn bị cho phiên hỏi đáp 5 phút với khán giả (tiêu chí 5: Q&A and communication, 1.0 điểm). **Tran Thanh Long (trưởng nhóm) trả lời TẤT CẢ câu hỏi.** Tài liệu tổng hợp 18 câu hỏi kỹ thuật và phương pháp luận hóc búa nhất mà giảng viên và các bạn sinh viên có thể đặt ra, đi kèm câu trả lời súc tích từ 2 đến 4 câu và gợi ý ngắn cho Long.
+Tài liệu này chuẩn bị cho phiên hỏi đáp 5 phút với khán giả (tiêu chí 5: Q&A and communication, 1.0 điểm). **Tran Thanh Long (trưởng nhóm) trả lời TẤT CẢ câu hỏi.** Tài liệu tổng hợp 19 câu hỏi kỹ thuật và phương pháp luận hóc búa nhất mà giảng viên và các bạn sinh viên có thể đặt ra, đi kèm câu trả lời súc tích từ 2 đến 4 câu và gợi ý ngắn cho Long. Mọi con số trong tài liệu lấy từ lượt chạy thật trên 1.024 yêu cầu ở cả hai level và khớp với bộ slide.
 
 ---
 
@@ -14,28 +14,29 @@ Tài liệu này chuẩn bị cho phiên hỏi đáp 5 phút với khán giả (
 2. **Nhắc lại câu hỏi:** Nói lại câu hỏi bằng lời của mình (*"Your question is about the sample size, correct?"*). Cả lớp nghe rõ hơn và Long có thêm vài giây suy nghĩ.
 3. **Trả lời trong 2 đến 4 câu:** Nêu câu trả lời trực diện trước, dẫn chứng một số liệu cốt lõi, rồi dừng lại (khoảng 30 đến 45 giây). Không nói lan man.
 4. **Nếu không chắc:** Nói thật là không chắc, rồi nêu điều bài báo viết: *"I am not sure about that detail. What our paper states is: ..."*. Tuyệt đối không bịa số liệu.
-5. **Không tranh cãi phòng thủ:** Nếu người chấm nêu đúng một hạn chế của đề tài (ví dụ: nhãn do chính mã áp luật sinh ra), hãy thừa nhận trung thực:
+5. **Không tranh cãi phòng thủ:** Nếu người chấm nêu đúng một hạn chế của đề tài (ví dụ: nhãn do chính mã áp luật sinh ra, hay hai đầu vào hoàn tiền đã đổi sau các lần chạy đầu), hãy thừa nhận trung thực:
    > *"You are completely right. That is a documented limitation of our setup, and we address it in our future work."*
 6. **Câu hỏi hai vế:** Trả lời từng vế một, theo thứ tự người hỏi nói.
 7. **Con số:** trong bài nói dùng một con số duy nhất cho tập yêu cầu: **1.024**. Nếu ai hỏi vì sao không phải con số khác, trả lời theo Câu hỏi 3.
+8. **Thời gian:** bài nói dài 15 phút 40 giây. Nếu giảng viên giữ trần 20 phút cho cả bài nói và hỏi đáp, phần hỏi đáp còn 4 phút 20 giây: trả lời ngắn, khoảng sáu câu hỏi.
 
 ---
 
-## 2. 18 câu hỏi hóc búa nhất của buổi thuyết trình
+## 2. 19 câu hỏi hóc búa nhất của buổi thuyết trình
 
 ### Câu hỏi 1: System Design
-**"Why did you use a state machine instead of letting an autonomous LLM agent decide at each step?"**
+**"Why did you use a state machine instead of letting an autonomous LLM agent decide at each state?"**
 - **Người trả lời:** Tran Thanh Long (nội dung thuộc phần của Nguyen Thanh Nam: Quy tắc và Kiến trúc)
 - **Câu trả lời tiếng Anh (3 câu):**
-  > "A state machine fixes the order of the steps, and the model decides only inside one step. At Level Three, Jev gives four typed answers about the chat, then one yes/no answer for each written rule of the action, and the process follows those answers: no broken rule runs the action, and a broken rule runs nothing. Jev never chooses its own next step and never writes an action by itself."
+  > "A state machine fixes the order of the states, and the model decides only inside one state. At Level Three, Jev returns five typed fields about the chat, then one yes/no answer for each written rule of the action, and the process follows those answers: no broken rule runs the action, and a broken rule runs nothing. Jev never chooses its own next state and never runs an action by itself."
 
 ---
 
 ### Câu hỏi 2: Classifier Selection
 **"Why did you choose Jev instead of a standard lightweight model like GPT-4o-mini or Claude Haiku?"**
 - **Người trả lời:** Tran Thanh Long (nội dung thuộc phần của Vuong Quang Quy: Kết quả và Mô hình)
-- **Câu trả lời tiếng Anh (3 câu):**
-  > "Jev returns typed labels and calibrated probabilities in one pass, and it does not write conversational text. A chat model must produce a long JSON string, and that adds formatting failures, token overhead, and a slower call. Jev answers in zero point three one seconds at the median and costs six cents per one thousand requests."
+- **Câu trả lời tiếng Anh (4 câu):**
+  > "Jev returns typed labels with probabilities in one call, and it does not write conversational text. A chat model must produce a long JSON string, and that adds formatting failures, token overhead, and a slower call. On our set the Jev calls take zero point four seven seconds at the median for one request, including rule calls, and cost six point six cents per one thousand requests. We did not test other classifiers, so this is a reason to try Jev, not proof that it is the best."
 
 ---
 
@@ -43,7 +44,7 @@ Tài liệu này chuẩn bị cho phiên hỏi đáp 5 phút với khán giả (
 **"Your study reports one thousand and twenty-four requests. Is that enough to draw conclusions?"**
 - **Người trả lời:** Tran Thanh Long (nội dung thuộc phần của Vu Van Son: Tập dữ liệu và Thực nghiệm)
 - **Câu trả lời tiếng Anh (4 câu):**
-  > "One thousand and twenty-four requests in twenty-one types is a focused benchmark, not a sample of all customer support, and we know that. Our two-sided sign test has sixty-one pairs where only Level Two makes an error and none where only Level Three does, so p equals zero point zero three one: Level Three makes significantly fewer errors. Zero harmful runs at Level Three is not proof that the rate is zero, so our strong claims are speed, cost, and fewer errors."
+  > "One thousand and twenty-four requests of twenty-six types is a challenge set that we built, not a sample of all customer support, and we know that. On the thirty-one requests where the two levels differ, only Level Two makes an error, and an exact sign test gives p below one in a billion. Zero errors in one thousand and twenty-four requests is not proof of a zero rate: the upper limit of a ninety-five percent interval is about zero point four percent. So our claims are lower time, cost, and error count on this set, not a general guarantee."
 
 ---
 
@@ -56,18 +57,18 @@ Tài liệu này chuẩn bị cho phiên hỏi đáp 5 phút với khán giả (
 ---
 
 ### Câu hỏi 5: Error Analysis and Overfitting
-**"Why does Level 3 make zero errors while Level 2 makes sixty-one, and is that overfitting?"**
+**"Why does Level 3 make zero errors while Level 2 makes thirty-one, and is that overfitting?"**
 - **Người trả lời:** Tran Thanh Long (nội dung thuộc phần của Vuong Quang Quy: Kết quả và Mô hình)
 - **Câu trả lời tiếng Anh (4 câu):**
-  > "Part of the answer is design: the written rules are asked as separate questions, and the code runs no action when one answer says broken, so a wrong label cannot reach the customer as a wrong action. Part of the answer is the labels, and we say this in our limits: the same code that applies the written rules also produced the correct answers, so the zero is measured against our own rule reading. The sixty-one errors of Level Two are real customer outcomes: on about thirteen of them the agent cancelled a plan that a written rule protects, and on about forty-eight it followed an order hidden in the text. The honest claim is fewer errors on this set, with p equal to zero point zero three one."
+  > "Part of the answer is design: the written rules are asked as separate questions, and the code runs nothing when one answer says broken, so a wrong label cannot reach the customer as a wrong action. Part of the answer is the study itself: the same code that applies the written rules also produced the correct answers, and two refund inputs were changed after earlier failures, so the zero is not a blind result. The thirty-one errors of Level Two are real customer outcomes: twenty-seven on the injection requests, where the agent ran an action on six and refused on twenty-one, and four on other requests, where it ran a plan cancellation that it should not run. The honest claim is fewer errors on this set."
 
 ---
 
 ### Câu hỏi 6: Economic Cost Analysis
-**"Why is Level 3 2.1 times cheaper if the LLM still writes the final message?"**
+**"Why is Level 3 2.2 times cheaper if the LLM still writes the final message?"**
 - **Người trả lời:** Tran Thanh Long (nội dung thuộc phần của Vuong Quang Quy: Kết quả và Mô hình)
 - **Câu trả lời tiếng Anh (3 câu):**
-  > "At Level Two the agent call itself costs thirty-five cents per thousand requests, and the level costs sixty-one cents in total. At Level Three all Jev calls together cost six cents, so the level costs twenty-nine cents, which is two point one times cheaper. The final message costs the same in both levels, so the saving comes from the decision step."
+  > "At Level Two the agent call costs thirty-eight cents per one thousand requests, and the level costs sixty-four cents in total. At Level Three all Jev calls together cost six point six cents, and the level costs thirty cents, which is two point two times cheaper. The final message costs about the same in both levels, twenty-six cents and twenty-three cents, so the saving comes from the decision."
 
 ---
 
@@ -83,39 +84,39 @@ Tài liệu này chuẩn bị cho phiên hỏi đáp 5 phút với khán giả (
 **"In Level 3, what work is left for human support staff if the bot handles every request?"**
 - **Người trả lời:** Tran Thanh Long (Trưởng nhóm)
 - **Câu trả lời tiếng Anh (3 câu):**
-  > "In our Level Three setup, Jev and the written rules handle routine requests, cancellations, password resets, and standard questions. When a rule is broken, the final message explains why the action cannot run and gives the steps that the customer can take alone. In production, human staff still handle escalations, security disputes, and unusual enterprise cases that fall outside the written rules."
+  > "In our Level Three setup, Jev and the written rules handle routine requests, cancellations, password resets, and standard questions. When a rule is broken, the final message explains why the action cannot run and gives the actions that the customer can take alone. In production, human staff still handle escalations, security disputes, and unusual enterprise cases that fall outside the written rules."
 
 ---
 
 ### Câu hỏi 9: Prompt Injection Defenses
 **"How does Level 3 prevent a customer from using a prompt injection to steal a refund?"**
 - **Người trả lời:** Tran Thanh Long (nội dung thuộc phần của Nguyen Thanh Nam: Quy tắc và Kiến trúc)
-- **Câu trả lời tiếng Anh (3 câu):**
-  > "The first Jev call answers an injection flag for every request. When the flag is on, the process sets the action to Send reply, so an order hidden in the text becomes a plain answer and no state changes; our third walk-through shows exactly that case. A reply is not a rule question, so the second Jev call never runs for that request. We measured about forty-eight injection requests at Level Two where the agent followed the hidden order, and none at Level Three."
+- **Câu trả lời tiếng Anh (4 câu):**
+  > "The first Jev call answers an injection flag for every request. When the flag is on, the process sets the action to Send reply, so an order hidden in the text becomes a plain answer and no state changes; our third walk-through shows exactly that case. The flag was on for all twenty-seven injection requests, and Level Three answered all of them with a reply. At Level Two the agent ran an action on six of them, five refunds and one plan cancellation, and refused on the other twenty-one."
 
 ---
 
 ### Câu hỏi 10: Calibration and Probability
 **"What does the confidence of Jev prove, and why does it matter?"**
 - **Người trả lời:** Tran Thanh Long (nội dung thuộc phần của Vuong Quang Quy: Kết quả và Mô hình)
-- **Câu trả lời tiếng Anh (3 câu):**
-  > "The confidence matches the accuracy on our set: three hundred and thirty-eight of the seven hundred and thirty-seven answers below zero point eight are wrong, against ninety-two of four thousand four hundred and fifty-five answers at zero point nine or more, which is two point one percent. So the low bands warn us where to look, and we use that in our error analysis. We do not claim an outcome benefit from the confidence itself, because Level Three already makes no error in this run."
+- **Câu trả lời tiếng Anh (4 câu):**
+  > "The confidence follows the accuracy on our set. For the topic, the action, and the risk flag, two hundred and thirty-eight of the five hundred and ninety-seven answers below zero point eight are wrong, against one hundred and twelve of one thousand nine hundred and eighty-seven answers at zero point nine or more, which is five point six percent. So the low bands show where to look in the error analysis. We do not claim an outcome benefit from the confidence itself, because Level Three already makes no error in this run."
 
 ---
 
-### Câu hỏi 11: Blind Testing of the Security Rule
-**"Did you test the Security rule on data that you had not seen?"**
+### Câu hỏi 11: Blind Testing of the Rules
+**"Did you test the written rules on data that you had not seen?"**
 - **Người trả lời:** Tran Thanh Long (nội dung thuộc phần của Nguyen Thanh Nam: Quy tắc và Kiến trúc)
 - **Câu trả lời tiếng Anh (4 câu):**
-  > "No. We found the Security rule and the account fields on an earlier five-hundred-and-twelve-request set of these same twenty-one types, so the main numbers are not a blind test. We state this as a limit of the study. Future work should test adversarial inputs and real tickets."
+  > "No: two refund inputs were changed after earlier failures, the question about used credits and the line with the days since the charge. The Security rule and the account fields were found on an older set of fifty requests. So the rule evaluation was not blind, and the slides say so. Future work should test new request types and real tickets."
 
 ---
 
 ### Câu hỏi 12: Latency Bottleneck
-**"Why is Level 3 1.8 times faster in machine time if the LLM still writes the final reply?"**
+**"Why is Level 3 2.1 times faster in machine time if the LLM still writes the final reply?"**
 - **Người trả lời:** Tran Thanh Long (nội dung thuộc phần của Vuong Quang Quy: Kết quả và Mô hình)
 - **Câu trả lời tiếng Anh (3 câu):**
-  > "At Level Two the agent call reads the chat and the whole account and reasons about all the written rules, and that call takes about four seconds of the seven point eight seconds of machine time. At Level Three the two Jev calls together take about zero point four seconds, and the second call runs on only four requests in ten. The final message call is the same in both levels, so the difference comes from the decision step."
+  > "At Level Two the agent call reads the chat and the whole account and reasons about all the written rules, and it takes four point nine seven seconds at the median. At Level Three the Jev calls take zero point four seven seconds at the median for one request, and the second call runs on five hundred and thirty-two of the one thousand and twenty-four requests. The final message takes about five point five to five point eight seconds in the two levels, so almost all of the difference of about six and a half seconds in the mean machine time comes from the decision."
 
 ---
 
@@ -131,15 +132,15 @@ Tài liệu này chuẩn bị cho phiên hỏi đáp 5 phút với khán giả (
 **"Why do you ask Jev twice instead of putting the rules in one prompt?"**
 - **Người trả lời:** Tran Thanh Long (nội dung thuộc phần của Nguyen Thanh Nam: Quy tắc và Kiến trúc)
 - **Câu trả lời tiếng Anh (4 câu):**
-  > "In our earlier design, one call read the whole rule book as context and answered a single question: do the rules allow this action. In an earlier, smaller sample that design made one error, and its allowed answer was right on eighty-eight percent of the requests. Asking one question for each rule lifts the rule answers to one thousand six hundred and ninety of one thousand seven hundred right, which is ninety-nine point four percent. The split costs one extra call on four requests in ten, and that is a price we accept for that accuracy."
+  > "The first call reads only the chat, so it is short and fast, and it tells the process whether the action changes the state. The second call runs only then, on five hundred and thirty-two of the one thousand and twenty-four requests, and asks one yes/no question for each written rule of that action. We found that questions made from the text of the rule alone made more errors, so we write each question, and all two thousand and fifty rule answers on this set match the written rules. The price is one extra Jev call on about half of the requests."
 
 ---
 
 ### Câu hỏi 15: Customer Outcome Errors vs Label Errors
 **"What is the difference between a label error and a customer outcome error?"**
 - **Người trả lời:** Tran Thanh Long (nội dung thuộc phần của Vuong Quang Quy: Kết quả và Mô hình)
-- **Câu trả lời tiếng Anh (3 câu):**
-  > "A label error means the answer of Jev about the action does not match the correct action: we see one hundred and seventy-four of those. A customer outcome error means the customer got a wrong result, such as a wrong denial or an action against a written rule, and at Level Three we see none. The gap is the design: when a rule would deny a request, Jev often answers Send reply, and the run still ends as a stop that the customer sees as correct."
+- **Câu trả lời tiếng Anh (4 câu):**
+  > "A label error means the first-call action of Jev differs from the correct action: we see two hundred and seventy-eight of those. A customer outcome error means the customer got a wrong result, such as a wrong denial or an action against a written rule, and at Level Three we see none. The gap is the design: on two hundred and ten of the two hundred and seventy-eight requests Jev proposes a state change on a security incident, and the Security rule in the second call stops it; on the other sixty-eight Jev says Send reply, where a written rule denies the action anyway or an answer is right. The strict label count, which scores the label itself, is two hundred and seventy-seven at Level Three and two hundred and fifty-four at Level Two, so the label is not the number that we claim."
 
 ---
 
@@ -147,7 +148,7 @@ Tài liệu này chuẩn bị cho phiên hỏi đáp 5 phút với khán giả (
 **"If Jev reports a confidence, why not send the low-confidence requests to a bigger model?"**
 - **Người trả lời:** Tran Thanh Long (nội dung thuộc phần của Vuong Quang Quy: Kết quả và Mô hình)
 - **Câu trả lời tiếng Anh (3 câu):**
-  > "We measured that idea on our earlier design: a threshold sent the lowest-confidence requests to the LLM, and it bought no outcome, because the mistakes it fixed were not the ones that reached the customer. It also raised the cost and the time of every escalated request. At Level Three there is no error left in this run for a cascade to buy, so we report it as a negative result."
+  > "We did not test a cascade. On this set Level Three makes no error, so a cascade has no error to remove here, and it would add the cost and the time of a bigger model on every escalated request. It is a fair idea for future work with real tickets, where Jev may be wrong more often."
 
 ---
 
@@ -155,12 +156,20 @@ Tài liệu này chuẩn bị cho phiên hỏi đáp 5 phút với khán giả (
 **"What happens if Jev answers a rule question wrongly?"**
 - **Người trả lời:** Tran Thanh Long (nội dung thuộc phần của Nguyen Thanh Nam: Quy tắc và Kiến trúc)
 - **Câu trả lời tiếng Anh (4 câu):**
-  > "The code trusts the answers: one answer that says broken stops the action, and a wrong answer therefore becomes a wrong outcome. We have no second check behind Jev in this design, and we do not hide that. On this set the rule answers are strong: 1,690 of 1,700 answers match the written rules, so ten are wrong. A wrong answer in the safe direction, a false stop, is the case we would watch first, because that is a customer who loses an action they were allowed to take."
+  > "The code trusts the answers: one answer that says broken stops the action, so a wrong answer can become a wrong outcome. We have no second check behind Jev in this design, and we do not hide that. On this set all two thousand and fifty rule answers match the written rules, but two refund inputs were changed after earlier failures, so this is not a blind result. A false stop costs a customer an action that was allowed, and a missed violation can let an unsafe action run, which is the case we would watch first."
 
 ---
 
 ### Câu hỏi 18: Reproducibility
 **"Can we see the answers that Jev gave?"**
 - **Người trả lời:** Tran Thanh Long (nội dung thuộc phần của Vu Van Son: Tập dữ liệu và Thực nghiệm)
-- **Câu trả lời tiếng Anh (3 câu):**
-  > "Yes. Every answer of Jev, with its confidence, is stored as JSON in our repository, together with the request, the state that we sent, and the outcome that we scored. The summary numbers of Level Three sit in one file that a small script rebuilds from those raw answers. So a reader can check any single number against the recorded answer behind it."
+- **Câu trả lời tiếng Anh (4 câu):**
+  > "Yes. Every call of Jev, with its confidence, is stored as JSON in the experiment folder, together with the request, the state that we sent, and the outcome that we scored. The summary numbers of each level sit in one file that a small script rebuilds from those stored answers, and an offline replay with no network call gives the same results. So a reader can check any single number against the recorded answer behind it."
+
+---
+
+### Câu hỏi 19: The Outside Benchmark
+**"What is the Red Hat link on your last slide?"**
+- **Người trả lời:** Tran Thanh Long (nội dung thuộc phần của Nguyen Phuong Nam: Kết luận)
+- **Câu trả lời tiếng Anh (4 câu):**
+  > "It is an outside article, not our data: Red Hat Developer, 'Benchmarking AI decision models against traditional guardrails', from the second of October, twenty twenty-six. It uses block or allow judgments for guardrails, not SaaS actions, so we use it only as context. In that benchmark Jev does not win every task or latency comparison, and its strongest result is content safety. It gives no like-for-like API token-cost comparison for our design."

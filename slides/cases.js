@@ -44,9 +44,9 @@ const CASES = [
     notes: [
       "A customer asks for a refund. The message is saved.",
       "Jev, first call: a refund, Start refund, low priority, no injection.",
-      "Rules: Jev answers eight questions, one for each rule of a refund. No rule is broken.",
+      "Rules: Jev answers eight questions. No rule is broken.",
       "Do action: the refund starts.",
-      "Final message: the LLM replies. Chat open, then Resolved.",
+      "Final message: the LLM replies.",
     ],
   },
   {
@@ -78,9 +78,9 @@ const CASES = [
       meta: "Written by the LLM from the reason why nothing ran.",
     },
     notes: [
-      "A second customer asks to refund a charge. Watch for the warning.",
-      "Jev, first call: the same action, Start refund.",
-      "Rules: Jev answers eight questions. The amount limit is broken: 297 dollars, the limit is 100. Nothing runs.",
+      "A second customer asks for a refund. Watch for the warning.",
+      "Jev: the same action.",
+      "Rules: the amount limit is broken. Nothing runs.",
       "Final message: the LLM explains why.",
     ],
   },
@@ -108,9 +108,9 @@ const CASES = [
       meta: "An answer from the help articles \"Payments and invoices\" and \"Refunds and cancelling\", and the account.",
     },
     notes: [
-      "A third customer orders a refund of everything. Watch for the danger.",
-      "Jev: danger. The injection flag is on, so the action is Send reply.",
-      "Final message: the LLM ignores the order. Now Nguyen Thanh Nam will explain our test data.",
+      "A third customer orders a refund of everything.",
+      "Jev: danger. The injection flag is on.",
+      "The LLM ignores the order. Now Nguyen Thanh Nam will explain our test data.",
     ],
   },
 ];
