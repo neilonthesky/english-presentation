@@ -4,7 +4,7 @@ This directory runs the request triage system of the FrameForge customer support
 
 The experiment evaluates live and cached requests against the support flow without duplicating code: it directly executes `system/saas.ts`, `system/steps.ts`, and `system/models.ts`.
 
-The test data is **one set of 1,024 requests from 512 customers, in 21 request types and ten families** (see [The Dataset](#the-dataset)). Only **Level 3 has been run on it** (see [Level 3 on the 1,024 requests](#level-3-on-the-1024-requests-v38)); Level 2 has not. The sections [Cost and Tokens](#cost-and-tokens), [Retry and the Cache Key](#retry-and-the-cache-key), [The Three Outcomes](#the-three-outcomes), the supplementary analyses, and the limitations still describe the earlier run on 100 requests (v36), whose evidence is deleted.
+The test data is **one set of 1,024 requests from 512 customers, in 21 request types and ten families** (see [The Dataset](#the-dataset)). **Level 2 and Level 3 have both completed independent runs** (see [Independent runs on the 1,024 requests](#independent-runs-on-the-1024-requests-v38)). The sections [Cost and Tokens](#cost-and-tokens), [Retry and the Cache Key](#retry-and-the-cache-key), [The Three Outcomes](#the-three-outcomes), the supplementary analyses, and the limitations still describe the earlier run on 100 requests (v36), whose evidence is deleted.
 
 The paper reads the experiment as a **three-level ladder** of the support workflow. Each level adds one part to the level before:
 
@@ -21,7 +21,7 @@ The levels differ in their flow (see [The Support Flow](#the-support-flow-v36)):
 | 2 LLM agent | one LLM call (the agent), input: the chat, the sender, the channel, the help articles, **the account**, the actions done | the agent itself (no fixed rule); it reads the Security rule text like the other rules | none | one LLM call |
 | 3 Jev + LLM + rules | one Jev call (5 fields), input: the chat, the sender, the channel, the help articles | **fixed code** (`policyFor`) | the injection rule | one LLM call |
 
-The run executes two systems, **`llm_agent`** (Level 2) and **`jev`** (Level 3); `--level 3` runs Level 3 only. Level 3 is graded field by field on its first Jev call and by its rule answers; **Level 2 is graded only by its final result** (served, stopped, or error).
+Each run requires **`--level 2`** (`llm_agent`) or **`--level 3`** (`jev`). A run never executes both. The top-level request count follows the completed records of the selected level; a Level 2-only run does not report zero requests because it has no Jev records. The outputs are separate: `results/level2/` and `results/level3/`, each with its own `results.json`, `per_case.json`, `provenance.json`, tables, and figures. No combined results file is written. `stats.ts` reads the separate files to compute comparisons. The slide builder also reads the separate JSON files directly; counts, percentages, costs, timings, and ratios are not extrapolated from the older 100-request run. The deck and its speaker notes omit p-values and sign-test discussion; these remain in the experiment's statistical analysis. Level 3 is graded field by field on its first Jev call and by its rule answers; **Level 2 is graded only by its final result** (served, stopped, or error).
 
 ---
 
@@ -59,9 +59,10 @@ stats.ts           The statistics of the paper (Wilson intervals, the paired tes
 run.ts             Command-line entrypoint for the whole set and for an offline replay
 notes/             The method notes of the supplementary analyses (ablation.md, robustness.md,
                    screen.md); their numbers are written for the reader, the evidence is the JSON files
-results/           Output directory with results.json, per_case.json, provenance.json, neutrality.json,
-                   ablation.json, robustness.json, screen.json, tables/, figures/, and the
-                   requests/ cache
+results/level2/    Level 2 only: results.json, per_case.json, provenance.json, tables/, figures/
+results/level3/    Level 3 only: results.json, per_case.json, provenance.json, tables/, figures/
+results/requests/ Content-addressed API cache (reused without replaying another level)
+results/          Supplementary analyses; no combined main-run results.json or per_case.json
 ```
 
 ---
@@ -80,14 +81,15 @@ results/           Output directory with results.json, per_case.json, provenance
 # Show available CLI flags
 bun run experiment/run.ts --help
 
-# The whole 1,024-request set, evidence in experiment/results
-bun run experiment/run.ts --out experiment/results --cache experiment/results/requests
+# Level 2 only: no Jev execution or replay; evidence in experiment/results/level2
+bun run experiment/run.ts --level 2
 
 # Level 3 only (Jev, then the LLM for the final message)
 bun run experiment/run.ts --level 3
 
 # Replay without network access (zero live calls, the same numbers)
-bun run experiment/run.ts --offline --cache experiment/results/requests
+bun run experiment/run.ts --level 3 --offline
+bun run experiment/run.ts --level 2 --offline
 
 # The neutrality probe of the criteria: one Jev call on a content-free state
 bun run experiment/neutrality.ts
@@ -309,40 +311,27 @@ A "Send reply" is graded by its action label only, not by the content of the ans
 
 ---
 
-## Level 3 on the 1,024 requests (v38)
+## Independent runs on the 1,024 requests (v38)
 
-The only run of v38 is **Level 3 alone** (`bun run experiment/run.ts --level 3`, recorded on 12 October 2026, evidence in `results/`; `--offline` replays it with zero calls). Level 2 has not been run on this set, so `results/results.json` has no Level 2 row and no sign test. The results of v36 (100 requests) are deleted.
+**Both automated levels have completed separate runs** of 1,024 requests. `--level 2` writes only `results/level2/`; `--level 3` writes only `results/level3/`. Level 2 made no Jev calls or Jev cache reads. Its original live-call provenance is retained in `results/level2/live_provenance.json`; the latest `provenance.json` records the offline replay used to verify the run and regenerate reports. No combined main-run result file is written. `stats.ts` computes paired statistics by reading the two separate runs. The results of v36 (100 requests) are deleted.
 
-| | Level 3 |
-| --- | ---: |
-| Served | 776 |
-| Stopped by a written rule | 248 |
-| Errors | 0 |
-| Harmful errors | 0 |
-| Jev calls | 1,395 (1,024 first calls, 371 rule calls) |
-| Median Jev time per request | 0.307 s |
-| Machine time per request (mean) | 3.92 s |
-| API cost per 1,000 requests | $0.281 (Jev $0.061, the LLM $0.219) |
+| | Level 2 | Level 3 |
+| --- | ---: | ---: |
+| Requests | 1,024 | 1,024 |
+| Served | 720 | 776 |
+| Stopped by a written rule | 245 | 248 |
+| Errors | 59 | 0 |
+| Harmful errors | 14 | 0 |
+| Jev calls | 0 | 1,395 (1,024 first calls, 371 rule calls) |
+| LLM calls | 2,048 | 1,024 |
+| Machine time per request (mean) | 7.97 s | 3.92 s |
+| API cost per 1,000 requests | $0.599 | $0.281 (Jev $0.061, the LLM $0.219) |
 
-**The first Jev call** (accuracy on the scored requests): topic 886 of 976, action 894 of 1,024, priority 826 of 1,024, risk flag 851 of 1,024, injection flag 953 of 1,024. The action label is wrong on 125 requests (`labelErrors`), and none of them ends in a wrong outcome. All 1,656 rule answers (371 rule calls) match the written rules.
+Level 3 has 2.03 times lower mean machine time and 2.13 times lower API cost. There are 59 paired errors at Level 2 only and none at Level 3 only; the exact two-sided sign test gives p = 3.469446951953614e-18. Of the 59 Level 2 errors, 47 are injection requests, eight are refund requests, and four are other requests. The 14 harmful errors run seven refunds and seven plan cancellations. The Final message text is not scored by these outcome counts.
+
+**The first Jev call** (accuracy on the scored requests): topic 886 of 976, action 894 of 1,024, priority 826 of 1,024, risk flag 851 of 1,024, injection flag 953 of 1,024. The first-call action label is wrong on 130 requests, and none of them ends in a wrong outcome. The separate strict final-label metric (`labelErrors`) counts 125 mismatches; it is not the number of wrong first-call action labels. All 1,656 rule answers (371 rule calls) match the written rules. Median Jev time per request, including the rule call when present, is 0.307 s.
 
 **A change after a first run.** A first run of v37 on the 1,024 requests of the earlier product (plans, credit packs, a teammate) made 11 errors. All 11 were `refund_in_window_small`: the rule question "Is the purchase a credit pack with some of its credits already used?" was answered yes for a plan whose account line reads "Used 1,850 of 2,000 credits", and the Rules step stopped a refund that was right (0 harmful). The product then dropped credit packs, Team, Free, and the teammate (three personal plans: Plus, Pro, Max), the dataset was generated again, and the question became "Does the usage on the purchase line of the account show that some credits of the plan are already used?" (`Refund rule: credits used`). So the question was reworded after it had failed on this kind of request; the 0 errors of v38 are not a blind result for this rule. The other questions of `jev_rules.ts` were written on the 100 requests of v36 and are unchanged. The evidence of v37 is not part of `results/`.
-
---- | ---: |
-| Served | 765 |
-| Stopped by a written rule | 248 |
-| Errors | 11 |
-| Harmful errors | 0 |
-| Jev calls | 1,415 (1,024 first calls, 391 rule calls) |
-| Median Jev time per request | 0.308 s |
-| Machine time per request (mean) | 3.95 s |
-| API cost per 1,000 requests | $0.305 (Jev $0.063, the LLM $0.242) |
-
-**The 11 errors are one failure.** All 11 are `refund_in_window_small`: the refund was right, and the rule question "Is the purchase a credit pack with some of its credits already used?" was answered yes for a *plan* whose account line reads "Used 1,850 of 2,000 credits". The Rules step stopped the refund, so nothing ran and no money or data changed (0 harmful), but the customer got a denial where the gold result is a refund. Of the 1,804 rule answers, 1,777 match the written rules; the 27 that differ are all "broken" where the rules say met (25 credit pack, 2 refund window), and none is a missed rule.
-
-**The first Jev call** (accuracy on the scored requests): topic 892 of 976, action 914 of 1,024, priority 832 of 1,024, risk flag 829 of 1,024, injection flag 958 of 1,024.
-
-The questions of `jev_rules.ts` were written on the 100 requests of v36 and not changed after this run; they were not tuned on the 1,024 requests.
 
 ---
 

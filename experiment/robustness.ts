@@ -2,7 +2,7 @@
 // Robustness probes of the neutral criteria: the three neutrality tests that results/neutrality.json lists as
 // not checked, plus the experimental "other" option. Nothing here changes the run of the paper: the questions of
 // Triage (JEV_QUESTIONS of system/models.ts) are read and copied, never edited, and the answers of the main
-// run are read from results/per_case.json. Every probe answer is recorded under results/robustness_cache, so a
+// run are read from results/level3/per_case.json. Every probe answer is recorded under results/robustness_cache, so a
 // second run makes zero live calls.
 //
 //   A. option order   the option lists of the topic, action, and priority questions reversed, and shuffled with a
@@ -45,7 +45,7 @@ import type { Field, TestRequest } from "./types"
 
 const HERE = import.meta.dir
 const OUT = join(HERE, "results")
-const PER_CASE = join(OUT, "per_case.json")
+const PER_CASE = join(OUT, "level3", "per_case.json")
 /** The cache of the probes: its own directory, so the cache of the run (results/requests) is never touched. */
 const CACHE = join(OUT, "robustness_cache")
 const JEV_CACHE = join(CACHE, "jev")
@@ -487,12 +487,12 @@ interface PerCase {
 
 /** The recorded run of the paper, checked just enough to be read: the file is the evidence of this experiment. */
 function readPerCase(value: unknown): PerCase {
-  if (!isObject(value)) throw new Error("results/per_case.json is not a JSON object")
+  if (!isObject(value)) throw new Error("results/level3/per_case.json is not a JSON object")
   const list: unknown[] = Array.isArray(value.jev) ? value.jev : []
-  if (list.length === 0) throw new Error("results/per_case.json holds no jev records")
+  if (list.length === 0) throw new Error("results/level3/per_case.json holds no jev records")
   for (const record of list) {
     if (!isObject(record) || typeof record.id !== "string" || !isObject(record.classifier) || !isObject(record.gold)) {
-      throw new Error("results/per_case.json holds a jev record that cannot be read")
+      throw new Error("results/level3/per_case.json holds a jev record that cannot be read")
     }
   }
   // The record is the shape that pipeline.ts wrote into this file, the deep fields of which are only read by property access.
@@ -509,7 +509,7 @@ async function main(): Promise<void> {
   const recorded = new Map(perCase.jev.map((record) => [record.id, record]))
   const recordedAnswer = (req: TestRequest, field: Field): string | null => {
     const record = recorded.get(req.id)
-    if (!record) throw new Error(`${req.id} is not in results/per_case.json`)
+    if (!record) throw new Error(`${req.id} is not in results/level3/per_case.json`)
     const value = record.classifier.fields[field].value
     return typeof value === "boolean" ? (value ? "true" : "false") : value
   }
@@ -519,7 +519,7 @@ async function main(): Promise<void> {
       Object.fromEntries(FIELDS.map((field): [string, string | null] => [field, recordedAnswer(req, field)])),
     ]),
   )
-  log(`the recorded run: ${perCase.jev.length} Jev answers of the paper read from results/per_case.json`)
+  log(`the recorded run: ${perCase.jev.length} Jev answers of the paper read from results/level3/per_case.json`)
 
   // A. The option order: the reversed lists and the lists shuffled with the fixed seed.
   const variant = orderVariant()
@@ -536,7 +536,7 @@ async function main(): Promise<void> {
       "The option lists of the topic (queue), the action, and the priority questions were reversed, and shuffled with the fixed " +
       `seed ${SEED}; every criteria sentence stayed with its option, so only the position of an option changed. Every probe runs ` +
       `on every request of the set (${requests.length}), and the answers are compared with the answers of the recorded run ` +
-      "(results/per_case.json). The two flag questions carry no option list, so they are unchanged copies and serve as a control.",
+      "(results/level3/per_case.json). The two flag questions carry no option list, so they are unchanged copies and serve as a control.",
     seed: SEED,
     orders: variant.orders,
     reversed: {
@@ -687,7 +687,7 @@ async function main(): Promise<void> {
     generated_utc: new Date().toISOString(),
     offline,
     title: "Robustness probes of the classifier criteria",
-    source: "results/per_case.json (the recorded run of the paper), the probes of this file, and the cache in results/robustness_cache",
+    source: "results/level3/per_case.json (the recorded run of the paper), the probes of this file, and the cache in results/robustness_cache",
     set: {
       requests: requests.length,
       note:

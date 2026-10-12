@@ -2,15 +2,13 @@
 // Run the request triage experiment and write the evidence files.
 //
 //   bun run experiment/run.ts --help
-//   bun run experiment/run.ts                      # the whole request set, live calls (recorded on disk)
-//   bun run experiment/run.ts --offline            # replay the recorded calls, no network
-//   bun run experiment/run.ts --limit 20 --out /tmp/twenty
+//   bun run experiment/run.ts --level 2            # Level 2 only
+//   bun run experiment/run.ts --level 3 --offline  # Level 3 replay, no network
+//   bun run experiment/run.ts --level 2 --limit 20 --out /tmp/twenty
 //
 // The run reads <data>/world.csv and <data>/requests.csv (written by experiment/build_dataset.ts), installs the recording
-// transport, runs every system through the same pipeline (pipeline.ts) -- Level 2 (the LLM agent of the chat and the written
-// rules; no rule of Triage) and Level 3 (Jev with one question per written rule, and the LLM for the final message); --level 3
-// runs only Level 3 -- then writes results.json, per_case.json,
-// provenance.json, tables/*.tex, and figures/ into <out>. The recorded calls are in <cache>/<service>/<sha256>.json
+// transport, runs ONLY the required --level (2 or 3), and writes results.json, per_case.json,
+// provenance.json, tables/*.tex, and figures/ into <out>/levelN. The two levels never share a results file. The recorded calls are in <cache>/<service>/<sha256>.json
 // (default: <out>/requests). Every request of every system is logged as it finishes.
 import { mkdir, readdir, readFile, writeFile } from "node:fs/promises"
 import { join, resolve } from "node:path"
@@ -58,11 +56,11 @@ Options:
   --offline          replay the recorded calls; no network, no credentials
   --jev-workers N    Jev calls in flight at the same time (default: 4)
   --llm-workers N    LLM calls in flight at the same time (default: 3)
-  --out DIR          evidence directory (default: experiment/results)
+  --out DIR          output root; evidence goes in DIR/levelN (default: experiment/results)
   --cache DIR        directory of the recorded calls (default: <out>/requests)
   --data DIR         directory with world.csv and the requests file (default: experiment/data)
   --requests FILE    the requests file of that directory (default: requests.csv)
-  --level N          run only Level N (2 or 3); default: both levels
+  --level N          REQUIRED: run only Level N (2 or 3), never both
   --no-report        write no tables and no figures
   --help             print this text
 
@@ -82,7 +80,7 @@ function parseArgs(argv: readonly string[]): Args {
     data: join(HERE, "data"),
     requests: REQUESTS_FILE,
     report: true,
-    systems: ALL_SYSTEMS,
+    systems: [],
     help: false,
   }
   for (let i = 0; i < argv.length; i++) {
@@ -105,6 +103,7 @@ function parseArgs(argv: readonly string[]): Args {
         args.llmWorkers = count()
         break
       case "--level": {
+        if (args.systems.length) throw new Error("Specify --level exactly once; levels run separately")
         const system = ALL_SYSTEMS.find((s) => String(LEVEL_OF[s]) === value)
         if (!system) throw new Error("--level needs 2 or 3")
         args.systems = [system]
@@ -144,6 +143,12 @@ function parseArgs(argv: readonly string[]): Args {
       default:
         throw new Error(`unknown option ${flag}`)
     }
+  }
+  if (!args.help && args.systems.length !== 1) throw new Error("--level 2 or --level 3 is required; levels run separately")
+  if (!args.help) {
+    const level = LEVEL_OF[args.systems[0]]
+    args.cache ??= join(args.out, "requests")
+    args.out = join(args.out, `level${level}`)
   }
   return args
 }
@@ -235,7 +240,7 @@ async function main(): Promise<number> {
   const cache = args.cache ?? join(args.out, "requests")
   await mkdir(args.out, { recursive: true })
   const handle = installRecordedTransport({ out: args.out, cache, offline: args.offline, jevWorkers: args.jevWorkers, llmWorkers: args.llmWorkers })
-  log(`${requests.length} requests, ${args.offline ? "offline replay" : "live calls"}; evidence in ${args.out}`)
+  log(`Level ${LEVEL_OF[args.systems[0]]}: ${requests.length} requests, ${args.offline ? "offline replay" : "live calls"}; evidence in ${args.out}`)
 
   // The calls of each phase of the run: the live calls and the cache hits that each system made.
   const phases: { phase: string; jevLive: number; jevCacheHits: number; llmLive: number; llmCacheHits: number }[] = []
@@ -252,7 +257,7 @@ async function main(): Promise<number> {
     })
     cases[system] = entries
     ran[system] = entries.filter((entry) => !isFailedRecord(entry)).length
-    log(`  ${system}: ${ran[system]}/${entries.length} requests ran (${countersText(handle.counters)} so far)`)
+    log(`  ${system}: ${ran[system]}/${entries.length} requests ran (${system === "jev" ? countersText(handle.counters) : `LLM ${handle.counters.llm.live} live / ${handle.counters.llm.cacheHits} cached`} so far)`)
     phases.push({ phase: system, ...diff(handle.counters, before) })
     before = snapshot(handle.counters)
   }
@@ -268,12 +273,20 @@ async function main(): Promise<number> {
     world,
   })
 
-  await writeJson(join(args.out, "results.json"), results)
+  const system = args.systems[0]
+  results.ladder = results.ladder.filter((row) => row.source === `systems.${system}`)
+  const { systems, classifier, sign_test: _signTest, ...measured } = results
+  await writeJson(join(args.out, "results.json"), {
+    ...measured,
+    level: LEVEL_OF[system],
+    systems: { [system]: systems[system] },
+    classifier: system === "jev" ? classifier : {},
+  })
   await writeJson(join(args.out, "per_case.json"), {
     generated_utc: results.generated_utc,
     offline: args.offline,
-    jev: cases.jev,
-    llm_agent: cases.llm_agent,
+    level: LEVEL_OF[system],
+    [system]: cases[system],
   })
   const written = args.report ? [...(await writeTables(args.out, results)), ...(await writeFigures(args.out, results))] : []
 
@@ -290,9 +303,10 @@ async function main(): Promise<number> {
     data_dir: args.data,
     out_dir: args.out,
     cache_dir: cache,
-    requests: { selected: requests.length, ran, failed: failedRequests },
+    level: LEVEL_OF[system],
+    requests: { selected: requests.length, ran: { [system]: ran[system] }, failed: failedRequests },
     models_seen: handle.modelsSeen().sort(),
-    jev_request_model: "jev-latest",
+    ...(system === "jev" ? { jev_request_model: "jev-latest" } : {}),
     llm_model: LLM_MODEL,
     llm_settings: { temperature: 0.3, max_tokens: 4000, reasoning_effort: "high", stream: false },
     dataset_sha256: { [WORLD_FILE]: await sha256File(worldPath), [args.requests]: await sha256File(requestsPath) },

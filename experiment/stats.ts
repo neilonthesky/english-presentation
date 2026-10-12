@@ -1,7 +1,7 @@
 #!/usr/bin/env bun
 // The statistics of the recorded run: a Wilson interval for every accuracy proportion, an exact paired test for the two
 // comparisons of the paper, a bootstrap of the paired difference in error count, and the power of the set of requests.
-// Zero model calls: every number is computed from results/per_case.json and results/results.json, and the size of the set
+// Zero model calls: every number is computed from the separate results/level2/per_case.json and results/level3/per_case.json files and the separate results/level2/results.json and results/level3/results.json files, and the size of the set
 // is read from per_case.json, never from a constant.
 //
 // Why these numbers. The paper reports counts of requests (served, stopped, and errors per level, and an action accuracy
@@ -15,7 +15,7 @@
 // set have detected at all?
 //
 // Table: results/tables/robustness.tex (the LaTeX tables of this file). Evidence: results/robustness.json (the
-// robustness probes of experiment/robustness.ts), results/per_case.json, results/results.json.
+// robustness probes of experiment/robustness.ts), the separate results/level2/per_case.json and results/level3/per_case.json files, the separate results/level2/results.json and results/level3/results.json files.
 //
 // Run: bun run experiment/stats.ts [--offline]   (no model is called, with or without the flag)
 import { mkdir, readFile, writeFile } from "node:fs/promises"
@@ -158,14 +158,14 @@ interface PerCase {
 /** The recorded run, checked just enough to be read: the file is the evidence of this experiment. */
 function readPerCase(value: unknown): PerCase {
   const isObject = (v: unknown): v is Record<string, unknown> => typeof v === "object" && v !== null
-  if (!isObject(value)) throw new Error("results/per_case.json is not a JSON object")
+  if (!isObject(value)) throw new Error("the separate results/level2/per_case.json and results/level3/per_case.json files is not a JSON object")
   const lists: Record<string, unknown[]> = {}
   for (const name of ["jev", "llm_agent"]) {
     const list = value[name]
-    if (!Array.isArray(list) || list.length === 0) throw new Error(`results/per_case.json holds no ${name} records`)
+    if (!Array.isArray(list) || list.length === 0) throw new Error(`the separate results/level2/per_case.json and results/level3/per_case.json files holds no ${name} records`)
     for (const record of list) {
       if (!isObject(record) || typeof record.id !== "string" || typeof record.outcome !== "string") {
-        throw new Error(`results/per_case.json holds a ${name} record that cannot be read`)
+        throw new Error(`the separate results/level2/per_case.json and results/level3/per_case.json files holds a ${name} record that cannot be read`)
       }
     }
     lists[name] = list
@@ -177,13 +177,12 @@ function readPerCase(value: unknown): PerCase {
 interface Results {
   ladder: { name: string; served: number; stopped: number; errors: number }[]
   classifier: Record<string, { requests: number; perField: Record<string, { n: number; correct: number; accuracy: number }> }>
-  sign_test: { discordant: number; pValue: number; errorsInLevel2Only: number; errorsInLevel3Only: number }
 }
 
 async function readResults(path: string): Promise<Results> {
   const value: unknown = JSON.parse(await readFile(path, "utf8"))
   const isObject = (v: unknown): v is Record<string, unknown> => typeof v === "object" && v !== null
-  if (!isObject(value) || !Array.isArray(value.ladder) || !isObject(value.classifier) || !isObject(value.sign_test)) {
+  if (!isObject(value) || !Array.isArray(value.ladder) || !isObject(value.classifier)) {
     throw new Error(`${path} is not the results file of this experiment`)
   }
   // The file is the evidence of this experiment; the check above covers the parts read here.
@@ -209,6 +208,7 @@ const fieldRight = (record: ClassifierRequestRecord, field: Field): boolean => {
 // ---------------------------------------------------------------- the LaTeX tables
 
 const pct = (value: number, digits = 1): string => (100 * value).toFixed(digits)
+const formatP = (value: number): string => value < 0.001 ? value.toExponential(2) : value.toFixed(4)
 const ci = (interval: Interval): string => `[${pct(interval.low)}, ${pct(interval.high)}]`
 const row = (cells: readonly (string | number)[]): string => `${cells.join(" & ")} \\\\`
 
@@ -237,10 +237,15 @@ function table(caption: string, label: string, spec: string, header: readonly st
 const log = (message: string): void => void process.stderr.write(`${message}\n`)
 
 async function main(): Promise<void> {
-  const perCase = readPerCase(JSON.parse(await readFile(join(OUT, "per_case.json"), "utf8")) as unknown)
-  const results = await readResults(join(OUT, "results.json"))
+  const perCase = readPerCase({
+    jev: JSON.parse(await readFile(join(OUT, "level3", "per_case.json"), "utf8")).jev,
+    llm_agent: JSON.parse(await readFile(join(OUT, "level2", "per_case.json"), "utf8")).llm_agent,
+  })
+  const level3Results = await readResults(join(OUT, "level3", "results.json"))
+  const level2Results = await readResults(join(OUT, "level2", "results.json"))
+  const results = { classifier: level3Results.classifier, ladder: [...level2Results.ladder, ...level3Results.ladder] }
   const n = perCase.jev.length
-  if (n !== perCase.llm_agent.length) throw new Error("results/per_case.json holds sets of different sizes")
+  if (n !== perCase.llm_agent.length) throw new Error("the separate results/level2/per_case.json and results/level3/per_case.json files holds sets of different sizes")
 
   // The classifier proportions: every field of the first Jev call against the gold answer.
   const classifier: Record<string, Interval> = {}
@@ -273,7 +278,7 @@ async function main(): Promise<void> {
   let level3Only = 0
   perCase.llm_agent.forEach((record, index) => {
     const other = perCase.jev[index]
-    if (!other || other.id !== record.id) throw new Error("results/per_case.json is not paired by request id")
+    if (!other || other.id !== record.id) throw new Error("the separate results/level2/per_case.json and results/level3/per_case.json files is not paired by request id")
     if (errorAtLevel2[index] === 1 && errorAtLevel3[index] === 0) level2Only++
     if (errorAtLevel2[index] === 0 && errorAtLevel3[index] === 1) level3Only++
   })
@@ -303,10 +308,9 @@ async function main(): Promise<void> {
     { quantity: "action correct, Jev", per_case: classifier.action.successes, results_json: results.classifier.jev.perField.action.correct },
     { quantity: "errors, Level 2", per_case: levels.level2.errors.successes, results_json: ladderOf("LLM agent").errors },
     { quantity: "errors, Level 3", per_case: levels.level3.errors.successes, results_json: ladderOf("Jev + LLM + rules").errors },
-    { quantity: "sign test p, Level 2 against Level 3", per_case: outcomeTest.pValue, results_json: results.sign_test.pValue },
   ]
   const mismatches = crossChecks.filter((check) => Math.abs(check.per_case - check.results_json) > 1e-9)
-  if (mismatches.length) throw new Error(`results.json disagrees with results/per_case.json: ${mismatches.map((check) => check.quantity).join("; ")}`)
+  if (mismatches.length) throw new Error(`results.json disagrees with the separate results/level2/per_case.json and results/level3/per_case.json files: ${mismatches.map((check) => check.quantity).join("; ")}`)
 
   // The LaTeX tables: the outcome rates, the classifier accuracies, and the tests.
   const outcomeRows = [levels.level2, levels.level3].flatMap((level) =>
@@ -320,9 +324,9 @@ async function main(): Promise<void> {
       `the Wilson 95\\% interval of every rate. Level 3 ends ${levels.level3.stopped.successes} requests as stopped and makes ` +
       `${levels.level3.errors.successes} errors; Level 2 stops ${levels.level2.stopped.successes} and makes ${levels.level2.errors.successes} errors. The interval of the errors of Level 2 ` +
       `([${pct(levels.level2.errors.low)}, ${pct(levels.level2.errors.high)}]) and the interval of the errors of ` +
-      `Level 3 ([${pct(levels.level3.errors.low)}, ${pct(levels.level3.errors.high)}]) overlap, so the counts alone do not separate the two levels on this ` +
-      `set; the paired test of the next table uses only the discordant requests and reads the difference of the errors as ` +
-      `${significance(outcomeTest.pValue)} (p = ${outcomeTest.pValue.toFixed(3)}).`,
+      `Level 3 ([${pct(levels.level3.errors.low)}, ${pct(levels.level3.errors.high)}]) describe marginal error rates. ` +
+      `The paired test of the next table uses only the discordant requests and reads the difference of the errors as ` +
+      `${significance(outcomeTest.pValue)} (p = ${formatP(outcomeTest.pValue)}).`,
     "tab:robustness-outcome",
     "llrrl",
     ["Level", "Outcome", "Count", "\\%", "Wilson 95\\% CI"],
@@ -348,18 +352,18 @@ async function main(): Promise<void> {
   const tableTests = table(
     `The paired tests and the power of the set. Every request is one pair, so only the discordant requests carry information: ` +
       `the two-sided exact sign test (McNemar's exact test) on the errors of Level 2 against Level 3 (${outcomeTest.against_first} ` +
-      `against ${outcomeTest.against_second}, p = ${outcomeTest.pValue.toFixed(4)}, ${significance(outcomeTest.pValue)}). The bootstrap ` +
+      `against ${outcomeTest.against_second}, p = ${formatP(outcomeTest.pValue)}, ${significance(outcomeTest.pValue)}). The bootstrap ` +
       `resamples the ${n} requests with replacement (seed ${SEED}, ${RESAMPLES} resamples) and reports the interval of the paired ` +
       `difference in the count of errors (Level 2 minus Level 3); Level 3 makes no error on this set, so the difference is never ` +
       `negative and the interval describes the sampling of the ${levels.level2.errors.successes} errors of Level 2. The last rows state the power of the set: at least ${cut} discordant requests, every one ` +
       `against the same system, are needed for the test to reach p < 0.05, so this set can only detect a real difference above ` +
       `${pct(detectable)}\\% of the requests (${detectableRequests} requests of ${n}). Every number is recomputed from ` +
-      `results/per_case.json and equals the record of the run in results.json.`,
+      `the separate results/level2/per_case.json and results/level3/per_case.json files and equals the record of the run in results.json.`,
     "tab:robustness-tests",
     "lrrrl",
     ["Test", "First", "Second", "p", "Note"],
     [
-      row(["Sign test, errors, Level 2 against Level 3", outcomeTest.against_first, outcomeTest.against_second, outcomeTest.pValue.toFixed(4), significance(outcomeTest.pValue)]),
+      row(["Sign test, errors, Level 2 against Level 3", outcomeTest.against_first, outcomeTest.against_second, formatP(outcomeTest.pValue), significance(outcomeTest.pValue)]),
       row(["Bootstrap, the paired difference in errors", bootstrap.observed, "", "", `95\\% CI [${bootstrap.low}, ${bootstrap.high}], seed ${SEED}, ${RESAMPLES} resamples`]),
       row(["Bootstrap, the share of resamples with no worse result", pct(bootstrap.share_at_or_below_zero), "\\%", "", "Level 3 makes no error, so the difference is 0 only in the resamples that draw no error of Level 2"]),
       row(["Power, the smallest significant split", cut, `/ ${n}`, atCut.toFixed(3), "all discordant against one system"]),
@@ -381,7 +385,7 @@ async function main(): Promise<void> {
   log(`classifier accuracy (Wilson 95% CI):`)
   for (const field of FIELDS) log(`  ${field.padEnd(10)} jev ${classifier[field].successes}/${classifier[field].n} (${pct(classifier[field].rate)}%, ${ci(classifier[field])})`)
   log(`paired tests:`)
-  log(`  errors, Level 2 against Level 3: ${outcomeTest.against_first} against ${outcomeTest.against_second} of ${outcomeTest.discordant} discordant, p = ${outcomeTest.pValue.toFixed(4)} (results.json: p = ${results.sign_test.pValue.toFixed(4)}, ${results.sign_test.discordant} discordant)`)
+  log(`  errors, Level 2 against Level 3: ${outcomeTest.against_first} against ${outcomeTest.against_second} of ${outcomeTest.discordant} discordant, p = ${formatP(outcomeTest.pValue)}`)
   log(`bootstrap of the paired difference in errors (Level 2 minus Level 3): observed ${bootstrap.observed}, mean ${bootstrap.mean.toFixed(3)}, 95% CI [${bootstrap.low}, ${bootstrap.high}], ${pct(bootstrap.share_at_or_below_zero)}% of resamples at or below 0`)
   log(`power: the smallest significant split is ${cut} of ${n} discordant pairs, all against one system (p = ${atCut.toFixed(4)}; ${cut - 1} pairs give p = ${underCut.toFixed(3)}); a real difference below ${pct(detectable)}% of the requests (${detectableRequests} of ${n}) leaves the test under 80% power`)
   log(`cross-check: ${crossChecks.length} of ${crossChecks.length} quantities recomputed here equal results.json`)

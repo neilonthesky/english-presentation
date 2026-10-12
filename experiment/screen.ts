@@ -39,7 +39,8 @@ import { pmap } from "./pmap"
 
 const OUT = join(import.meta.dir, "results")
 const CACHE = join(OUT, "requests")
-const PER_CASE = join(OUT, "per_case.json")
+const LEVEL2_CASES = join(OUT, "level2", "per_case.json")
+const LEVEL3_CASES = join(OUT, "level3", "per_case.json")
 const offline = process.argv.includes("--offline")
 
 /** The number of Jev calls in flight at the same time, and the pause between two retries of a failed call. */
@@ -490,8 +491,12 @@ async function main(): Promise<number> {
   await mkdir(OUT, { recursive: true })
   const counters: Counters = { live: 0, cacheHits: 0, failures: [] }
 
-  const perCase = record(JSON.parse(await readFile(PER_CASE, "utf8")))
-  const cases = LEVELS.flatMap((level) => casesOf(perCase[level === "level_3" ? "jev" : "llm_agent"], level))
+  const level2Cases = record(JSON.parse(await readFile(LEVEL2_CASES, "utf8")))
+  const level3Cases = record(JSON.parse(await readFile(LEVEL3_CASES, "utf8")))
+  const cases = [
+    ...casesOf(level2Cases.llm_agent, "level_2"),
+    ...casesOf(level3Cases.jev, "level_3"),
+  ]
   const screened = await pmap(cases, WORKERS, (c) => screenOne(c, counters))
 
   // The hand-read of the reader: the verdicts correct the flags, and the defects are reported on both readings.
@@ -585,7 +590,7 @@ async function main(): Promise<number> {
       "The questions, the criteria, and the state are written for this screen; they are not the criteria of Triage and the paper must not report calibration for them.",
       "A flag is not a defect on its own: the claim of a change is correct when the action ran (18 requests at each level of the 100-request set), and the same text is judged against the recorded flow.",
       "The screen reads the reply alone; it does not read the request, so a reply that gives a reason the reader cannot connect to the request is still read as a reason.",
-      "The replies of both levels are the recorded ones of the main run (results/per_case.json), so the screen describes that run and no other.",
+      "The replies of both levels are the recorded ones of the main run (results/level2/per_case.json and results/level3/per_case.json), so the screen describes that run and no other.",
       `The hand-read disagrees with the screen on ${handRead.disagreements} verdicts of ${handRead.verdicts} (${pct(handRead.agreement_rate)}% agreement): it clears ${handRead.flags_cleared.length} flags and adds ${handRead.flags_added.length}. The cleared flags are the outside_chat flags that name no place (R0050 at both levels, and R0078, R0085, R0049), the stop_reason flags on replies that claim a change or answer a question (R0056, R0058, R0091 at Level 3, R0054, R0057, R0058, R0090 at Level 2) and the claims_change flag of R0050 at both levels; the added flags are the stop_reason flags of the replies that say what the chat cannot do (R0017, R0025, R0026, R0028, R0092 at Level 3, R0011, R0028, R0092 at Level 2). Every one of them carries a chance between 0.06 and 0.69: the stop_reason criterion is the loosest of the four, and no disagreement touches the hand-off question or a claim of a change that ran.`,
       "The calls of the screen do not go through the recording transport of the run: that transport validates every Jev answer against the five questions of Triage, and the questions of the screen are not those five. The screen writes and reads the same cache records, so its calls are cached with the calls of the run.",
     ],

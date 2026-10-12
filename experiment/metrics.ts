@@ -489,7 +489,7 @@ export function buildResults(input: ResultsInput): Results {
   // The shape of a record follows the system: only Level 3 has a classifier answer to grade.
   const jev = input.records.filter((record): record is ClassifierRequestRecord => record.system === "jev")
   const agent = input.records.filter((record): record is AgentRequestRecord => record.system === "llm_agent")
-  const n = jev.length
+  const n = Math.max(jev.length, agent.length)
   const reliabilityByField = {} as Results["reliability"]
   for (const field of FIELDS) {
     reliabilityByField[field] = {

@@ -35,7 +35,7 @@
 // itself is worth when the classifier is Jev.
 //
 // The run replays Level 2 and Level 3 from the cache first (`processAgentRequest`, `processClassifierRequest`) and checks
-// that replay against `results/per_case.json`, so the recorded answers that this file reads are the ones of the paper.
+// that replay against `results/level2/per_case.json and results/level3/per_case.json`, so the recorded answers that this file reads are the ones of the paper.
 //
 // Run: bun run experiment/ablation.ts [--offline]
 //   The first run makes the live calls of the new Final messages only (a few cents, cached under results/requests); the
@@ -61,7 +61,8 @@ import type { TestRequest } from "./types"
 const HERE = import.meta.dir
 const OUT = join(HERE, "results")
 const CACHE = join(OUT, "requests")
-const PER_CASE = join(OUT, "per_case.json")
+const LEVEL2_CASES = join(OUT, "level2", "per_case.json")
+const LEVEL3_CASES = join(OUT, "level3", "per_case.json")
 const offline = process.argv.includes("--offline")
 
 /** The number of requests in flight at the same time. Every call is a cache read or one new Final message. */
@@ -233,7 +234,7 @@ async function level3NoCheckRecord(req: TestRequest, prior: ClassifierRequestRec
   }
 }
 
-/** One entry of `results/per_case.json`, as the check of the replay reads it. */
+/** One entry of `results/level2/per_case.json and results/level3/per_case.json`, as the check of the replay reads it. */
 interface CaseEntry {
   id: string
   outcome: string
@@ -259,7 +260,7 @@ function caseEntries(value: unknown): CaseEntry[] {
   })
 }
 
-/** The replay of a system against `results/per_case.json`: the same outcome, the same action that ran, the same decision tokens. */
+/** The replay of a system against `results/level2/per_case.json and results/level3/per_case.json`: the same outcome, the same action that ran, the same decision tokens. */
 function checkReplay(stored: readonly CaseEntry[], replayed: readonly RunRecord[], system: string): { system: string; requests: number; mismatches: string[] } {
   const byId = new Map(stored.map((entry) => [entry.id, entry]))
   const mismatches: string[] = []
@@ -332,10 +333,11 @@ async function main(): Promise<number> {
   const level2 = await pmap(requests, WORKERS, (req) => processAgentRequest(req))
   const level3 = await pmap(requests, WORKERS, (req) => processClassifierRequest(req, classifyWithJev))
 
-  const perCase = record(JSON.parse(await readFile(PER_CASE, "utf8")))
+  const level2Cases = record(JSON.parse(await readFile(LEVEL2_CASES, "utf8")))
+  const level3Cases = record(JSON.parse(await readFile(LEVEL3_CASES, "utf8")))
   const replayCheck = [
-    checkReplay(caseEntries(perCase.llm_agent), level2, "llm_agent"),
-    checkReplay(caseEntries(perCase.jev), level3, "jev"),
+    checkReplay(caseEntries(level2Cases.llm_agent), level2, "llm_agent"),
+    checkReplay(caseEntries(level3Cases.jev), level3, "jev"),
   ]
 
   // Level 2b: the recorded agent answer behind the fixed check of Level 3.
@@ -464,7 +466,7 @@ async function main(): Promise<number> {
     },
     per_request: rows,
     replay_check: {
-      source: "results/per_case.json",
+      source: "results/level2/per_case.json and results/level3/per_case.json",
       results: replayCheck,
       note: "The replay of Levels 2 and 3 out of the cache must reproduce per_case.json exactly: the same outcome, the same action that ran, and the same decision tokens.",
     },

@@ -63,7 +63,7 @@ function classifierChart(r: Results): string {
 function ladderChart(r: Results): string {
   const out: string[] = []
   const steps = r.ladder
-  const labels = [["Level 1", "Staff only"], ["Level 2", "LLM agent"], ["Level 3", "Jev + LLM"]]
+  const labels = steps.map((step) => [`Level ${step.level + 1}`, step.name])
   const DARK_RED = "#7f1d1d"
   const GREY = "#9ca3af"
   const [top, bottom] = [22, 106]
@@ -109,7 +109,7 @@ function ladderChart(r: Results): string {
   stepLabels(ax0, ax1)
   const harmfulTotal = steps.reduce((sum, s) => sum + s.harmful, 0)
   legend(ax0 - 18, 137, [["Served", BLUE], ["Stopped", AMBER], ["Errors", RED], [`Harmful (${harmfulTotal})`, DARK_RED]], out)
-  legend(ax0 - 18, 147, [["Staff only (assumed)", GREY]], out)
+  if (steps.some((step) => step.level === 0)) legend(ax0 - 18, 147, [["Staff only (assumed)", GREY]], out)
 
   // (b) mean time per request: the machine time, and the assumed staff time of the reference level
   const timeMax = Math.max(20, Math.ceil(Math.max(...steps.map((s) => s.totalSeconds)) / 20) * 20)
@@ -186,7 +186,11 @@ export async function writeChart(out: string, name: string, text: string): Promi
 
 /** Write figures/<name>.svg and figures/<name>.pdf into `out`. Returns the file names of the PDFs. */
 export async function writeFigures(out: string, results: Results): Promise<string[]> {
-  const charts: Record<string, string> = { classifier: classifierChart(results), ladder: ladderChart(results), reliability: reliabilityChart(results) }
+  const charts: Record<string, string> = { ladder: ladderChart(results) }
+  if (results.systems.jev.requests > 0) {
+    charts.classifier = classifierChart(results)
+    charts.reliability = reliabilityChart(results)
+  }
   const written: string[] = []
   for (const [name, text] of Object.entries(charts)) written.push(await writeChart(out, name, text))
   return written

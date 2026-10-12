@@ -1,8 +1,8 @@
 // The three requests that the walk-through slides of build.js play. They are three of the 1,024 live requests of Level 3.
-// Level 3 asks Jev twice: the first call answers the topic, the action, the priority and the injection flag from the chat; the
+// Level 3 asks Jev twice: the first call records topic, action, priority, risk and injection; four fields are shown here; the
 // second call (only when the action changes the state) answers one yes/no question for each written rule of the action, with the
 // account lines of that action. The answers, with their confidences, are copied from the recorded calls
-// (experiment/results/per_case.json: classifier and ruleCall of R0434, R0481, and R0839; Jev jev-1.13.0; the confidence of an answer is
+// (experiment/results/level3/per_case.json: classifier and ruleCall of R0434, R0481, and R0839; Jev jev-1.13.0; the confidence of an answer is
 // the probability that Jev gives to it). A rule answer is shown as "met" or "broken" with the confidence of the answer; the question asks if the rule is broken.
 // The request texts and the replies of the LLM are copied from the same recorded run (deepseek-v4.1-flash). No machine times are shown.
 // Nodes of the flow, in order: 0 New, 1 Jev, 2 Rules, 3 Do action, 4 Final message, 5 Chat open, 6 Resolved.
@@ -29,7 +29,7 @@ const CASES = [
       answers: [["Topic", "Refunds", "confidence 1.00"], ["Action", "Start refund", "confidence 0.99"], ["Priority", "Low", "confidence 0.61"], ["Injection flag", FLAG(false), "confidence 0.91"]],
       warn: null,
       rule: "A refund changes money, so the rules of a refund are asked next.",
-      note: "Jev gave four answers from the chat alone: no rules and no account are in this call.",
+      note: "Four of five recorded fields are shown (risk is also recorded); this call reads no rules or account.",
     },
     rules: {
       chips: rules([], [0.97, 0.96, 0.98, 0.71, 0.95, 0.98, 0.98, 0.98]),
@@ -64,7 +64,7 @@ const CASES = [
       answers: [["Topic", "Refunds", "confidence 1.00"], ["Action", "Start refund", "confidence 0.97"], ["Priority", "High", "confidence 0.59"], ["Injection flag", FLAG(false), "confidence 0.92"]],
       warn: null,
       rule: "A refund changes money, so the rules of a refund are asked next.",
-      note: "Jev gave four answers from the chat alone: no rules and no account are in this call.",
+      note: "Four of five recorded fields are shown (risk is also recorded); this call reads no rules or account.",
     },
     rules: {
       chips: rules(["Amount limit"], [0.97, 0.97, 0.97, 0.91, 0.95, 0.99, 0.97, 0.98]),
