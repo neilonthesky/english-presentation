@@ -1,5 +1,5 @@
 // The recording / replaying transport of the experiment. It replaces `transport.post` of
-// web/server/models.ts, so every network call of the system under test goes through this file.
+// system/models.ts, so every network call of the system under test goes through this file.
 //
 //   * a successful call is written to <cache>/<service>/<sha256>.json, where the key is the
 //     sha256 of the canonical JSON {service, url, body};
@@ -11,8 +11,8 @@
 //     run continues with the other requests, and a later run makes the call again;
 //   * at most `jevWorkers` Jev calls and `llmWorkers` LLM calls are in flight at the same time.
 //
-// The real network call is the `post` of web/server/models.ts that this file replaces, so the
-// credentials, the timeout, and the error messages of the demo are the ones that run here.
+// The real network call is the `post` of system/models.ts that this file replaces, so the
+// credentials, the timeout, and the error messages of the system are the ones that run here.
 //
 // `withCallLog` gives the calls made inside one step. The pipeline uses it for the tokens of the
 // LLM calls (`models.ts` `chat()` returns the text only) and for the raw Jev JSON (`models.ts`
@@ -21,8 +21,8 @@ import { AsyncLocalStorage } from "node:async_hooks"
 import { createHash } from "node:crypto"
 import { mkdir, readFile, rename, writeFile } from "node:fs/promises"
 import { join } from "node:path"
-import { ACTIONS, PRIORITIES, QUEUES } from "../web/src/types"
-import { ApiError, JEV_URL, LLM_URL, transport } from "../web/server/models"
+import { ACTIONS, PRIORITIES, QUEUES } from "./system/types"
+import { ApiError, JEV_URL, LLM_URL, transport } from "./system/models"
 
 export type Service = "jev" | "llm"
 
@@ -166,7 +166,7 @@ function gate(size: number): <T>(fn: () => Promise<T>) => Promise<T> {
   }
 }
 
-/** Put the recording transport in place of the one of web/server/models.ts. */
+/** Put the recording transport in place of the one of system/models.ts. */
 export function installRecordedTransport(options: TransportOptions): TransportHandle {
   if (state) throw new Error("the recording transport is already installed")
   state = {
@@ -270,7 +270,7 @@ async function recordFailure(s: State, failure: FailureRecord & { body: unknown 
   }
 }
 
-/** The transport that web/server/models.ts uses from now on: record once, replay for free. */
+/** The transport that system/models.ts uses from now on: record once, replay for free. */
 async function recordedPost<T>(url: string, body: unknown): Promise<{ json: T; latencyS: number }> {
   const s = state
   if (!s) throw new ApiError("the recording transport is not installed")

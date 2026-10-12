@@ -1,5 +1,5 @@
-// The flow of the demo for one request, run for the experiment. Every state calls the function of the demo, so the paper and
-// the demo cannot drift apart:
+// The flow of the support system for one request, run for the experiment. Every state calls the function of system/, so the
+// paper and the code cannot drift apart:
 //
 //   New        the chat of the customer
 //   Gather     extractFacts, findArticles (saas.ts), and the account of the customer (accountText): Level 3 reads the fields that
@@ -28,13 +28,13 @@
 //
 // An answer that is not valid fails closed: nothing runs, the LLM writes the Final message from the reason, and the request is
 // counted as an invalid answer in per_case.json.
-import { ACCOUNT_FIELDS } from "../web/src/types"
-import { SECURITY_RULE, accountFieldsFor, accountText, extractFacts, findArticles, misuseReport, policyFor, rulingPolicy, triage } from "../web/server/saas"
+import { ACCOUNT_FIELDS } from "./system/types"
+import { SECURITY_RULE, accountFieldsFor, accountText, extractFacts, findArticles, misuseReport, policyFor, rulingPolicy, triage } from "./system/saas"
 import {
   INVALID_REASON, MONEY_OR_DATA_ACTIONS, STATE_CHANGING_ACTIONS, actStep, deniedReasons, nothingRuns, rulesStep, runAction,
-} from "../web/server/steps"
-import { NO_RULE, answerQuestion, writeReply } from "../web/server/models"
-import type { Classifier, Executed, Facts, Policy, Requester, RulesResponse, TriageResponse } from "../web/src/types"
+} from "./system/steps"
+import { NO_RULE, answerQuestion, writeReply } from "./system/models"
+import type { Classifier, Executed, Facts, Policy, Requester, RulesResponse, TriageResponse } from "./system/types"
 import type { Classify, ClassifierRun } from "./jev_classifier"
 import { agentDecision, actionOfRule, type AgentRun } from "./llm_agent"
 import { withCallLog, type CallNote, type Service } from "./transport"
@@ -369,7 +369,7 @@ export async function processClassifierRequest(req: TestRequest, classify: Class
   // New and Triage: Jev answers on the chat of the customer.
   const text = req.text
   const facts = extractFacts(text)
-  const run = await classify(text, who)
+  const run = await classify(text)
   timings.decisionS = run.latencyS
   tokens.input += run.inputTokens
   tokens.output += run.outputTokens

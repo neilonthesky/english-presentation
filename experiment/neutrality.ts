@@ -2,7 +2,7 @@
 // The neutrality probe of the criteria: one Jev call on a state that carries no request.
 //
 // The request text is "N/A", the state carries no help article, and the five questions of Triage are the five questions of
-// web/server/models.ts (the ones that the classifier gets in a real run). One option that wins with a high probability on this
+// system/models.ts (the ones that the classifier gets in a real run). One option that wins with a high probability on this
 // empty state is an option that the criteria push on their own, without any request. A flat distribution is the evidence that
 // the criteria do not. Method: the content-free input of Zhao et al., Calibrate Before Use (arXiv:2102.09690), section 5.
 //
@@ -12,7 +12,7 @@
 // Run: bun run experiment/neutrality.ts [--offline]
 import { join } from "node:path"
 import { writeFile } from "node:fs/promises"
-import { JEV_URL, JEV_QUESTIONS, transport } from "../web/server/models"
+import { JEV_URL, JEV_QUESTIONS, transport } from "./system/models"
 import { installRecordedTransport } from "./transport"
 
 const OUT = join(import.meta.dir, "results")

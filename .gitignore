@@ -36,7 +36,6 @@ Thumbs.db
 # Anthropic pptx skill is proprietary (no redistribution)
 /.omp/skills/pptx/
 
-# Generated experiment output (rebuilt by experiment/run.ts and demo/run.py)
+# Generated experiment output (rebuilt by experiment/run.ts)
 experiment/results/
-demo/results/
 experiment/context_test

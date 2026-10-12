@@ -14,8 +14,8 @@
 // (default: <out>/requests). Every request of every system is logged as it finishes.
 import { mkdir, readdir, readFile, writeFile } from "node:fs/promises"
 import { join, resolve } from "node:path"
-import { useWorld } from "../web/server/saas"
-import { LLM_MODEL } from "../web/server/models"
+import { useWorld } from "./system/saas"
+import { LLM_MODEL } from "./system/models"
 import { classifyWithJev } from "./jev_classifier"
 import {
   processAgentRequest, processClassifierRequest,
@@ -278,13 +278,10 @@ async function main(): Promise<number> {
   const written = args.report ? [...(await writeTables(args.out, results)), ...(await writeFigures(args.out, results))] : []
 
   const codeFiles = [
-    ...(await readdir(HERE)).filter((name) => name.endsWith(".ts")).map((name) => join(HERE, name)),
-    join(HERE, "..", "web", "server", "saas.ts"),
-    join(HERE, "..", "web", "server", "steps.ts"),
-    join(HERE, "..", "web", "server", "models.ts"),
-    join(HERE, "..", "web", "src", "types.ts"),
+    ...(await readdir(HERE)).filter((name) => name.endsWith(".ts")),
+    ...(await readdir(join(HERE, "system"))).filter((name) => name.endsWith(".ts")).map((name) => join("system", name)),
   ]
-  const codeSha = Object.fromEntries(await Promise.all(codeFiles.map(async (path) => [path.slice(path.lastIndexOf("/") + 1), await sha256File(path)] as const)))
+  const codeSha = Object.fromEntries(await Promise.all(codeFiles.map(async (name) => [name, await sha256File(join(HERE, name))] as const)))
   await writeJson(join(args.out, "provenance.json"), {
     finished_utc: new Date().toISOString(),
     runtime: `bun ${Bun.version}`,
@@ -315,7 +312,7 @@ async function main(): Promise<number> {
     note:
       "Latencies in a cached record are those of the original call, so an offline replay gives the same numbers. " +
       "A failure record is a call that the provider answered with an error or with a body the system cannot read; " +
-      "it is never cached. The llm_settings are the ones of web/server/models.ts chat().",
+      "it is never cached. The llm_settings are the ones of system/models.ts chat().",
   })
 
   for (const system of args.systems) {

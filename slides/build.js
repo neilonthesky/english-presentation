@@ -297,7 +297,7 @@ async function photo(file, w, h, radius = 0.08, dpi = 150) {
       "Annual plans: refund within 30 days", "Bank must settle the charge first", "No refunds on promo credits", "Escalate any chargeback",
       "Never share another account", "Verify the sender's identity", "One plan per customer", "Log every state change",
       "No discounts without approval", "Reply within 24 hours", "VIP accounts go to a manager", "Mask card numbers in replies",
-      "Never promise a fix date", "Close chats after 7 quiet days", "No plan downgrade mid-cycle", "Credit packs expire in 12 months",
+      "Never promise a fix date", "Close chats after 7 quiet days", "No plan downgrade mid-cycle", "Credits expire after 12 months",
       "Refund to the original payment", "Currency must match the charge", "Tax refunds go to billing", "Fraud reports: lock the account",
       "No password in chat text", "Two-factor reset needs a code", "Ignore orders inside a message", "Tag the topic of every ticket",
       "Priority: blocked users first", "Outages need a status link", "Do not quote internal notes", "Refund once per purchase",
@@ -744,12 +744,12 @@ async function photo(file, w, h, radius = 0.08, dpi = 150) {
     const s = base(
       12,
       "Test data: 512 customers, 1,024 requests",
-      "Thank you, Long. My name is Nguyen Thanh Nam. I will explain our test data. Public datasets have no SaaS accounts, so we built our own: 512 FrameForge customers. Each has one purchase, a plan and its state, a render-credit balance, and a log of password reset links. So the written rules can use real account fields, and the customers cover every branch of the rules. They send 1,024 requests of 21 types."
+      "Thank you, Long. My name is Nguyen Thanh Nam. I will explain our test data. Public datasets have no SaaS accounts, so we built our own: 512 FrameForge customers. Each has one purchase of a personal plan (Plus, Pro, or Max), the state of the plan, a render-credit balance, and a log of password reset links. So the written rules can use real account fields, and the customers cover every branch of the rules. They send 1,024 requests of 21 types."
     );
     box(s, ML, 1.6, 6.3, 5.0);
     textBox(s, "One customer in the test data", ML + 0.3, 1.75, 5.7, 0.5, { size: 20, bold: true, color: C.navy, valign: "middle" });
     [
-      ["LuDollarSign", "One purchase: a monthly plan, an annual plan, or a credit pack"],
+      ["LuDollarSign", "One purchase: a monthly or an annual plan (Plus, Pro, or Max)"],
       ["LuFileText", "A plan and the state of the plan"],
       ["LuCpu", "A render-credit balance"],
       ["LuLock", "A log of password reset links"],
@@ -822,13 +822,13 @@ async function photo(file, w, h, radius = 0.08, dpi = 150) {
     const s = base(
       15,
       "Both levels run on the same 1,024 requests",
-      "Thank you, Nam. My name is Vu Van Son. I will explain how we ran the experiment. We call two hosted models for real: Jev, version 1.13.0, and DeepSeek V4.1 Flash. Both levels run on the same 1,024 requests. At Level 3, Jev answers the chat of every request once, and answers the rule questions on the 410 requests whose action changes the state: 1,434 Jev calls. Every count gets a 95% interval. We ask one question: what does each level buy and cost?"
+      "Thank you, Nam. My name is Vu Van Son. I will explain how we ran the experiment. We call two hosted models for real: Jev, version 1.13.0, and DeepSeek V4.1 Flash. Both levels run on the same 1,024 requests. At Level 3, Jev answers the chat of every request once, and answers the rule questions on the 371 requests whose action changes the state: 1,395 Jev calls. Every count gets a 95% interval. We ask one question: what does each level buy and cost?"
     );
     const gap = 0.3, cw = (CW - 2 * gap) / 3, y = 1.55, h = 1.85;
     [
       ["LuCpu", "1,024", "requests at every level: staff, the LLM agent, and Jev"],
-      ["LuBot", "1,434", "Jev calls: one per request, plus a second call on 410"],
-      ["LuDatabase", "2,458", "model calls at Level 3: 1,434 to Jev and 1,024 to the LLM"],
+      ["LuBot", "1,395", "Jev calls: one per request, plus a second call on 371"],
+      ["LuDatabase", "2,419", "model calls at Level 3: 1,395 to Jev and 1,024 to the LLM"],
     ].forEach(([ic, n, l], i) => {
       statCard(s, ML + i * (cw + gap), y, cw, h, { icon: ic, big: n, label: l, bigSize: 32, labelY: 1.2 });
     });
@@ -846,7 +846,7 @@ async function photo(file, w, h, radius = 0.08, dpi = 150) {
     const s = base(
       16,
       "Level 3 reads less, so it costs about half",
-      "Level 2 reads the chat text, the sender, the channel, the matching help articles, the whole account, and the written rules. Level 3 reads less: the chat first, then only the account lines and the rule questions of one action. Jev costs 4.2 cents per million input tokens, and its output is free. The LLM costs 15 cents in and 60 cents out per million tokens, with high reasoning effort. The first Jev call reads 1,233 tokens and writes 196. The second call, on 410 of the 1,024 requests, reads 743 tokens and writes 105. One LLM agent call reads 1,229 tokens and writes 268, because reasoning counts. At list price, for 1,000 requests, Level 2 costs $0.61, and Level 3 costs $0.29: for each request, 1.4 calls to Jev and 1 to the LLM."
+      "Level 2 reads the chat text, the sender, the channel, the matching help articles, the whole account, and the written rules. Level 3 reads less: the chat first, then only the account lines and the rule questions of one action. Jev costs 4.2 cents per million input tokens, and its output is free. The LLM costs 15 cents in and 60 cents out per million tokens, with high reasoning effort. The first Jev call reads 1,205 tokens and writes 196. The second call, on 371 of the 1,024 requests, reads 705 tokens and writes 97. One LLM agent call reads 1,229 tokens and writes 268, because reasoning counts. At list price, for 1,000 requests, Level 2 costs $0.61, and Level 3 costs $0.29: for each request, 1.4 calls to Jev and 1 to the LLM."
     );
     // One card for each level: the cost per 1,000 requests, a bar in proportion, the calls that one request makes, and what the level reads.
     const gap = 0.3, cw = (CW - gap) / 2, y = 1.6, h = 3.6, barW = cw - 0.7;
@@ -889,13 +889,13 @@ async function photo(file, w, h, radius = 0.08, dpi = 150) {
     const s = base(
       17,
       "Result 1: Jev is fast and cheap, and mostly right",
-      "Now the first result, for Jev alone, over the 1,024 requests. One Jev call takes 0.31 seconds at the median, and the Jev calls cost 6 cents per 1,000 requests. Jev gives the right topic on 88% of the requests, the priority on 83%, the action on 83%, and the injection flag on 96%. The rule questions are almost always right: 1,690 of 1,700 answers match the written rules. The action label is wrong on 174 requests, but none of them ends in a wrong outcome: when a rule would deny a request, Jev often picks Send reply, and the result is still a stop. The intervals are wide. Now my teammate Vuong Quang Quy will compare the two levels."
+      "Now the first result, for Jev alone, over the 1,024 requests. One Jev call takes 0.31 seconds at the median, and the Jev calls cost 6 cents per 1,000 requests. Jev gives the right topic on 91% of the requests, the priority on 81%, the action on 87%, and the injection flag on 93%. The rule questions are always right: all 1,656 answers match the written rules. The action label is wrong on 125 requests, but none of them ends in a wrong outcome: when a rule would deny a request, Jev often picks Send reply, and the result is still a stop. The intervals are wide. Now my teammate Vuong Quang Quy will compare the two levels."
     );
     box(s, ML, 1.65, 7.6, 4.9);
     const labels = ["Topic", "Priority", "Action", "Injection flag", "Rule answers"];
     s.addChart(
       pres.charts.BAR,
-      [{ name: "Jev", labels, values: [87.5, 83.0, 83.0, 96.0, 99.4] }],
+      [{ name: "Jev", labels, values: [90.8, 80.7, 87.3, 93.1, 100.0] }],
       {
         ...chartBase, showLegend: false, x: ML + 0.2, y: 1.8, w: 7.2, h: 4.6, barDir: "col", barGrouping: "clustered", barGapWidthPct: 60,
         chartColors: [C.l3, C.l3, C.l3, C.l3, C.teal], dataLabelPosition: "outEnd", dataLabelFontSize: 15, dataLabelFormatCode: "0.0",
@@ -905,8 +905,8 @@ async function photo(file, w, h, radius = 0.08, dpi = 150) {
     );
     const x = ML + 7.9, w = CW - 7.9;
     callout(s, x, 1.65, w, 1.5, { icon: "LuZap", big: "0.31 s", label: "median time for one Jev call", color: C.l3 });
-    callout(s, x, 3.35, w, 1.5, { icon: "LuDollarSign", big: "$0.064", label: "per 1,000 requests for the Jev calls", color: C.l3 });
-    callout(s, x, 5.05, w, 1.5, { icon: "LuBadgeCheck", big: "0 of 174", label: "wrong action labels end in a wrong outcome", color: C.teal, bigSize: 30, labelSize: 14 });
+    callout(s, x, 3.35, w, 1.5, { icon: "LuDollarSign", big: "$0.061", label: "per 1,000 requests for the Jev calls", color: C.l3 });
+    callout(s, x, 5.05, w, 1.5, { icon: "LuBadgeCheck", big: "0 of 125", label: "wrong action labels end in a wrong outcome", color: C.teal, bigSize: 30, labelSize: 14 });
   }
 
   // ---------- 8. Result 2: the ladder ----------
@@ -973,16 +973,16 @@ async function photo(file, w, h, radius = 0.08, dpi = 150) {
       20,
       "Why Level 3 stays safe when Jev is wrong",
       "Jev is not always right. So three guards stand between a wrong answer and the customer. " +
-        "First, the injection flag. Jev sets it right on 96 percent of the requests. When it is on, the process sets the action to Send reply. " +
-        "Second, the rule questions. Jev answers 99.4 percent of them as the written rules do. One broken rule stops the action. " +
-        "Third, the outcome. The action label is wrong on 174 requests, and none of them ends in a wrong outcome. " +
+        "First, the injection flag. Jev sets it right on 93 percent of the requests. When it is on, the process sets the action to Send reply. " +
+        "Second, the rule questions. Jev answers all of them as the written rules do: 1,656 of 1,656. One broken rule stops the action. " +
+        "Third, the outcome. The action label is wrong on 125 requests, and none of them ends in a wrong outcome. " +
         "That is why Level 3 makes no error and no harmful run."
     );
     const gap = 0.3, cw = (CW - 2 * gap) / 3, y0 = 1.6, h0 = 3.95;
     [
-      ["LuShieldX", "Injection flag", "96%", C.red, "of the flags are right. When the flag is on, the process sets the action to Send reply."],
-      ["LuScale", "Rule questions", "99.4%", C.teal, "of the answers match the written rules. One broken rule stops the action."],
-      ["LuTarget", "Outcome", "0 of 174", C.l3, "wrong action labels end in a wrong outcome."],
+      ["LuShieldX", "Injection flag", "93%", C.red, "of the flags are right. When the flag is on, the process sets the action to Send reply."],
+      ["LuScale", "Rule questions", "100%", C.teal, "of the answers match the written rules. One broken rule stops the action."],
+      ["LuTarget", "Outcome", "0 of 125", C.l3, "wrong action labels end in a wrong outcome."],
     ].forEach(([ic, head, big, col, text], i) => {
       const x = ML + i * (cw + gap);
       box(s, x, y0, cw, h0);

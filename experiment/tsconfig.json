@@ -1,8 +1,17 @@
 {
-  "extends": "../web/tsconfig.server.json",
   "compilerOptions": {
-    "typeRoots": ["../web/node_modules/@types"],
-    "types": ["bun"]
+    "target": "es2023",
+    "lib": ["ES2023"],
+    "module": "esnext",
+    "moduleResolution": "bundler",
+    "types": ["bun"],
+    "skipLibCheck": true,
+    "verbatimModuleSyntax": true,
+    "noEmit": true,
+    "strict": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "erasableSyntaxOnly": true
   },
-  "include": ["./**/*.ts", "../web/server/**/*.ts", "../web/src/types.ts"]
+  "include": ["./**/*.ts"]
 }

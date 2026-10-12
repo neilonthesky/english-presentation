@@ -1,19 +1,19 @@
 // The step that drives Level 2 (the system `llm_agent`): the one call of the LLM agent of the chat. The agent is also the guard.
 //
 // The agent reads the request text, the sender, the channel, the matching help articles (`classifierState()` of
-// web/server/models.ts), the whole account of the customer (`accountText()` of web/server/saas.ts), and the actions already done
+// system/models.ts), the whole account of the customer (`accountText()` of system/saas.ts), and the actions already done
 // in this chat. It applies the written rules itself, with the rule text of the written policy
-// (`denyingRulesOf()` of web/server/saas.ts), and answers in typed JSON with exactly one of two shapes:
+// (`denyingRulesOf()` of system/saas.ts), and answers in typed JSON with exactly one of two shapes:
 //   {"run": "<one of the five actions>", "target": "<the thing the action changes, or null>"}  every written rule is met
 //   {"refuse": "<the name of the written rule that is not met, or none>"}                    a rule stops the action, or no action is needed
 //
 // Nothing stands behind the agent: no fixed rule checks the action it names, so a named action runs. The code of Do action
 // computes the target of the action from the account (`targetOf`), so the `target` of the agent is evidence and never a command.
 // An answer that is not valid fails closed: nothing runs, and the Final message explains.
-import { ACTIONS, type Requester } from "../web/src/types"
-import { ACTION_CRITERIA, ACTION_QUESTION, LLM_MODEL, NO_RULE, chat, classifierState, ledgerText } from "../web/server/models"
-import { ACCOUNT_FIELDS } from "../web/src/types"
-import { SECURITY_RULE, WRITTEN_RULES, accountText, denyingRulesOf } from "../web/server/saas"
+import { ACTIONS, type Requester } from "./system/types"
+import { ACTION_CRITERIA, ACTION_QUESTION, LLM_MODEL, NO_RULE, chat, classifierState, ledgerText } from "./system/models"
+import { ACCOUNT_FIELDS } from "./system/types"
+import { SECURITY_RULE, WRITTEN_RULES, accountText, denyingRulesOf } from "./system/saas"
 import { withCallLog } from "./transport"
 
 /** The answer of the agent call. */
@@ -51,7 +51,7 @@ const SHAPE =
 
 const AGENT_SYSTEM = [
 
-  "You are the support chatbot of FrameForge, an AI video-generation platform where customers make short video clips from text prompts or reference images in a web studio, sold as plans and credit packs.",
+  "You are the support chatbot of FrameForge, an AI video-generation platform where customers make short video clips from text prompts or reference images in a web studio, sold as monthly or annual plans.",
   "You read the request of a customer, the channel, the sender, the matching help articles, the account of the customer, and the actions already done in this chat. You choose the one action that the request needs, and you apply the written rules of that action yourself. Nothing checks your answer after you.",
   `ACTION: ${ACTION_QUESTION}`,
   ...Object.entries(ACTION_CRITERIA).map(([name, text]) => `  - ${name}: ${text}`),
@@ -65,7 +65,7 @@ const AGENT_SYSTEM = [
 
 /** The state of the agent call: the chat of the customer, the account that the account tool reads, and the actions already done. */
 const AGENT_USER = (text: string, who: Requester, customerId: string, ledger: ReadonlySet<string>) => {
-  const state = classifierState(text, who)
+  const state = classifierState(text)
   return [
     `SENDER: ${state.requester_type}`,
     `CHANNEL: ${state.channel}`,

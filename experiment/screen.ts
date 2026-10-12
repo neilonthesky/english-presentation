@@ -14,8 +14,8 @@
 // (100 and 100 for the 100-request set).
 //
 // The calls and the cache. A screen call is cached exactly like a call of the run: the key is `cacheKey("jev", JEV_URL,
-// body)`, the record is `<cache>/jev/<key>.json` with the same fields, and the network call is the one of the demo
-// (`transport.post` of web/server/models.ts, with its credentials and its error messages). The screen keeps this thin layer
+// body)`, the record is `<cache>/jev/<key>.json` with the same fields, and the network call is the one of the system
+// (`transport.post` of system/models.ts, with its credentials and its error messages). The screen keeps this thin layer
 // of its own because the recording transport of the experiment validates every Jev answer against the five questions of
 // Triage (`validate` in transport.ts), and the questions of the screen are not those five. A record written here is the
 // record that the transport itself would serve, so a second run makes no live call.
@@ -32,7 +32,7 @@
 // Run: bun run experiment/screen.ts [--offline]
 import { mkdir, readFile, rename, writeFile } from "node:fs/promises"
 import { join } from "node:path"
-import { JEV_URL, transport } from "../web/server/models"
+import { JEV_URL, transport } from "./system/models"
 import { isStateChanging } from "./pipeline"
 import { cacheKey, MAX_RETRIES } from "./transport"
 import { pmap } from "./pmap"
@@ -108,7 +108,7 @@ interface JevScreen {
   answers: Record<string, { noul?: number | string }>
 }
 
-/** The chance of one answer, and the flag that the demo reads: yes when the chance is at least 0.5. */
+/** The chance of one answer, and the flag that the system reads: yes when the chance is at least 0.5. */
 interface ScreenAnswer {
   chance: number
   flag: boolean
@@ -218,7 +218,7 @@ async function readRecord(path: string): Promise<unknown | null> {
 }
 
 /**
- * One screen call, cached like a call of the run: the record of the shared cache when it exists, the network of the demo
+ * One screen call, cached like a call of the run: the record of the shared cache when it exists, the network of the system
  * otherwise. A provider error is tried again at most MAX_RETRIES times, after a pause.
  */
 async function jevScreen(body: unknown, id: string, counters: Counters): Promise<unknown> {
@@ -569,7 +569,7 @@ async function main(): Promise<number> {
       "One Jev call per request and per level: the state is the recorded Final message (text = the reply, help_articles = \"\", " +
       "channel = chat, requester_type = the role of the sender), and the questions are the four Noul questions below, with " +
       "their true and false criteria. The flag is yes when the chance of the answer is at least 0.5, the same rule that the " +
-      "demo reads for a flag. The calls are cached under the cache of the run (results/requests/jev/<sha256>.json, the key is " +
+      "system reads for a flag. The calls are cached under the cache of the run (results/requests/jev/<sha256>.json, the key is " +
       "cacheKey of transport.ts), so a second run makes no live call. The flags are read against the recorded flow of the same " +
       "request, never against the text; the verdicts of the hand-read (screen_handread.json) correct them, and every question " +
       "reports the raw and the corrected reading.",

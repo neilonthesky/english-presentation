@@ -1,5 +1,5 @@
 // Checks the dataset of the experiment, then runs the real flow (decide() of pipeline.ts: triage(), rulesStep, and actStep of
-// web/server) over every request with an ORACLE classifier: the gold answers of the five fields, each with confidence 1.0.
+// system/) over every request with an ORACLE classifier: the gold answers of the five fields, each with confidence 1.0.
 // No model is called.
 //
 // What is checked:
@@ -11,8 +11,8 @@
 //
 // Run: bun run experiment/validate.ts. It exits 1 on any problem.
 import { join } from "node:path"
-import { ACTIONS, type Policy, type TriageRule } from "../web/src/types"
-import { useWorld, type World } from "../web/server/saas"
+import { ACTIONS, type Policy, type TriageRule } from "./system/types"
+import { useWorld, type World } from "./system/saas"
 import { FAMILIES, goldClassifier, loadDataset, senderOf, TODAY, WORLD_FILE } from "./dataset"
 import { decide, resultMatches, type Decision, type End } from "./pipeline"
 import type { TestRequest } from "./types"

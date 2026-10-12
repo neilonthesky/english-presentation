@@ -1,5 +1,5 @@
 // The shape of the data of the experiment. The dataset builder writes these files (see dataset.ts), the runner reads them.
-//   experiment/data/world.csv     -> World (from web/server/saas.ts): "today" and the customers
+//   experiment/data/world.csv     -> World (from system/saas.ts): "today" and the customers
 //   experiment/data/requests.csv  -> TestRequest[]
 
 export type Field = "queue" | "action" | "priority" | "risk" | "injection"

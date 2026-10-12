@@ -4,7 +4,7 @@ Owner: ExpRobust. Target file: `experiment/robustness.ts`. Artifacts: `experimen
 probe, every answer, every count), `experiment/results/tables/robustness.tex` (four ready-to-include tables), and the
 cache in `experiment/results/robustness_cache/`. The script never writes `results.json`, `per_case.json`, or
 `results/requests/`, and it never touches the questions of the paper (`JEV_QUESTIONS` of
-`web/server/models.ts`): every probe builds its own copy of the criteria, and the recorded answer of the run is
+`system/models.ts`): every probe builds its own copy of the criteria, and the recorded answer of the run is
 always the comparator.
 
 **The set: 100 requests in 24 request types, the real run of the paper.** Every probe runs on all 100 requests of the

@@ -1,6 +1,6 @@
-// The glue between the rules of saas.ts and the models: Rules check and Do action. The Hono server (index.ts) and the experiment
-// (experiment/) both call these functions, so the demo and the paper run the same code. Triage itself is `triage()` of saas.ts.
-import type { AccountField, Executed, Facts, Policy, Requester, RulesResponse } from "../src/types"
+// The glue between the rules of saas.ts and the models: Rules check and Do action. The experiment (pipeline.ts, ablation.ts,
+// build_dataset.ts) calls these functions. Triage itself is `triage()` of saas.ts.
+import type { AccountField, Executed, Facts, Policy, Requester, RulesResponse } from "./types"
 import { perform, policyFor, targetOf } from "./saas"
 
 /** Actions that change the state of the account: money, stored data, the auto-renewal of the plan, or a password. Each one that runs is written to the ledger. */
@@ -45,7 +45,7 @@ export function runAction(action: string, queue: string | null, ledger: Set<stri
   return { action, queue, target: done.target, blocked: null, details: done.details }
 }
 
-/** Do action (Level 3 and the demo): the system does the action, but only if Rules check allows it. A deny means nothing runs, whatever Triage said. */
+/** Do action (Level 3): the system does the action, but only if Rules check allows it. A deny means nothing runs, whatever Triage said. */
 export function actStep(action: string, queue: string | null, rules: RulesResponse, ledger: Set<string>, customerId: string, who: Requester): Executed {
   if (rules.next !== "act") return nothingRuns(deniedReasons(rules.policy))
   return runAction(action, queue, ledger, customerId, who)

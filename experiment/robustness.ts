@@ -1,7 +1,7 @@
 #!/usr/bin/env bun
 // Robustness probes of the neutral criteria: the three neutrality tests that results/neutrality.json lists as
 // not checked, plus the experimental "other" option. Nothing here changes the run of the paper: the questions of
-// Triage (JEV_QUESTIONS of web/server/models.ts) are read and copied, never edited, and the answers of the main
+// Triage (JEV_QUESTIONS of system/models.ts) are read and copied, never edited, and the answers of the main
 // run are read from results/per_case.json. Every probe answer is recorded under results/robustness_cache, so a
 // second run makes zero live calls.
 //
@@ -35,9 +35,9 @@
 import { createHash } from "node:crypto"
 import { mkdir, readFile, rename, writeFile } from "node:fs/promises"
 import { join } from "node:path"
-import { ACTION_CRITERIA, JEV_URL, JEV_QUESTIONS, LLM_MODEL, LLM_URL, classifierState, transport } from "../web/server/models"
-import { useWorld } from "../web/server/saas"
-import { loadDataset, senderOf } from "./dataset"
+import { ACTION_CRITERIA, JEV_URL, JEV_QUESTIONS, LLM_MODEL, LLM_URL, classifierState, transport } from "./system/models"
+import { useWorld } from "./system/saas"
+import { loadDataset } from "./dataset"
 import { callCost, type ClassifierRequestRecord } from "./pipeline"
 import { pmap } from "./pmap"
 import { MAX_RETRIES, installRecordedTransport, withCallLog, type CallNote } from "./transport"
@@ -60,7 +60,7 @@ const FIELDS = ["queue", "action", "priority", "risk", "injection"] as const
 const CHOICE_QUESTIONS = ["queue", "action", "priority"] as const
 const JEV_MODEL = "jev-latest"
 /**
- * The real network call of `web/server/models.ts`, captured before the recording transport of the experiment takes its
+ * The real network call of `system/models.ts`, captured before the recording transport of the experiment takes its
  * place: only the probes below use it, and they record their own answers (see `probeJev`).
  */
 const livePost = transport.post
@@ -356,7 +356,7 @@ function detail(field: Field, before: AnswersById, after: AnswersById, requests:
 }
 
 /** The state that Jev reads: the text of the request, the sender, the channel, and the help articles of the text. */
-const stateOf = (req: TestRequest) => classifierState(req.text, senderOf(req.customerId))
+const stateOf = (req: TestRequest) => classifierState(req.text)
 
 // ---------------------------------------------------------------- the four probes
 
@@ -601,7 +601,7 @@ async function main(): Promise<void> {
     if (!text) throw new Error(`${req.id}: the paraphrase call returned no text`)
     return { text, cached: call?.cached ?? false, inputTokens: call?.inputTokens ?? 0, outputTokens: call?.outputTokens ?? 0 }
   })
-  const paraphraseStates = requests.map((req, index) => classifierState(paraphrases[index].text, senderOf(req.customerId)))
+  const paraphraseStates = requests.map((_, index) => classifierState(paraphrases[index].text))
   const paraphraseProbes = await pmap(paraphraseStates, WORKERS, (state) => probeJev({ state, model: JEV_MODEL, questions: BASE }))
   const paraphraseAnswers: AnswersById = new Map(
     requests.map((req, index): [string, Record<string, string | null>] => [

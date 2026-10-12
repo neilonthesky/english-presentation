@@ -1,6 +1,6 @@
 // Network calls of the support system: Jev (the classifier) and an LLM (the Final message).
 // There is no retry, no fallback, and no repair of answers. A failed call raises ApiError.
-import { ACTIONS, PRIORITIES, QUEUES, type Classifier, type Executed, type Policy, type Requester } from "../src/types"
+import { ACTIONS, PRIORITIES, QUEUES, type Classifier, type Executed, type Policy } from "./types"
 import { articlesText, type Article } from "./saas"
 
 export const JEV_URL = "https://api.typesafe.ai/v1/systemone"
@@ -56,11 +56,11 @@ interface ChatJson {
 
 // The definitions of the labels. Both classifiers get these words and no others: no examples, no hints about a request type.
 export const QUEUE_CRITERIA: Record<(typeof QUEUES)[number], string> = {
-  "Plans and Credits": "The plan, the seats, the price, the credits, and the next renewal.",
+  "Plans and Credits": "The plan, the price, the credits, and the next renewal.",
   Refunds: "A refund of a purchase, the cancelling of a renewal, and the written policy for both.",
   Payments: "A charge, an invoice, a tax document, a payment method, and a bank card.",
   "Product Help": "The use of the product, a video or a render, and any other topic about the product.",
-  Account: "The sign-in, the account settings, the teammates, and a request to remove the data of the workspace.",
+  Account: "The sign-in, the account settings, and a request to remove the data of the workspace.",
   Security: "The use of the account or the payment method by a person who is not the customer, and private data that was made public or destroyed.",
 }
 export const ACTION_CRITERIA: Record<(typeof ACTIONS)[number], string> = {
@@ -116,9 +116,9 @@ export const ledgerText = (ledger: ReadonlySet<string>): string =>
   [...ledger].sort().map((entry) => entry.replace("|", " on ")).join("; ") || "none"
 
 /** The input of Jev in Triage: the chat of the customer, the sender, and the help articles. The account is read later, at Gather info. The LLM baseline of the experiment builds its input from this function too. */
-export function classifierState(text: string, who: Requester) {
+export function classifierState(text: string) {
   return {
-    requester_type: who.role === "owner" ? "owner (account holder)" : "teammate (not the owner)",
+    requester_type: "owner (account holder)",
     channel: "chat",
     text,
     help_articles: articlesText(text),
@@ -126,9 +126,9 @@ export function classifierState(text: string, who: Requester) {
 }
 
 /** Triage, part 1: one Jev call gives the topic, the action, the priority, the risk flag, and the injection flag. */
-export async function classify(text: string, who: Requester): Promise<Classifier> {
+export async function classify(text: string): Promise<Classifier> {
   const { json, latencyS } = await transport.post<JevJson>(JEV_URL, {
-    state: classifierState(text, who),
+    state: classifierState(text),
     model: "jev-latest",
     questions: JEV_QUESTIONS,
   })
@@ -178,7 +178,7 @@ const policyText = (policy: Policy) =>
 const accountSection = (account: string): string[] => (account ? ["ACCOUNT OF THE CUSTOMER:", account, ""] : [])
 
 const ANSWER_SYSTEM =
-  "You are the support chatbot of FrameForge, an AI video-generation platform where customers make short video clips from text prompts or reference images in a web studio, sold as plans and credit packs. " +
+  "You are the support chatbot of FrameForge, an AI video-generation platform where customers make short video clips from text prompts or reference images in a web studio, sold as the personal plans Plus, Pro, and Max. " +
   "Answer the question of the customer in English, in one to four short sentences, in plain text. " +
   "Use only the help articles and the account of the customer. If they do not contain the answer, say that you do not know. " +
   "Give the steps of the help articles when they answer the question. " +
@@ -199,7 +199,7 @@ export async function answerQuestion(text: string, account: string, articles: Ar
 }
 
 const REPLY_SYSTEM =
-  "You are the support chatbot of FrameForge, an AI video-generation platform where customers make short video clips from text prompts or reference images in a web studio, sold as plans and credit packs. " +
+  "You are the support chatbot of FrameForge, an AI video-generation platform where customers make short video clips from text prompts or reference images in a web studio, sold as the personal plans Plus, Pro, and Max. " +
   "Write the reply to the customer in English, in one to four short sentences, in plain text. " +
   "Say what happened using only the RESULT. Never promise or claim anything that the RESULT does not say. " +
   "If nothing was done, say plainly what this chat cannot do and why, from the reasons. Then give the steps that the customer can take alone, from the HELP ARTICLES. " +

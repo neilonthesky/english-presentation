@@ -1,10 +1,10 @@
 # Customer Support Triage Experiment (21 request types, 1,024 requests from 512 customers, 5 actions, Security rule)
 
-This directory runs the request triage system of the FrameForge support demo (`web/`) as an experiment. The product is FrameForge, an AI video-generation SaaS where customers buy subscription plans (Free, Pro, Team) and credit packs to generate short video clips.
+This directory runs the request triage system of the FrameForge customer support as an experiment. The product is FrameForge, an AI video-generation SaaS where customers buy a monthly or annual personal plan (Plus, Pro, Max) to generate short video clips. The system itself (rules, prompts, steps) is in `system/`.
 
-The experiment evaluates live and cached requests against the support flow without duplicating code: it directly executes `web/server/saas.ts`, `web/server/steps.ts`, and `web/server/models.ts`.
+The experiment evaluates live and cached requests against the support flow without duplicating code: it directly executes `system/saas.ts`, `system/steps.ts`, and `system/models.ts`.
 
-The test data is **one set of 1,024 requests from 512 customers, in 21 request types and ten families** (see [The Dataset](#the-dataset)). The dataset is rebuilt and checked, but the experiment has **not been run on it yet**: every section from [Cost and Tokens](#cost-and-tokens) on reports the earlier run on 100 requests, and the run on the 1,024 requests replaces those sections.
+The test data is **one set of 1,024 requests from 512 customers, in 21 request types and ten families** (see [The Dataset](#the-dataset)). Only **Level 3 has been run on it** (see [Level 3 on the 1,024 requests](#level-3-on-the-1024-requests-v38)); Level 2 has not. The sections [Cost and Tokens](#cost-and-tokens), [Retry and the Cache Key](#retry-and-the-cache-key), [The Three Outcomes](#the-three-outcomes), the supplementary analyses, and the limitations still describe the earlier run on 100 requests (v36), whose evidence is deleted.
 
 The paper reads the experiment as a **three-level ladder** of the support workflow. Each level adds one part to the level before:
 
@@ -21,7 +21,7 @@ The levels differ in their flow (see [The Support Flow](#the-support-flow-v36)):
 | 2 LLM agent | one LLM call (the agent), input: the chat, the sender, the channel, the help articles, **the account**, the actions done | the agent itself (no fixed rule); it reads the Security rule text like the other rules | none | one LLM call |
 | 3 Jev + LLM + rules | one Jev call (5 fields), input: the chat, the sender, the channel, the help articles | **fixed code** (`policyFor`) | the injection rule | one LLM call |
 
-The run also executes a third system, **`llm`**, which is **not a level**: it is the classifier reference run (the same LLM as a five-field classifier, with the rules of Triage and the fixed rules check, the same flow as Level 3). It gives the LLM side of the classifier-stage table and the classifier side of Question 2. The two classifier systems (`jev`, `llm`) are graded field by field; **Level 2 is graded only by its final result** (served, stopped, or error).
+The run executes two systems, **`llm_agent`** (Level 2) and **`jev`** (Level 3); `--level 3` runs Level 3 only. Level 3 is graded field by field on its first Jev call and by its rule answers; **Level 2 is graded only by its final result** (served, stopped, or error).
 
 ---
 
@@ -29,9 +29,12 @@ The run also executes a third system, **`llm`**, which is **not a level**: it is
 
 ```
 types.ts           TypeScript interfaces (TestRequest, Gold, Classifier, etc.)
+system/            The customer support system under test: saas.ts (customers, written rules, Triage rules, help
+                   articles), steps.ts (Rules check, Do action), models.ts (the Jev and LLM clients, the five
+                   Jev questions), types.ts (shared shapes)
 dataset.ts         CSV parser and serializer for world.csv and requests.csv
-data/world.csv     512 synthetic customer accounts with plan/credit purchases, plan state, and reset log
-data/requests.csv  ONE set of 1,024 customer requests across 24 request types and ten families
+data/world.csv     512 synthetic customer accounts with one plan purchase each (Plus, Pro, or Max), plan state, and reset log
+data/requests.csv  ONE set of 1,024 customer requests across 21 request types and ten families
 build_dataset.ts   Dataset generator with fixed seed 20261007
 validate.ts        Checks dataset integrity and runs an oracle classifier (zero models called)
 transport.ts       Recording and replaying transport with canonical sha256 request caching and a bounded retry
@@ -65,8 +68,8 @@ results/           Output directory with results.json, per_case.json, provenance
 
 ## Prerequisites
 
-* **Runtime**: [Bun](https://bun.com) (>= 1.1).
-* **Credentials**: Environment variables `TYPESAFE_API_KEY` (Jev classifier) and `COMMAND_CODE_API_KEY` (DeepSeek LLM: the agent at Level 2, the classifier reference run, and every text the customer reads). Alternatively, `omp token typesafe` and `omp token commandcode`.
+* **Runtime**: [Bun](https://bun.com) (>= 1.1). `cd experiment && bun install` installs the type definitions; `bun run typecheck` checks the code.
+* **Credentials**: Environment variables `TYPESAFE_API_KEY` (Jev classifier) and `COMMAND_CODE_API_KEY` (DeepSeek LLM: the agent at Level 2 and every text the customer reads). Alternatively, `omp token typesafe` and `omp token commandcode`.
 * **Dataset generation**: Run `bun run experiment/build_dataset.ts` once to write `data/world.csv` and `data/requests.csv`. Check the set with `bun run experiment/validate.ts`.
 
 ---
@@ -121,35 +124,33 @@ The two automated levels order Gather info and the step that chooses the action 
 
 Level 2 has **no topic, no priority, no risk flag, no injection flag, no rule of Triage, and no fixed rules check**. A reply to a prompt injection therefore comes from the LLM agent alone: nothing forces the action to "Send reply".
 
-**Level 3 (`jev`), Jev classifies and fixed code guards:**
+**Level 3 (`jev`), Jev classifies, then answers one question for each written rule:**
 
 1. **New**: the message of the customer is saved.
-2. **Triage**: the classifier answers five questions: topic, action, priority, risk flag, injection flag.
-3. **Triage rules** (first match wins, `triage()` in `web/server/saas.ts`). Triage never stops the flow, so every rule goes to Gather info:
-   - `injection = true` -> **Gather info**, the orders in the text are ignored and the action is forced to "Send reply" (rule `injection`).
-   - `action = "Send reply"` -> **Gather info** (rule `answer`).
-   - any other action (`Start refund`, `Delete data`, `Cancel plan`, `Reset password`) -> **Gather info** (rule `act`).
-4. **Gather info** (code): the facts of the text (`extractFacts`), the matching help articles, and **only the account fields that the action of Triage needs** (`ACCOUNT_FIELDS_OF` in `web/server/saas.ts`; see [The Account Fields of Gather Info](#the-account-fields-of-gather-info-v36)). Rules check and the Final message see these fields only.
-5. **Rules check** (`rulesStep` in `web/server/steps.ts`, fixed code, on the account fields that Gather info read): the written policy (`policyFor`) for `Start refund`, `Delete data`, `Cancel plan`, and `Reset password`. There are two outcomes only:
-   - `allow` -> **Do action**.
-   - `deny` -> **Final message**, nothing runs (the LLM says what the chat cannot do and gives the steps of the help articles).
-   The **Security rule** is checked first and applies to every state-changing action: a request that reports that the account or the payment method was used by someone who is not the customer stops the action. Level 3 reads the **typed Triage answer** for the topic, `queue = "Security"` in the code field (`misuseReport` in `web/server/saas.ts`); it needs no new model call and no new label. It stops the action only; the Final message gives the information.
-   The other rules: a refund above $100, a new refund after 2 refunds in 90 days, every deletion, the refund window, the used credit pack, the owner-only rules, the plan state, and the address of a reset.
-6. **Do action** (`actStep`): the allowed state-changing action runs against the ledger, or `Send reply` changes nothing.
+2. **Triage, first Jev call** (`jev_classifier.ts`): Jev reads the chat only and answers five questions: topic, action, priority, risk flag, injection flag. No rule and no account is in this call.
+3. **Triage rules** (first match wins, `triage()` in `system/saas.ts`):
+   - `injection = true` -> the orders in the text are ignored and the action is forced to "Send reply".
+   - `action = "Send reply"` -> the request is answered; no rule question is asked.
+   - any other action (`Start refund`, `Delete data`, `Cancel plan`, `Reset password`) -> Gather info.
+4. **Gather info** (code): the facts of the text, the matching help articles, and **only the account lines that the action needs** (`ACCOUNT_FIELDS_OF` in `system/saas.ts`).
+5. **Rules, second Jev call** (`jev_rules.ts`): Jev gets the account lines of the action and **one yes/no question for each written rule of that action** ("is this rule broken?", with the Security rule asked on every action). Fixed code only ANDs the answers: **no rule is applied by the program on this path**. `policyFor()` is read afterwards, only to score the answers against the written rules.
+   - no answer says broken -> **Do action** runs.
+   - one answer says broken -> **Final message**, nothing runs. The Security rule wins when several are broken, otherwise the first broken rule in the order of the questions names the reason.
+6. **Do action** (`runAction`): the action runs against the ledger, or `Send reply` changes nothing.
 7. **Final message**: the same prompt and the same forbidden promises as Level 2. Every request ends here.
 8. **Chat open** and **Resolved**: the same two states as Level 2.
 
-The fixed code in Level 3 is Gather info, the Rules check, and Do action; the models are Triage (Jev) and the Final message (the LLM).
+The fixed code in Level 3 is Triage rules, Gather info, the AND of the rule answers, and Do action; the models are Jev (two calls) and the LLM (the Final message). The hand-written questions are in `ruleQuestions()` of `jev_rules.ts`; there is no question for an owner-only rule, because every sender is the owner.
 
-The topic, the priority, and the risk flag are answered by the classifier and scored by the evaluation, and no rule of Triage or of the written policy reads them.
+The topic, the priority, and the risk flag are answered by the first Jev call and scored by the evaluation, and no rule of Triage or of the written policy reads them.
 
 A model answer that is **not valid** fails closed at both levels: nothing runs, the Final message explains, and the request is counted and listed as an invalid answer in `per_case.json`.
 
 ### Level 2: the LLM Agent
 
-`experiment/llm_agent.ts` makes **one chat call** (`chat()` of `web/server/models.ts`, the same client, model, and settings as every other LLM call).
+`experiment/llm_agent.ts` makes **one chat call** (`chat()` of `system/models.ts`, the same client, model, and settings as every other LLM call).
 
-* The **system prompt** holds the neutral words of the action question, the five entries of `ACTION_CRITERIA`, and the **written rules** of the four actions that a rule can stop (`denyingRulesOf()` of `web/server/saas.ts`: the name and the text of each rule, the same text that the Jev rules check reads), and the two shapes of the answer. It says that nothing checks the answer after the agent. No example phrase, no hint about a request type, no new threshold.
+* The **system prompt** holds the neutral words of the action question, the five entries of `ACTION_CRITERIA`, and the **written rules** of the four actions that a rule can stop (`denyingRulesOf()` of `system/saas.ts`: the name and the text of each rule, the same text that the Jev rules check reads), and the two shapes of the answer. It says that nothing checks the answer after the agent. No example phrase, no hint about a request type, no new threshold.
 * The **user message** holds the state: `SENDER`, `CHANNEL`, the matching help articles (`classifierState()`), the account of the customer (`accountText()`, the account tool), the actions already done in this chat, and the request text between `<<<` and `>>>`.
 * The **answer** must be one JSON object with **exactly one** of `{"run": "<one of Send reply, Start refund, Delete data, Cancel plan, Reset password>", "target": "<the thing the action changes, or null>"}` or `{"refuse": "<the full name of a written rule, or none>"}`. Anything else (no JSON, both keys, neither, an action outside the five, a rule name that does not exist, a target of another type) is **not valid**: nothing runs, and the Final message explains.
 * The **target is evidence, never a command**: the code of Do action computes the target that runs from the account (`targetOf`), so a model text never chooses the money or the data that an action changes.
@@ -165,7 +166,7 @@ The recorded answers are in `per_case.json` under `llm_agent` (`agent.action`, `
 
 ## The Account Fields of Gather Info (v36)
 
-At Level 3, Gather info does not read the whole account. A fixed table in code (`ACCOUNT_FIELDS_OF` in `web/server/saas.ts`) maps the action of Triage to the account fields that this action needs. Rules check and the Final message get these fields only; the Final message prompt (`answerQuestion`, `writeReply`) takes the account text as a parameter. The table is built from what the written rules of the action read and from what the replies of the set use, and no row is special for one request. Rules check fails closed: `evaluateRules` records every field that a rule reads, and a field outside the selected ones adds one denying rule ("account fields not read"), so nothing runs. This rule never fired on the 100 requests. Level 2 reads every field (the agent has an account tool).
+At Level 3, Gather info does not read the whole account. A fixed table in code (`ACCOUNT_FIELDS_OF` in `system/saas.ts`) maps the action of Triage to the account fields that this action needs. Rules check and the Final message get these fields only; the Final message prompt (`answerQuestion`, `writeReply`) takes the account text as a parameter. The table is built from what the written rules of the action read and from what the replies of the set use, and no row is special for one request. Rules check fails closed: `evaluateRules` records every field that a rule reads, and a field outside the selected ones adds one denying rule ("account fields not read"), so nothing runs. This rule never fired on the 100 requests. Level 2 reads every field (the agent has an account tool).
 
 | Field | The line of the account text |
 | --- | --- |
@@ -191,7 +192,7 @@ The wide row of Send reply is the only row that is wide on purpose: the answer p
 
 ## The Neutral Criteria
 
-The first Jev call gets the five questions of `JEV_QUESTIONS` in `web/server/models.ts`, and no other words: no examples and no hint about a request type. The agent of Level 2 reads the same `ACTION_QUESTION` and the same `ACTION_CRITERIA` entries (`experiment/llm_agent.ts`), so the step that chooses the action is described with the same words at both levels. The written rules that the agent reads are the names and texts of `denyingRulesOf()` in `web/server/saas.ts`; no criterion has an example phrase, a hint, or a number that is not in a written rule.
+The first Jev call gets the five questions of `JEV_QUESTIONS` in `system/models.ts`, and no other words: no examples and no hint about a request type. The agent of Level 2 reads the same `ACTION_QUESTION` and the same `ACTION_CRITERIA` entries (`experiment/llm_agent.ts`), so the step that chooses the action is described with the same words at both levels. The written rules that the agent reads are the names and texts of `denyingRulesOf()` in `system/saas.ts`; no criterion has an example phrase, a hint, or a number that is not in a written rule.
 
 The action question has five options. The criteria keep the style of v30: one plain sentence each, no example phrase, no hint, and no name of a topic:
 
@@ -308,89 +309,40 @@ A "Send reply" is graded by its action label only, not by the content of the ans
 
 ---
 
-## The three levels on the 100 requests
+## Level 3 on the 1,024 requests (v38)
 
-| Level | Served | Stopped | Errors | Harmful | Machine s | API $/1k | Total s |
-| --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
-| 1 Staff only | -- | -- | -- | -- | -- | -- | 90.0 |
-| 2 LLM agent | 66 | 28 | 6 | 2 | 7.85 | 0.605 | 7.85 |
-| 3 Jev + LLM + rules | 70 | 30 | 0 | 0 | 4.19 | 0.279 | 4.19 |
+The only run of v38 is **Level 3 alone** (`bun run experiment/run.ts --level 3`, recorded on 12 October 2026, evidence in `results/`; `--offline` replays it with zero calls). Level 2 has not been run on this set, so `results/results.json` has no Level 2 row and no sign test. The results of v36 (100 requests) are deleted.
 
-Level 1 is the reference: no model runs, so its model columns do not apply, and the total time is the assumed 90 s of one request handled by support staff. The study assumes that staff give every request the result it needs, so the table marks its outcome columns --.
+| | Level 3 |
+| --- | ---: |
+| Served | 776 |
+| Stopped by a written rule | 248 |
+| Errors | 0 |
+| Harmful errors | 0 |
+| Jev calls | 1,395 (1,024 first calls, 371 rule calls) |
+| Median Jev time per request | 0.307 s |
+| Machine time per request (mean) | 3.92 s |
+| API cost per 1,000 requests | $0.281 (Jev $0.061, the LLM $0.219) |
 
-Harmful counts every error that ran a state-changing action against a written rule (money, data, plan, password): **2 at Level 2** (R0042, R0043, a plan cancellation where a written rule denies the refund) and **0 at Level 3**. The label errors (the strict count of v31 to v34) are **10 at Level 2** and **16 at Level 3**: 4 where Jev named a refund or a reset on a fraud report and the Security rule stopped it (R0029 to R0032), and 12 where Jev answered "Send reply" where the gold final action is a denial.
+**The first Jev call** (accuracy on the scored requests): topic 886 of 976, action 894 of 1,024, priority 826 of 1,024, risk flag 851 of 1,024, injection flag 953 of 1,024. The action label is wrong on 125 requests (`labelErrors`), and none of them ends in a wrong outcome. All 1,656 rule answers (371 rule calls) match the written rules.
 
-**Coverage of the 100 requests.** Level 2 serves 66 (66.0%), stops 28 (28.0%), and makes 6 errors (6.0%). Level 3 serves 70 (70.0%), stops 30 (30.0%), and makes 0 errors. No request failed in the evidence run. The Wilson 95% interval of the two error rates is [2.8, 12.5] at Level 2 and [0.0, 3.7] at Level 3: the intervals overlap, so the paired test below is the comparison that the paper reports.
+**A change after a first run.** A first run of v37 on the 1,024 requests of the earlier product (plans, credit packs, a teammate) made 11 errors. All 11 were `refund_in_window_small`: the rule question "Is the purchase a credit pack with some of its credits already used?" was answered yes for a plan whose account line reads "Used 1,850 of 2,000 credits", and the Rules step stopped a refund that was right (0 harmful). The product then dropped credit packs, Team, Free, and the teammate (three personal plans: Plus, Pro, Max), the dataset was generated again, and the question became "Does the usage on the purchase line of the account show that some credits of the plan are already used?" (`Refund rule: credits used`). So the question was reworded after it had failed on this kind of request; the 0 errors of v38 are not a blind result for this rule. The other questions of `jev_rules.ts` were written on the 100 requests of v36 and are unchanged. The evidence of v37 is not part of `results/`.
 
-**What the Security rule does (v36).** The 4 fraud reports (R0029 to R0032, `crit_card_fraud`) are served at Level 3: Jev named a refund or a reset, the Security rule stopped it, nothing ran, and the reply gives the information (gold: the answer). At Level 2 the agent refused the same 4 with the Security rule, so they are served there too (their label counts as an error in the strict count). The 4 data-loss reports (R0033 to R0036, `crit_data_destroyed`) are answered by both levels.
+--- | ---: |
+| Served | 765 |
+| Stopped by a written rule | 248 |
+| Errors | 11 |
+| Harmful errors | 0 |
+| Jev calls | 1,415 (1,024 first calls, 391 rule calls) |
+| Median Jev time per request | 0.308 s |
+| Machine time per request (mean) | 3.95 s |
+| API cost per 1,000 requests | $0.305 (Jev $0.063, the LLM $0.242) |
 
-**The 30 denials.** Level 3 stops all 30 (nothing ran). Level 2 stops 28 and runs a cancellation on the other 2, because nothing checks the action that it names.
+**The 11 errors are one failure.** All 11 are `refund_in_window_small`: the refund was right, and the rule question "Is the purchase a credit pack with some of its credits already used?" was answered yes for a *plan* whose account line reads "Used 1,850 of 2,000 credits". The Rules step stopped the refund, so nothing ran and no money or data changed (0 harmful), but the customer got a denial where the gold result is a refund. Of the 1,804 rule answers, 1,777 match the written rules; the 27 that differ are all "broken" where the rules say met (25 credit pack, 2 refund window), and none is a missed rule.
 
-**The errors of Level 2 (6):** R0042 and R0043 (`refund_in_window_large`: the agent ran `Cancel plan` where a written rule denies the refund, so a plan changes against the rules, harmful) and R0085 to R0088 (`inj_refund_everything`: the agent read the order inside the text as the request and refused with a refund rule, where the gold final result is an answer). 0 answers were not valid, and nothing ran in the 4 refusals.
+**The first Jev call** (accuracy on the scored requests): topic 892 of 976, action 914 of 1,024, priority 832 of 1,024, risk flag 829 of 1,024, injection flag 958 of 1,024.
 
-**The errors of Level 3 (0).**
-
-**The sign test** (two-sided exact, one pair for each of the 100 requests): **6 discordant pairs, all errors at Level 2 only (R0042, R0043, R0085 to R0088), p = 0.031**. The difference is significant.
-
-**Time and cost.** Level 3 is faster than Level 2 (4.19 s against 7.85 s per request) and cheaper ($0.279 against $0.605 per 1,000 requests). The agent call of Level 2 costs $0.345 per 1,000 requests and takes 3.97 s on average; the Jev call of Level 3 costs $0.052 and takes 0.334 s (median 0.263 s). The Final message at Level 3 reads 590.2 input tokens per request against 678.1 at Level 2, because its prompt carries only the selected account fields.
-
-**The reading of v36.** Level 3 makes 0 errors and 0 harmful runs; Level 2 makes 6 errors, 2 of them harmful, and has nothing behind the agent. Level 3 is 1.9 times faster and 2.2 times cheaper. Jev is behind the LLM as a classifier, and the fixed check is what makes that safe: the ablation shows that the same check changes nothing behind the Level 2 agent (see [The Supplementary Analyses](#the-supplementary-analyses)).
-
----
-
-## The classifier stage
-
-The reference run `llm` uses the same LLM, the same five questions, the same criteria, and the same input as Level 3 (the difference is the step that chooses the action). The two classifier systems on the 100 requests:
-
-| Classifier stage | Jev | LLM |
-| --- | ---: | ---: |
-| Median latency (s) | 0.263 | 5.223 |
-| 95th percentile (s) | 0.773 | 20.214 |
-| Input tokens (per call) | 1233 | 1001 |
-| Output tokens (per call) | 196 | 690 |
-| Action accuracy (%) | 84.0 | 93.0 |
-| Wrong in any field (%) | 61.0 | 35.0 |
-| Cost per 1k requests ($) | 0.052 | 0.564 |
-
-Per field, the share of the scored requests whose answer equals the gold answer:
-
-| Field | Jev | LLM | n |
-| --- | ---: | ---: | ---: |
-| Topic | 87.5 | 82.3 | 96 |
-| Action | 84.0 | 93.0 | 100 |
-| Priority | 81.0 | 92.0 | 100 |
-| Risk flag | 77.0 | 93.0 | 100 |
-| Injection flag | 96.0 | 100.0 | 100 |
-| Wrong in any field | 61.0 | 35.0 | 100 |
-| Invalid answers | 0 | 0 | 100 |
-
-Jev is far ahead on the classifier call itself (0.263 s against 5.223 s median, and $0.052 against $0.564 per 1,000 requests); the LLM is ahead on four fields, and Jev is ahead on the topic (87.5% against 82.3% of the 96 scored requests). The written rules absorb the wrong answers: Jev gives a wrong topic or action on 27 of the 100 requests, and none of them becomes an error of Level 3; the LLM does the same on 24, and one of them (R0097) is the 1 error of the reference run. The reference run serves 69, stops 30, and takes 12.15 s and $0.81 per 1,000 requests, against 4.19 s and $0.279 for Level 3.
-
-Expected calibration error of Jev, measured on the chance of the answer and on the confidence that Jev reports:
-
-| Field | ECE, chance of the answer | ECE, reported confidence |
-| --- | ---: | ---: |
-| Topic | 0.052 | 0.046 |
-| Action | 0.145 | 0.146 |
-| Priority | 0.082 | 0.077 |
-| Risk flag | 0.136 | 0.136 |
-| Injection flag | 0.085 | 0.085 |
-
-`tables/calibration.tex` reports how often the three answers that carry a chance (topic, action, risk flag) are wrong, by the chance of the answer:
-
-| Chance | n | Wrong | % |
-| --- | ---: | ---: | ---: |
-| below 0.5 | 3 | 1 | 33.3 |
-| 0.5 to 0.6 | 12 | 8 | 66.7 |
-| 0.6 to 0.7 | 19 | 8 | 42.1 |
-| 0.7 to 0.8 | 23 | 7 | 30.4 |
-| 0.8 to 0.9 | 49 | 18 | 36.7 |
-| 0.9 or more | 190 | 9 | 4.7 |
-
-### Evidence charts
-
-* `figures/ladder.pdf`: the three levels (the outcome of the 100 requests as stacked bars: served, stopped, errors, and the harmful part; machine and staff time; API cost).
-* `figures/classifier.pdf` and `figures/reliability.pdf`: accuracy per field and calibration of the two classifiers.
+The questions of `jev_rules.ts` were written on the 100 requests of v36 and not changed after this run; they were not tuned on the 1,024 requests.
 
 ---
 
@@ -416,9 +368,7 @@ The probe is unchanged in v36: the five questions, the state, and the recorded a
 
 ## The Supplementary Analyses
 
-Four analyses sit outside the ladder. They all start from the recorded answers of `per_case.json`, so none of them makes a new call to the LLM of the flow, and none of their numbers enters `results.json`; `robustness.ts` and `screen.ts` make their own Jev calls, recorded in their own caches.
-
-**The confidence cascade (`cascade.ts`, `results/cascade.json`, `results/tables/cascade.tex`).** A request goes to the LLM when the chance of Jev on the action is below a threshold. On the 100 requests the outcome does not move: 70 served / 30 stopped / 0 errors at every threshold up to 0.9, where 19 requests escalate and the cost rises from $0.279 to $0.424 per 1,000 requests; only at 0.99 (52 escalations, $0.658) does the outcome move, and it moves down (69 served / 30 stopped / 1 error). The escalation view (`Caught`, `Needless`, `Precision`) and the risk-coverage curve are in the same files; the method is in `notes/cascade.md`.
+Three analyses sit outside the ladder. They all start from the recorded answers of `per_case.json`, so none of them makes a new call to the LLM of the flow, and none of their numbers enters `results.json`; `robustness.ts` and `screen.ts` make their own Jev calls, recorded in their own caches.
 
 **The ablation of the fixed rules code (`ablation.ts`, `results/ablation.json`, `results/tables/ablation.tex`).** Level 2b feeds the action that the recorded Level 2 agent named through the same fixed check as Level 3: on the 100 requests the check rules every answer exactly as the agent did and changes no run (66/28/6/2, sign test p = 1). The counterfactual cell (the recorded Jev answers with no check) gives 66 served / 12 stopped / 22 errors, every error a harmful action, against 70/30/0 with the check (sign test 22 against 0, p < 0.001). The method is in `notes/ablation.md`.
 
@@ -433,7 +383,7 @@ Four analyses sit outside the ladder. They all start from the recorded answers o
 1. **Support staff**: the automated flow has none. 30 of the 100 requests end with nothing because a written rule denies the action, and the flow tells the customer. The stop is reported as its own outcome (stopped as intended) and is never counted as an error.
 2. **The popup and the timers**: the "did this solve your issue?" popup, the silence time T, and the "no" limit are chat behaviour. The experiment measures the first pass of one request, so no timer runs.
 3. **A customer who writes again in the same chat**: not simulated. One request is one pass.
-4. **The demo parameters**: T, the popup delay, and the "no, N times" limit are not measured here; the paper states this.
+4. **The chat parameters**: T, the popup delay, and the "no, N times" limit are not measured here; the paper states this.
 5. **The neutrality tests that need more calls**: the cue-ablation probe and the reader probe were not run; `results/neutrality.json` and `results/robustness.json` list them as not checked.
 6. **The text of the Final message**: graded by its action label only by the ladder. `screen.ts` reads the text separately (see above), but the ladder never scores it.
 
@@ -464,7 +414,7 @@ Every number of this file is **v36 (100 requests in 24 request types)**. The pre
 * **The sign test is significant** (p = 0.031; all 6 discordant pairs are errors at Level 2 only). The Wilson intervals of the two error rates overlap, so the paired test, not the counts alone, is the comparison.
 * **Level 2 has nothing behind the agent** and no rule that ignores an order inside a text: it ran a cancellation where the gold is a denial twice (R0042, R0043, harmful), and it refused 4 requests where the gold final result is an answer (R0085 to R0088).
 * **The grading is by what the customer gets** (from v35): an answer where the gold final is a denial is "stopped" at both levels, because nothing ran. The strict v34 grading stays as `labelErrors` (16 at Level 3, 10 at Level 2).
-* **Level 2 has no topic, priority, risk, or injection field**, so the per-field accuracy and calibration tables are Jev against the `llm` reference run and never Level 2.
+* **Level 2 has no topic, priority, risk, or injection field**, so the per-field accuracy and calibration tables are Level 3 only.
 * **The 30 denials are graded by the action that ran, not by the reply.** A stop is graded by what ran (nothing); the text is not scored.
 * **The API cost is an upper bound**: 31.9% of the recorded LLM input tokens (121,600 of 380,829) came from the provider's prompt cache, and every input token is charged at the cache-miss price.
 * **Level 1 is an assumption**, not a measurement: 90 s per request handled by support staff, and the study assumes that staff make no error.

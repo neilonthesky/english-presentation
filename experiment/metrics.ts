@@ -5,7 +5,7 @@
 // request has one of three outcomes (see `requestOutcome` in pipeline.ts): served (the run gives the gold final action),
 // stopped (a written rule denies the gold action, and the flow ran nothing and stopped the request by design), or an error
 // (every other run). Level 1 is the reference: the study assumes that support staff handle every request.
-import type { World } from "../web/server/saas"
+import type { World } from "./system/saas"
 import {
   ENDS, PRICE, STAFF_SECONDS, callCost, decisionService,
   type AgentRequestRecord, type ClassifierRequestRecord, type End, type RunRecord, type SystemName,
@@ -164,7 +164,6 @@ export function ruleQuestionQuality(records: readonly ClassifierRequestRecord[])
     if (!record.ruleCall) continue
     calls++
     for (const a of record.ruleCall.answers) {
-      if (a.code === null) continue
       answers++
       if (a.broken !== a.code) mismatches.push({ id: record.id, rule: a.rule, jev: a.broken ? "broken" : "met", written: a.code ? "broken" : "met" })
     }

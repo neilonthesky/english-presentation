@@ -11,19 +11,19 @@
 // cancel_owner and delete_owner), in ten families (see FAMILIES in dataset.ts). One request has its own wording: no two
 // requests of a type share the same text.
 //
-// The gold "final" result is computed with the real code of the demo: triage() and rulesStep() of web/server run on the gold
+// The gold "final" result is computed with the real code of the support system: triage() and rulesStep() of system/ run on the gold
 // answers (each with full confidence), the true sender, the facts read from the text, the starting ledger, and the customer. A
 // request that the written rules deny has no final action: nothing runs, and the Final message explains.
 //
 // Run: bun run experiment/build_dataset.ts
 import { join } from "node:path"
-import type { Facts, Plan, PurchaseCategory, PurchaseStatus, Requester } from "../web/src/types"
+import type { Facts, Plan, PurchaseCategory, PurchaseStatus, Requester } from "./system/types"
 import {
-  ANNUAL_WINDOW_DAYS, MONTHLY_WINDOW_DAYS, accountFieldsFor, extractFacts, misuseReport, triage, useWorld,
+  ANNUAL_WINDOW_DAYS, MONTHLY_WINDOW_DAYS, PLAN_CREDITS, accountFieldsFor, extractFacts, misuseReport, triage, useWorld,
   type Customer, type Purchase, type World,
-} from "../web/server/saas"
-import { rulesStep } from "../web/server/steps"
-import { FAMILIES, NO_TEAMMATE, TODAY, goldClassifier, senderOf, writeDataset } from "./dataset"
+} from "./system/saas"
+import { rulesStep } from "./system/steps"
+import { FAMILIES, TODAY, goldClassifier, senderOf, writeDataset } from "./dataset"
 import type { Field, Gold, TestRequest } from "./types"
 
 const SEED = 20261007
@@ -74,7 +74,7 @@ const firstOf = (name: string): string => name.split(" ")[0]
 // ---------------------------------------------------------------------------------------------------------------
 // The world: 512 customers, one purchase each. The profiles are chosen so that every combination of the written rules
 // exists: an annual plan inside or outside the 30-day window, a monthly plan inside or outside the 14-day window,
-// used or unused, an amount at or under $100 or over it, 0 to 3 refunds in 90 days, credit packs unused or used,
+// used or unused, an amount at or under $100 or over it, 0 to 3 refunds in 90 days, credits used or not,
 // renewals that are still scheduled or charged but not settled, and plans whose auto-renewal is already off. The `count` of a
 // profile is its weight: scaleCounts() turns the weights into whole numbers that add up to the 512 customers.
 // ---------------------------------------------------------------------------------------------------------------
@@ -88,10 +88,6 @@ interface Profile {
   unused: boolean | "any"
   /** The amount range in dollars (plans). */
   amount?: [number, number]
-  /** The credits of one pack (credit packs). */
-  packs?: number[]
-  /** How many packs were bought (credit packs). Default: one. */
-  packCount?: number[]
   /** The auto-renewal of the plan is off from the start. Default: false. */
   cancelled?: boolean
   refunds: number[]
@@ -104,30 +100,28 @@ const ANNUAL_OUT: [number, number] = [ANNUAL_WINDOW_DAYS + 1, 60]
 const MONTHLY_OUT: [number, number] = [MONTHLY_WINDOW_DAYS + 1, 29]
 const SMALL: [number, number] = [20, 100]
 const LARGE: [number, number] = [101, 320]
-const ALL_PACKS = [1000, 2500, 5000, 10000]
 
 const PROFILES: Profile[] = [
   // Paid, inside the window, at or under $100: the rules allow the refund.
-  { category: "Annual plan", status: "Paid", age: ANNUAL_IN, unused: "any", amount: SMALL, refunds: [0, 0, 1], count: 9 },
-  { category: "Monthly plan", status: "Paid", age: MONTHLY_IN, unused: "any", amount: SMALL, refunds: [0, 0, 1], count: 4 },
+  { category: "Annual plan", status: "Paid", age: ANNUAL_IN, unused: true, amount: SMALL, refunds: [0, 0, 1], count: 9 },
+  { category: "Monthly plan", status: "Paid", age: MONTHLY_IN, unused: true, amount: SMALL, refunds: [0, 0, 1], count: 4 },
   // The auto-renewal of the plan is already off: a cancellation cannot run again.
-  { category: "Monthly plan", status: "Paid", age: MONTHLY_IN, unused: "any", amount: SMALL, cancelled: true, refunds: [0, 0, 1], count: 3 },
+  { category: "Monthly plan", status: "Paid", age: MONTHLY_IN, unused: true, amount: SMALL, cancelled: true, refunds: [0, 0, 1], count: 3 },
   // Paid, inside the window, over $100: a rule sends it to Queued.
-  { category: "Annual plan", status: "Paid", age: ANNUAL_IN, unused: "any", amount: LARGE, refunds: [0, 1], count: 4 },
-  { category: "Monthly plan", status: "Paid", age: MONTHLY_IN, unused: "any", amount: LARGE, refunds: [0, 1], count: 5 },
+  { category: "Annual plan", status: "Paid", age: ANNUAL_IN, unused: true, amount: LARGE, refunds: [0, 1], count: 4 },
+  { category: "Monthly plan", status: "Paid", age: MONTHLY_IN, unused: true, amount: LARGE, refunds: [0, 1], count: 5 },
   // Outside the window and nothing used: the rules deny the refund, and this chat cannot make the exception.
   { category: "Annual plan", status: "Paid", age: ANNUAL_OUT, unused: true, amount: [30, 150], refunds: [0, 0, 1], count: 4 },
   { category: "Monthly plan", status: "Paid", age: MONTHLY_OUT, unused: true, amount: [40, 250], refunds: [0, 1], count: 5 },
   // Outside the window and used: the rules forbid the refund.
   { category: "Annual plan", status: "Paid", age: ANNUAL_OUT, unused: false, amount: [30, 150], refunds: [0, 0, 1], count: 4 },
   { category: "Monthly plan", status: "Paid", age: MONTHLY_OUT, unused: false, amount: [40, 250], refunds: [0, 1], count: 5 },
-  // Credit packs: unused at or under $100 (allowed) and over $100 (Queued), then used (forbidden).
-  { category: "Credit pack", status: "Paid", age: [0, 40], unused: true, packs: ALL_PACKS, refunds: [0, 1], count: 3 },
-  { category: "Credit pack", status: "Paid", age: [0, 40], unused: true, packs: [10000], packCount: [2, 3], refunds: [0, 1], count: 2 },
-  { category: "Credit pack", status: "Paid", age: [0, 40], unused: false, packs: ALL_PACKS, packCount: [1, 1, 2], refunds: [0, 1], count: 4 },
+  // Paid, inside the window, at or under $100, but some credits are used: the rule "credits used" forbids the refund.
+  { category: "Annual plan", status: "Paid", age: ANNUAL_IN, unused: false, amount: SMALL, refunds: [0, 0, 1], count: 4 },
+  { category: "Monthly plan", status: "Paid", age: MONTHLY_IN, unused: false, amount: SMALL, refunds: [0, 0, 1], count: 5 },
   // Two or three refunds in 90 days, inside the window: only the "many refunds" rule applies.
-  { category: "Annual plan", status: "Paid", age: ANNUAL_IN, unused: "any", amount: SMALL, refunds: [2, 3], count: 2 },
-  { category: "Monthly plan", status: "Paid", age: MONTHLY_IN, unused: "any", amount: SMALL, refunds: [2, 2], count: 2 },
+  { category: "Annual plan", status: "Paid", age: ANNUAL_IN, unused: true, amount: SMALL, refunds: [2, 3], count: 2 },
+  { category: "Monthly plan", status: "Paid", age: MONTHLY_IN, unused: true, amount: SMALL, refunds: [2, 2], count: 2 },
   // Not charged yet: a scheduled renewal can be cancelled, a charge in settlement cannot.
   { category: "Annual plan", status: "Scheduled", age: [1, 3], unused: true, amount: SMALL, refunds: [0, 0, 1], count: 3 },
   { category: "Monthly plan", status: "Scheduled", age: [1, 3], unused: true, amount: SMALL, refunds: [0, 1], count: 2 },
@@ -138,11 +132,8 @@ const PROFILES: Profile[] = [
   { category: "Annual plan", status: "Paid", age: [0, 60], unused: "any", amount: [20, 200], cancelled: true, refunds: [0, 1, 2], count: 3 },
 ]
 
-/** The credits that a plan gives at each renewal. */
-const ALLOWANCE: Record<"Pro" | "Team", number> = { Pro: 2000, Team: 10000 }
-/** The price of one pack, by its credits. */
-const PACK_PRICE: Record<number, number> = { 1000: 10, 2500: 25, 5000: 50, 10000: 100 }
-const PAID_PLANS = ["Pro", "Team"] as const
+/** The plan of a purchase follows its price: the more the plan costs, the more credits it gives. */
+const planOf = (amount: number): Plan => (amount < 50 ? "Plus" : amount <= 100 ? "Pro" : "Max")
 const CYCLE_DAYS: Record<"Monthly plan" | "Annual plan", number> = { "Monthly plan": 30, "Annual plan": 365 }
 
 // The pools hold about 1,400 Vietnamese and 1,600 international names, so the 512 owners of the world never run out of unused names.
@@ -197,43 +188,14 @@ function makePurchase(rng: Rng, profile: Profile, number: number): Bought {
   const age = rng.int(profile.age[0], profile.age[1])
   const unused = profile.unused === "any" ? rng.float() < 0.5 : profile.unused
 
-  if (profile.category === "Credit pack") {
-    const credits = rng.pick(profile.packs ?? [])
-    const quantity = rng.pick(profile.packCount ?? [1])
-    const total = credits * quantity
-    const unit = PACK_PRICE[credits]
-    const usedCredits = unused ? 0 : Math.max(1, Math.round(total * (rng.int(5, 95) / 100)))
-    const plan: Plan = rng.pick(["Free", "Pro"] as const)
-    return {
-      purchase: {
-        id, item: `Credit pack, ${thousands(credits)} credits`, category: "Credit pack", status: "Paid", amount: unit * quantity,
-        charged: isoDaysBefore(age),
-        usage: unused ? "No credits used" : `${thousands(usedCredits)} of ${thousands(total)} credits used`, unused,
-      },
-      plan,
-      creditsLeft: (plan === "Pro" ? ALLOWANCE.Pro : 0) + total - usedCredits,
-      renews: isoDaysBefore(-rng.int(3, 28)),
-    }
-  }
-
   const [lo, hi] = profile.amount ?? SMALL
-  const plan = rng.pick(PAID_PLANS)
-  let quantity = 1
-  let unit = 0
-  for (;;) {
-    quantity = plan === "Team" ? rng.int(2, 5) : 1
-    const low = Math.max(Math.ceil(lo / quantity), 8)
-    const high = Math.floor(hi / quantity)
-    if (low <= high) {
-      unit = rng.int(low, high)
-      break
-    }
-  }
-  const allowance = ALLOWANCE[plan]
+  const amount = rng.int(lo, hi)
+  const plan = planOf(amount)
+  const allowance = PLAN_CREDITS[plan]
   const cycle = CYCLE_DAYS[profile.category]
   const common = {
     id, item: `${plan} plan, ${profile.category === "Monthly plan" ? "monthly" : "annual"}`, category: profile.category,
-    status: profile.status, amount: unit * quantity,
+    status: profile.status, amount,
   }
   if (profile.status === "Scheduled") {
     const charged = isoDaysBefore(-age)
@@ -300,7 +262,6 @@ function buildWorld(rng: Rng): World {
         id,
         name,
         email,
-        teammate: NO_TEAMMATE,
         plan: bought.plan,
         creditsLeft: bought.creditsLeft,
         renews: bought.renews,
@@ -362,15 +323,13 @@ export function cat(spec: CategorySpec): Category {
   }
 }
 
-export const isPack = (c: Customer): boolean => c.purchase.category === "Credit pack"
-const isPlan = (c: Customer): boolean => !isPack(c)
 const windowDaysOf = (c: Customer): number => (c.purchase.category === "Monthly plan" ? MONTHLY_WINDOW_DAYS : ANNUAL_WINDOW_DAYS)
 const ageOf = (c: Customer): number => daysBetween(c.purchase.charged, TODAY)
-export const paidPlan = (c: Customer): boolean => isPlan(c) && c.purchase.status === "Paid"
+export const paidPlan = (c: Customer): boolean => c.purchase.status === "Paid"
 export const fewRefunds = (c: Customer): boolean => c.refundsLast90Days < 2
-/** The refund is allowed by the refund rules: a scheduled renewal, an unused credit pack, or a plan inside the window. */
+/** The refund is allowed by the refund rules (before the amount and the count): a scheduled renewal, or a plan inside the window with no credits used. */
 export const refundable = (c: Customer): boolean =>
-  isPack(c) ? c.purchase.unused : c.purchase.status === "Scheduled" || (paidPlan(c) && ageOf(c) <= windowDaysOf(c))
+  c.purchase.status === "Scheduled" || (paidPlan(c) && c.purchase.unused && ageOf(c) <= windowDaysOf(c))
 export const smallRefund = (c: Customer): boolean => refundable(c) && c.purchase.amount <= 100 && fewRefunds(c)
 
 const ALL_FIELDS: readonly Field[] = ["queue", "action", "priority", "risk", "injection"]
@@ -383,8 +342,8 @@ export const CATEGORIES: Category[] = [
     templates: [
       "How many credits do I have left this month?",
       "When does my plan renew?",
-      "What is the difference between the Pro and the Team plan?",
-      "Can you tell me how many seats my plan includes?",
+      "What is the difference between the Plus and the Pro plan?",
+      "Can you tell me how many credits my plan includes?",
       "my credits ran out already, when do they reset?",
       "Which plan am I on right now and what does it cost?",
     ],
@@ -461,10 +420,10 @@ export const CATEGORIES: Category[] = [
   cat({
     name: "crit_card_fraud", queue: "Security", action: "Send reply", priority: "Critical", risk: true,
     templates: [
-      "Someone used my card to buy credit packs I did not make.",
+      "Someone used my card to pay for a plan I did not buy.",
       "I see three charges on my account that are not mine and I cannot sign in.",
       "My account was hacked: there are plan changes and charges I do not know.",
-      "Somebody changed my password and bought credits with my card.",
+      "Somebody changed my password and used my card.",
       "There is a charge on my card from FrameForge that I never made. I think my account is stolen.",
     ],
   }),
@@ -507,13 +466,13 @@ export const CATEGORIES: Category[] = [
   }),
   cat({
     name: "refund_credits_used", queue: "Refunds", action: "Start refund", priority: "Low", risk: true,
-    wants: (c) => isPack(c) && !c.purchase.unused,
+    wants: (c) => paidPlan(c) && !c.purchase.unused && ageOf(c) <= windowDaysOf(c) && c.purchase.amount <= 100 && fewRefunds(c),
     templates: [
-      "Please refund the credit pack I bought.",
-      "I want the money for the credit pack back.",
-      "Can I get a refund for the credit pack? I did not use all of it.",
-      "Refund my credit pack purchase, please.",
-      "Please send back the money for the credits I have left.",
+      "I want a refund for my plan. I only used a part of the credits.",
+      "Please refund the plan I just bought. I already used a few credits.",
+      "Can I get my money back? I used some of my credits but I changed my mind.",
+      "Refund my latest charge, please. I used some of the credits.",
+      "I want to return the plan and get the money back, even though I used some credits.",
     ],
   }),
 
@@ -629,7 +588,7 @@ export const CATEGORIES: Category[] = [
 ]
 
 // ---------------------------------------------------------------------------------------------------------------
-// One request: the wording, the customer, the gold answers, and the final result computed with the code of the demo.
+// One request: the wording, the customer, the gold answers, and the final result computed with the code of the support system.
 // ---------------------------------------------------------------------------------------------------------------
 
 /** The greeting and the sign-off of a message, so the same body reads differently for different requests. */
@@ -643,7 +602,7 @@ interface Derived {
 
 /**
  * The final result of a correct system: Triage runs on the gold answers (each with full confidence), then Rules check runs on
- * the sender, the facts, the ledger, and the customer. These are the functions of the demo. A request that the written rules
+ * the sender, the facts, the ledger, and the customer. These are the functions of the support system. A request that the written rules
  * deny has no final action: nothing runs, and the Final message explains.
  */
 function derive(gold: Gold, who: Requester, facts: Facts, ledger: ReadonlySet<string>, customerId: string): Derived {
@@ -675,7 +634,7 @@ export interface Style {
 
 /**
  * One request: the wording of the template `body` of the category, the sender, the gold answers, and the gold final result
- * (derived with the code of the demo). `other` is the customer whose e-mail fills "{other}".
+ * (derived with the code of the support system). `other` is the customer whose e-mail fills "{other}".
  */
 export function makeRequest(
   id: string, category: Category, customer: Customer, other: Customer, body: string, style: Style,

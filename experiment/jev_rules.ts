@@ -1,11 +1,11 @@
 // Level 3, the second Jev call: one yes/no question for each written rule of the action. Triage (the first Jev call) names the
 // action; when that action changes the state, this call gets the account lines of the action and the questions of its rules.
 // A yes means "this rule is broken". Fixed code only ANDs the answers: Do action runs when no answer says broken. Rules are
-// questions, not code: no rule is applied by the program on this path (policyFor() of web/server/saas.ts is read only to
+// questions, not code: no rule is applied by the program on this path (policyFor() of system/saas.ts is read only to
 // score the answers against the written rules).
-import { ACCOUNT_FIELDS_OF, SECURITY_RULE, accountText, extractFacts, policyFor } from "../web/server/saas"
-import { ApiError, JEV_URL, classifierState, ledgerText, transport } from "../web/server/models"
-import type { AccountField, Requester } from "../web/src/types"
+import { ACCOUNT_FIELDS_OF, SECURITY_RULE, accountText, extractFacts, policyFor } from "./system/saas"
+import { ApiError, JEV_URL, classifierState, ledgerText, transport } from "./system/models"
+import type { AccountField, Requester } from "./system/types"
 import { withCallLog } from "./transport"
 
 /** One yes/no question of the Jev API: the instruction and the meaning of true and of false. */
@@ -24,14 +24,14 @@ export function ruleQuestions(action: string): Record<string, NoulQuestion> {
     "The request names another customer or another e-mail address.", "The request names no other customer and no other e-mail address."))
   if (action === "Start refund") {
     own("Refund rule")
-    q["Refund rule: credit pack"] = noul(
-      "Is the purchase a credit pack with some of its credits already used? Read the purchase line of the account.",
-      "The purchase is a credit pack and some credits are used.", "The purchase is not a credit pack, or none of its credits are used.")
+    q["Refund rule: credits used"] = noul(
+      "Does the usage on the purchase line of the account show that some credits of the plan are already used?",
+      "Some credits of the plan are used.", "No credits of the plan are used.")
     q["Refund rule: settled charge"] = noul(
       "Is the status of the purchase Settling? Read the purchase line of the account.",
       "The status of the purchase is Settling.", "The status of the purchase is not Settling.")
     q["Refund rule: refund window"] =
-      noul("Is the purchase a plan (not a credit pack and not a planned charge) that was charged more than 14 days before today if it is monthly, or more than 30 days before today if it is annual? Read the dates in the account.",
+      noul("Is the purchase a plan that was already charged (not a planned charge) more than 14 days before today if it is monthly, or more than 30 days before today if it is annual? Read the dates in the account.",
           "The plan was charged after the end of its refund window.", "The purchase is inside its refund window, or no window applies.")
     q["Refund rule: refunded once"] = noul(
       "Does actions_already_done show a refund of this purchase?",
@@ -62,12 +62,12 @@ export function ruleQuestions(action: string): Record<string, NoulQuestion> {
   return q
 }
 
-/** One answer to one rule question. `chance` is the chance of yes (the rule is broken); `code` is what the written rules say (null: not scored). */
+/** One answer to one rule question. `chance` is the chance of yes (the rule is broken); `code` is what the written rules say. */
 export interface RuleAnswer {
   rule: string
   chance: number
   broken: boolean
-  code: boolean | null
+  code: boolean
 }
 
 /** The second Jev call of one request. */
@@ -99,7 +99,7 @@ export async function askRules(
   const account = accountText(customerId, who, ACCOUNT_FIELDS_OF[action] as readonly AccountField[])
   const state = {
     request_text: text,
-    sender_type: classifierState(text, who).requester_type,
+    sender_type: classifierState(text).requester_type,
     account,
     actions_already_done: ledgerText(ledger),
     action_to_check: action,
@@ -110,7 +110,8 @@ export async function askRules(
   const answers = Object.keys(questions).map((rule): RuleAnswer => {
     const p = Number(json.answers[rule]?.noul)
     if (Number.isNaN(p)) throw new ApiError(`Jev gave no answer for ${rule}`)
-    return { rule, chance: p, broken: p >= 0.5, code: code.get(rule) ?? null }
+    // A rule that the written policy leaves out of this purchase (a rule of a planned charge on a paid plan) is met.
+    return { rule, chance: p, broken: p >= 0.5, code: code.get(rule) ?? false }
   })
   return {
     action,

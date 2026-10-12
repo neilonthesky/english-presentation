@@ -8,8 +8,8 @@
 // below, because the whole dataset is dated relative to it.
 import { mkdir, readFile } from "node:fs/promises"
 import { join } from "node:path"
-import { ACTIONS, PLANS, PRIORITIES, QUEUES, type Choice, type Classifier, type Flag, type PurchaseCategory, type PurchaseStatus, type Requester } from "../web/src/types"
-import { requesterFor, type Customer, type World } from "../web/server/saas"
+import { ACTIONS, PLANS, PRIORITIES, QUEUES, type Choice, type Classifier, type Flag, type PurchaseCategory, type PurchaseStatus, type Requester } from "./system/types"
+import { requesterFor, type Customer, type World } from "./system/saas"
 import { FIELDS, type Gold, type TestRequest } from "./types"
 
 /**
@@ -64,17 +64,11 @@ const REQUEST_COLUMNS = [
   "final_action", "final_reason",
 ] as const
 
-const PURCHASE_CATEGORIES: readonly PurchaseCategory[] = ["Annual plan", "Monthly plan", "Credit pack"]
+const PURCHASE_CATEGORIES: readonly PurchaseCategory[] = ["Annual plan", "Monthly plan"]
 const PURCHASE_STATUSES: readonly PurchaseStatus[] = ["Scheduled", "Settling", "Paid"]
 
-/**
- * The test data has one kind of sender: the owner of the account. web/server/saas.ts also models a teammate for the demo, so the
- * type of a customer has the field; the test data leaves it empty and no request is sent as a teammate.
- */
-export const NO_TEAMMATE = { name: "", email: "" } as const
-
 /** The sender of a request: the owner of the customer's account. */
-export const senderOf = (customerId: string): Requester => requesterFor(customerId, "owner")
+export const senderOf = (customerId: string): Requester => requesterFor(customerId)
 
 /** One CSV text from rows of cells. A cell with a comma, a quote, or a line break is quoted. */
 export function formatCsv(rows: readonly (readonly string[])[]): string {
@@ -182,7 +176,6 @@ export async function loadDataset(dir: string, requestsName: string = REQUESTS_F
     const at = `${WORLD_FILE} row ${i + 2}`
     return {
       id: r.id, name: r.name, email: r.email,
-      teammate: NO_TEAMMATE,
       plan: oneOf(r.plan, PLANS, `${at} plan`), creditsLeft: whole(r.credits_left, `${at} credits_left`), renews: r.renews,
       planCancelled: bool(r.plan_cancelled, `${at} plan_cancelled`), passwordResets: whole(r.password_resets, `${at} password_resets`),
       refundsLast90Days: whole(r.refunds_last_90_days, `${at} refunds_last_90_days`),

@@ -1,31 +1,29 @@
 // The made-up SaaS product "FrameForge" (an AI video-generation platform where customers turn text prompts or reference images
-// into short video clips in a web studio, sold as a monthly or annual plan plus credit packs):
+// into short video clips in a web studio, sold as a monthly or annual personal plan: Plus, Pro, or Max):
 // the customers, the written policy, the Triage rules, and the help articles. No network code here.
 //
 // Every customer has exactly one purchase. The refund rules set a window after the charge (14 days for a monthly plan,
-// 30 days for an annual plan), allow a credit pack only while none of its credits are used, cancel a renewal that is
-// not charged yet, and accept a request only from the owner of the account. The refund and data deletion rules also
-// set limits for this made-up customer support system. The cancellation rule ends the auto-renewal of a plan for the
-// owner only, and a plan is cancelled once. The password reset rule sends a link to the e-mail on file of the sender
-// only, and a teammate may reset only the password of the teammate.
-import { ACCOUNT_FIELDS } from "../src/types"
+// 30 days for an annual plan), allow a refund only while none of the credits of the plan are used, and cancel a renewal that
+// is not charged yet. The refund and data deletion rules also set limits for this made-up customer support system. A plan
+// is cancelled once. The password reset rule sends a link to the e-mail on file of the sender only.
+import { ACCOUNT_FIELDS } from "./types"
 import type {
-  Account, AccountField, Classifier, Executed, Facts, Plan, Policy, PolicyRule, PurchaseInfo, Requester, Role, TriageResponse, TriageRule,
-} from "../src/types"
+  Account, AccountField, Classifier, Executed, Facts, Plan, Policy, PolicyRule, PurchaseInfo, Requester, TriageResponse, TriageRule,
+} from "./types"
 
 export const MONTHLY_WINDOW_DAYS = 14
 export const ANNUAL_WINDOW_DAYS = 30
 export const AUTO_REFUND_LIMIT_USD = 100
 export const MAX_REFUNDS_90_DAYS = 2
 
+/** The credits that each plan gives at every renewal. */
+export const PLAN_CREDITS: Record<Plan, number> = { Plus: 1000, Pro: 2000, Max: 5000 }
+
 const DAY_MS = 86_400_000
-const iso = (ms: number) => new Date(ms).toISOString().slice(0, 10)
-const daysAgo = (n: number) => iso(Date.now() - n * DAY_MS)
-const daysAhead = (n: number) => iso(Date.now() + n * DAY_MS)
 const daysSince = (date: string) => Math.floor((Date.parse(`${world.today}T00:00:00Z`) - Date.parse(`${date}T00:00:00Z`)) / DAY_MS)
 
 export interface Purchase extends PurchaseInfo {
-  /** The workspace used none of what it bought: no credits of a plan period, or no credit of the pack. */
+  /** The workspace used none of the credits of the plan period. */
   unused: boolean
 }
 
@@ -33,7 +31,6 @@ export interface Customer {
   id: string
   name: string
   email: string
-  teammate: { name: string; email: string }
   plan: Plan
   creditsLeft: number
   renews: string
@@ -45,66 +42,17 @@ export interface Customer {
   purchase: Purchase
 }
 
-// The demo world. Dates are relative to today, so the windows of the demo are the same on every day.
-// The first three customers give three different answers to the same sentence "I want a refund".
-const demoCustomers = (): Customer[] => [
-  {
-    id: "linh", name: "Linh Tran", email: "linh@mail.example",
-    teammate: { name: "Duc Le", email: "duc@mail.example" }, plan: "Pro", creditsLeft: 1480, renews: daysAhead(25),
-    planCancelled: false, passwordResets: 0, refundsLast90Days: 0,
-    purchase: {
-      id: "FF-10482", item: "Pro plan, monthly", category: "Monthly plan", status: "Paid", amount: 64,
-      charged: daysAgo(5), usage: "Used 520 of 2,000 credits", unused: false,
-    },
-  },
-  {
-    id: "minh", name: "Minh Pham", email: "minh@mail.example",
-    teammate: { name: "Khanh Tran", email: "khanh@mail.example" }, plan: "Team", creditsLeft: 10000, renews: daysAhead(10),
-    planCancelled: true, passwordResets: 1, refundsLast90Days: 1,
-    purchase: {
-      id: "FF-10517", item: "Team plan, monthly", category: "Monthly plan", status: "Paid", amount: 129,
-      charged: daysAgo(20), usage: "No credits used", unused: true,
-    },
-  },
-  {
-    id: "an", name: "An Nguyen", email: "an@mail.example",
-    teammate: { name: "Bao Vu", email: "bao@mail.example" }, plan: "Free", creditsLeft: 1880, renews: daysAhead(24),
-    planCancelled: false, passwordResets: 0, refundsLast90Days: 0,
-    purchase: {
-      id: "FF-10533", item: "Credit pack, 5,000 credits", category: "Credit pack", status: "Paid", amount: 50,
-      charged: daysAgo(6), usage: "3,120 of 5,000 credits used", unused: false,
-    },
-  },
-  {
-    id: "hoa", name: "Hoa Le", email: "hoale@mail.example",
-    teammate: { name: "Tam Do", email: "tam@mail.example" }, plan: "Pro", creditsLeft: 2000, renews: daysAhead(2),
-    planCancelled: false, passwordResets: 1, refundsLast90Days: 0,
-    purchase: {
-      id: "FF-10561", item: "Pro plan, monthly", category: "Monthly plan", status: "Scheduled", amount: 64,
-      charged: daysAhead(2), usage: "Renewal not charged yet", unused: true,
-    },
-  },
-]
-
-/** The customers and the date of "today". The demo has four customers; the experiment loads its own world. */
+/** The customers and the date of "today". The experiment loads its own world with `useWorld()` before it runs. */
 export interface World {
   today: string
   customers: Customer[]
 }
 
-let world: World = { today: iso(Date.now()), customers: demoCustomers() }
+let world: World = { today: "", customers: [] }
 
 /** Replace the world. The rules and the prompts read the customers and the date from it. */
 export function useWorld(w: World): void {
   world = w
-}
-
-/** The date of "today" in the world that the rules read. */
-export const worldToday = (): string => world.today
-
-/** Add customers to the world (the demo presets of the dataset), after the customers that are already there. */
-export function addCustomers(customers: readonly Customer[]): void {
-  world = { ...world, customers: [...world.customers, ...customers] }
 }
 
 export const findCustomer = (id: unknown): Customer | undefined => world.customers.find((c) => c.id === id)
@@ -115,10 +63,10 @@ function customerOf(id: string): Customer {
   return c
 }
 
-/** The sender: the owner, or a teammate of the workspace, who has no rights over billing or data. */
-export function requesterFor(customerId: string, role: Role): Requester {
+/** The sender of every request: the owner of the account, who subscribed and pays. */
+export function requesterFor(customerId: string): Requester {
   const c = customerOf(customerId)
-  return role === "owner" ? { name: c.name, email: c.email, role } : { name: c.teammate.name, email: c.teammate.email, role }
+  return { name: c.name, email: c.email }
 }
 
 function accountFrom(c: Customer): Account {
@@ -126,7 +74,6 @@ function accountFrom(c: Customer): Account {
   return {
     id: c.id,
     customer: { name: c.name, email: c.email },
-    teammate: c.teammate,
     plan: c.plan,
     creditsLeft: c.creditsLeft,
     renews: c.renews,
@@ -137,7 +84,6 @@ function accountFrom(c: Customer): Account {
   }
 }
 
-export const accountsOf = (): Account[] => world.customers.map(accountFrom)
 export const accountOf = (customerId: string): Account => accountFrom(customerOf(customerId))
 
 /**
@@ -164,7 +110,7 @@ export function accountText(customerId: string, who: Requester, fields: readonly
   const lines: Record<AccountField, string> = {
     today: `Today: ${world.today}.`,
     owner: `Account owner: ${a.customer.name} <${a.customer.email}>.`,
-    sender: `Sender of the request: ${who.name} <${who.email}>, ${who.role === "owner" ? "the owner (pays and has all rights)" : "a teammate (no rights over billing or data)"}.`,
+    sender: `Sender of the request: ${who.name} <${who.email}>, the owner of the account.`,
     plan: `Plan: ${a.plan}${a.planCancelled ? " (the auto-renewal is off; the plan ends at the next renewal date)" : ""}. Credits left: ${a.creditsLeft}. Next renewal: ${a.renews}.`,
     reset: `Password reset links sent to this account so far: ${a.passwordResets}.`,
     purchase:
@@ -198,9 +144,6 @@ const RULE_SET: Record<string, PolicyRule["source"]> = {
   "Reset password": "Password reset rule",
 }
 
-/** The actions that only the owner of the account can ask for. A teammate may reset the password of the teammate. */
-const OWNER_ONLY: Record<string, true> = { "Start refund": true, "Delete data": true, "Cancel plan": true }
-
 /**
  * One written rule. The name is the source and a short name ("Refund rule: refund window"); a model that checks the rules
  * answers with it. `check` is the group of the rule in the list of the policy. `denies` is false for a rule that states a
@@ -218,13 +161,11 @@ export interface WrittenRule {
 const written = (action: string, short: string, check: PolicyRule["check"], text: string, denies = true): WrittenRule =>
   ({ name: `${RULE_SET[action]}: ${short}`, action, source: RULE_SET[action], check, text, denies })
 
-const ownerOnly = (action: string): WrittenRule => written(action, "owner only", 1, "Only the owner can ask for this.")
 const ownAccount = (action: string): WrittenRule => written(action, "own account", 1, "The system changes only the account of the sender.")
 
 const R = {
-  refundOwner: ownerOnly("Start refund"),
   refundAccount: ownAccount("Start refund"),
-  refundPack: written("Start refund", "credit pack", 1, "A credit pack can be refunded only while none of its credits are used."),
+  refundCredits: written("Start refund", "credits used", 1, "A plan can be refunded only while none of its credits are used."),
   refundScheduled: written("Start refund", "scheduled renewal", 1, "A renewal that is not charged yet can be cancelled with no charge.", false),
   refundSettled: written("Start refund", "settled charge", 1, "A charge that the bank has not settled cannot be refunded; ask again after it settles."),
   refundWindow: written("Start refund", "refund window", 1,
@@ -232,11 +173,9 @@ const R = {
   refundOnce: written("Start refund", "refunded once", 2, "A purchase is refunded once."),
   refundAmount: written("Start refund", "amount limit", 3, `This chat cannot start a refund above $${AUTO_REFUND_LIMIT_USD}.`),
   refundCount: written("Start refund", "refund count", 3, `This chat cannot start a new refund after ${MAX_REFUNDS_90_DAYS} refunds in 90 days.`),
-  deleteOwner: ownerOnly("Delete data"),
   deleteAccount: ownAccount("Delete data"),
   deleteOnce: written("Delete data", "deleted once", 2, "Data is deleted once."),
   deleteNever: written("Delete data", "never deleted", 3, "Deleting data cannot be undone, so this chat never does it."),
-  cancelOwner: ownerOnly("Cancel plan"),
   cancelAccount: ownAccount("Cancel plan"),
   cancelReversible: written("Cancel plan", "reversible", 1, "A cancellation is reversible until the end of the paid period, and no money moves.", false),
   cancelOnce: written("Cancel plan", "cancelled once", 2, "A plan is cancelled once."),
@@ -274,7 +213,7 @@ export const ruleNamed = (name: string): WrittenRule | undefined =>
 
 /**
  * The written rules of an action, evaluated on the data of this request. This is the fixed-code reading of the rules: Rules
- * check of Level 3 and of the demo, the oracle that derives the gold answers of the dataset (build_dataset.ts). The ledger holds the "action|target" pairs that already ran in this session. `fields` are the account fields
+ * check of Level 3, the oracle that derives the gold answers of the dataset (build_dataset.ts). The ledger holds the "action|target" pairs that already ran in this session. `fields` are the account fields
  * that Gather info read: a rule that needs a field outside them cannot be checked, so the reading fails closed with one more
  * denying rule that names the fields.
  */
@@ -294,19 +233,14 @@ function evaluateRules(
   }
 
   if (RULE_SET[action]) {
-    const owner = who.role === "owner"
     read("sender")
-    if (OWNER_ONLY[action]) {
-      add(ownerOnly(action), owner ? "pass" : "deny",
-        owner ? `${who.name} is the owner of the account.` : `${who.name} is a teammate, not the owner of the account.`)
-    }
     if (action === "Reset password") {
       const foreign = facts.otherEmail && facts.otherEmail !== who.email ? facts.otherEmail : null
       add(R.resetEmail, foreign ? "deny" : "pass",
         foreign ? `${foreign} is an address from the text, not the e-mail on file of the sender.` : "The request names no other address.")
     } else {
       read("owner")
-      const other = facts.otherEmail && facts.otherEmail !== c.email && facts.otherEmail !== c.teammate.email ? facts.otherEmail : null
+      const other = facts.otherEmail && facts.otherEmail !== c.email ? facts.otherEmail : null
       add(ownAccount(action), other ? "deny" : "pass", other ? `${other} is another customer.` : "The request names no other customer.")
     }
   }
@@ -319,21 +253,20 @@ function evaluateRules(
     read("purchase")
     const done = ledger.has(`Start refund|${purchase.id}`)
     add(R.refundOnce, done ? "deny" : "pass", done ? `Purchase ${purchase.id} was already refunded.` : "No refund ran for this purchase.")
-    if (purchase.category === "Credit pack") {
-      add(R.refundPack, purchase.unused ? "pass" : "deny", `${purchase.usage}.`)
-    } else if (purchase.status === "Scheduled") {
+    if (purchase.status === "Scheduled") {
       add(R.refundScheduled, "pass", "The renewal is still scheduled.")
     } else if (purchase.status === "Settling") {
       add(R.refundSettled, "deny", "The charge was made and is not settled yet.")
     } else {
+      add(R.refundCredits, purchase.unused ? "pass" : "deny", `${purchase.usage}.`)
       read("today")
       const limit = purchase.category === "Monthly plan" ? MONTHLY_WINDOW_DAYS : ANNUAL_WINDOW_DAYS
       const age = daysSince(purchase.charged)
       if (age <= limit) add(R.refundWindow, "pass", `Charged ${age} days ago; the limit is ${limit} days.`)
       else
         add(R.refundWindow, "deny", purchase.unused
-          ? `Charged ${age} days ago; the limit is ${limit} days. The workspace used nothing it bought, and this chat cannot make an exception.`
-          : `Charged ${age} days ago; the limit is ${limit} days. The workspace used the plan (${purchase.usage}).`)
+          ? `Charged ${age} days ago; the limit is ${limit} days. No credits are used, and this chat cannot make an exception.`
+          : `Charged ${age} days ago; the limit is ${limit} days. The plan is used (${purchase.usage}).`)
     }
     add(R.refundAmount, purchase.amount > AUTO_REFUND_LIMIT_USD ? "deny" : "pass", `The refund is $${purchase.amount}.`)
     read("refunds")
@@ -461,10 +394,10 @@ export interface Article {
 const ARTICLES: Article[] = [
   {
     title: "Plans and credits",
-    keywords: ["plan", "plans", "free", "pro", "team", "credit", "credits", "balance", "renew", "renewal", "seat", "seats", "usage", "limit", "quota", "left", "upgrade", "downgrade", "price"],
+    keywords: ["plan", "plans", "plus", "pro", "max", "credit", "credits", "balance", "renew", "renewal", "usage", "limit", "quota", "left", "upgrade", "downgrade", "price"],
     text:
-      "FrameForge has three plans: Free, Pro, and Team. A plan gives credits every month, and the credits of a plan reset at each renewal. " +
-      "A credit pack adds credits at once, and the credits of a pack do not expire. Every video render uses credits, whether it starts from a text prompt or from a reference image. " +
+      `FrameForge has three personal plans: Plus (${PLAN_CREDITS.Plus.toLocaleString("en-US")} credits), Pro (${PLAN_CREDITS.Pro.toLocaleString("en-US")} credits), and Max (${PLAN_CREDITS.Max.toLocaleString("en-US")} credits). A plan gives its credits at every renewal, and the credits of a plan reset at each renewal. ` +
+      "Every video render uses credits, whether it starts from a text prompt or from a reference image. " +
       "The cost of a render depends on its duration and resolution, and the studio shows the quoted cost before the render starts. " +
       "The account shows the plan, the credits left, and the date of the next renewal.",
   },
@@ -472,8 +405,8 @@ const ARTICLES: Article[] = [
     title: "Refunds and cancelling",
     keywords: ["refund", "money back", "cancel", "cancellation", "mistake", "reimburse", "charged by mistake", "unused", "window"],
     text:
-      "Refunds must be asked for by the owner of the account. A monthly plan can be refunded within " + MONTHLY_WINDOW_DAYS + " days of the charge and an annual plan within " +
-      ANNUAL_WINDOW_DAYS + " days. A credit pack can be refunded only while none of its credits are used. A renewal that is not charged yet can be cancelled with no charge. " +
+      "A monthly plan can be refunded within " + MONTHLY_WINDOW_DAYS + " days of the charge and an annual plan within " +
+      ANNUAL_WINDOW_DAYS + " days, and only while none of its credits are used. A renewal that is not charged yet can be cancelled with no charge. " +
       `This chat does not start a refund above $${AUTO_REFUND_LIMIT_USD} and does not start a new refund after ${MAX_REFUNDS_90_DAYS} refunds in 90 days. ` +
       "The money returns to the card in 5 to 10 business days.",
   },
@@ -481,15 +414,15 @@ const ARTICLES: Article[] = [
     title: "Payments and invoices",
     keywords: ["pay", "payment", "card", "charge", "charged", "twice", "invoice", "receipt", "vat", "tax", "tax id", "coupon", "promo", "discount", "billing"],
     text:
-      "The card is charged when a plan renews or a credit pack is bought. A pending authorization that looks like a second charge disappears in 3 to 5 days. " +
+      "The card is charged when a plan renews. A pending authorization that looks like a second charge disappears in 3 to 5 days. " +
       "The company name and the tax ID of an invoice can be edited on the invoice page: open Billing settings, choose the invoice, and edit those fields.",
   },
   {
     title: "Changing or cancelling your plan",
-    keywords: ["switch", "change plan", "move to", "upgrade", "downgrade", "seats", "plan change", "cancel", "cancellation", "auto-renewal", "stop the plan", "end the plan"],
+    keywords: ["switch", "change plan", "move to", "upgrade", "downgrade", "plan change", "cancel", "cancellation", "auto-renewal", "stop the plan", "end the plan"],
     text:
       "This chat does not move the account to another plan. " +
-      "This chat can cancel the auto-renewal of a plan, and only the owner of the account can ask for it. A cancelled plan runs to the end of the paid period, " +
+      "This chat can cancel the auto-renewal of a plan. A cancelled plan runs to the end of the paid period, " +
       "keeps its credits until that date, and can be turned on again before then. No money moves when a plan is cancelled.",
   },
   {
@@ -501,17 +434,17 @@ const ARTICLES: Article[] = [
   },
   {
     title: "Account and security",
-    keywords: ["password", "reset", "login", "sign in", "hacked", "fraud", "email", "two-factor", "2fa", "unauthorized", "someone else", "suspicious", "stolen", "leaked", "teammate"],
+    keywords: ["password", "reset", "login", "sign in", "hacked", "fraud", "email", "two-factor", "2fa", "unauthorized", "someone else", "suspicious", "stolen", "leaked"],
     text:
       "Change your password under Account settings and turn on two-factor sign-in. This chat can send a password reset link: the link goes to the e-mail on file of the person who asks, " +
-      "and an address that is written in a message is never used. A teammate can use the product but cannot change billing or data, and a teammate can reset the password of the teammate only. " +
+      "and an address that is written in a message is never used. " +
       "If someone used your card or your account without you, change your password in Account settings and remove the card in the payment settings. Turn on two-factor sign-in there as well.",
   },
   {
     title: "Delete workspace data",
     keywords: ["delete", "data", "privacy", "gdpr", "remove", "erase", "close account", "workspace"],
     text:
-      "Only the owner can delete the data of a workspace. Open Account settings and choose Delete workspace data. This chat never runs the deletion: it cannot be undone. " +
+      "Open Account settings and choose Delete workspace data. This chat never runs the deletion: it cannot be undone. " +
       "A deletion is complete in 30 days, and the workspace keeps a recovery window of those 30 days; before that window closes, the owner can download a copy of the workspace from the settings page.",
   },
 ]
