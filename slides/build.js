@@ -285,8 +285,8 @@ async function photo(file, w, h, radius = 0.08, dpi = 150) {
       "Where we start: staff or one LLM agent",
       "Level 1: support staff read every request. No model runs, so no model error, but each request takes an assumed 90 s and the cost grows with every request. " +
         "Level 2: one LLM agent reads the chat and the whole account and applies the written rules itself. No independent policy check stands behind its answer, and an order hidden in a text can reach it. " +
-        "Our question: can this design reduce time, cost, and harmful actions on our SaaS test set? " +
-        "Opening interaction by the leader: raise your hand if you waited over 24 hours for support; then the poll: which action would you never let a chatbot do alone (refund, plan cancellation, password reset, data deletion)? The written rules always deny data deletion in chat."
+        "One audience quiz by the leader: which action would you never let a chatbot do alone (refund, plan cancellation, password reset, data deletion)? The written rules always deny data deletion in chat. " +
+        "Our question: what if a small, fast model called Jev decided, and the LLM only wrote the reply? Level 3 is that design, and the next slide shows it."
     );
     const cw = (CW - 0.4) / 2, y = 1.65, h = 3.5;
     [
@@ -304,7 +304,7 @@ async function photo(file, w, h, radius = 0.08, dpi = 150) {
     });
     textBox(
       s,
-      [{ text: "Our question: ", options: { bold: true } }, { text: "can this design reduce time, cost, and harmful actions on our SaaS test set?" }],
+      [{ text: "Our question: ", options: { bold: true } }, { text: "what if a small, fast model called Jev decided, and the LLM only wrote the reply?" }],
       ML, 5.45, CW, 1.2,
       { shape: pres.ShapeType.roundRect, fill: C.blue, line: C.blue, color: C.white, size: 24, margin: 0.35, valign: "middle" }
     );
@@ -319,7 +319,7 @@ async function photo(file, w, h, radius = 0.08, dpi = 150) {
         "Level 2 replaces the staff with one LLM agent that reads the account, applies the written rules itself, and either runs an action or denies it. " +
         "Level 3 replaces the agent with Jev: Jev reads the chat and gives typed answers, then answers one yes/no question for each written rule of the action, each with a confidence; the process follows the answers, and the LLM writes the reply. " +
         `The two automated levels run on the same ${sampleSize} requests; staff time is only an assumed reference. ` +
-        "Opening interaction by the leader: which level is faster and cheaper, Level 2 or Level 3? The answer is not given here; the results show it. Now, the rules."
+        "Now, the rules."
     );
     const gap = 0.45, cw = (CW - 2 * gap) / 3, y = 1.65, h = 4.05;
     [
@@ -346,7 +346,7 @@ async function photo(file, w, h, radius = 0.08, dpi = 150) {
     const s = base(
       4,
       "Real support policies have many rules",
-      "Real support policies have many rules, like this. Today we keep only the essential gate.",
+      "Real policies have many rules. Who should apply them: an LLM agent, or Jev?",
       true, undefined, { w: 3.5, h: 1.5, fontSize: 28, valign: "top" }
     );
     // A diamond of rule chips that fades at the top and the bottom: an illustration of a policy that has grown to hundreds of rules, not data of the experiment.
@@ -381,8 +381,9 @@ async function photo(file, w, h, radius = 0.08, dpi = 150) {
         });
       }
     });
-    textBox(s, [{ text: "Illustration, not our data.", options: { bold: true, breakLine: true } }, { text: "Our system applies only the essential rules." }], 9.6, 6.15, 3.1, 0.85, {
-      shape: pres.ShapeType.roundRect, fill: C.teal, color: C.white, size: 14, margin: [0.08, 0.15, 0.08, 0.15], valign: "middle",
+    textBox(s, "Illustration, not our data.", ML, 6.75, 4, 0.3, { size: 12, color: C.muted });
+    textBox(s, "Who should apply every rule: an LLM agent, or Jev?", 8.5, 6.1, 4.2, 0.9, {
+      shape: pres.ShapeType.roundRect, fill: C.teal, color: C.white, size: 16, bold: true, margin: [0.08, 0.15, 0.08, 0.15], valign: "middle",
     });
   }
 

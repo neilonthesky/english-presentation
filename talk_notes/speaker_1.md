@@ -2,11 +2,11 @@
 
 - **Họ và tên diễn giả:** Tran Thanh Long
 - **Vai trò trong đề tài:** Trưởng nhóm; Điều phối đề tài; Tóm tắt (Abstract), Mở đầu (Introduction) và Kết luận (Conclusion); Kiến trúc bậc thang hỗ trợ; Biên tập hoàn thiện
-- **Tỷ lệ đóng góp trong bài báo:** 28% (đây không phải tỷ lệ thời gian nói). Về thời gian nói, Long nói 340 giây trên tổng 820 giây (41,5%): toàn bộ tương tác với khán giả, phần giải thích luật và luồng xử lý, ba walk-through và toàn bộ phần hỏi đáp.
-- **Thời gian nói được phân bổ:** 5 phút 40 giây (340 giây) = 161 giây ở Slide 1 đến 3 (gồm các phần tương tác với khán giả) + 7 giây ở Slide 4 (bức tường luật) + 126 giây ở Slide 5 đến 9 (luật, luồng Level 2, luồng Level 3, Jev đọc gì, Jev trả lời gì) + 46 giây cho ba walk-through (Slide 10 đến 21).
-- **Số từ mục tiêu:** ~688 từ tiếng Anh trong 340 giây, tức khoảng 121 từ mỗi phút; ở Slide 1 đến 3 tốc độ chậm hơn vì có bốn lần chờ khán giả phản hồi. Ở Slide 1 đến 3 và Slide 5 đến 9, lời nói thật là kịch bản trong tệp này: ghi chú slide trong `slides/deck.pptx` là bản tóm tắt hoặc bản chi tiết kèm các điều kiện và giới hạn, nên không đọc nguyên văn. Slide 4 và ba walk-through (Slide 10 đến 21) trùng từng từ với ghi chú slide.
-- **Các slide phụ trách:** Slide 1 (50 giây), Slide 2 (70 giây), Slide 3 (41 giây), Slide 4 (7 giây), Slide 5 đến 9 (23 + 33 + 26 + 23 + 21 giây), ba walk-through ở Slide 10 đến 21 (22 + 12 + 12 = 46 giây), cộng toàn bộ phần Q&A sau bài nói (5 phút, xem `qa_prep.md`). Long nói liền một mạch từ Slide 1 đến Slide 21: luật và luồng xử lý được giải thích trước, rồi ba yêu cầu thật đi qua đúng luồng đó. Sau Slide 21, Long không nói nữa cho đến phần Q&A.
-- **Quy ước tương tác:** Toàn bộ tương tác với khán giả của cả nhóm do Long thực hiện ngay ở đầu bài (Slide 1 đến 3): câu chuyện mở đầu, giơ tay, bình chọn và câu hỏi dự đoán. Bốn bạn còn lại chỉ trình bày, nói thẳng từ trên xuống dưới, không chào, không bàn giao và không hỏi khán giả. Sau Slide 29, Long tự mở phần hỏi đáp và trả lời tất cả câu hỏi. Chi tiết nằm trong `interaction.md`.
+- **Tỷ lệ đóng góp trong bài báo:** 28% (đây không phải tỷ lệ thời gian nói). Về thời gian nói, Long nói 340 giây trên tổng 820 giây (41,5%): câu quiz duy nhất với khán giả, phần giải thích luật và luồng xử lý, ba walk-through và toàn bộ phần hỏi đáp.
+- **Thời gian nói được phân bổ:** 5 phút 40 giây (340 giây) = 161 giây ở Slide 1 đến 3 (gồm câu quiz ở Slide 2) + 7 giây ở Slide 4 (bức tường luật) + 126 giây ở Slide 5 đến 9 (luật, luồng Level 2, luồng Level 3, Jev đọc gì, Jev trả lời gì) + 46 giây cho ba walk-through (Slide 10 đến 21).
+- **Số từ mục tiêu:** ~667 từ tiếng Anh trong 340 giây, tức khoảng 118 từ mỗi phút; ở Slide 1 đến 3 tốc độ chậm hơn vì có một lần chờ khán giả trả lời quiz. Ở Slide 1 đến 3 và Slide 5 đến 9, lời nói thật là kịch bản trong tệp này: ghi chú slide trong `slides/deck.pptx` là bản tóm tắt hoặc bản chi tiết kèm các điều kiện và giới hạn, nên không đọc nguyên văn. Slide 4 và ba walk-through (Slide 10 đến 21) trùng từng từ với ghi chú slide.
+- **Các slide phụ trách:** Slide 1 (50 giây), Slide 2 (70 giây), Slide 3 (41 giây), Slide 4 (7 giây), Slide 5 đến 9 (23 + 33 + 26 + 23 + 21 giây), ba walk-through ở Slide 10 đến 21 (22 + 12 + 12 = 46 giây), cộng toàn bộ phần Q&A sau bài nói (5 phút, xem `qa.md`). Long nói liền một mạch từ Slide 1 đến Slide 21: luật và luồng xử lý được giải thích trước, rồi ba yêu cầu thật đi qua đúng luồng đó. Sau Slide 21, Long không nói nữa cho đến phần Q&A.
+- **Quy ước tương tác:** Cả nhóm chỉ có một câu quiz với khán giả, do Long đặt ở Slide 2 (hành động nào bạn không bao giờ để chatbot tự làm?). Câu chuyện mở đầu ở Slide 1 chỉ là lời kể, không yêu cầu khán giả làm gì. Bốn bạn còn lại chỉ trình bày, nói thẳng từ trên xuống dưới, không chào, không bàn giao và không hỏi khán giả. Sau Slide 29, Long tự mở phần hỏi đáp và trả lời tất cả câu hỏi.
 
 ---
 
@@ -42,13 +42,9 @@ Lời tự giới thiệu của Long nằm ngay ở đầu Slide 1 (nói một l
 
 ### Slide 2: Khởi điểm: hai cách cũ
 - **Tiêu đề slide:** Where we start: staff or one LLM agent
-- **Thời gian dự kiến trên slide:** 1 phút 10 giây (70 giây, ~132 từ gồm cả phần nghỉ chờ khán giả giơ tay và bình chọn)
+- **Thời gian dự kiến trên slide:** 1 phút 10 giây (70 giây, ~115 từ gồm cả phần nghỉ chờ khán giả trả lời quiz)
 
-> Please raise your hand: have you ever waited more than twenty-four hours for an answer from customer support? `[GIƠ TAY PHẢI VÀ NGHỈ 3 GIÂY]`
-> 
-> `[NGHỈ 1 GIÂY]`  
-> 
-> That wait is Level One, on the left. Support staff read every request. There is no model error, but each request takes an assumed ninety seconds.
+> Level One, on the left, is support staff. Staff read every request. There is no model error, but each request takes an assumed ninety seconds.
 > 
 > `[NGHỈ 1 GIÂY]`  
 > 
@@ -56,30 +52,25 @@ Lời tự giới thiệu của Long nằm ngay ở đầu Slide 1 (nói một l
 > 
 > `[NGHỈ 1 GIÂY]`  
 > 
-> Now a quick poll: which action would you never let a chatbot do alone? A refund, a cancellation, a password reset, or a data deletion? Hands up for data deletion. `[NGHỈ 2 GIÂY]` Our written rules always deny it in chat.
+> Now a quick quiz: which action would you never let a chatbot do alone? A refund, a cancellation, a password reset, or a data deletion? Hands up for data deletion. `[NGHỈ 5 GIÂY]` Our written rules always deny it in chat.
 > 
 > `[NGHỈ 1 GIÂY]`  
 > 
-> So our question is: can this design reduce time, cost, and harmful actions on our SaaS test set?
+> So our question is: what if a small, fast model, called Jev, decided, and the LLM only wrote the reply?
 > 
 > `[NGHỈ 1 GIÂY]`  
 > `[CHUYỂN SANG SLIDE 3]`
 
-**Phương án dự phòng khi cả phòng im lặng (hai lần tương tác ở Slide 2):**
-- Nếu sau 3 giây không ai giơ tay: *"`[HẠ TAY]` Even if you have been lucky, you know the feeling: you write to support, and you wait."*
-- Nếu không ai giơ tay ở phần bình chọn: *"If you are hesitant, that makes complete sense. For FrameForge, deleted video projects and trained models cannot be restored, so our written rules always deny data deletion in chat."*
+**Phương án dự phòng khi cả phòng im lặng (câu quiz duy nhất, Slide 2):**
+- Nếu không ai giơ tay sau 5 giây: *"If you are hesitant, that makes complete sense. For FrameForge, deleted video projects and trained models cannot be restored, so our written rules always deny data deletion in chat."*
 
 ---
 
 ### Slide 3: Ba cấp độ, hai thiết kế tự động
 - **Tiêu đề slide:** Three levels; two automated designs compared
-- **Thời gian dự kiến trên slide:** 0 phút 41 giây (41 giây, ~79 từ gồm cả phần nghỉ chờ khán giả)
+- **Thời gian dự kiến trên slide:** 0 phút 41 giây (41 giây, ~76 từ)
 
-> We compare three levels. Level One is staff. Level Two is one LLM agent. Level Three replaces the agent with Jev, a fast classifier, and a fixed process around it. Both automated levels run on the same one thousand and twenty-four requests.
-> 
-> `[NGHỈ 1 GIÂY]`  
-> 
-> Now I have one question for you. Which level do you think is faster and cheaper, Level Two or Level Three? `[NHÌN KHÁN GIẢ - NGHỈ 3 GIÂY]` Please keep your guess in mind. The data will show the answer later.
+> We compare three levels. Level One is staff. Level Two is one LLM agent, which reads the account and applies the written rules itself. Level Three replaces the agent with Jev, a fast classifier. Jev reads the chat, then answers one yes or no question for each written rule. A fixed process follows its answers, and the LLM writes the reply. Both automated levels run on the same one thousand and twenty-four requests.
 > 
 > `[NGHỈ 1 GIÂY]`  
 > 
@@ -87,15 +78,13 @@ Lời tự giới thiệu của Long nằm ngay ở đầu Slide 1 (nói một l
 > 
 > `[CHUYỂN SANG SLIDE 4]`
 
-**Phương án dự phòng khi cả phòng im lặng (câu hỏi dự đoán):** Long không tiết lộ đáp án và không nêu con số nào. Nếu không ai trả lời sau 3 giây, nói: *"No guess yet? That is fine. Please keep the question in mind. The results will show the answer."*
-
 ---
 
 ### Slide 4: Nhiều luật: một bức tường luật
 - **Tiêu đề slide:** Real support policies have many rules
-- **Thời gian dự kiến trên slide:** 0 phút 07 giây (7 giây, ~15 từ)
+- **Thời gian dự kiến trên slide:** 0 phút 07 giây (7 giây, ~14 từ)
 
-> Real support policies have many rules, like this. Today we keep only the essential gate.
+> Real policies have many rules. Who should apply them: an LLM agent, or Jev?
 > 
 > `[NGHỈ 1 GIÂY]`  
 > 
@@ -237,13 +226,11 @@ Luyện phát âm 10 từ vựng này theo phiên âm đơn giản dưới đây
 - `[NHÌN KHÁN GIẢ - MỈM CƯỜI]`: Tạo thiện cảm và sự tự tin với người nghe trước khi nói.
 - `[NGHỈ 1 GIÂY]`: Ngắt nhịp ngắn giữa các câu để người nghe kịp tiếp thu ý.
 - `[NGHỈ 2 GIÂY]`: Ngắt nhịp dài hơn sau câu hỏi hoặc trước khi nêu luận điểm quan trọng.
-- `[GIƠ TAY PHẢI VÀ NGHỈ 3 GIÂY]`: Ra hiệu cử chỉ rõ ràng để mời khán giả tương tác giơ tay.
 - `[CHUYỂN SANG SLIDE X]`: Bấm chuyển slide trình chiếu chuẩn xác theo kịch bản.
-- `[NGHỈ 3 GIÂY]` sau câu hỏi: Đứng yên, nhìn khán giả, không nói thêm. Không tiết lộ đáp án của câu hỏi dự đoán.
-- `[HẠ TAY]`: Hạ tay xuống khi không ai giơ tay, rồi nói câu dự phòng.
+- `[NGHỈ 5 GIÂY]` sau câu quiz ở Slide 2: Đứng yên, nhìn khán giả, giơ tay phải khi nói "Hands up" để khán giả làm theo; không nói thêm cho đến khi hết 5 giây, rồi nêu đáp án.
 
 ---
 
 ## 6. Phần hỏi đáp (Q&A): Long trả lời toàn bộ
 
-Sau khi Phuong Nam nói xong Slide 29, Long bước lên giữa sân khấu, mời khán giả đặt câu hỏi (Slide 30 đã hiện "Questions?") và trả lời **tất cả** câu hỏi trong 5 phút. Bốn bạn còn lại đứng bên cạnh, lắng nghe, không trả lời trừ khi Long nhường lời. Dùng `qa_prep.md` (19 câu trả lời chuẩn) làm tài liệu chính. Mở đầu mỗi câu bằng: *"Thank you for your question."* và nhắc lại câu hỏi bằng lời của mình trước khi trả lời.
+Sau khi Phuong Nam nói xong Slide 29, Long bước lên giữa sân khấu, mời khán giả đặt câu hỏi (Slide 30 đã hiện "Questions?") và trả lời **tất cả** câu hỏi trong 5 phút. Bốn bạn còn lại đứng bên cạnh, lắng nghe, không trả lời trừ khi Long nhường lời. Dùng `qa.md` làm tài liệu chính. Mở đầu mỗi câu bằng: *"Thank you for your question."* và nhắc lại câu hỏi bằng lời của mình trước khi trả lời.

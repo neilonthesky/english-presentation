@@ -5,7 +5,7 @@
 - **Tỷ lệ đóng góp trong bài báo:** 22% (đây không phải tỷ lệ thời gian nói). Về thời gian nói, Nam nói 120 giây trên tổng 820 giây (14,6%).
 - **Thời gian nói được phân bổ:** 2 phút 00 giây (120 giây) cho hai slide: Slide 22 (60 giây) và Slide 23 (60 giây).
 - **Số từ mục tiêu:** ~206 từ tiếng Anh (121 + 85) trong 120 giây, tức khoảng 103 từ mỗi phút (chậm hơn mục tiêu nên còn dư thời gian để nghỉ và nhấn số liệu). Số từ đếm trên lời nói thật, các số viết thành chữ. Nếu chậm hơn, cắt theo dòng "Nếu vượt khung" của từng slide.
-- **Các slide phụ trách:** Slide 22 (60 giây): dữ liệu thử nghiệm (512 khách hàng, 1.024 yêu cầu, năm nhóm); Slide 23 (60 giây): cách chấm (ba kết cục và lần chạy gây hại). Nam nói ngay sau ba walk-through của Long, thẳng từ trên xuống dưới: **không chào, không tự giới thiệu, không đặt câu hỏi** và **không tổ chức bình chọn** với khán giả; mọi tương tác do Long thực hiện ở Slide 1 đến 3. Long đã đọc tên Nam ở Slide 1.
+- **Các slide phụ trách:** Slide 22 (60 giây): dữ liệu thử nghiệm (512 khách hàng, 1.024 yêu cầu, năm nhóm); Slide 23 (60 giây): cách chấm (ba kết cục và lần chạy gây hại). Nam nói ngay sau ba walk-through của Long, thẳng từ trên xuống dưới: **không chào, không tự giới thiệu, không đặt câu hỏi** và **không tổ chức bình chọn** với khán giả; câu quiz duy nhất do Long đặt ở Slide 2. Long đã đọc tên Nam ở Slide 1.
 
 ---
 
