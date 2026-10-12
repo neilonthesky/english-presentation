@@ -62,7 +62,7 @@
 \renewcommand{\shortauthors}{Tran Thanh Long et al.}
 
 \begin{abstract}
-Customer support for a software-as-a-service (SaaS) product can run in three ways. We build them as three levels of one ladder and measure them on the same 100 requests in 24 types for FrameForge, an AI video-generation service. Level 1: support staff read every request (an assumed 90~s each). Level 2: one large language model (LLM) agent reads the chat and the account, applies the written rules itself, and either runs an action or denies it. Level 3: Jev, a fast classifier, answers five fixed questions about the request; fixed code reads only the account fields that the action needs and checks the written rules; the LLM writes the text. Level 2 serves 66 requests, stops 28 (a written rule denies the action), and makes 6 errors, 2 of them harmful; Level 3 serves 70, stops 30, and makes no error and no harmful run. With 6 discordant pairs (requests where only Level 2 errs) the sign test gives \(p = 0.031\), so Level 3 makes significantly fewer errors. Level 3 is never worse in any measure, 1.9 times faster (4.19~s against 7.85~s), and 2.2 times cheaper (\$0.279 against \$0.605 per 1,000 requests). As a classifier, Jev is 20 times faster and 11 times cheaper than the LLM, but it is less accurate on four of the five answers.
+Customer support for a software-as-a-service (SaaS) product can run in three ways. We build them as three levels of one ladder, and we run the two automated levels on the same 1,024 requests in 26 types from 512 customers of FrameForge, an AI video-generation service. Level 1: support staff read every request (an assumed 90~s each). Level 2: one large language model (LLM) agent reads the chat and the whole account, applies the written rules itself, and either runs an action or refuses. Level 3: Jev, a fast classifier, answers five fixed questions about the chat and then one yes/no question for each written rule of the action; fixed code runs the action only when no answer says that a rule is broken, and the LLM writes the reply. In one run of each level on our synthetic set, Level 2 serves 795 requests, stops 198 (a written rule denies the action), and makes 31 errors, 10 of them harmful; Level 3 serves 825, stops 199, and makes no error. Level 3 needs less than half the mean machine time (5.89~s against 12.45~s) and has 2.2 times lower API cost (\$0.30 against \$0.64 per 1,000 requests). The set is a template-based challenge set, not production traffic, and two refund inputs were changed after earlier failures, so the rule evaluation is not blind. Fixed execution follows Jev's answers; it is not independent policy verification, and the results are no safety guarantee.
 \end{abstract}
 
 
@@ -101,15 +101,15 @@ Customer support for a software-as-a-service (SaaS) product can run in three way
 
 Large language models (LLMs) now read customer requests and act on them, and text in a request can carry prompt-injection orders for the model~\cite{greshake2023injection}. When the system can start a refund or delete customer data, one wrong action does real harm, and support staff who read every request are slow and costly.
 
-We study one \emph{ladder} of three levels, from the traditional workflow of support staff to a modern AI-agent system. Each level changes one part of the level before it, and all levels run on the same requests. The case is FrameForge, an AI video-generation SaaS sold as subscription plans and credit packs. Jev~\cite{almeida2026jev} is a fast classifier that gives typed labels, each with a confidence, and cannot write text. We ask two questions:
+We study one \emph{ladder} of three levels, from the traditional workflow of support staff to two automated designs. The case is FrameForge, an AI video-generation SaaS sold as monthly or annual plans. The two automated levels differ in the model that decides, in the input that it reads, and in the flow around it, so we compare two designs, not one variable. Every level that runs gets the same requests. Jev~\cite{almeida2026jev} is a fast classifier that gives typed labels, each with a confidence, and cannot write text. We ask two questions:
 \begin{itemize}
     \item \textbf{Question 1.} What does each level buy and cost: requests served, requests stopped by a written rule, errors, harmful actions, time, and API cost?
-    \item \textbf{Question 2.} What changes when Jev replaces the LLM as the classifier?
+    \item \textbf{Question 2.} What changes when Jev replaces the LLM agent as the part that decides?
 \end{itemize}
 
 \section{Related Work}\label{sec:related}
 
-\textbf{Prompt injection.} Text in data can carry orders for a model~\cite{greshake2023injection}; CaMeL~\cite{debenedetti2025camel} and the design patterns of Beurer-Kellner et al.~\cite{beurer2025patterns} defend by limiting what the model can trigger. Support platforms route tickets by rules~\cite{zendesk2026routing}; we build a small system of this kind, with fixed code that checks every action.
+\textbf{Prompt injection.} Text in data can carry orders for a model~\cite{greshake2023injection}; CaMeL~\cite{debenedetti2025camel} and the design patterns of Beurer-Kellner et al.~\cite{beurer2025patterns} defend by limiting what the model can trigger. Support platforms route tickets by rules~\cite{zendesk2026routing}; we build a small system of this kind, in which fixed code runs an action only when no rule answer says that a rule is broken.
 
 \textbf{Support agents.} The Fin agent runs refunds, cancellations, and password resets, and reports 76 percent resolution without a human~\cite{intercom2026fin}. Intent sets are broad: Bitext holds 27 intents~\cite{bitext2023intents}, guides advise fewer than 20 ticket categories~\cite{tettra2024categories}, and a router label is worth keeping only if one routing action follows~\cite{buildspacelabs2026intents}. We cover five actions.
 
@@ -117,21 +117,23 @@ We study one \emph{ladder} of three levels, from the traditional workflow of sup
 
 \subsection{The Three Levels}\label{sec:steps}
 
-The ladder changes one part at a time. Level 1 to 2 replaces the staff with one LLM that does the whole job. Level 2 to 3 splits that job between a fast classifier, fixed code, and an LLM writer.
+The ladder has three levels. Level 1 to 2 replaces the staff with one LLM that does the whole job. Level 2 to 3 splits that job between a fast classifier, fixed code, and an LLM writer. This change alters the model, the input, and the flow.
 
-\textbf{Level 1 (Staff only).} Support staff read every request, decide it, and act (Figure~\ref{fig:staff}). No model runs. We assume 90~s of work per request, and this level is the baseline.
+\textbf{Level 1 (Staff only).} Support staff read every request, decide it, and act (Figure~\ref{fig:staff}). No model runs. We assume 90~s of work per request, and this level is the baseline. We do not run it.
 
-\textbf{Level 2 (LLM agent).} One agent call reads the request text, the sender role, the help articles, and the full account. The agent applies the written rules (Section~\ref{sec:rules}) itself and returns one of two answers: an action to run with its target, or a denial that names the rule. The action that it names runs at once: no fixed code checks it, and nothing handles an order hidden in the text (Figure~\ref{fig:llmagent}). The LLM then writes the Final message.
+\textbf{Level 2 (LLM agent).} One agent call reads the request text, the sender role, the help articles, and the full account. The agent applies the written rules (Section~\ref{sec:rules}) itself and returns one of two answers: an action to run with its target, or a refusal that names a rule. The action that it names runs at once: no fixed code checks it, and nothing handles an order hidden in the text (Figure~\ref{fig:llmagent}). The LLM then writes the Final message.
 
-\textbf{Level 3 (Jev + LLM + rules).} Jev replaces the agent as the step that reads the chat. In one call it answers five questions, each with a confidence, and it never reads the account: the \emph{topic} (the subject of the request: Account, Payments, Plans and Credits, Product Help, Refunds, or Security), the \emph{priority}, the \emph{action} (Send reply, Start refund, Delete data, Cancel plan, or Reset password), a \emph{risk flag} (money, stored data, the plan, or the password is at stake), and an \emph{injection flag} (the text gives orders to the model). Fixed code does the other jobs of the agent: Gather info reads only the account fields that the action needs, and Rules check applies the written rules. The LLM writes the text only (Figure~\ref{fig:flow}).
+\textbf{Level 3 (Jev + LLM).} Jev reads the chat in up to two calls and never writes text. The first call reads the chat only, not the account, and answers five questions, each with a confidence: the \emph{topic} (the subject of the request: Account, Payments, Plans and Credits, Product Help, Refunds, or Security), the \emph{priority} (Low, Medium, High, or Critical), the \emph{action} (Send reply, Start refund, Delete data, Cancel plan, or Reset password), a \emph{risk flag} (money, stored data, the plan, or the password is at stake), and an \emph{injection flag} (the text gives orders to the model). When the action changes the state, a second call reads the account lines of that action and answers one yes/no question for each written rule of the action: is this rule broken? Fixed code does the other jobs: it sets the action to ``Send reply'' when the injection flag is on, it reads only the account fields that the action needs, and it runs the action when no answer says broken. The LLM writes the text only (Figure~\ref{fig:flow}). The rules are questions to Jev, not code: fixed code applies no written rule on this path.
 
 \subsection{The Flow of One Request at Level 3}\label{sec:flow}
 
 Figure~\ref{fig:flow} shows Level 3 as a state machine with eight states.
 
-\textbf{Triage.} Jev answers the five questions in one call. Fixed code then applies one routing rule: if the injection flag is on, the action is set to ``Send reply'', so the orders in the text are ignored. If the classifier answer is invalid, nothing runs.
+\textbf{Triage.} Jev answers the five questions in one call. It is told to choose the action that the request needs and not to apply the written rules. Fixed code then applies one routing rule: if the injection flag is on, the action is set to ``Send reply'', so the orders in the text are ignored. If the answer is invalid, nothing runs. The topic, the priority, and the risk flag are scored in Section~\ref{sec:classifier}, but no routing rule and no written rule reads them.
 
-\textbf{Gather info and Rules check.} Gather info is fixed code. It reads the help articles, any e-mail address in the text, and only the account fields that the action needs (Table~\ref{tab:fields}), taken from the fields that each written rule reads. Rules check applies the written rules of the action to those fields: allow goes to Do action, and deny goes to the Final message with nothing run. A rule that needs a field outside the selection denies; this never happened on the 100 requests.
+\textbf{Gather info.} Gather info is fixed code. It reads the help articles, any e-mail address in the text, and only the account fields that the action needs (Table~\ref{tab:fields}). It also states the days since the charge, so a model reads a number and never subtracts two dates.
+
+\textbf{Rules.} For ``Send reply'' no rule question is asked. For every other action, a second Jev call answers one yes/no question for each written rule of the action, for example ``Is the amount of the purchase above 100 dollars?'', and it answers the Security question on every such action. Fixed code only combines the answers. When no answer says broken, Do action runs. When one does, the Final message explains and nothing runs; the Security rule names the reason first, and otherwise the first broken rule in the order of the questions. Nothing checks these answers: a wrong answer can let a wrong action run or stop a right one.
 
 \begin{table}[t]
 \caption{The account fields that Gather info reads at Level 3, by the action of Triage. The account has seven fields; an invalid answer reads none.}
@@ -151,7 +153,7 @@ Reset password & sender \\
 \end{tabular}
 \end{table}
 
-\textbf{Final message and Chat open.} Do action changes the money, the data, the plan, or the password. The Final message answers from the help articles and the selected fields; for a deny it says what the chat cannot do and gives the steps that the customer can take alone. A popup then asks whether the issue is solved. The chat resolves when the customer answers yes, answers no \(N\) times, or stays silent for a set time \(T\); a new message in the same chat goes back to New.
+\textbf{Final message and Chat open.} Do action changes the money, the data, the plan, or the password. The Final message answers from the help articles and the selected fields; for a deny it says what the chat cannot do and gives the steps that the customer can take alone. A popup then asks whether the issue is solved. The chat resolves when the customer answers yes, answers no \(N\) times, or stays silent for a set time \(T\); a new message in the same chat goes back to New. The experiment runs the first pass of each request only: Chat open and Resolved are not simulated.
 
 \begin{figure}[t]
 \centering
@@ -172,14 +174,14 @@ Reset password & sender \\
 \begin{figure*}[t]
 \centering
 \includegraphics[width=0.87\textwidth]{figures/flow.pdf}
-\caption{The flow of one request at Level 3: blue boxes are models, grey boxes are fixed code, and the green box is the written rules.}
+\caption{The flow of one request at Level 3: blue boxes are models, and grey boxes are fixed code. Jev answers five questions about the chat, then one question for each written rule.}
 \label{fig:flow}
-\Description{State machine of the eight states of Level 3: New, Triage, Gather info, Rules check, Do action, Final message, Chat open, and Resolved, with boxes colored by kind.}
+\Description{State machine of the eight states of Level 3: New, Triage, Gather info, Rules, Do action, Final message, Chat open, and Resolved, with boxes colored by kind. Triage and Rules are Jev calls; a Send reply skips Rules; one broken rule sends the request to the Final message with nothing run.}
 \end{figure*}
 
 \subsection{The Written Rules}\label{sec:rules}
 
-Four actions that change the state have written rules (Table~\ref{tab:rules}); ``Send reply'' has none. Each rule gives allow or deny only: deny means nothing runs and the Final message explains. One deny is enough, and deleting data is always denied because it cannot be undone. The \emph{Security rule} is checked first and covers every state change: a request that reports that the account or the payment method was used by someone who is not the customer stops it, and the reply gives the security steps. At Level 3 the rule applies when the topic of the request from Triage is ``Security''; at Level 2 the agent reads the text of the rule.
+Four actions that change the state have written rules (Table~\ref{tab:rules}); ``Send reply'' has none. Each rule gives allow or deny only: deny means nothing runs and the Final message explains. One deny is enough, and deleting data is always denied because it cannot be undone. The \emph{Security rule} covers every state change: a request that reports that the account or the payment method was used by someone who is not the customer stops it, and the reply gives the security steps. At Level 2 the agent reads the text of every rule; at Level 3 Jev answers one question for each rule. Every sender in our data is the account owner, so there is no owner-only rule.
 
 \begin{table}[t]
 \caption{The written rules.}
@@ -190,11 +192,10 @@ Four actions that change the state have written rules (Table~\ref{tab:rules}); `
 \toprule
 Action & Written rule & Outcome \\
 \midrule
-Any state change & The request reports that the account or the payment method was used by someone who is not the customer. & Security topic: deny; the reply gives the security steps \\
-Refund, delete, cancel & Only the owner can ask for this. & asked by a teammate: deny \\
+Any state change & A request that reports that the account or the payment method was used by someone who is not the customer stops every state change. & misuse report: deny; the reply gives the security steps \\
 Refund, delete, cancel & The system changes only the account of the sender. & the text names another customer: deny \\
 Reset password & The reset link goes only to the e-mail on file of the sender. & another e-mail address in the text: deny \\
-Refund & A credit pack can be refunded only while none of its credits are used. A renewal that is not charged yet can be cancelled with no charge. A charge that the bank has not settled cannot be refunded; ask again after it settles. & unused, or not charged yet: allow; used, or not settled: deny \\
+Refund & A plan can be refunded only while none of its credits are used. A renewal that is not charged yet can be cancelled with no charge. A charge that the bank has not settled cannot be refunded; ask again after it settles. & no credit used, or not charged yet: allow; credits used, or not settled: deny \\
 Refund & A refund is possible within 14 days of the charge for a monthly plan and 30 days for an annual plan. & inside: allow; outside: deny \\
 Refund & A purchase is refunded once. & done before: deny \\
 Refund & This chat cannot start a refund above \$100. & above \$100: deny \\
@@ -209,95 +210,106 @@ Cancel plan & A plan is cancelled once. A cancellation is reversible until the e
 
 \subsection{Synthetic Data and Correct Labels}\label{sec:data}
 
-All data are made by us. The test data have 72 FrameForge customers, each with one purchase (a monthly plan, an annual plan, or a credit pack), a plan, a render-credit balance, a plan state, a log of reset links, and a teammate with no billing rights; the profiles cover each branch of the written rules.
+All data are made by us. The test data have 512 FrameForge customers, each with one purchase (a monthly or an annual plan: Plus, Pro, or Max), a plan, a render-credit balance, a plan state, and a log of reset links; the profiles cover each branch of the written rules.
 
 \begin{table}[t]
-\caption{The request families of the 100 requests. A family holds one or more request types, each with its own wording. The correct action is the label that Triage should give.}
+\caption{The five strata of the 1,024 requests. A stratum holds one or more request types, each with its own wording.}
 \label{tab:types}
 \footnotesize
 \setlength{\tabcolsep}{4pt}
-\begin{tabular}{@{}>{\raggedright\arraybackslash}p{2.6cm}rr@{}}
+\begin{tabular}{@{}lrr@{}}
 \toprule
-Family & n & Correct action \\
+Stratum & Requests & Types \\
 \midrule
-Questions and answers & 24 & Send reply \\
-Refund & 16 & Start refund \\
-Cancel plan & 14 & Cancel plan \\
-Reset password & 12 & Reset password \\
-Delete data & 6 & Delete data \\
-Invoice or request for a human & 8 & Send reply \\
-Fraud or data loss & 8 & Send reply \\
-Injection & 4 & Start refund \\
-Two problems in one request & 4 & Send reply \\
-Closing message & 4 & Send reply \\
+High-impact actions & 359 & 8 \\
+Security incidents & 307 & 3 \\
+Mixed and time-sensitive requests & 205 & 5 \\
+Routine support & 102 & 8 \\
+Injection and look-alikes & 51 & 2 \\
+\midrule
+All & 1,024 & 26 \\
 \bottomrule
 \end{tabular}
 \end{table}
 
-A seeded generator (seed 20261007) writes 100 requests in 24 types (Table~\ref{tab:types}); there is one request set and no split. Every request has its own wording, its own sender (88 owners and 12 teammates), and a customer from the test data. The correct labels come from the written rules: the generator runs the real code of the system on the correct action, the true sender, the facts in the text (for example, an e-mail address), and the refund history of the customer. A written rule denies the action on 30 of the 100 requests, and the flow then runs nothing; 52 end with an answer, and 18 run an action. Four closing messages have no right topic, so their topic labels are not scored.
+A seeded generator (seed 20261007) writes 1,024 requests in 26 types, two for each customer (Table~\ref{tab:types}). The mix is a challenge-set design, not an estimate of production traffic. Every request has its own wording, and every sender is the account owner. The correct labels come from the written rules: the generator runs the real code of the system on the correct action, the facts in the text (for example, an e-mail address), and the refund history of the customer. A written rule denies the action on 199 requests, and the flow then runs nothing; 190 requests run an action, and 635 end with an answer. Of the 1,024 requests, 27 hide an order in the message. Eight closing messages have no right topic, so only 1,016 topic labels are scored. There is one request set and no split.
 
 \subsection{Models and Run}\label{sec:api}
 
-The classifier of Level 3 is Jev (version \nolinkurl{jev-1.13.0}), a fast classifier from the \emph{System One} family. The LLM is \nolinkurl{deepseek-v4.1-flash} through the DeepSeek API, with high reasoning effort, temperature 0.3, and a 4000-token limit. The agent of Level 2 makes two calls per request: the agent call (run or deny, in strict JSON) and the Final message. At Level 3 the LLM writes the Final message only. The \emph{LLM-classifier run} of Section~\ref{sec:results} uses the same LLM as a five-field classifier in the flow of Level 3; it is not a level of the ladder, and it feeds Question 2.
+The classifier of Level 3 is Jev (version \nolinkurl{jev-1.13.0}), a fast classifier from the \emph{System One} family. The LLM is \nolinkurl{deepseek-v4.1-flash}, which we call through a hosted gateway, with high reasoning effort, temperature 0.3, and a 4000-token limit. The agent of Level 2 makes two LLM calls per request: the agent call (run or refuse, in strict JSON) and the Final message. At Level 3 the LLM writes the Final message only, and Jev makes 1,556 calls: 1,024 first calls and 532 rule calls, or 1.5 per request.
 
-Both classifiers get the same input: the chat text, the sender role, the channel ``chat'', and the matching help articles; the account is not read at Triage. The label definitions are neutral: one rule for each question, no request type, and no example phrase; the risk flag covers money, stored data, the plan, and the password. The agent of Level 2 reads the same action criteria, the text of the written rules, and the full account. The LLM gives no confidence, and an invalid answer runs nothing; none occurred in the reported run.
+The first Jev call and the agent get the same action criteria: one plain sentence for each action, no request type, and no example phrase. The first call reads the chat text, the sender role, the channel ``chat'', and the matching help articles. The rule call reads the account lines of the action and one question for each rule. The agent reads the text of the written rules and the full account. The LLM gives no confidence, and an invalid answer runs nothing; none occurred in the reported runs.
 
-A full run makes 600 model calls: 200 each at Level 2, at Level 3, and in the LLM-classifier run. The recording made 412 live LLM calls and no live Jev call; the other 88 LLM answers and all 100 Jev answers came from the cache of identical request bodies. The 600 calls cost about \$0.17 at list price, and an offline replay of the recorded run reproduces every stored number.
+Each level ran as its own process on the same 1,024 requests, with its own cache and no shared result file. In the first pass, the gateway refused some calls with HTTP 429 (rate limit), and 349 requests at Level 2 and 110 at Level 3 did not finish. A second pass reused every cached answer and made a live call only for a call that was missing, so the first successful answer of every call is the one that we report. No prompt, rule, label, or model setting changed between the passes. An offline replay of each final run makes no live call and reproduces every stored record.
 
-We use list prices: Jev costs \$0.042 per million input tokens, and its output tokens are free; the LLM costs \$0.15 per million input tokens and \$0.60 per million output tokens (off-peak price, no cache discount), and the recorded output tokens include the reasoning tokens.\footnote{\url{https://docs.typesafe.ai/models}; \url{https://api-docs.deepseek.com/quick_start/pricing/}}
+We use list prices: Jev costs \$0.042 per million input tokens, and its output tokens are free; the LLM costs \$0.15 per million input tokens and \$0.60 per million output tokens (off-peak price). Every input token is charged at the full price, and the recorded output tokens include the reasoning tokens. The gateway bills by its own plan, so our costs are estimates and upper bounds, not invoices.\footnote{\url{https://docs.typesafe.ai/models}; \url{https://api-docs.deepseek.com/quick_start/pricing/}}
 
 \subsection{Metrics}\label{sec:metrics}
 
-A request ends in one of three \emph{outcomes}, seen from the customer. \emph{Served}: the run ends with the correct final result, an answer or an action that the written rules allow. \emph{Stopped}: a written rule denies the correct action, nothing ran, and the reply gave the reason. \emph{Error}: every other run. A run is \emph{harmful} if it changes state (money, data, the plan, or the password) against the written rules. \emph{Label errors} count the runs whose action label differs from the correct action, whatever the customer saw. \emph{Total time} is the sum of the API response times of one request at Levels 2 and 3, and the assumed 90~s at Level 1. \emph{API cost} is in US dollars per 1,000 requests, and \emph{latency} is the median and the 95th percentile of one classifier call. A confidence is calibrated if answers at 0.90 are right about 90\% of the time; the expected calibration error (ECE) compares confidence and accuracy in ten equal bins. Two levels are compared with an exact two-sided sign test over the same 100 requests, one pair for each request; only discordant pairs, where one level errs and the other does not, count. With zero harmful actions in \(n\) requests, the 95\% upper limit of the harmful rate is about \(3/n\) (the rule of three).
+A request ends in one of three \emph{outcomes}, seen from the customer. \emph{Served}: the run ends with the correct final result, an answer or an action that the written rules allow. \emph{Stopped}: a written rule denies the correct action, nothing ran, and the reply gave the reason. \emph{Error}: every other run, for example a refusal where the correct result is an answer, or an action that the written rules deny. A run is \emph{harmful} if it changes state (money, data, the plan, or the password) against the written rules. A reply is graded by its action label, not by its words. For Jev we also score each of the five answers of the first call against the correct label, and each rule answer against the written rules. \emph{Machine time} is the sum of the response times of the successful model calls of one request, and the assumed 90~s at Level 1; it is not wall-clock time, because waiting for a free call slot, failed tries, and pauses are not in it. \emph{API cost} is in US dollars per 1,000 requests.
 
 \section{Results}\label{sec:results}
 
 \subsection{The Ladder (Question 1)}
 
-% The generated caption of this table writes a dollar sign without a backslash ("$/1k"), which would open math mode
-% and typeset the rest of the caption as one unbreakable atom. Read the file with the dollar sign as a plain character.
-\begingroup
-\catcode`$=12
-{\setlength{\tabcolsep}{2pt}\input{experiment/results/tables/ladder.tex}}
-\endgroup
+\begin{table}[t]
+\caption{The ladder on the same 1,024 requests. Time is the mean machine time of one request, and cost is the API cost per 1,000 requests at list price. Level 1 is an assumption and was not run.}
+\label{tab:ladder}
+\footnotesize
+\setlength{\tabcolsep}{3pt}
+\begin{tabular}{@{}lrrrrrr@{}}
+\toprule
+Level & Served & Stopped & Errors & Harmful & Time (s) & Cost (\$) \\
+\midrule
+1 Staff & -- & -- & -- & -- & 90 & -- \\
+2 LLM agent & 795 & 198 & 31 & 10 & 12.45 & 0.640 \\
+3 Jev + LLM & 825 & 199 & 0 & 0 & 5.89 & 0.297 \\
+\bottomrule
+\end{tabular}
+\end{table}
 
-Table~\ref{tab:ladder} answers Question 1. Level 1, the baseline, makes no error and uses 90~s of assumed staff time per request.
+Table~\ref{tab:ladder} answers Question 1. Level 1, the baseline, uses 90~s of assumed staff time per request and no model.
 
-Level 2 serves 66 of the 100 requests, stops 28, and makes 6 errors (6.0\%); Level 3 serves 70, stops 30, and makes 0. Level 3 stops all 30 requests that a written rule denies, with nothing run and the rule in the reply; Level 2 stops 28 and runs a plan cancellation against the rules on the other 2, where a written rule denies the refund that the request asks for; those two runs are the harmful ones. The other 4 errors of Level 2 are the injection texts: the agent read the order inside the text as the request and refused with a refund rule, where the correct result is an answer. The sign test has 6 discordant pairs, all errors at Level 2 only, and gives \(p = 0.031\): Level 3 makes significantly fewer errors. A wrong label is not always a wrong outcome. The label errors are 16 at Level 3 and 10 at Level 2. At Level 3 the Security rule stops the 4 fraud reports among them, and in the other 12 Jev answers ``Send reply'' where a written rule denies the action, and nothing runs.
+Level 2 serves 795 of the 1,024 requests, stops 198, and makes 31 errors (3.0\%); Level 3 serves 825, stops 199, and makes none. Of the 31 errors of Level 2, 27 are injection requests: on 21 the agent refused with a refund rule where the correct result is an answer, and on 6 it ran the order of the text (5 refunds and 1 plan cancellation). Of the other 4 errors, 3 are small refunds where the agent ran a plan cancellation instead of the refund, and 1 is a cancellation of a plan that was already cancelled. These 10 runs are the harmful ones: 5 refunds and 5 plan cancellations. All 31 errors are errors of Level 2 only, so the paired sign test has 31 discordant pairs, all against Level 2 (exact two-sided \(p = 9.3 \times 10^{-10}\)). Level 3 makes no harmful run.
 
-Level 3 makes no harmful run. Level 2 has no fixed check and no rule that ignores an order inside the text: only the judgment of the agent separates a wrong answer from a wrong action.
+Level 3 needs less than half the mean machine time of Level 2 (5.89~s against 12.45~s) and has 2.2 times lower API cost (\$0.297 against \$0.640). The decision call explains the gap. At Level 2 the agent call takes 6.66~s on average (median 4.97~s) and costs \$0.376 per 1,000 requests. At Level 3 the Jev calls take 0.43~s on average (median 0.47~s, rule call included) and cost \$0.066. The Final message costs about the same at both levels: 5.8~s and \$0.26 at Level 2, against 5.5~s and \$0.23 at Level 3.
 
-Level 3 is 1.9 times faster and 2.2 times cheaper than Level 2. The first call explains most of the gap: the agent call at Level 2 takes 3.97~s per request and costs \$0.345 per 1,000 requests, and the Jev call at Level 3 takes 0.334~s and costs \$0.052. The final message at Level 3 reads 590.2 input tokens per request against 678.1 at Level 2, because its prompt carries only the account fields of Table~\ref{tab:fields}; we claim this input count only, because the final message calls vary between recordings.
+\subsection{Jev as the Deciding Step (Question 2)}\label{sec:classifier}
 
-\subsection{Jev Against the LLM as Classifier (Question 2)}\label{sec:classifier}
+\begin{table}[t]
+\caption{Accuracy of Jev on the 1,024 requests: the five answers of the first call, scored against the correct labels, and the rule answers, scored against the written rules.}
+\label{tab:jev}
+\footnotesize
+\setlength{\tabcolsep}{4pt}
+\begin{tabular}{@{}lrrr@{}}
+\toprule
+Answer & Correct & Scored & Accuracy (\%) \\
+\midrule
+Topic & 948 & 1,016 & 93.3 \\
+Priority & 886 & 1,024 & 86.5 \\
+Action & 746 & 1,024 & 72.9 \\
+Risk flag & 896 & 1,024 & 87.5 \\
+Injection flag & 1,008 & 1,024 & 98.4 \\
+Rule answers & 2,050 & 2,050 & 100.0 \\
+\bottomrule
+\end{tabular}
+\end{table}
 
-\begin{figure}[t]
-\centering
-\includegraphics[width=0.85\columnwidth]{experiment/results/figures/classifier.pdf}
-\caption{Accuracy of each field on the 100 requests.}
-\label{fig:classifier}
-\Description{Bar chart of the accuracy of Jev and of the LLM classifier for each of the five answer fields on the 100 requests.}
-\end{figure}
+Table~\ref{tab:jev} shows the answers that Jev gives when it decides. The first call is wrong in at least one of the five answers on 559 requests (54.6\%), and its action label is wrong on 278 requests. None of these 278 ends in a wrong outcome. Most land on a safe path: 210 are security reports where Jev names an action, a rule question breaks, and the reply gives the security steps, and 68 are requests where Jev answers with a reply and either a written rule denies the action (49 deletions and 15 refunds of used credits) or the injection rule applies (4 requests). The injection flag is on for all 27 requests that hide an order, and for 16 of the other 997 requests; a false flag only forces an answer. All 2,050 rule answers (532 rule calls) match the written rules.
 
-\input{experiment/results/tables/stage.tex}
-
-Figure~\ref{fig:classifier} and Table~\ref{tab:stage} compare the two classifiers on the same input and criteria. Jev is behind the LLM on four fields and ahead on the topic (87.5\% against 82.3\% of the 96 scored requests). Jev is wrong in at least one field in 61 of the 100 requests (61.0\%), against 35 (35.0\%) for the LLM. Jev is ahead on speed and cost: one call takes a median of 0.263~s against 5.223~s (20 times faster), and the classifier costs \$0.052 against \$0.564 per 1,000 requests (11 times cheaper).
-
-The routing rule, the written rules, and the Security rule catch the wrong answers. Jev gives a wrong topic or action in 27 of the 100 requests, and none is an error of Level 3; the LLM does the same in 24, and one of them is the 1 error of the LLM-classifier run: the written rules denied the refund that the classifier had asked for, and the customer got a refusal where the correct result is an answer. That run serves 69 and stops 30, and it takes 12.15~s and \$0.81 per 1,000 requests, against 4.19~s and \$0.279 for Level 3.
-
-\input{experiment/results/tables/calibration.tex}
-
-Table~\ref{tab:calibration} groups the answers that carry a confidence (the topic, the action, and the risk flag) by that confidence. Wrong answers cluster in the low and middle bands: 24 of the 57 answers below 0.8 are wrong, against 9 of the 190 answers at 0.9 or more (4.7\%). The ECE runs from 0.052 (the topic) to 0.145 (the action). Only Jev reports a confidence, and we tested no significance of the bins.
+The priority label is a label, not a scheduling result: we did not measure waiting time or response time.
 
 \section{Discussion and Limits}\label{sec:discussion}
 
-Level 3 buys time, cost, and fewer errors: the sign test separates the two levels, Level 3 is never worse in any measure, and the gain comes from the first call, where a fast classifier replaces a reasoning LLM agent. The written rules make a weaker classifier safe: Jev is behind the LLM on four fields, yet no wrong answer becomes an error of Level 3. The ablation of the fixed check shows where that safety lives: behind the recorded Level 2 agent the same check rules the 100 answers exactly as the agent did and changes no run (\(p = 1\)), while behind Jev it turns 22 error runs, every one of them a harmful action, into stops (66/12/22 without the check against 70/30/0 with it; sign test \(p = 4.8 \times 10^{-7}\)). The confidence of Jev does not buy an outcome either: a cascade that sends a request to the LLM when the chance of Jev on the action is below 0.9 escalates 19 requests and leaves the outcome at 70/30/0 while the cost rises from \$0.28 to \$0.42 per 1,000 requests; only at 0.99 (52 escalations, \$0.66) does the outcome move, and it moves down (69/30/1).
+Level 3 buys speed, lower cost, and fewer errors on this set. The gain comes from the decision call, where a fast classifier replaces a reasoning LLM agent; both levels pay about the same for the Final message, so Jev saves only the part that it replaces. Level 2 has no routing rule, so an order inside a text reaches the agent as a request, and 27 of its 31 errors are injection requests. Level 3 turns the injection flag into a fixed routing rule, and Jev sets the flag on every attack of this set.
 
-\textbf{Limits.} The evidence comes from two hosted models, one synthetic SaaS product, our own labels, and one run per request: 100 requests in 24 types. Zero harmful runs at Level 3 in 100 requests is not proof of zero: the Wilson 95\% upper limit of 0/100 is 3.7\%. The popup delay and the silence time \(T\) are not simulated, and the 90~s at Level 1 is assumed, with the staff assumed correct. The classifier comparison uses one prompt wording and one run per request, and errors are graded by the action label, not by the words of the reply. The Security rule and the account-field table were found on an earlier 50-request set of these same 24 types, so this run is not a blind test of either. Time and cost of the final message calls vary between recordings, Level 2 was recorded at another time than Level 3, and the provider's prompt cache supplied 31.9\% of the input tokens of the recorded LLM calls, so the cost of every level is an upper bound.
+The design is a limit on what each model can trigger, not a check of the facts. Jev has no action tool, but its answers decide which code runs, and the code trusts them: one wrong rule answer can allow an unsafe action or stop a right one. Fixed execution is therefore not independent policy verification. On this set Jev's rule answers are all right, and its wrong action labels do not become wrong outcomes, but we cannot say that this holds on other requests.
+
+\textbf{Limits.} The evidence comes from two hosted models, one synthetic SaaS product, our own labels, and one run per request and level: 1,024 requests in 26 types from a template-based generator, not production traffic. The two automated levels differ in model, input, and flow, so the results do not show which part of the change causes the gain. Zero errors and zero harmful runs at Level 3 do not prove zero: the Wilson 95\% upper limit of 0/1,024 is 0.37\%. The rule evaluation is not blind: two refund inputs, the question about used credits and the line with the days since the charge, were changed after earlier failures, and the Security rule and the account-field table were found on an older set of 50 requests. Time and cost are the recorded values of the successful calls at list price; a first pass lost requests to rate-limit errors and a second pass completed them. The popup delay and the silence time \(T\) are not simulated, the 90~s at Level 1 is assumed, and the text of the replies is not scored. We did not test trained classifiers, other decision models, or a held-out request set.
 
 \section{Conclusion}
 
-We built three levels of customer support on one ladder and measured them on the same 100 requests, by what the customer gets. One LLM agent already serves most requests, but no fixed code stands behind it, and 2 of its errors run a plan change against the written rules. Splitting the job at Level 3 (Jev, fixed code, and an LLM writer) gives no error, 1.9 times the speed, and 2.2 times lower cost, and the sign test shows that the drop in errors is significant (\(p = 0.031\)). The written rules carry that result: behind Jev they turn 22 harmful runs into stops, and behind the LLM agent they change nothing. Future work should test adversarial inputs, real tickets, more request types, and the popup and the silence timer with real customers.
+We built three levels of customer support on one ladder and ran the two automated levels on the same 1,024 requests, judged by what the customer gets. One LLM agent serves most requests, but no fixed code stands behind it: it makes 31 errors, 10 of them harmful, and 27 are injection requests. At Level 3, Jev answers five questions and then one question for each written rule, and fixed code follows the answers; it makes no error on this set, needs less than half the mean machine time, and has 2.2 times lower API cost. These results hold for one run on a synthetic challenge set, and the code does not verify Jev's answers, so they are no safety guarantee. Future work should test real tickets, a held-out request set, and stronger baselines, and should measure the popup and the silence timer with real customers.
 
 \begin{acks}
 We thank our lecturer of the course \emph{English Writing and Presentation Skills} for guidance on scientific writing.
@@ -371,9 +383,9 @@ This page records assigned responsibilities. Percentages retain the group's decl
 \hline
 1 & Tran Thanh Long (Leader) & Topic coordination; Abstract, Introduction, Conclusion; final editing and formatting. & 28\% \\
 \hline
-2 & Nguyen Thanh Nam & Written rules: the routing rules of Level 3 and the Rules check for refunds and deletions. & 22\% \\
+2 & Nguyen Thanh Nam & Written rules: the rule questions of Level 3, the injection rule, and the Security rule. & 22\% \\
 \hline
-3 & Vu Van Son & Synthetic data (100 requests of 24 types); running the experiment. & 18\% \\
+3 & Vu Van Son & Synthetic data (1,024 requests of 26 types); running the experiment. & 18\% \\
 \hline
 4 & Vuong Quang Quy & Results and Discussion; generated tables and charts. & 17\% \\
 \hline

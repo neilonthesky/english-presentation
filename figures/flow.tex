@@ -12,24 +12,25 @@
   lb/.style={font=\scriptsize, inner sep=1.5pt, fill=white, text width=16mm, align=center},
   lw/.style={font=\scriptsize, inner sep=1.5pt, fill=white}]
   \node[fx] (new) at (0,0) {New\\[-1pt]{\scriptsize message saved}};
-  \node[md, text width=24mm] (tri) at (3.4,0) {Triage\\[-1pt]{\scriptsize Jev: five answers, each with a chance}};
+  \node[md, text width=24mm] (tri) at (3.4,0) {Triage\\[-1pt]{\scriptsize Jev: five answers about the chat}};
   \node[fx, text width=26mm] (gat) at (8.0,0) {Gather info\\[-1pt]{\scriptsize reads only the fields\\the action needs}};
-  \node[rl] (rul) at (11.5,0) {Rules check\\[-1pt]{\scriptsize written rules}};
-  \node[fx] (act) at (15.0,0) {Do action\\[-1pt]{\scriptsize refund, cancel plan, or reset password}};
-  \node[md, text width=22mm] (fin) at (15.0,-1.9) {Final message\\[-1pt]{\scriptsize the LLM tells the result}};
-  \node[fx, text width=23mm] (cha) at (15.0,-3.6) {Chat open\\[-1pt]{\scriptsize popup: did this solve your issue?}};
+  \node[md, text width=26mm] (rul) at (12.2,0) {Rules\\[-1pt]{\scriptsize Jev: one yes/no answer for each written rule}};
+  \node[fx] (act) at (16.2,0) {Do action\\[-1pt]{\scriptsize refund, cancel plan, or reset password}};
+  \node[md, text width=22mm] (fin) at (16.2,-1.9) {Final message\\[-1pt]{\scriptsize the LLM tells the result}};
+  \node[fx, text width=23mm] (cha) at (16.2,-3.6) {Chat open\\[-1pt]{\scriptsize popup: did this solve your issue?}};
   \node[fx] (res) at (0,-3.6) {Resolved\\[-1pt]{\scriptsize chat closed}};
 
   \draw[ar] (new) -- (tri);
   \draw[ar] (tri) -- node[lb, above=1pt, text width=18mm]{the classifier answer} node[lb, below=1pt, text width=18mm]{injection: orders ignored} (gat);
-  \draw[ar] (gat) -- node[lw, above]{facts} (rul);
-  \draw[ar] (rul) -- node[lw, above]{allowed} (act);
+  \draw[ar] (gat) -- node[lb, above=1pt, text width=13mm]{action changes state} (rul);
+  \draw[ar] (gat.south) |- node[lw, above, pos=0.78]{Send reply: no rule question} (fin.west);
+  \draw[ar] (rul) -- node[lb, above=1pt, text width=13mm]{no answer says broken} (act);
   \draw[ar] (act) -- node[lw, right]{ok or failed} (fin);
-  \draw[ar] ([xshift=-8mm]rul.south) -- (10.7,-1.0) -- (14.2,-1.0) -- ([xshift=-8mm]fin.north);
-  \node[lw] at (12.45,-1.0) {denied: nothing runs};
+  \draw[ar] ([xshift=-8mm]rul.south) -- (11.4,-1.0) -- (15.4,-1.0) -- ([xshift=-8mm]fin.north);
+  \node[lw] at (13.4,-1.0) {a rule is broken: nothing runs};
   \draw[ar] (fin) -- (cha);
   \draw[ar] (cha.west) -- node[lw, above]{popup: yes, silent for T, or no N times} (res.east);
-  \draw[ar] (cha.east) -- (16.7,-3.6) -- (16.7,1.0) -- (new.north |- 0,1.0) -- (new.north);
-  \node[lw] at (8.3,1.0) {same chat: customer writes again};
+  \draw[ar] (cha.east) -- (18.0,-3.6) -- (18.0,1.0) -- (new.north |- 0,1.0) -- (new.north);
+  \node[lw] at (9.0,1.0) {same chat: customer writes again};
 \end{tikzpicture}
 \end{document}
