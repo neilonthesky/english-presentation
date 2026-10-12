@@ -1,10 +1,10 @@
 # Kế hoạch tương tác với khán giả (Audience Interaction Plan)
 
-Tài liệu này chi tiết hóa chiến lược tương tác với khán giả trong bài thuyết trình 29 slide (cộng Slide 30 là slide câu hỏi; 940 giây nói, tức 15 phút 40 giây, cộng tối đa 300 giây hỏi đáp). Mục tiêu là duy trì sự tập trung tích cực của người nghe, đáp ứng trọn vẹn tiêu chí 4 trong mẫu đánh giá chéo (Interaction with audience, 1.0 điểm), và bám sát lời khuyên của giảng viên:
+Tài liệu này chi tiết hóa chiến lược tương tác với khán giả trong bài thuyết trình 29 slide (cộng Slide 30 là slide câu hỏi; 820 giây nói, tức 13 phút 40 giây, cộng tối đa 300 giây hỏi đáp). Mục tiêu là duy trì sự tập trung tích cực của người nghe, đáp ứng trọn vẹn tiêu chí 4 trong mẫu đánh giá chéo (Interaction with audience, 1.0 điểm), và bám sát lời khuyên của giảng viên:
 
 > *"Trong lúc thuyết trình nên có sự tương tác với khán giả, ví dụ đặt câu hỏi hoặc mở đầu bằng một câu chuyện, để bài nói hấp dẫn hơn. Đồng thời hãy giới thiệu rõ tên từng người để người nghe dễ đánh giá."*
 
-**Quyết định của nhóm:** TOÀN BỘ tương tác với khán giả do trưởng nhóm **Tran Thanh Long** thực hiện ở phần mở đầu bài nói (Slide 1 đến Slide 3). Bốn bạn còn lại (Nguyen Thanh Nam, Vu Van Son, Vuong Quang Quy, Nguyen Phuong Nam) chỉ trình bày slide của mình: không bình chọn, không đặt câu hỏi cho khán giả, không yêu cầu giơ tay. Toàn bộ phần Q&A sau bài nói cũng do Long trả lời. Lời nói trong tài liệu này là đúng lời của `speaker_1.md` (tập lệnh tạo tài liệu đã kiểm tra).
+**Quyết định của nhóm:** TOÀN BỘ tương tác với khán giả do trưởng nhóm **Tran Thanh Long** thực hiện ở phần mở đầu bài nói (Slide 1 đến Slide 3). Bốn bạn còn lại (Nguyen Thanh Nam, Vu Van Son, Vuong Quang Quy, Nguyen Phuong Nam) chỉ trình bày slide của mình, nói thẳng từ trên xuống dưới: không chào, không tự giới thiệu, không bàn giao, không bình chọn, không đặt câu hỏi cho khán giả, không yêu cầu giơ tay. Long đọc tên cả bốn bạn ở Slide 1. Toàn bộ phần Q&A sau bài nói do Long mở và trả lời. Lời nói trong tài liệu này là đúng lời của `speaker_1.md` (tập lệnh tạo tài liệu đã kiểm tra).
 
 ---
 
@@ -12,24 +12,24 @@ Tài liệu này chi tiết hóa chiến lược tương tác với khán giả 
 
 | Thời điểm | Slide | Diễn giả | Kỹ thuật tương tác | Thời lượng mục tiêu | Phương án dự phòng khi cả phòng im lặng |
 | :---: | :---: | :--- | :--- | :---: | :--- |
-| **1** | Slide 1 | **Tran Thanh Long** | Câu chuyện mở đầu: khách hàng chờ 2 ngày để được hoàn tiền | 45 s | Chuyển ý tự nhiên: "I see a few knowing smiles in the front row." |
-| **2** | Slide 2 | **Tran Thanh Long** | Câu hỏi giơ tay: "Have you ever waited more than twenty-four hours for an answer from customer support?" | 15 s | "You write to support, and you wait." |
-| **3** | Slide 2 | **Tran Thanh Long** | Bình chọn nhanh: "Which action would you never let a chatbot do alone?" | 40 s | "For FrameForge, deleted video projects and trained models cannot be restored, so our written rules always deny data deletion in chat." |
+| **1** | Slide 1 | **Tran Thanh Long** | Câu chuyện mở đầu: khách hàng chờ 2 ngày để được hoàn tiền | 35 s | Chuyển ý tự nhiên: "I see a few knowing smiles in the front row." |
+| **2** | Slide 2 | **Tran Thanh Long** | Câu hỏi giơ tay: "Have you ever waited more than twenty-four hours for an answer from customer support?" | 10 s | "You write to support, and you wait." |
+| **3** | Slide 2 | **Tran Thanh Long** | Bình chọn nhanh: "Which action would you never let a chatbot do alone?" | 20 s | "For FrameForge, deleted video projects and trained models cannot be restored, so our written rules always deny data deletion in chat." |
 | **4** | Slide 3 | **Tran Thanh Long** | Câu hỏi dự đoán: "Which level do you think is faster and cheaper, Level Two or Level Three?" | 20 s | "No guess yet? That is fine. The results will show the answer." (không tiết lộ số liệu) |
 
-Thời gian của ba slide mở đầu đã bao gồm phần tương tác: Slide 1 là 67 giây (khoảng 45 giây là câu chuyện), Slide 2 là 98 giây (khoảng 55 giây là giơ tay và bình chọn) và Slide 3 là 98 giây (khoảng 20 giây là câu hỏi dự đoán). Bốn bạn còn lại không đặt câu hỏi cho khán giả. Số giây của từng người nằm trong `README.md`.
+Thời gian của ba slide mở đầu đã bao gồm phần tương tác: Slide 1 là 50 giây (khoảng 35 giây là câu chuyện), Slide 2 là 70 giây (khoảng 30 giây là giơ tay và bình chọn) và Slide 3 là 41 giây (khoảng 20 giây là câu hỏi dự đoán). Nam, Son, Quy và Phuong Nam không đặt câu hỏi cho khán giả. Số giây của từng người nằm trong `README.md`.
 
 ---
 
 ## Thời điểm 1: Câu chuyện mở đầu (Slide 1)
 
 - **Người thực hiện:** Tran Thanh Long (Trưởng nhóm)
-- **Thời điểm trong bài nói:** khoảng 0:15 đến 1:00 (slide 1 kéo dài từ 0:00 đến 1:07)
+- **Thời điểm trong bài nói:** khoảng 0:16 đến 0:50 (slide 1 kéo dài từ 0:00 đến 0:50; câu chuyện là phần cuối của slide)
 - **Vùng giao tiếp ánh mắt:** Quét mắt chậm rãi khắp cả phòng học, bắt đầu từ cánh trái, chuyển dần qua trung tâm và dừng ở cánh phải.
 - **Cử chỉ hình thể:** Hướng hai tay ra phía trước với lòng bàn tay mở nhẹ; hạ tông giọng để tạo sự đồng cảm và kết nối cảm xúc.
 
 ### Kịch bản nói tiếng Anh:
-> Imagine this. It is Friday evening. You subscribed to an AI video tool for forty dollars, but the render failed. You ask for a refund in the support chat. The chat says: *Your request is in the queue.* You wait one hour. You wait two whole days, until Monday morning. `[NGHỈ 1 GIÂY]` That waiting hurts. But an AI chatbot that handles money is dangerous: one bad answer can refund the wrong customer or delete user files. Today, we show how we handle this for FrameForge, a made-up AI video service.
+> Imagine this. It is Friday evening. Your AI video render failed, and you ask the support chat for a refund. The chat says: *Your request is in the queue.* You wait two whole days, until Monday morning. `[NGHỈ 1 GIÂY]` That waiting hurts. But an AI chatbot that handles money is dangerous: one bad answer can refund the wrong customer. Today, we study this problem for FrameForge, a made-up AI video service.
 
 ### Phương án dự phòng khi khán giả im lặng:
 Nếu người nghe ngồi yên hoặc chưa phản ứng, Long dừng lại 2 giây, mỉm cười và nói:
@@ -40,7 +40,7 @@ Nếu người nghe ngồi yên hoặc chưa phản ứng, Long dừng lại 2 g
 ## Thời điểm 2: Câu hỏi giơ tay biểu quyết (Slide 2)
 
 - **Người thực hiện:** Tran Thanh Long (Trưởng nhóm)
-- **Thời điểm trong bài nói:** khoảng 1:07 đến 1:20 (slide 2 bắt đầu ở 1:07 và kết thúc ở 2:45); đây là câu đầu tiên của slide 2
+- **Thời điểm trong bài nói:** khoảng 0:50 đến 1:01 (slide 2 bắt đầu ở 0:50 và kết thúc ở 2:00); đây là câu đầu tiên của slide 2
 - **Vùng giao tiếp ánh mắt:** Nhìn thẳng vào khu vực trung tâm lớp học, chạm ánh mắt trực tiếp với 2 đến 3 bạn sinh viên cụ thể.
 - **Cử chỉ hình thể:** Giơ cao tay phải qua vai một cách dứt khoát để làm mẫu cho cả lớp cùng làm theo.
 
@@ -58,12 +58,12 @@ Nếu sau 3 giây không ai giơ tay:
 Long đặt câu hỏi sau khi giới thiệu Level Two (chatbot LLM tự do), vì lúc đó khán giả vừa nghe về rủi ro khi để chatbot xử lý tiền và dữ liệu.
 
 - **Người thực hiện:** Tran Thanh Long (Trưởng nhóm)
-- **Thời điểm trong bài nói:** khoảng 2:01 đến 2:40 (slide 2 kết thúc ở 2:45)
+- **Thời điểm trong bài nói:** khoảng 1:31 đến 1:51 (slide 2 kết thúc ở 2:00)
 - **Vùng giao tiếp ánh mắt:** Tập trung vào nửa bên trái của phòng học, sau đó chuyển sang nửa bên phải.
 - **Cử chỉ hình thể:** Hơi nghiêng người về phía trước; mở lòng bàn tay hướng nhẹ về phía người nghe. Giơ tay phải khi nói "Hands up", để khán giả làm theo.
 
 ### Kịch bản nói tiếng Anh:
-> Now a quick poll. Four actions can change an account: a refund, a plan cancellation, a password reset, and a data deletion. Which one would you never let a chatbot do alone? `[NGHỈ 1 GIÂY]` Hands up for the refund? `[NGHỈ 2 GIÂY]` Hands up for the data deletion? `[NGHỈ 2 GIÂY]` Many people choose data deletion, and we agree: it cannot be undone. Our written rules always deny it in chat.
+> Now a quick poll: which action would you never let a chatbot do alone? A refund, a cancellation, a password reset, or a data deletion? Hands up for data deletion. `[NGHỈ 2 GIÂY]` Our written rules always deny it in chat.
 
 ### Phương án dự phòng khi khán giả im lặng:
 Nếu cả lớp ngồi yên và không ai phản ứng:
@@ -76,7 +76,7 @@ Nếu cả lớp ngồi yên và không ai phản ứng:
 Long hỏi ngay sau khi giới thiệu ba cấp độ. Long **không được tiết lộ đáp án**, kể cả bằng con số hay gợi ý; chỉ nói rằng dữ liệu sẽ cho biết ở phần kết quả. Khi đến Slide 26 và 27, Quy chỉ trình bày số liệu và không hỏi lại khán giả.
 
 - **Người thực hiện:** Tran Thanh Long (Trưởng nhóm)
-- **Thời điểm trong bài nói:** khoảng 4:04 đến 4:24 (slide 3 bắt đầu ở 2:45 và kết thúc ở 4:23)
+- **Thời điểm trong bài nói:** khoảng 2:20 đến 2:40 (slide 3 bắt đầu ở 2:00 và kết thúc ở 2:41)
 - **Vùng giao tiếp ánh mắt:** Giao tiếp ánh mắt trực tiếp với giảng viên và các bạn sinh viên ngồi ở hàng ghế đầu.
 - **Cử chỉ hình thể:** Giơ 2 ngón tay khi nhắc đến Level Two, sau đó giơ 3 ngón tay khi nhắc đến Level Three.
 
@@ -91,13 +91,13 @@ Nếu căn phòng hoàn toàn yên tĩnh sau 3 giây, không nêu con số nào 
 
 ## Q&A do Long phụ trách
 
-- Sau lời mời của Nguyen Phuong Nam ("Our leader, Tran Thanh Long, will now take your questions."), **Long trả lời toàn bộ câu hỏi** trong tối đa 5 phút. Chi tiết và 19 câu trả lời chuẩn nằm trong `qa_prep.md`.
+- Sau khi Phuong Nam nói xong Slide 29, Long bước lên, mời khán giả đặt câu hỏi (Slide 30 đã hiện "Questions?") và **trả lời toàn bộ câu hỏi** trong tối đa 5 phút. Chi tiết và 19 câu trả lời chuẩn nằm trong `qa_prep.md`.
 - Bốn bạn còn lại đứng bên cạnh sân khấu, lắng nghe, không tự ý trả lời. Chỉ khi Long chủ động nhường lời cho người phụ trách phần đó (ví dụ Son cho câu hỏi về cách chạy thí nghiệm) thì người đó mới nói, và chỉ khi thật cần.
 - Long nhắc lại câu hỏi bằng lời của mình trước khi trả lời, để cả lớp nghe rõ và để có thêm vài giây suy nghĩ.
 
 ## Quy tắc cho bốn thành viên còn lại: lắng nghe tích cực
 
-- Không đặt câu hỏi cho khán giả, không bình chọn, không yêu cầu giơ tay trong phần của mình. Nếu có tình huống bất ngờ giữa bài, chỉ tiếp tục trình bày và giữ đúng thời gian.
+- Không chào, không tự giới thiệu, không bàn giao, không đặt câu hỏi cho khán giả, không bình chọn, không yêu cầu giơ tay trong phần của mình: nói thẳng từ đầu đến cuối phần của mình. Nếu có tình huống bất ngờ giữa bài, chỉ tiếp tục trình bày và giữ đúng thời gian.
 - Khi Long tương tác (Slide 1 đến 3) và khi Long trả lời Q&A: đứng nghiêm túc ở một bên sân khấu, nhìn về phía Long, thỉnh thoảng gật đầu. Không bấm điện thoại, không thì thầm.
 
 ---

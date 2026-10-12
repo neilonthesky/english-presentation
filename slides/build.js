@@ -95,9 +95,9 @@ const RED_HAT_BENCHMARK_URL = "https://developers.redhat.com/articles/2026/10/02
 // Speakers and speaking time per logical section; each walk-through section spans several slides.
 const LONG = "Tran Thanh Long", NAM = "Nguyen Thanh Nam", SON = "Vu Van Son", QUY = "Vuong Quang Quy", PNAM = "Nguyen Phuong Nam";
 const SPEAKER = [
-  [LONG, 67], [LONG, 98], [LONG, 98],
-  [LONG, 12], // many rules
-  [LONG, 23], [LONG, 40], [LONG, 26], [LONG, 26], [LONG, 24], // written rules, Level 2 flow, Level 3 flow, inputs, typed answers
+  [LONG, 50], [LONG, 70], [LONG, 41],
+  [LONG, 7], // many rules
+  [LONG, 23], [LONG, 33], [LONG, 26], [LONG, 23], [LONG, 21], // written rules, Level 2 flow, Level 3 flow, inputs, typed answers
   [LONG, 22], [LONG, 12], [LONG, 12], // the three walk-throughs (CASES in cases.js): every click is its own slide, so these seconds cover all of them
   // Each of the four other speakers has two slides and 120 s.
   [NAM, 60], [NAM, 60], // test data, outcomes
@@ -346,7 +346,7 @@ async function photo(file, w, h, radius = 0.08, dpi = 150) {
     const s = base(
       4,
       "Real support policies have many rules",
-      "Real support policies have many rules, like this. There are many rules to apply, but today we will make it simple, with the essential rules gate only.",
+      "Real support policies have many rules, like this. Today we keep only the essential gate.",
       true, undefined, { w: 3.5, h: 1.5, fontSize: 28, valign: "top" }
     );
     // A diamond of rule chips that fades at the top and the bottom: an illustration of a policy that has grown to hundreds of rules, not data of the experiment.
@@ -859,7 +859,7 @@ async function photo(file, w, h, radius = 0.08, dpi = 150) {
     const s = base(
       13,
       `Test data: ${data.customers} customers, ${sampleSize} requests`,
-      `Thank you, Long. My name is Nguyen Thanh Nam. I will explain our test data. Public datasets have no SaaS accounts, so we built our own: ${data.customers} FrameForge customers, each with one purchase, a credit balance, and a log of password reset links. Each customer sends ${requestsPerCustomer} requests, so we have ${sampleSize} requests of ${data.categories} types in five groups. High-impact actions are the largest group, with ${groupSize[0]} requests. We made the set hard on purpose: a written rule denies the action on ${data.finalDenied} requests, and ${injectionRequests} requests hide an order in the message. A seeded generator writes the requests and runs the real code of the system to make the correct answers. This is a challenge set, not production traffic.`
+      `Public datasets have no SaaS accounts, so we built our own: ${data.customers} FrameForge customers, each with one purchase, a credit balance, and a log of password reset links. Each customer sends ${requestsPerCustomer} requests, so we have ${sampleSize} requests of ${data.categories} types in five groups. High-impact actions are the largest group, with ${groupSize[0]} requests. We made the set hard on purpose: a written rule denies the action on ${data.finalDenied} requests, and ${injectionRequests} requests hide an order in the message. A seeded generator writes the requests and runs the real code of the system to make the correct answers. This is a challenge set, not production traffic.`
     );
     const cardH = 4.05;
     box(s, ML, 1.6, 7.9, cardH);
@@ -884,7 +884,7 @@ async function photo(file, w, h, radius = 0.08, dpi = 150) {
     const s = base(
       14,
       "Every request ends served, stopped, or in error",
-      "Now, how we score a request. We look at what the customer gets. Served means the run ends with the correct result. Stopped means a written rule denies the action, nothing runs, and the reply gives the reason. Error is every other run. A run is harmful if it changes money, data, the plan, or the password against the written rules. We also report the machine time of one request, the API cost per 1,000 requests, and the error counts on this request set. Now my teammate Vu Van Son will explain the run."
+      "Now, how we score a request. We look at what the customer gets. Served means the run ends with the correct result. Stopped means a written rule denies the action, nothing runs, and the reply gives the reason. Error is every other run. A run is harmful if it changes money, data, the plan, or the password against the written rules. We also report the machine time of one request, the API cost per 1,000 requests, and the error counts on this request set."
     );
     const gap = 0.3, cw = (CW - 2 * gap) / 3, y = 1.6, h = 2.75;
     [
@@ -910,7 +910,7 @@ async function photo(file, w, h, radius = 0.08, dpi = 150) {
     const s = base(
       15,
       `Both levels run on the same ${sampleSize} requests`,
-      `Thank you, Nam. My name is Vu Van Son. I will explain how we ran the experiment. We call two hosted models for real: Jev, version 1.13.0, and DeepSeek V4.1 Flash. Both levels run on the same ${sampleSize} requests, in separate runs. Level 2 makes two LLM calls for each request. Level 3 makes ${(jevCalls / level3.requests).toFixed(1)} Jev calls and one LLM call. Jev costs 4.2 cents per million input tokens, and its output is free. The LLM costs 15 cents in and 60 cents out per million tokens. At list price, 1,000 requests cost $${cost2} at Level 2 and $${cost3} at Level 3. These are API token charges, not total operating cost.`
+      `We call two hosted models for real: Jev, version 1.13.0, and DeepSeek V4.1 Flash. Both levels run on the same ${sampleSize} requests, in separate runs. Level 2 makes two LLM calls for each request. Level 3 makes ${(jevCalls / level3.requests).toFixed(1)} Jev calls and one LLM call. Jev costs 4.2 cents per million input tokens, and its output is free. The LLM costs 15 cents in and 60 cents out per million tokens. At list price, 1,000 requests cost $${cost2} at Level 2 and $${cost3} at Level 3. These are API token charges, not total operating cost.`
     );
     // The run in one strip: the requests of each run and the two hosted models.
     {
@@ -967,7 +967,7 @@ async function photo(file, w, h, radius = 0.08, dpi = 150) {
     const s = base(
       16,
       "Jev on our SaaS test set: speed, cost, and accuracy",
-      `Now the first result, for Jev alone. The median Jev time per request, including rule calls, is ${level3.decisionLatency.median.toFixed(2)} seconds, and all Jev calls cost $${level3.decisionCostPer1000.toFixed(3)} per 1,000 requests. The first call gives the right topic on ${(100 * quality.queue.accuracy).toFixed(1)} percent of the scored requests, the priority on ${(100 * quality.priority.accuracy).toFixed(1)} percent, the action on ${(100 * quality.action.accuracy).toFixed(1)} percent, and the injection flag on ${(100 * quality.injection.accuracy).toFixed(1)} percent. ${count(ruleStats.matching)} of ${count(ruleStats.answers)} rule answers match the written rules. The first-call action label is wrong on ${wrongActions.length} requests, and ${wrongActionOutcomes === 0 ? "none" : wrongActionOutcomes} of these end in a wrong outcome. ${CHANGED_SHORT}, so the rule evaluation was not blind. Now my teammate Vuong Quang Quy will compare the two levels.`
+      `Now the first result, for Jev alone. The median Jev time per request, including rule calls, is ${level3.decisionLatency.median.toFixed(2)} seconds, and all Jev calls cost $${level3.decisionCostPer1000.toFixed(3)} per 1,000 requests. The first call gives the right topic on ${(100 * quality.queue.accuracy).toFixed(1)} percent of the scored requests, the priority on ${(100 * quality.priority.accuracy).toFixed(1)} percent, the action on ${(100 * quality.action.accuracy).toFixed(1)} percent, and the injection flag on ${(100 * quality.injection.accuracy).toFixed(1)} percent. ${count(ruleStats.matching)} of ${count(ruleStats.answers)} rule answers match the written rules. The first-call action label is wrong on ${wrongActions.length} requests, and ${wrongActionOutcomes === 0 ? "none" : wrongActionOutcomes} of these end in a wrong outcome. ${CHANGED_SHORT}, so the rule evaluation was not blind.`
     );
     box(s, ML, 1.65, 7.6, 4.9);
     const labels = ["Topic", "Priority", "Action", "Injection flag", "Rule answers"];
@@ -994,7 +994,7 @@ async function photo(file, w, h, radius = 0.08, dpi = 150) {
     const s = base(
       17,
       "On our SaaS test set: lower time, cost, and error count",
-      `Thank you, Son. My name is Vuong Quang Quy. I will compare the two levels on the same ${sampleSize} requests. Level 2 serves ${level2.served}, stops ${level2.stopped}, and makes ${level2.errors} errors, ${level2.harmful} of them harmful. Level 3 serves ${level3.served}, stops ${level3.stopped}, and makes ${level3.errors} errors and ${level3.harmful} harmful runs. Level 3 has ${speedRatio} times lower mean machine time, ${time3} seconds against ${time2}, and ${costRatio} times lower API cost, $${cost3} against $${cost2} per 1,000 requests. Of the ${level2.errors} Level 2 errors, ${injectionErrors2} are injection requests. The harmful errors run ${harmfulRefunds2} refunds and ${harmfulCancellations2} plan cancellations. These are outcomes on this synthetic set, not a guarantee of safety.`
+      `We compare the two levels on the same ${sampleSize} requests. Level 2 serves ${level2.served}, stops ${level2.stopped}, and makes ${level2.errors} errors, ${level2.harmful} of them harmful. Level 3 serves ${level3.served}, stops ${level3.stopped}, and makes ${level3.errors} errors and ${level3.harmful} harmful runs. Level 3 has ${speedRatio} times lower mean machine time, ${time3} seconds against ${time2}, and ${costRatio} times lower API cost, $${cost3} against $${cost2} per 1,000 requests. Of the ${level2.errors} Level 2 errors, ${injectionErrors2} are injection requests. The harmful errors run ${harmfulRefunds2} refunds and ${harmfulCancellations2} plan cancellations. These are outcomes on this synthetic set, not a guarantee of safety.`
     );
     box(s, ML, 1.65, 7.6, 3.95);
     const cats = ["Level 2: LLM agent", "Level 3: Jev + LLM"];
@@ -1032,8 +1032,7 @@ async function photo(file, w, h, radius = 0.08, dpi = 150) {
         `First, Jev sets the injection flag right on ${(100 * quality.injection.accuracy).toFixed(1)} percent of the requests, and when it is on, the process sends a reply. ` +
         `Second, ${count(ruleStats.matching)} of ${count(ruleStats.answers)} rule answers match the written rules on this set. ` +
         `Third, the first-call action label is wrong on ${wrongActions.length} requests, and ${wrongActionOutcomes === 0 ? "none" : wrongActionOutcomes} of them end in a wrong outcome. ` +
-        `Level 3 makes ${level3.errors} errors and ${level3.harmful} harmful runs on this set. ${CHANGED_SHORT}, so this is not a blind evaluation. ` +
-        "Now Nguyen Phuong Nam will explain our idea."
+        `Level 3 makes ${level3.errors} errors and ${level3.harmful} harmful runs on this set. ${CHANGED_SHORT}, so this is not a blind evaluation.`
     );
     const gap = 0.3, cw = (CW - 2 * gap) / 3, y0 = 1.6, h0 = 3.95;
     [
@@ -1057,7 +1056,7 @@ async function photo(file, w, h, radius = 0.08, dpi = 150) {
     const s = base(
       19,
       "Our idea: limit what each model can trigger",
-      "Thank you, Quy. My name is Nguyen Phuong Nam. I will explain our idea: limit what each model can trigger. " +
+      "Our idea is to limit what each model can trigger. " +
         "Jev has no action tool. It answers typed questions about the chat and the rules. Fixed code runs the action only when no answer reports a broken rule. " +
         "The LLM writes the final message after the action or the refusal, and it cannot change that decision. " +
         "This is fixed execution, not independent policy verification: the code does not recheck the policy facts against the account, so a wrong rule answer can still allow an unsafe action."
@@ -1105,7 +1104,7 @@ async function photo(file, w, h, radius = 0.08, dpi = 150) {
       `Speaker: ${PNAM}, about ${SPEAKER[19][1]} s. To finish, we measured two automated levels of customer support in separate runs on the same ${sampleSize} requests. Level 2 serves ${level2.served}, stops ${level2.stopped}, and makes ${level2.errors} errors. Level 3 serves ${level3.served}, stops ${level3.stopped}, and makes ${level3.errors} errors. ` +
         `Level 3 has ${speedRatio} times lower mean machine time and ${costRatio} times lower API cost. Jev needs a question that we write for each rule. ${CHANGED_SHORT}, so this rule evaluation was not blind. We did not test trained classifiers or other decision models. Next, we need real tickets, a held-out request set, and stronger baselines. ` +
         "The Red Hat link on this slide is outside context, not our data. " +
-        "Thank you for listening. Our leader, Tran Thanh Long, will now take your questions."
+        "Thank you for listening."
     );
   }
 

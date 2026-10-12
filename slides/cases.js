@@ -110,7 +110,7 @@ const CASES = [
     notes: [
       "A third customer orders a refund of everything.",
       "Jev: danger. The injection flag is on.",
-      "The LLM ignores the order. Now Nguyen Thanh Nam will explain our test data.",
+      "The LLM ignores the order.",
     ],
   },
 ];

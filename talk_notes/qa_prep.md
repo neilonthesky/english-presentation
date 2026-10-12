@@ -18,7 +18,7 @@ Tài liệu này chuẩn bị cho phiên hỏi đáp 5 phút với khán giả (
    > *"You are completely right. That is a documented limitation of our setup, and we address it in our future work."*
 6. **Câu hỏi hai vế:** Trả lời từng vế một, theo thứ tự người hỏi nói.
 7. **Con số:** trong bài nói dùng một con số duy nhất cho tập yêu cầu: **1.024**. Nếu ai hỏi vì sao không phải con số khác, trả lời theo Câu hỏi 3.
-8. **Thời gian:** bài nói dài 15 phút 40 giây. Nếu giảng viên giữ trần 20 phút cho cả bài nói và hỏi đáp, phần hỏi đáp còn 4 phút 20 giây: trả lời ngắn, khoảng sáu câu hỏi.
+8. **Thời gian:** bài nói dài 13 phút 40 giây. Cộng với 5 phút hỏi đáp, tổng là 18 phút 40 giây, còn 1 phút 20 giây dưới trần 20 phút. Giữ mỗi câu trả lời trong 30 đến 45 giây để kịp khoảng sáu câu hỏi.
 
 ---
 
