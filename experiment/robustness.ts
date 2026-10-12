@@ -36,8 +36,8 @@ import { createHash } from "node:crypto"
 import { mkdir, readFile, rename, writeFile } from "node:fs/promises"
 import { join } from "node:path"
 import { ACTION_CRITERIA, JEV_URL, JEV_QUESTIONS, LLM_MODEL, LLM_URL, classifierState, transport } from "../web/server/models"
-import { requesterFor, useWorld } from "../web/server/saas"
-import { loadDataset } from "./dataset"
+import { useWorld } from "../web/server/saas"
+import { loadDataset, senderOf } from "./dataset"
 import { callCost, type ClassifierRequestRecord } from "./pipeline"
 import { pmap } from "./pmap"
 import { MAX_RETRIES, installRecordedTransport, withCallLog, type CallNote } from "./transport"
@@ -356,7 +356,7 @@ function detail(field: Field, before: AnswersById, after: AnswersById, requests:
 }
 
 /** The state that Jev reads: the text of the request, the sender, the channel, and the help articles of the text. */
-const stateOf = (req: TestRequest) => classifierState(req.text, requesterFor(req.customerId, req.role))
+const stateOf = (req: TestRequest) => classifierState(req.text, senderOf(req.customerId))
 
 // ---------------------------------------------------------------- the four probes
 
@@ -601,7 +601,7 @@ async function main(): Promise<void> {
     if (!text) throw new Error(`${req.id}: the paraphrase call returned no text`)
     return { text, cached: call?.cached ?? false, inputTokens: call?.inputTokens ?? 0, outputTokens: call?.outputTokens ?? 0 }
   })
-  const paraphraseStates = requests.map((req, index) => classifierState(paraphrases[index].text, requesterFor(req.customerId, req.role)))
+  const paraphraseStates = requests.map((req, index) => classifierState(paraphrases[index].text, senderOf(req.customerId)))
   const paraphraseProbes = await pmap(paraphraseStates, WORKERS, (state) => probeJev({ state, model: JEV_MODEL, questions: BASE }))
   const paraphraseAnswers: AnswersById = new Map(
     requests.map((req, index): [string, Record<string, string | null>] => [

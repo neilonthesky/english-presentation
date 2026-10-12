@@ -47,13 +47,13 @@ Tài liệu này liệt kê các bước tập luyện và bảng tự chấm đ
 | 26 | Result 1: Jev is fast and cheap, and mostly right | Son | 40 giây | 11 phút 00 giây |
 | 27 | Result 2: Level 3 is faster, cheaper, and makes fewer errors | Quy | 78 giây | 12 phút 18 giây |
 | 28 | Our idea: limit what each model can trigger | Phuong Nam | 35 giây | 12 phút 53 giây |
-| 29 | The gain is clear, but our evidence is small | Phuong Nam | 55 giây | 13 phút 48 giây |
+| 29 | Why Level 3 stays safe when Jev is wrong | Phuong Nam | 55 giây | 13 phút 48 giây |
 | 30 | Conclusion | Phuong Nam | 35 giây | 14 phút 23 giây |
 | 31 | Questions? (Long trả lời; bốn thẻ chỉ slide cần mở) | Long | không tính | 14 phút 23 giây |
 
 **Lưu ý về tốc độ:** thời gian trên là thời gian ghi trong ghi chú của bộ slide hiện tại (`slides/build.js`, hàm `base` và mảng `SPEAKER`). Cả ba walk-through đều được tính là một khối nói liền: Long bấm phím để đi qua từng khung, và toàn bộ chuỗi khung nằm trong số giây của slide mở đầu. Tổng cộng 863 giây nói, tiếp theo là 300 giây hỏi đáp.
 
-**Cảnh báo về tốc độ nói:** so với số từ trong ghi chú slide, Son cần nói khoảng 170 từ mỗi phút, Quy khoảng 141 từ mỗi phút và Phuong Nam khoảng 178 từ mỗi phút để kịp khung thời gian; tốc độ nói rõ ràng thông thường là 120 đến 130 từ mỗi phút. Ba bạn này phải bấm giờ khi luyện tập. Nếu vượt khung, rút gọn các câu phụ (các con số token chi tiết ở Slide 25, câu về tập yêu cầu thứ hai ở Slide 29, các câu phân tích ở Slide 28) và giữ nguyên các số liệu chính. Nam (khoảng 122 từ mỗi phút) và Long (khoảng 121 từ mỗi phút) nằm trong tốc độ thoải mái.
+**Cảnh báo về tốc độ nói:** so với số từ trong ghi chú slide, Son cần nói khoảng 170 từ mỗi phút, Quy khoảng 141 từ mỗi phút và Phuong Nam khoảng 139 từ mỗi phút để kịp khung thời gian; tốc độ nói rõ ràng thông thường là 120 đến 130 từ mỗi phút. Ba bạn này phải bấm giờ khi luyện tập. Nếu vượt khung, rút gọn các câu phụ (các con số token chi tiết ở Slide 25, câu về tập yêu cầu thứ hai ở Slide 29, các câu phân tích ở Slide 28) và giữ nguyên các số liệu chính. Nam (khoảng 122 từ mỗi phút) và Long (khoảng 121 từ mỗi phút) nằm trong tốc độ thoải mái.
 
 ---
 
@@ -71,7 +71,7 @@ Phải thuộc lòng và nói chính xác các câu tiếng Anh sau, không thay
    > "Now my teammate Vuong Quang Quy will compare the two levels."
 
 4. **Quy chuyển cho Phuong Nam** (cuối Slide 27):
-   > "Now Nguyen Phuong Nam will explain how Level 3 limits each model, and the limits of our work."
+   > "Now Nguyen Phuong Nam will explain how Level 3 limits each model, and why it stays safe."
 
 5. **Phuong Nam chuyển sang phần hỏi đáp** (cuối Slide 30):
    > "Our leader, Tran Thanh Long, will now take your questions."
@@ -105,14 +105,14 @@ Phải thuộc lòng và nói chính xác các câu tiếng Anh sau, không thay
 - [ ] **1.** Bảng kế hoạch thời gian trong phần 1 khớp với thời gian thật đã đo (sai số dưới 15 giây mỗi người).
 - [ ] **2.** Mỗi người thuộc câu tự giới thiệu và câu bàn giao của mình trong phần 2, nói chính xác từng từ.
 - [ ] **3.** Bốn người còn lại **không trả lời** câu hỏi trong phần Q&A trừ khi Long nhường lời đúng như mô tả trong `qa_prep.md`.
-- [ ] **4.** Tất cả các con số trong bài nói trùng với ghi chú trên slide: 512 khách hàng, 1.024 yêu cầu, 24 loại, 1.434 lượt gọi Jev, 61 lỗi ở Level 2, 0 lỗi ở Level 3, p = 0,031.
+- [ ] **4.** Tất cả các con số trong bài nói trùng với ghi chú trên slide: 512 khách hàng, 1.024 yêu cầu, 21 loại, 1.434 lượt gọi Jev, 61 lỗi ở Level 2, 0 lỗi ở Level 3, p = 0,031.
 
 ### B. Slide và thiết bị
 
 - [ ] **5.** Mỗi thành viên biết chính xác số slide mình phụ trách và không bấm chuyển slide ngoài danh sách.
 - [ ] **6.** Sơ đồ và biểu đồ trong slide đọc được từ cuối lớp, không có chữ bị chồng hoặc tràn khung.
 - [ ] **7.** Bản PDF dự phòng đã được chuẩn bị sẵn và đã thử mở trên máy trình chiếu.
-- [ ] **8.** Slide 21 và Slide 22 khớp với tập dữ liệu: 512 khách hàng, mỗi tài khoản có một teammate không có quyền thanh toán, 901 trong 1.024 người gửi là chủ tài khoản và 123 là teammate.
+- [ ] **8.** Slide 21 và Slide 22 khớp với tập dữ liệu: 512 khách hàng, mỗi khách gửi từ 1 đến 3 yêu cầu, 248 trong 1.024 yêu cầu bị một luật từ chối, và 48 yêu cầu giấu lệnh trong tin nhắn.
 
 ### C. Phần hỏi đáp
 

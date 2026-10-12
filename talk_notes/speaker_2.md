@@ -24,7 +24,7 @@
 - **Thời gian dự kiến trên slide:** 0 phút 41 giây (41 giây, ~78 từ)
 
 > `[NHÌN KHÁN GIẢ - MỈM CƯỜI]`  
-> Thank you, Long. My name is Nguyen Thanh Nam. I will explain our test data. Public datasets have no SaaS accounts, so we built our own: five hundred and twelve FrameForge customers. Each customer has one purchase, a plan and its state, a render-credit balance, a log of password reset links, and a teammate without billing rights. So the written rules can use real account fields, and the customers cover every branch of the rules. They send one thousand and twenty-four requests of twenty-four types.
+> Thank you, Long. My name is Nguyen Thanh Nam. I will explain our test data. Public datasets have no SaaS accounts, so we built our own: five hundred and twelve FrameForge customers. Each customer has one purchase, a plan and its state, a render-credit balance, and a log of password reset links. So the written rules can use real account fields, and the customers cover every branch of the rules. They send one thousand and twenty-four requests of twenty-one types.
 > 
 > `[NGHỈ 1 GIÂY]`  
 > 
@@ -36,7 +36,7 @@
 - **Tiêu đề slide:** 1,024 requests in ten families
 - **Thời gian dự kiến trên slide:** 0 phút 39 giây (39 giây, ~80 từ)
 
-> A seeded generator wrote the one thousand and twenty-four requests. The twenty-four types form ten families. Questions and answers is the largest, with two hundred and forty-six requests, then refunds with one hundred and sixty-four, plan cancellations with one hundred and forty-three, and password resets with one hundred and twenty-three. Every request has its own words. Nine hundred and one senders are the account owner, and one hundred and twenty-three are a teammate of the workspace without billing rights. The correct answers come from the written rules, because the generator runs the real code. A rule denies the action on three hundred and seven of the one thousand and twenty-four requests.
+> A seeded generator wrote the one thousand and twenty-four requests. The twenty-one types form ten families. Questions and answers is the largest, with two hundred and eighty-eight requests, then refunds with one hundred and forty-four, plan cancellations with one hundred and four, and password resets with ninety-six. Every request has its own words. The correct answers come from the written rules, because the generator runs the real code. A rule denies the action on two hundred and forty-eight of the one thousand and twenty-four requests.
 > 
 > `[NGHỈ 1 GIÂY]`  
 > 
@@ -71,17 +71,17 @@ Nói chính xác câu tiếng Anh này để chuyển tiếp cho Son (Diễn gi�
 ### Câu hỏi 1:
 **"Why did you build a synthetic dataset instead of using a public customer support dataset like Bitext?"**
 - **Câu trả lời ngắn (3 câu):**
-  > "Public datasets give intent labels only, with no SaaS account behind them. Our written rules need real fields: the purchase date, the credits used, the state of the plan, and the teammate. So we generated five hundred and twelve complete customer accounts, and the rules read the same fields as a real support system."
+  > "Public datasets give intent labels only, with no SaaS account behind them. Our written rules need real fields: the purchase date, the credits used, and the state of the plan. So we generated five hundred and twelve complete customer accounts, and the rules read the same fields as a real support system."
 
 ### Câu hỏi 2:
 **"Where do the correct answers of the test data come from?"**
 - **Câu trả lời ngắn (3 câu):**
-  > "The generator runs the real code of the system, so the correct answer of each request is the result that the written rules give on that account. One rule denies the action on three hundred and seven of the one thousand and twenty-four requests. This keeps the labels and the code consistent, but it also means the labels are not an independent source of truth."
+  > "The generator runs the real code of the system, so the correct answer of each request is the result that the written rules give on that account. One rule denies the action on two hundred and forty-eight of the one thousand and twenty-four requests. This keeps the labels and the code consistent, but it also means the labels are not an independent source of truth."
 
 ### Câu hỏi 3:
-**"Why do some requests come from a teammate, and what does that change?"**
+**"How many requests does each customer send, and why only twenty-one request types?"**
 - **Câu trả lời ngắn (3 câu):**
-  > "Every customer account has one teammate without rights over billing or data, and one hundred and twenty-three of the one thousand and twenty-four requests come from that teammate. The rules 'owner only' and 'own account' exist exactly for those requests: a teammate cannot start a refund, cancel a plan, or delete data. So the test data covers both sides of those rules."
+  > "Each customer sends one to three requests, and four hundred and sixty-two of the five hundred and twelve customers send exactly two. The twenty-one types cover every branch of the written rules: the questions, the four actions, the injection and the mixed requests. Each type has forty-eight requests, except cancel plan and delete data, which have fifty-six."
 
 ---
 

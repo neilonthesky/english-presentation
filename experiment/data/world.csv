@@ -1,73 +1,513 @@
-id,name,email,teammate_name,teammate_email,plan,credits_left,renews,plan_cancelled,password_resets,refunds_last_90_days,purchase_id,item,category,status,amount,charged,usage,unused
-c001,Karim Becker,karim.becker@mail.example,Grace Garcia,grace.garcia@web.example,Pro,2000,2027-10-02,false,1,0,FF-10001,"Pro plan, annual",Annual plan,Paid,99,2026-10-02,No credits used,true
-c002,Mai Pham,mai.pham@post.example,Grace Yamada,grace.yamada@inbox.example,Team,10000,2027-09-21,false,1,0,FF-10002,"Team plan, annual",Annual plan,Paid,87,2026-09-21,No credits used,true
-c003,Chi Bui,chi.bui@post.example,Tam Dang,tam.dang@web.example,Pro,2000,2027-09-16,false,2,1,FF-10003,"Pro plan, annual",Annual plan,Paid,54,2026-09-16,No credits used,true
-c004,Sofia Hansen,sofia.hansen@post.example,Victor Laurent,victor.laurent@post.example,Pro,1200,2027-09-10,false,1,0,FF-10004,"Pro plan, annual",Annual plan,Paid,36,2026-09-10,"Used 800 of 2,000 credits",false
-c005,Thu Duong,thu.duong@mail.example,Nhung Duong,nhung.duong@post.example,Team,10000,2027-09-06,false,1,0,FF-10005,"Team plan, annual",Annual plan,Paid,92,2026-09-06,No credits used,true
-c006,Duc Hoang,duc.hoang@mail.example,Vy Hoang,vy.hoang@mail.example,Team,9800,2027-09-26,false,2,1,FF-10006,"Team plan, annual",Annual plan,Paid,84,2026-09-26,"Rendered 8 video clips in the web studio, 200 credits used",false
-c007,Phuong Pham,phuong.pham@post.example,Hung Ngo,hung.ngo@inbox.example,Team,10000,2027-09-29,false,2,1,FF-10007,"Team plan, annual",Annual plan,Paid,72,2026-09-29,No credits used,true
-c008,Wendy Kowalski,wendy.kowalski@inbox.example,Lucia Ishikawa,lucia.ishikawa@mail.example,Team,1410,2027-10-01,false,1,0,FF-10008,"Team plan, annual",Annual plan,Paid,51,2026-10-01,"Used 8,590 of 10,000 credits",false
-c009,Mai Ly,mai.ly@inbox.example,Wendy Tanaka,wendy.tanaka@mail.example,Pro,2000,2027-09-08,false,2,0,FF-10009,"Pro plan, annual",Annual plan,Paid,49,2026-09-08,No credits used,true
-c010,Quan Ly,quan.ly@inbox.example,Wendy Ishikawa,wendy.ishikawa@mail.example,Team,5030,2026-10-21,false,2,0,FF-10010,"Team plan, monthly",Monthly plan,Paid,70,2026-09-21,"Used 4,970 of 10,000 credits",false
-c011,Karim Vogel,karim.vogel@inbox.example,Khanh Ly,khanh.ly@mail.example,Team,10000,2026-11-04,false,0,0,FF-10011,"Team plan, monthly",Monthly plan,Paid,88,2026-10-05,No credits used,true
-c012,Grace Ishikawa,grace.ishikawa@mail.example,Uma Zimmermann,uma.zimmermann@inbox.example,Team,8610,2026-10-25,false,0,1,FF-10012,"Team plan, monthly",Monthly plan,Paid,66,2026-09-25,"Used 1,390 of 10,000 credits",false
-c013,Thu Do,thu.do@mail.example,Linh Vu,linh.vu@mail.example,Team,10000,2026-10-21,false,0,1,FF-10013,"Team plan, monthly",Monthly plan,Paid,100,2026-09-21,No credits used,true
-c014,Nhung Ho,nhung.ho@web.example,Daniel Costa,daniel.costa@mail.example,Team,10000,2026-10-25,true,2,0,FF-10014,"Team plan, monthly",Monthly plan,Paid,75,2026-09-25,No credits used,true
-c015,Sofia Garcia,sofia.garcia@post.example,Irene Vogel,irene.vogel@post.example,Team,3530,2026-10-25,true,1,0,FF-10015,"Team plan, monthly",Monthly plan,Paid,54,2026-09-25,"Used 6,470 of 10,000 credits",false
-c016,Pablo Kowalski,pablo.kowalski@inbox.example,Karim Petrov,karim.petrov@inbox.example,Pro,2000,2026-10-22,true,0,0,FF-10016,"Pro plan, monthly",Monthly plan,Paid,21,2026-09-22,No credits used,true
-c017,Khanh Bui,khanh.bui@post.example,Alice Novak,alice.novak@web.example,Pro,2000,2027-10-04,false,2,1,FF-10017,"Pro plan, annual",Annual plan,Paid,192,2026-10-04,No credits used,true
-c018,Zoe Becker,zoe.becker@post.example,Lan Ho,lan.ho@inbox.example,Pro,530,2027-09-28,false,0,0,FF-10018,"Pro plan, annual",Annual plan,Paid,215,2026-09-28,"Used 1,470 of 2,000 credits",false
-c019,Hung Vo,hung.vo@mail.example,Chi Dang,chi.dang@mail.example,Team,10000,2027-09-29,false,1,0,FF-10019,"Team plan, annual",Annual plan,Paid,260,2026-09-29,No credits used,true
-c020,Mai Bui,mai.bui@post.example,Omar Novak,omar.novak@web.example,Pro,1875,2027-10-05,false,1,1,FF-10020,"Pro plan, annual",Annual plan,Paid,292,2026-10-05,"Rendered 5 video clips in the web studio, 125 credits used",false
-c021,Wendy Laurent,wendy.laurent@inbox.example,Marco Tanaka,marco.tanaka@inbox.example,Team,9875,2026-10-24,false,0,0,FF-10021,"Team plan, monthly",Monthly plan,Paid,279,2026-09-24,"Rendered 5 video clips in the web studio, 125 credits used",false
-c022,Phuc Vo,phuc.vo@inbox.example,Felix Eriksson,felix.eriksson@mail.example,Team,10000,2026-10-25,false,2,0,FF-10022,"Team plan, monthly",Monthly plan,Paid,175,2026-09-25,No credits used,true
-c023,Tam Ly,tam.ly@post.example,Sofia Yamada,sofia.yamada@inbox.example,Pro,2000,2026-10-31,false,2,0,FF-10023,"Pro plan, monthly",Monthly plan,Paid,138,2026-10-01,No credits used,true
-c024,Duc Bui,duc.bui@inbox.example,Nam Le,nam.le@mail.example,Team,9825,2026-10-30,false,2,1,FF-10024,"Team plan, monthly",Monthly plan,Paid,288,2026-09-30,"Rendered 7 video clips in the web studio, 175 credits used",false
-c025,Ben Dubois,ben.dubois@mail.example,Daniel Novak,daniel.novak@web.example,Team,10000,2026-10-27,false,2,1,FF-10025,"Team plan, monthly",Monthly plan,Paid,246,2026-09-27,No credits used,true
-c026,Jonas Eriksson,jonas.eriksson@post.example,Daniel Jansen,daniel.jansen@mail.example,Pro,2000,2027-09-04,false,1,0,FF-10026,"Pro plan, annual",Annual plan,Paid,45,2026-09-04,No credits used,true
-c027,Thanh Tran,thanh.tran@web.example,Pablo Muller,pablo.muller@post.example,Team,10000,2027-08-15,false,0,0,FF-10027,"Team plan, annual",Annual plan,Paid,138,2026-08-15,No credits used,true
-c028,Karim Eriksson,karim.eriksson@post.example,Grace Tanaka,grace.tanaka@mail.example,Pro,2000,2027-08-08,false,0,1,FF-10028,"Pro plan, annual",Annual plan,Paid,110,2026-08-08,No credits used,true
-c029,Tom Becker,tom.becker@web.example,Son Ngo,son.ngo@mail.example,Pro,2000,2027-08-13,false,1,1,FF-10029,"Pro plan, annual",Annual plan,Paid,114,2026-08-13,No credits used,true
-c030,Marco Eriksson,marco.eriksson@post.example,Elena Garcia,elena.garcia@inbox.example,Pro,2000,2026-10-08,false,2,0,FF-10030,"Pro plan, monthly",Monthly plan,Paid,56,2026-09-08,No credits used,true
-c031,Grace Laurent,grace.laurent@inbox.example,Tuan Nguyen,tuan.nguyen@inbox.example,Pro,2000,2026-10-06,false,1,0,FF-10031,"Pro plan, monthly",Monthly plan,Paid,117,2026-09-06,No credits used,true
-c032,Jonas Rossi,jonas.rossi@inbox.example,Tam Ngo,tam.ngo@inbox.example,Pro,2000,2026-10-06,false,0,0,FF-10032,"Pro plan, monthly",Monthly plan,Paid,207,2026-09-06,No credits used,true
-c033,Ngoc Dinh,ngoc.dinh@web.example,Victor Kowalski,victor.kowalski@mail.example,Team,10000,2026-10-15,false,1,1,FF-10033,"Team plan, monthly",Monthly plan,Paid,172,2026-09-15,No credits used,true
-c034,Elena Tanaka,elena.tanaka@inbox.example,Nhung Dang,nhung.dang@post.example,Team,10000,2026-10-13,false,2,1,FF-10034,"Team plan, monthly",Monthly plan,Paid,213,2026-09-13,No credits used,true
-c035,Victor Muller,victor.muller@mail.example,Trang Nguyen,trang.nguyen@inbox.example,Team,6840,2027-08-26,false,1,0,FF-10035,"Team plan, annual",Annual plan,Paid,99,2026-08-26,"Used 3,160 of 10,000 credits",false
-c036,Nam Dang,nam.dang@post.example,Alice Anderson,alice.anderson@inbox.example,Pro,590,2027-08-09,false,2,0,FF-10036,"Pro plan, annual",Annual plan,Paid,57,2026-08-09,"Used 1,410 of 2,000 credits",false
-c037,Clara Petrov,clara.petrov@post.example,Lucia Kowalski,lucia.kowalski@inbox.example,Team,9900,2027-08-22,false,2,0,FF-10037,"Team plan, annual",Annual plan,Paid,117,2026-08-22,"Rendered 4 video clips in the web studio, 100 credits used",false
-c038,Irene Laurent,irene.laurent@mail.example,Nam Ly,nam.ly@mail.example,Team,740,2027-08-16,false,0,1,FF-10038,"Team plan, annual",Annual plan,Paid,38,2026-08-16,"Used 9,260 of 10,000 credits",false
-c039,Trang Pham,trang.pham@web.example,Sofia Tanaka,sofia.tanaka@mail.example,Pro,710,2026-10-08,false,2,1,FF-10039,"Pro plan, monthly",Monthly plan,Paid,85,2026-09-08,"Used 1,290 of 2,000 credits",false
-c040,Clara Eriksson,clara.eriksson@mail.example,Duc Duong,duc.duong@mail.example,Team,4800,2026-10-06,false,0,0,FF-10040,"Team plan, monthly",Monthly plan,Paid,230,2026-09-06,"Used 5,200 of 10,000 credits",false
-c041,Bao Do,bao.do@inbox.example,Ngoc Vo,ngoc.vo@post.example,Team,9900,2026-10-10,false,2,0,FF-10041,"Team plan, monthly",Monthly plan,Paid,244,2026-09-10,"Rendered 4 video clips in the web studio, 100 credits used",false
-c042,Linh Le,linh.le@mail.example,Ben Zimmermann,ben.zimmermann@mail.example,Team,9875,2026-10-09,false,0,1,FF-10042,"Team plan, monthly",Monthly plan,Paid,138,2026-09-09,"Rendered 5 video clips in the web studio, 125 credits used",false
-c043,Grace Novak,grace.novak@post.example,Nina Muller,nina.muller@post.example,Pro,1800,2026-10-17,false,2,1,FF-10043,"Pro plan, monthly",Monthly plan,Paid,146,2026-09-17,"Rendered 8 video clips in the web studio, 200 credits used",false
-c044,Hoa Duong,hoa.duong@mail.example,Chi Ly,chi.ly@inbox.example,Pro,3000,2026-10-26,false,2,0,FF-10044,"Credit pack, 1,000 credits",Credit pack,Paid,10,2026-09-28,No credits used,true
-c045,Victor Ishikawa,victor.ishikawa@web.example,Phuc Truong,phuc.truong@post.example,Free,5000,2026-10-11,false,0,1,FF-10045,"Credit pack, 5,000 credits",Credit pack,Paid,50,2026-09-04,No credits used,true
-c046,Sofia Costa,sofia.costa@mail.example,Omar Hansen,omar.hansen@web.example,Pro,3000,2026-10-19,false,0,1,FF-10046,"Credit pack, 1,000 credits",Credit pack,Paid,10,2026-09-23,No credits used,true
-c047,Jonas Costa,jonas.costa@inbox.example,Nina Yamada,nina.yamada@web.example,Free,30000,2026-10-29,false,1,0,FF-10047,"Credit pack, 10,000 credits",Credit pack,Paid,300,2026-09-30,No credits used,true
-c048,Lucia Laurent,lucia.laurent@inbox.example,Nina Kowalski,nina.kowalski@web.example,Free,30000,2026-11-01,false,0,1,FF-10048,"Credit pack, 10,000 credits",Credit pack,Paid,300,2026-10-03,No credits used,true
-c049,Felix Hansen,felix.hansen@web.example,Yen Pham,yen.pham@web.example,Pro,3850,2026-10-20,false,1,0,FF-10049,"Credit pack, 2,500 credits",Credit pack,Paid,25,2026-08-31,"650 of 2,500 credits used",false
-c050,Trang Ho,trang.ho@inbox.example,Hanh Tran,hanh.tran@post.example,Pro,10700,2026-10-25,false,2,0,FF-10050,"Credit pack, 10,000 credits",Credit pack,Paid,100,2026-09-24,"1,300 of 10,000 credits used",false
-c051,Phuc Pham,phuc.pham@inbox.example,Pablo Novak,pablo.novak@inbox.example,Free,1800,2026-10-17,false,1,1,FF-10051,"Credit pack, 5,000 credits",Credit pack,Paid,100,2026-09-06,"8,200 of 10,000 credits used",false
-c052,Pablo Silva,pablo.silva@inbox.example,Nina Ishikawa,nina.ishikawa@inbox.example,Free,940,2026-11-02,false,0,0,FF-10052,"Credit pack, 1,000 credits",Credit pack,Paid,20,2026-09-29,"1,060 of 2,000 credits used",false
-c053,Zoe Silva,zoe.silva@post.example,Yen Dinh,yen.dinh@mail.example,Pro,1975,2027-09-15,false,0,2,FF-10053,"Pro plan, annual",Annual plan,Paid,38,2026-09-15,"Rendered one video clip in the web studio, 25 credits used",false
-c054,Karim Laurent,karim.laurent@mail.example,Quyen Do,quyen.do@post.example,Team,10000,2027-09-26,false,2,3,FF-10054,"Team plan, annual",Annual plan,Paid,84,2026-09-26,No credits used,true
-c055,Thanh Truong,thanh.truong@inbox.example,Quyen Nguyen,quyen.nguyen@post.example,Pro,170,2026-10-30,false,0,2,FF-10055,"Pro plan, monthly",Monthly plan,Paid,40,2026-09-30,"Used 1,830 of 2,000 credits",false
-c056,Yusuf Ishikawa,yusuf.ishikawa@web.example,Ben Costa,ben.costa@mail.example,Pro,2000,2026-10-25,false,1,2,FF-10056,"Pro plan, monthly",Monthly plan,Paid,93,2026-09-25,No credits used,true
-c057,Nina Zimmermann,nina.zimmermann@post.example,Trang Ngo,trang.ngo@inbox.example,Team,2620,2026-10-08,false,2,0,FF-10057,"Team plan, annual",Annual plan,Scheduled,58,2026-10-08,Renewal not charged yet,true
-c058,Hung Hoang,hung.hoang@inbox.example,Karim Rossi,karim.rossi@web.example,Team,4300,2026-10-06,false,0,0,FF-10058,"Team plan, annual",Annual plan,Scheduled,32,2026-10-06,Renewal not charged yet,true
-c059,Omar Petrov,omar.petrov@mail.example,Hugo Muller,hugo.muller@web.example,Pro,1000,2026-10-07,false,1,0,FF-10059,"Pro plan, annual",Annual plan,Scheduled,86,2026-10-07,Renewal not charged yet,true
-c060,Ngoc Tran,ngoc.tran@web.example,Ben Anderson,ben.anderson@web.example,Pro,1840,2026-10-07,false,2,1,FF-10060,"Pro plan, monthly",Monthly plan,Scheduled,61,2026-10-07,Renewal not charged yet,true
-c061,Irene Jansen,irene.jansen@mail.example,Chi Ho,chi.ho@post.example,Pro,970,2026-10-07,false,1,0,FF-10061,"Pro plan, monthly",Monthly plan,Scheduled,94,2026-10-07,Renewal not charged yet,true
-c062,Trang Truong,trang.truong@inbox.example,Victor Zimmermann,victor.zimmermann@mail.example,Team,5750,2026-10-08,false,1,1,FF-10062,"Team plan, monthly",Monthly plan,Scheduled,170,2026-10-08,Renewal not charged yet,true
-c063,Clara Yamada,clara.yamada@mail.example,Phuong Ho,phuong.ho@inbox.example,Pro,140,2026-10-06,false,0,0,FF-10063,"Pro plan, monthly",Monthly plan,Scheduled,299,2026-10-06,Renewal not charged yet,true
-c064,Hugo Novak,hugo.novak@post.example,Pablo Hansen,pablo.hansen@web.example,Pro,1450,2026-10-06,false,2,0,FF-10064,"Pro plan, monthly",Monthly plan,Scheduled,178,2026-10-06,Renewal not charged yet,true
-c065,Sofia Zimmermann,sofia.zimmermann@web.example,Son Do,son.do@post.example,Pro,2000,2027-09-30,false,0,0,FF-10065,"Pro plan, annual",Annual plan,Settling,58,2026-09-30,No credits used,true
-c066,Minh Tran,minh.tran@inbox.example,Rita Fischer,rita.fischer@mail.example,Team,10000,2027-09-30,false,2,1,FF-10066,"Team plan, annual",Annual plan,Settling,159,2026-09-30,No credits used,true
-c067,Quan Vu,quan.vu@mail.example,Jonas Silva,jonas.silva@web.example,Pro,2000,2026-10-31,false,0,0,FF-10067,"Pro plan, monthly",Monthly plan,Settling,34,2026-10-01,No credits used,true
-c068,Tam Nguyen,tam.nguyen@inbox.example,Minh Nguyen,minh.nguyen@mail.example,Pro,2000,2026-10-29,false,1,0,FF-10068,"Pro plan, monthly",Monthly plan,Settling,161,2026-09-29,No credits used,true
-c069,Tuan Duong,tuan.duong@mail.example,Binh Pham,binh.pham@post.example,Pro,2000,2026-11-01,false,0,0,FF-10069,"Pro plan, monthly",Monthly plan,Settling,121,2026-10-02,No credits used,true
-c070,Pablo Zimmermann,pablo.zimmermann@inbox.example,Yusuf Garcia,yusuf.garcia@post.example,Pro,2000,2027-09-21,true,2,0,FF-10070,"Pro plan, annual",Annual plan,Paid,191,2026-09-21,No credits used,true
-c071,Lan Vo,lan.vo@post.example,Quyen Pham,quyen.pham@web.example,Team,5820,2027-08-21,true,0,2,FF-10071,"Team plan, annual",Annual plan,Paid,144,2026-08-21,"Used 4,180 of 10,000 credits",false
-c072,Khanh Le,khanh.le@web.example,Bao Nguyen,bao.nguyen@web.example,Team,7390,2027-08-30,true,0,0,FF-10072,"Team plan, annual",Annual plan,Paid,95,2026-08-30,"Used 2,610 of 10,000 credits",false
+id,name,email,plan,credits_left,renews,plan_cancelled,password_resets,refunds_last_90_days,purchase_id,item,category,status,amount,charged,usage,unused
+c001,Rita Costa,rita.costa@inbox.example,Pro,1520,2027-09-30,false,0,0,FF-10001,"Pro plan, annual",Annual plan,Paid,69,2026-09-30,"Used 480 of 2,000 credits",false
+c002,Xuan Ly,xuan.ly@post.example,Pro,1050,2027-09-27,false,2,0,FF-10002,"Pro plan, annual",Annual plan,Paid,78,2026-09-27,"Used 950 of 2,000 credits",false
+c003,An Phan,an.phan@post.example,Pro,2000,2027-10-02,false,0,1,FF-10003,"Pro plan, annual",Annual plan,Paid,83,2026-10-02,No credits used,true
+c004,Huy Lam,huy.lam@inbox.example,Pro,2000,2027-10-04,false,1,1,FF-10004,"Pro plan, annual",Annual plan,Paid,90,2026-10-04,No credits used,true
+c005,Omar Nielsen,omar.nielsen@web.example,Team,10000,2027-09-20,false,1,0,FF-10005,"Team plan, annual",Annual plan,Paid,90,2026-09-20,No credits used,true
+c006,Hieu Truong,hieu.truong@post.example,Team,10000,2027-09-14,false,2,0,FF-10006,"Team plan, annual",Annual plan,Paid,40,2026-09-14,No credits used,true
+c007,Emil Garcia,emil.garcia@post.example,Team,10000,2027-09-06,false,1,0,FF-10007,"Team plan, annual",Annual plan,Paid,92,2026-09-06,No credits used,true
+c008,Giang Bui,giang.bui@post.example,Team,10000,2027-09-28,false,0,1,FF-10008,"Team plan, annual",Annual plan,Paid,60,2026-09-28,No credits used,true
+c009,Emil Grant,emil.grant@inbox.example,Pro,730,2027-10-01,false,1,1,FF-10009,"Pro plan, annual",Annual plan,Paid,52,2026-10-01,"Used 1,270 of 2,000 credits",false
+c010,Nhi Lam,nhi.lam@web.example,Team,10000,2027-09-10,false,0,0,FF-10010,"Team plan, annual",Annual plan,Paid,96,2026-09-10,No credits used,true
+c011,Quynh Ly,quynh.ly@post.example,Pro,1850,2027-09-27,false,0,0,FF-10011,"Pro plan, annual",Annual plan,Paid,87,2026-09-27,"Rendered 6 video clips in the web studio, 150 credits used",false
+c012,Nga Trinh,nga.trinh@mail.example,Team,2650,2027-09-05,false,2,0,FF-10012,"Team plan, annual",Annual plan,Paid,36,2026-09-05,"Used 7,350 of 10,000 credits",false
+c013,Uma Jansen,uma.jansen@post.example,Team,8710,2027-09-12,false,2,0,FF-10013,"Team plan, annual",Annual plan,Paid,63,2026-09-12,"Used 1,290 of 10,000 credits",false
+c014,Nora Esposito,nora.esposito@inbox.example,Team,10000,2027-09-20,false,1,1,FF-10014,"Team plan, annual",Annual plan,Paid,93,2026-09-20,No credits used,true
+c015,Khoa Ta,khoa.ta@inbox.example,Pro,2000,2027-09-28,false,1,0,FF-10015,"Pro plan, annual",Annual plan,Paid,98,2026-09-28,No credits used,true
+c016,Helena Zimmermann,helena.zimmermann@post.example,Pro,1925,2027-09-11,false,1,0,FF-10016,"Pro plan, annual",Annual plan,Paid,79,2026-09-11,"Rendered 3 video clips in the web studio, 75 credits used",false
+c017,Fiona Fontaine,fiona.fontaine@mail.example,Team,10000,2027-10-01,false,0,0,FF-10017,"Team plan, annual",Annual plan,Paid,40,2026-10-01,No credits used,true
+c018,Kien Pham,kien.pham@mail.example,Team,10000,2027-09-05,false,0,1,FF-10018,"Team plan, annual",Annual plan,Paid,100,2026-09-05,No credits used,true
+c019,Phat Dinh,phat.dinh@inbox.example,Team,10000,2027-09-08,false,0,0,FF-10019,"Team plan, annual",Annual plan,Paid,80,2026-09-08,No credits used,true
+c020,Phuc Lam,phuc.lam@inbox.example,Pro,1400,2027-09-26,false,2,0,FF-10020,"Pro plan, annual",Annual plan,Paid,93,2026-09-26,"Used 600 of 2,000 credits",false
+c021,Uma Grant,uma.grant@inbox.example,Team,10000,2027-09-22,false,0,1,FF-10021,"Team plan, annual",Annual plan,Paid,76,2026-09-22,No credits used,true
+c022,Thu Duong,thu.duong@inbox.example,Team,10000,2027-09-28,false,1,0,FF-10022,"Team plan, annual",Annual plan,Paid,33,2026-09-28,No credits used,true
+c023,Linh Do,linh.do@post.example,Team,10000,2027-09-17,false,0,1,FF-10023,"Team plan, annual",Annual plan,Paid,100,2026-09-17,No credits used,true
+c024,Nam Vu,nam.vu@post.example,Pro,2000,2027-10-03,false,2,1,FF-10024,"Pro plan, annual",Annual plan,Paid,69,2026-10-03,No credits used,true
+c025,Quyen Bui,quyen.bui@mail.example,Team,640,2027-09-28,false,2,0,FF-10025,"Team plan, annual",Annual plan,Paid,44,2026-09-28,"Used 9,360 of 10,000 credits",false
+c026,Cuong Ho,cuong.ho@mail.example,Pro,2000,2027-09-19,false,1,0,FF-10026,"Pro plan, annual",Annual plan,Paid,66,2026-09-19,No credits used,true
+c027,Son Ly,son.ly@post.example,Pro,1180,2027-09-17,false,2,0,FF-10027,"Pro plan, annual",Annual plan,Paid,83,2026-09-17,"Used 820 of 2,000 credits",false
+c028,Thu Ly,thu.ly@web.example,Team,9800,2027-09-18,false,1,1,FF-10028,"Team plan, annual",Annual plan,Paid,70,2026-09-18,"Rendered 8 video clips in the web studio, 200 credits used",false
+c029,Omar Jansen,omar.jansen@inbox.example,Team,380,2027-09-21,false,2,1,FF-10029,"Team plan, annual",Annual plan,Paid,27,2026-09-21,"Used 9,620 of 10,000 credits",false
+c030,Jonas Ishikawa,jonas.ishikawa@inbox.example,Pro,1875,2027-09-12,false,0,0,FF-10030,"Pro plan, annual",Annual plan,Paid,81,2026-09-12,"Rendered 5 video clips in the web studio, 125 credits used",false
+c031,Thanh Doan,thanh.doan@inbox.example,Pro,1170,2027-09-24,false,2,1,FF-10031,"Pro plan, annual",Annual plan,Paid,80,2026-09-24,"Used 830 of 2,000 credits",false
+c032,Hai Pham,hai.pham@mail.example,Team,10000,2027-09-20,false,0,0,FF-10032,"Team plan, annual",Annual plan,Paid,62,2026-09-20,No credits used,true
+c033,Omar Pereira,omar.pereira@inbox.example,Team,9950,2027-09-13,false,2,1,FF-10033,"Team plan, annual",Annual plan,Paid,30,2026-09-13,"Rendered 2 video clips in the web studio, 50 credits used",false
+c034,Alice Nielsen,alice.nielsen@inbox.example,Pro,1190,2027-09-29,false,1,1,FF-10034,"Pro plan, annual",Annual plan,Paid,73,2026-09-29,"Used 810 of 2,000 credits",false
+c035,Trang Hoang,trang.hoang@post.example,Pro,1740,2027-09-24,false,0,0,FF-10035,"Pro plan, annual",Annual plan,Paid,45,2026-09-24,"Used 260 of 2,000 credits",false
+c036,Elena Moreau,elena.moreau@inbox.example,Pro,2000,2027-09-22,false,2,0,FF-10036,"Pro plan, annual",Annual plan,Paid,75,2026-09-22,No credits used,true
+c037,Sofia Nielsen,sofia.nielsen@web.example,Team,10000,2027-09-14,false,0,0,FF-10037,"Team plan, annual",Annual plan,Paid,42,2026-09-14,No credits used,true
+c038,Felix Ortega,felix.ortega@post.example,Pro,2000,2027-09-11,false,1,0,FF-10038,"Pro plan, annual",Annual plan,Paid,70,2026-09-11,No credits used,true
+c039,Clara Haas,clara.haas@inbox.example,Team,9825,2027-09-07,false,0,1,FF-10039,"Team plan, annual",Annual plan,Paid,78,2026-09-07,"Rendered 7 video clips in the web studio, 175 credits used",false
+c040,Nhung Hoang,nhung.hoang@post.example,Team,9900,2027-09-22,false,2,0,FF-10040,"Team plan, annual",Annual plan,Paid,26,2026-09-22,"Rendered 4 video clips in the web studio, 100 credits used",false
+c041,Alice Ortega,alice.ortega@mail.example,Team,9875,2027-09-30,false,2,0,FF-10041,"Team plan, annual",Annual plan,Paid,51,2026-09-30,"Rendered 5 video clips in the web studio, 125 credits used",false
+c042,Pablo Jensen,pablo.jensen@inbox.example,Team,10000,2027-10-01,false,1,0,FF-10042,"Team plan, annual",Annual plan,Paid,84,2026-10-01,No credits used,true
+c043,Nhung Mai,nhung.mai@web.example,Team,10000,2027-09-10,false,1,1,FF-10043,"Team plan, annual",Annual plan,Paid,48,2026-09-10,No credits used,true
+c044,Wendy Carter,wendy.carter@inbox.example,Pro,150,2027-09-23,false,2,0,FF-10044,"Pro plan, annual",Annual plan,Paid,72,2026-09-23,"Used 1,850 of 2,000 credits",false
+c045,Wendy Ibrahim,wendy.ibrahim@post.example,Pro,1720,2027-09-09,false,2,1,FF-10045,"Pro plan, annual",Annual plan,Paid,92,2026-09-09,"Used 280 of 2,000 credits",false
+c046,Adam Vogel,adam.vogel@post.example,Pro,2000,2027-09-17,false,1,0,FF-10046,"Pro plan, annual",Annual plan,Paid,34,2026-09-17,No credits used,true
+c047,Rita Jensen,rita.jensen@mail.example,Team,10000,2027-09-17,false,1,0,FF-10047,"Team plan, annual",Annual plan,Paid,65,2026-09-17,No credits used,true
+c048,Hung Luu,hung.luu@web.example,Pro,2000,2027-09-19,false,2,0,FF-10048,"Pro plan, annual",Annual plan,Paid,43,2026-09-19,No credits used,true
+c049,Omar Ibrahim,omar.ibrahim@post.example,Pro,950,2027-09-14,false,1,1,FF-10049,"Pro plan, annual",Annual plan,Paid,70,2026-09-14,"Used 1,050 of 2,000 credits",false
+c050,Nhi Ta,nhi.ta@mail.example,Team,740,2027-10-03,false,2,0,FF-10050,"Team plan, annual",Annual plan,Paid,24,2026-10-03,"Used 9,260 of 10,000 credits",false
+c051,Trang Dang,trang.dang@web.example,Team,10000,2027-09-10,false,2,1,FF-10051,"Team plan, annual",Annual plan,Paid,88,2026-09-10,No credits used,true
+c052,Hieu Vu,hieu.vu@inbox.example,Pro,2000,2027-09-29,false,0,1,FF-10052,"Pro plan, annual",Annual plan,Paid,80,2026-09-29,No credits used,true
+c053,An Bui,an.bui@mail.example,Pro,1870,2027-09-29,false,2,1,FF-10053,"Pro plan, annual",Annual plan,Paid,62,2026-09-29,"Used 130 of 2,000 credits",false
+c054,Irene Zimmermann,irene.zimmermann@web.example,Team,9700,2027-10-03,false,0,1,FF-10054,"Team plan, annual",Annual plan,Paid,68,2026-10-03,"Rendered 12 video clips in the web studio, 300 credits used",false
+c055,Linh Ngo,linh.ngo@mail.example,Pro,2000,2027-09-05,false,0,0,FF-10055,"Pro plan, annual",Annual plan,Paid,84,2026-09-05,No credits used,true
+c056,Tam Phan,tam.phan@mail.example,Pro,1825,2027-09-23,false,2,0,FF-10056,"Pro plan, annual",Annual plan,Paid,68,2026-09-23,"Rendered 7 video clips in the web studio, 175 credits used",false
+c057,Uma Novak,uma.novak@inbox.example,Team,3110,2027-09-28,false,0,1,FF-10057,"Team plan, annual",Annual plan,Paid,40,2026-09-28,"Used 6,890 of 10,000 credits",false
+c058,Cuong Cao,cuong.cao@mail.example,Pro,2000,2027-09-08,false,1,1,FF-10058,"Pro plan, annual",Annual plan,Paid,86,2026-09-08,No credits used,true
+c059,Fiona Esposito,fiona.esposito@post.example,Pro,2000,2027-09-08,false,2,0,FF-10059,"Pro plan, annual",Annual plan,Paid,70,2026-09-08,No credits used,true
+c060,Helena Silva,helena.silva@web.example,Pro,560,2027-09-16,false,2,0,FF-10060,"Pro plan, annual",Annual plan,Paid,31,2026-09-16,"Used 1,440 of 2,000 credits",false
+c061,Tam Dinh,tam.dinh@inbox.example,Team,10000,2027-09-25,false,1,1,FF-10061,"Team plan, annual",Annual plan,Paid,44,2026-09-25,No credits used,true
+c062,Dung Le,dung.le@web.example,Team,10000,2027-09-23,false,2,0,FF-10062,"Team plan, annual",Annual plan,Paid,96,2026-09-23,No credits used,true
+c063,Helena Muller,helena.muller@inbox.example,Team,10000,2027-09-13,false,2,0,FF-10063,"Team plan, annual",Annual plan,Paid,64,2026-09-13,No credits used,true
+c064,Kevin Bianchi,kevin.bianchi@post.example,Pro,2000,2027-09-10,false,2,0,FF-10064,"Pro plan, annual",Annual plan,Paid,81,2026-09-10,No credits used,true
+c065,Ben Quinn,ben.quinn@web.example,Pro,1900,2026-10-30,false,0,0,FF-10065,"Pro plan, monthly",Monthly plan,Paid,83,2026-09-30,"Rendered 4 video clips in the web studio, 100 credits used",false
+c066,Trang Ho,trang.ho@post.example,Team,9800,2026-10-28,false,1,0,FF-10066,"Team plan, monthly",Monthly plan,Paid,44,2026-09-28,"Rendered 8 video clips in the web studio, 200 credits used",false
+c067,Hanh Le,hanh.le@inbox.example,Team,10000,2026-10-23,false,0,0,FF-10067,"Team plan, monthly",Monthly plan,Paid,36,2026-09-23,No credits used,true
+c068,Diana Petrov,diana.petrov@inbox.example,Team,2910,2026-10-26,false,1,0,FF-10068,"Team plan, monthly",Monthly plan,Paid,88,2026-09-26,"Used 7,090 of 10,000 credits",false
+c069,Carlos Lindgren,carlos.lindgren@post.example,Team,3030,2026-10-26,false,1,0,FF-10069,"Team plan, monthly",Monthly plan,Paid,56,2026-09-26,"Used 6,970 of 10,000 credits",false
+c070,Chi Hoang,chi.hoang@mail.example,Team,140,2026-10-29,false,1,1,FF-10070,"Team plan, monthly",Monthly plan,Paid,90,2026-09-29,"Used 9,860 of 10,000 credits",false
+c071,Marco Anderson,marco.anderson@post.example,Pro,2000,2026-10-24,false,1,0,FF-10071,"Pro plan, monthly",Monthly plan,Paid,93,2026-09-24,No credits used,true
+c072,Son Duong,son.duong@inbox.example,Pro,2000,2026-10-28,false,2,0,FF-10072,"Pro plan, monthly",Monthly plan,Paid,100,2026-09-28,No credits used,true
+c073,Lucia Petrov,lucia.petrov@inbox.example,Team,9900,2026-11-03,false,2,0,FF-10073,"Team plan, monthly",Monthly plan,Paid,82,2026-10-04,"Rendered 4 video clips in the web studio, 100 credits used",false
+c074,Ben Grant,ben.grant@post.example,Pro,170,2026-10-30,false,0,0,FF-10074,"Pro plan, monthly",Monthly plan,Paid,40,2026-09-30,"Used 1,830 of 2,000 credits",false
+c075,Nora Petrov,nora.petrov@inbox.example,Pro,2000,2026-10-21,false,0,0,FF-10075,"Pro plan, monthly",Monthly plan,Paid,59,2026-09-21,No credits used,true
+c076,Lucia Costa,lucia.costa@web.example,Team,10000,2026-10-21,false,1,1,FF-10076,"Team plan, monthly",Monthly plan,Paid,64,2026-09-21,No credits used,true
+c077,Nina Quinn,nina.quinn@web.example,Pro,2000,2026-10-28,false,0,0,FF-10077,"Pro plan, monthly",Monthly plan,Paid,67,2026-09-28,No credits used,true
+c078,Elena Laurent,elena.laurent@post.example,Team,4210,2026-10-25,false,1,1,FF-10078,"Team plan, monthly",Monthly plan,Paid,42,2026-09-25,"Used 5,790 of 10,000 credits",false
+c079,Ben Silva,ben.silva@inbox.example,Team,10000,2026-10-28,false,2,0,FF-10079,"Team plan, monthly",Monthly plan,Paid,94,2026-09-28,No credits used,true
+c080,Nam Vo,nam.vo@post.example,Team,5520,2026-11-03,false,1,1,FF-10080,"Team plan, monthly",Monthly plan,Paid,40,2026-10-04,"Used 4,480 of 10,000 credits",false
+c081,Daniel Novak,daniel.novak@inbox.example,Team,10000,2026-11-03,false,2,0,FF-10081,"Team plan, monthly",Monthly plan,Paid,80,2026-10-04,No credits used,true
+c082,Wendy Tanaka,wendy.tanaka@inbox.example,Pro,2000,2026-10-30,false,1,1,FF-10082,"Pro plan, monthly",Monthly plan,Paid,30,2026-09-30,No credits used,true
+c083,Clara Muller,clara.muller@mail.example,Pro,1725,2026-11-04,false,1,0,FF-10083,"Pro plan, monthly",Monthly plan,Paid,59,2026-10-05,"Rendered 11 video clips in the web studio, 275 credits used",false
+c084,Kevin Romero,kevin.romero@inbox.example,Team,1100,2026-10-28,false,1,0,FF-10084,"Team plan, monthly",Monthly plan,Paid,55,2026-09-28,"Used 8,900 of 10,000 credits",false
+c085,Uyen Tran,uyen.tran@inbox.example,Pro,2000,2026-10-25,false,0,0,FF-10085,"Pro plan, monthly",Monthly plan,Paid,29,2026-09-25,No credits used,true
+c086,Tuan Tran,tuan.tran@mail.example,Team,3100,2026-10-24,false,1,0,FF-10086,"Team plan, monthly",Monthly plan,Paid,60,2026-09-24,"Used 6,900 of 10,000 credits",false
+c087,Omar Vogel,omar.vogel@web.example,Pro,2000,2026-10-31,false,2,0,FF-10087,"Pro plan, monthly",Monthly plan,Paid,78,2026-10-01,No credits used,true
+c088,Fiona Quinn,fiona.quinn@mail.example,Pro,2000,2026-10-21,false,1,1,FF-10088,"Pro plan, monthly",Monthly plan,Paid,37,2026-09-21,No credits used,true
+c089,Omar Ishikawa,omar.ishikawa@mail.example,Pro,250,2026-10-26,false,0,0,FF-10089,"Pro plan, monthly",Monthly plan,Paid,61,2026-09-26,"Used 1,750 of 2,000 credits",false
+c090,Fiona Romero,fiona.romero@post.example,Team,10000,2026-10-25,false,1,1,FF-10090,"Team plan, monthly",Monthly plan,Paid,87,2026-09-25,No credits used,true
+c091,Tam Le,tam.le@mail.example,Team,9975,2026-11-04,false,1,0,FF-10091,"Team plan, monthly",Monthly plan,Paid,57,2026-10-05,"Rendered one video clip in the web studio, 25 credits used",false
+c092,Nam Nguyen,nam.nguyen@inbox.example,Pro,210,2026-10-29,false,0,0,FF-10092,"Pro plan, monthly",Monthly plan,Paid,59,2026-09-29,"Used 1,790 of 2,000 credits",false
+c093,Nina Dubois,nina.dubois@mail.example,Pro,2000,2026-10-29,false,1,0,FF-10093,"Pro plan, monthly",Monthly plan,Paid,24,2026-09-29,No credits used,true
+c094,Ngoc Huynh,ngoc.huynh@web.example,Team,8000,2026-11-01,true,0,0,FF-10094,"Team plan, monthly",Monthly plan,Paid,72,2026-10-02,"Used 2,000 of 10,000 credits",false
+c095,Jonas Okafor,jonas.okafor@mail.example,Pro,1875,2026-10-24,true,1,1,FF-10095,"Pro plan, monthly",Monthly plan,Paid,47,2026-09-24,"Rendered 5 video clips in the web studio, 125 credits used",false
+c096,Irene Tanaka,irene.tanaka@web.example,Team,5820,2026-10-24,true,0,1,FF-10096,"Team plan, monthly",Monthly plan,Paid,75,2026-09-24,"Used 4,180 of 10,000 credits",false
+c097,Julia Abbott,julia.abbott@post.example,Pro,2000,2026-11-04,true,0,0,FF-10097,"Pro plan, monthly",Monthly plan,Paid,91,2026-10-05,No credits used,true
+c098,Daniel Fischer,daniel.fischer@inbox.example,Pro,2000,2026-10-24,true,2,1,FF-10098,"Pro plan, monthly",Monthly plan,Paid,40,2026-09-24,No credits used,true
+c099,Laura Moreau,laura.moreau@web.example,Pro,1330,2026-10-25,true,1,1,FF-10099,"Pro plan, monthly",Monthly plan,Paid,26,2026-09-25,"Used 670 of 2,000 credits",false
+c100,Binh Phan,binh.phan@inbox.example,Pro,1875,2026-10-26,true,1,0,FF-10100,"Pro plan, monthly",Monthly plan,Paid,54,2026-09-26,"Rendered 5 video clips in the web studio, 125 credits used",false
+c101,Ivan Bianchi,ivan.bianchi@inbox.example,Pro,110,2026-10-21,true,1,1,FF-10101,"Pro plan, monthly",Monthly plan,Paid,89,2026-09-21,"Used 1,890 of 2,000 credits",false
+c102,Fiona Petrov,fiona.petrov@post.example,Team,10000,2026-11-04,true,1,0,FF-10102,"Team plan, monthly",Monthly plan,Paid,84,2026-10-05,No credits used,true
+c103,Binh Ngo,binh.ngo@web.example,Pro,1440,2026-10-21,true,1,1,FF-10103,"Pro plan, monthly",Monthly plan,Paid,38,2026-09-21,"Used 560 of 2,000 credits",false
+c104,Paula Muller,paula.muller@web.example,Team,10000,2026-10-25,true,1,0,FF-10104,"Team plan, monthly",Monthly plan,Paid,96,2026-09-25,No credits used,true
+c105,Son Phan,son.phan@mail.example,Team,10000,2026-11-02,true,0,0,FF-10105,"Team plan, monthly",Monthly plan,Paid,60,2026-10-03,No credits used,true
+c106,Gabriel Anderson,gabriel.anderson@inbox.example,Pro,460,2026-11-03,true,0,0,FF-10106,"Pro plan, monthly",Monthly plan,Paid,82,2026-10-04,"Used 1,540 of 2,000 credits",false
+c107,Chi Nguyen,chi.nguyen@post.example,Team,10000,2026-10-30,true,2,0,FF-10107,"Team plan, monthly",Monthly plan,Paid,44,2026-09-30,No credits used,true
+c108,Ngoc Ta,ngoc.ta@inbox.example,Team,10000,2026-10-27,true,0,1,FF-10108,"Team plan, monthly",Monthly plan,Paid,34,2026-09-27,No credits used,true
+c109,Omar Hansen,omar.hansen@inbox.example,Team,10000,2026-10-30,true,0,0,FF-10109,"Team plan, monthly",Monthly plan,Paid,28,2026-09-30,No credits used,true
+c110,Phat Ta,phat.ta@inbox.example,Pro,2000,2026-11-02,true,1,0,FF-10110,"Pro plan, monthly",Monthly plan,Paid,31,2026-10-03,No credits used,true
+c111,Helena Lindgren,helena.lindgren@mail.example,Pro,2000,2026-10-23,true,0,1,FF-10111,"Pro plan, monthly",Monthly plan,Paid,91,2026-09-23,No credits used,true
+c112,Zoe Dietrich,zoe.dietrich@web.example,Pro,2000,2026-10-26,true,1,1,FF-10112,"Pro plan, monthly",Monthly plan,Paid,88,2026-09-26,No credits used,true
+c113,Quan Truong,quan.truong@web.example,Pro,1925,2026-10-29,true,1,0,FF-10113,"Pro plan, monthly",Monthly plan,Paid,86,2026-09-29,"Rendered 3 video clips in the web studio, 75 credits used",false
+c114,Hieu Luu,hieu.luu@mail.example,Team,10000,2026-10-30,true,1,1,FF-10114,"Team plan, monthly",Monthly plan,Paid,36,2026-09-30,No credits used,true
+c115,Clara Carter,clara.carter@web.example,Pro,2000,2027-09-18,false,1,1,FF-10115,"Pro plan, annual",Annual plan,Paid,278,2026-09-18,No credits used,true
+c116,Emil Muller,emil.muller@post.example,Pro,1240,2027-09-05,false,1,0,FF-10116,"Pro plan, annual",Annual plan,Paid,316,2026-09-05,"Used 760 of 2,000 credits",false
+c117,Yusuf Becker,yusuf.becker@web.example,Pro,2000,2027-09-15,false,2,0,FF-10117,"Pro plan, annual",Annual plan,Paid,148,2026-09-15,No credits used,true
+c118,Bao Huynh,bao.huynh@inbox.example,Pro,1800,2027-09-09,false,1,1,FF-10118,"Pro plan, annual",Annual plan,Paid,191,2026-09-09,"Used 200 of 2,000 credits",false
+c119,Daniel Petrov,daniel.petrov@mail.example,Pro,1660,2027-10-01,false,0,0,FF-10119,"Pro plan, annual",Annual plan,Paid,246,2026-10-01,"Used 340 of 2,000 credits",false
+c120,Giang Dinh,giang.dinh@inbox.example,Team,10000,2027-09-18,false,1,0,FF-10120,"Team plan, annual",Annual plan,Paid,270,2026-09-18,No credits used,true
+c121,Nga Huynh,nga.huynh@post.example,Pro,2000,2027-09-06,false,2,0,FF-10121,"Pro plan, annual",Annual plan,Paid,219,2026-09-06,No credits used,true
+c122,Linh Luu,linh.luu@web.example,Pro,1950,2027-09-23,false,1,0,FF-10122,"Pro plan, annual",Annual plan,Paid,267,2026-09-23,"Rendered 2 video clips in the web studio, 50 credits used",false
+c123,Julia Dubois,julia.dubois@inbox.example,Pro,440,2027-09-13,false,0,1,FF-10123,"Pro plan, annual",Annual plan,Paid,204,2026-09-13,"Used 1,560 of 2,000 credits",false
+c124,Victor Fischer,victor.fischer@inbox.example,Team,9975,2027-09-20,false,2,0,FF-10124,"Team plan, annual",Annual plan,Paid,300,2026-09-20,"Rendered one video clip in the web studio, 25 credits used",false
+c125,Kien Ly,kien.ly@web.example,Team,5730,2027-09-07,false,2,0,FF-10125,"Team plan, annual",Annual plan,Paid,129,2026-09-07,"Used 4,270 of 10,000 credits",false
+c126,Tuan Luu,tuan.luu@inbox.example,Pro,2000,2027-09-18,false,1,1,FF-10126,"Pro plan, annual",Annual plan,Paid,251,2026-09-18,No credits used,true
+c127,Kevin Ortega,kevin.ortega@mail.example,Pro,2000,2027-09-19,false,1,0,FF-10127,"Pro plan, annual",Annual plan,Paid,276,2026-09-19,No credits used,true
+c128,Giang Ly,giang.ly@inbox.example,Team,10000,2027-09-24,false,2,0,FF-10128,"Team plan, annual",Annual plan,Paid,296,2026-09-24,No credits used,true
+c129,Sang Ha,sang.ha@web.example,Pro,690,2027-09-18,false,2,0,FF-10129,"Pro plan, annual",Annual plan,Paid,313,2026-09-18,"Used 1,310 of 2,000 credits",false
+c130,Felix Petrov,felix.petrov@web.example,Pro,160,2027-09-18,false,2,1,FF-10130,"Pro plan, annual",Annual plan,Paid,205,2026-09-18,"Used 1,840 of 2,000 credits",false
+c131,Hung Ngo,hung.ngo@post.example,Team,2250,2027-09-12,false,2,1,FF-10131,"Team plan, annual",Annual plan,Paid,240,2026-09-12,"Used 7,750 of 10,000 credits",false
+c132,Laura Romero,laura.romero@mail.example,Pro,140,2027-09-30,false,1,1,FF-10132,"Pro plan, annual",Annual plan,Paid,127,2026-09-30,"Used 1,860 of 2,000 credits",false
+c133,Khanh Ho,khanh.ho@mail.example,Team,10000,2027-09-16,false,2,1,FF-10133,"Team plan, annual",Annual plan,Paid,150,2026-09-16,No credits used,true
+c134,Giang Truong,giang.truong@post.example,Pro,1940,2027-10-01,false,1,1,FF-10134,"Pro plan, annual",Annual plan,Paid,172,2026-10-01,"Used 60 of 2,000 credits",false
+c135,Hieu Dang,hieu.dang@inbox.example,Pro,1350,2027-09-12,false,1,1,FF-10135,"Pro plan, annual",Annual plan,Paid,162,2026-09-12,"Used 650 of 2,000 credits",false
+c136,Adam Ibrahim,adam.ibrahim@post.example,Team,10000,2027-10-02,false,1,1,FF-10136,"Team plan, annual",Annual plan,Paid,204,2026-10-02,No credits used,true
+c137,Paula Laurent,paula.laurent@inbox.example,Team,9850,2027-09-28,false,1,1,FF-10137,"Team plan, annual",Annual plan,Paid,175,2026-09-28,"Rendered 6 video clips in the web studio, 150 credits used",false
+c138,Trang Ngo,trang.ngo@inbox.example,Pro,2000,2027-09-10,false,0,1,FF-10138,"Pro plan, annual",Annual plan,Paid,204,2026-09-10,No credits used,true
+c139,Hung Ho,hung.ho@inbox.example,Team,10000,2027-09-25,false,1,0,FF-10139,"Team plan, annual",Annual plan,Paid,102,2026-09-25,No credits used,true
+c140,Yusuf Costa,yusuf.costa@mail.example,Team,10000,2027-09-21,false,0,1,FF-10140,"Team plan, annual",Annual plan,Paid,235,2026-09-21,No credits used,true
+c141,Nina Tanaka,nina.tanaka@inbox.example,Team,10000,2027-09-30,false,0,0,FF-10141,"Team plan, annual",Annual plan,Paid,123,2026-09-30,No credits used,true
+c142,Yen Ha,yen.ha@inbox.example,Team,10000,2027-09-18,false,1,0,FF-10142,"Team plan, annual",Annual plan,Paid,252,2026-09-18,No credits used,true
+c143,Oanh Vu,oanh.vu@mail.example,Team,2700,2027-09-13,false,0,0,FF-10143,"Team plan, annual",Annual plan,Paid,261,2026-09-13,"Used 7,300 of 10,000 credits",false
+c144,Wendy Eriksson,wendy.eriksson@inbox.example,Pro,2000,2026-10-31,false,1,1,FF-10144,"Pro plan, monthly",Monthly plan,Paid,312,2026-10-01,No credits used,true
+c145,Chi Tran,chi.tran@web.example,Pro,2000,2026-11-04,false,0,1,FF-10145,"Pro plan, monthly",Monthly plan,Paid,184,2026-10-05,No credits used,true
+c146,Hung Huynh,hung.huynh@mail.example,Team,10000,2026-10-21,false,2,1,FF-10146,"Team plan, monthly",Monthly plan,Paid,156,2026-09-21,No credits used,true
+c147,Nina Romero,nina.romero@inbox.example,Pro,1650,2026-10-27,false,0,1,FF-10147,"Pro plan, monthly",Monthly plan,Paid,205,2026-09-27,"Used 350 of 2,000 credits",false
+c148,Laura Silva,laura.silva@post.example,Pro,2000,2026-10-29,false,1,1,FF-10148,"Pro plan, monthly",Monthly plan,Paid,286,2026-09-29,No credits used,true
+c149,Elena Okafor,elena.okafor@inbox.example,Pro,1440,2026-10-30,false,1,0,FF-10149,"Pro plan, monthly",Monthly plan,Paid,272,2026-09-30,"Used 560 of 2,000 credits",false
+c150,Loan Nguyen,loan.nguyen@mail.example,Pro,1600,2026-10-30,false,0,1,FF-10150,"Pro plan, monthly",Monthly plan,Paid,119,2026-09-30,"Used 400 of 2,000 credits",false
+c151,Elena Fischer,elena.fischer@mail.example,Pro,370,2026-10-27,false,1,0,FF-10151,"Pro plan, monthly",Monthly plan,Paid,140,2026-09-27,"Used 1,630 of 2,000 credits",false
+c152,Hoa Phan,hoa.phan@web.example,Team,10000,2026-10-22,false,2,0,FF-10152,"Team plan, monthly",Monthly plan,Paid,180,2026-09-22,No credits used,true
+c153,Yen Duong,yen.duong@mail.example,Pro,2000,2026-11-04,false,1,0,FF-10153,"Pro plan, monthly",Monthly plan,Paid,108,2026-10-05,No credits used,true
+c154,Ben Costa,ben.costa@post.example,Team,9775,2026-10-29,false,1,1,FF-10154,"Team plan, monthly",Monthly plan,Paid,284,2026-09-29,"Rendered 9 video clips in the web studio, 225 credits used",false
+c155,Vy Dang,vy.dang@web.example,Pro,2000,2026-10-21,false,0,0,FF-10155,"Pro plan, monthly",Monthly plan,Paid,296,2026-09-21,No credits used,true
+c156,Nga Ha,nga.ha@post.example,Pro,1130,2026-10-25,false,1,1,FF-10156,"Pro plan, monthly",Monthly plan,Paid,239,2026-09-25,"Used 870 of 2,000 credits",false
+c157,Minh Hoang,minh.hoang@web.example,Team,10000,2026-10-26,false,1,0,FF-10157,"Team plan, monthly",Monthly plan,Paid,268,2026-09-26,No credits used,true
+c158,Uma Ortega,uma.ortega@inbox.example,Pro,2000,2026-10-21,false,2,1,FF-10158,"Pro plan, monthly",Monthly plan,Paid,157,2026-09-21,No credits used,true
+c159,Anh Ho,anh.ho@mail.example,Pro,2000,2026-11-03,false,0,1,FF-10159,"Pro plan, monthly",Monthly plan,Paid,233,2026-10-04,No credits used,true
+c160,Sofia Okafor,sofia.okafor@web.example,Pro,2000,2026-10-31,false,2,1,FF-10160,"Pro plan, monthly",Monthly plan,Paid,209,2026-10-01,No credits used,true
+c161,Son Do,son.do@inbox.example,Team,10000,2026-10-26,false,1,1,FF-10161,"Team plan, monthly",Monthly plan,Paid,267,2026-09-26,No credits used,true
+c162,Toan Vu,toan.vu@inbox.example,Pro,160,2026-10-25,false,0,0,FF-10162,"Pro plan, monthly",Monthly plan,Paid,195,2026-09-25,"Used 1,840 of 2,000 credits",false
+c163,Trang Duong,trang.duong@inbox.example,Team,9775,2026-10-23,false,1,1,FF-10163,"Team plan, monthly",Monthly plan,Paid,165,2026-09-23,"Rendered 9 video clips in the web studio, 225 credits used",false
+c164,Linh Pham,linh.pham@web.example,Pro,1760,2026-10-28,false,0,1,FF-10164,"Pro plan, monthly",Monthly plan,Paid,148,2026-09-28,"Used 240 of 2,000 credits",false
+c165,Mateo Romero,mateo.romero@web.example,Pro,1800,2026-10-29,false,0,1,FF-10165,"Pro plan, monthly",Monthly plan,Paid,255,2026-09-29,"Rendered 8 video clips in the web studio, 200 credits used",false
+c166,Elena Costa,elena.costa@post.example,Pro,1875,2026-10-31,false,0,0,FF-10166,"Pro plan, monthly",Monthly plan,Paid,231,2026-10-01,"Rendered 5 video clips in the web studio, 125 credits used",false
+c167,Nga Le,nga.le@post.example,Pro,1370,2026-11-01,false,1,0,FF-10167,"Pro plan, monthly",Monthly plan,Paid,117,2026-10-02,"Used 630 of 2,000 credits",false
+c168,Lan Doan,lan.doan@inbox.example,Pro,1460,2026-10-22,false,2,1,FF-10168,"Pro plan, monthly",Monthly plan,Paid,107,2026-09-22,"Used 540 of 2,000 credits",false
+c169,Felix Fontaine,felix.fontaine@inbox.example,Team,6320,2026-10-30,false,2,0,FF-10169,"Team plan, monthly",Monthly plan,Paid,212,2026-09-30,"Used 3,680 of 10,000 credits",false
+c170,Lucia Pereira,lucia.pereira@mail.example,Pro,1760,2026-11-02,false,2,1,FF-10170,"Pro plan, monthly",Monthly plan,Paid,210,2026-10-03,"Used 240 of 2,000 credits",false
+c171,Gabriel Becker,gabriel.becker@inbox.example,Pro,2000,2026-11-04,false,2,1,FF-10171,"Pro plan, monthly",Monthly plan,Paid,105,2026-10-05,No credits used,true
+c172,Kevin Fontaine,kevin.fontaine@mail.example,Pro,2000,2026-11-02,false,1,0,FF-10172,"Pro plan, monthly",Monthly plan,Paid,225,2026-10-03,No credits used,true
+c173,Bao Trinh,bao.trinh@web.example,Team,9900,2026-10-25,false,0,0,FF-10173,"Team plan, monthly",Monthly plan,Paid,192,2026-09-25,"Rendered 4 video clips in the web studio, 100 credits used",false
+c174,Tuan Vo,tuan.vo@inbox.example,Team,10000,2026-11-03,false,1,0,FF-10174,"Team plan, monthly",Monthly plan,Paid,154,2026-10-04,No credits used,true
+c175,Zoe Ishikawa,zoe.ishikawa@post.example,Pro,1800,2026-10-24,false,1,1,FF-10175,"Pro plan, monthly",Monthly plan,Paid,168,2026-09-24,"Rendered 8 video clips in the web studio, 200 credits used",false
+c176,Ngoc Phan,ngoc.phan@web.example,Team,10000,2026-10-23,false,2,0,FF-10176,"Team plan, monthly",Monthly plan,Paid,196,2026-09-23,No credits used,true
+c177,Kevin Petrov,kevin.petrov@post.example,Pro,2000,2026-11-03,false,1,0,FF-10177,"Pro plan, monthly",Monthly plan,Paid,118,2026-10-04,No credits used,true
+c178,Hoa Ha,hoa.ha@post.example,Team,10000,2026-10-22,false,1,0,FF-10178,"Team plan, monthly",Monthly plan,Paid,264,2026-09-22,No credits used,true
+c179,Helena Becker,helena.becker@post.example,Team,910,2026-10-24,false,0,1,FF-10179,"Team plan, monthly",Monthly plan,Paid,238,2026-09-24,"Used 9,090 of 10,000 credits",false
+c180,Quang Lam,quang.lam@post.example,Pro,2000,2027-08-27,false,1,1,FF-10180,"Pro plan, annual",Annual plan,Paid,149,2026-08-27,No credits used,true
+c181,Irene Nielsen,irene.nielsen@post.example,Pro,2000,2027-08-30,false,1,0,FF-10181,"Pro plan, annual",Annual plan,Paid,64,2026-08-30,No credits used,true
+c182,Phat Le,phat.le@post.example,Team,10000,2027-08-13,false,1,1,FF-10182,"Team plan, annual",Annual plan,Paid,45,2026-08-13,No credits used,true
+c183,Laura Eriksson,laura.eriksson@inbox.example,Pro,2000,2027-08-13,false,1,0,FF-10183,"Pro plan, annual",Annual plan,Paid,74,2026-08-13,No credits used,true
+c184,Quan Vo,quan.vo@post.example,Pro,2000,2027-08-25,false,2,0,FF-10184,"Pro plan, annual",Annual plan,Paid,113,2026-08-25,No credits used,true
+c185,Felix Vogel,felix.vogel@mail.example,Pro,2000,2027-08-18,false,1,0,FF-10185,"Pro plan, annual",Annual plan,Paid,128,2026-08-18,No credits used,true
+c186,Emil Costa,emil.costa@post.example,Team,10000,2027-08-21,false,1,0,FF-10186,"Team plan, annual",Annual plan,Paid,75,2026-08-21,No credits used,true
+c187,Hieu Tran,hieu.tran@inbox.example,Pro,2000,2027-08-16,false,0,0,FF-10187,"Pro plan, annual",Annual plan,Paid,62,2026-08-16,No credits used,true
+c188,Diana Fischer,diana.fischer@mail.example,Team,10000,2027-08-24,false,0,1,FF-10188,"Team plan, annual",Annual plan,Paid,64,2026-08-24,No credits used,true
+c189,Quang Huynh,quang.huynh@mail.example,Pro,2000,2027-08-15,false,0,0,FF-10189,"Pro plan, annual",Annual plan,Paid,35,2026-08-15,No credits used,true
+c190,Loan Dinh,loan.dinh@inbox.example,Team,10000,2027-08-09,false,0,0,FF-10190,"Team plan, annual",Annual plan,Paid,150,2026-08-09,No credits used,true
+c191,Wendy Dietrich,wendy.dietrich@inbox.example,Pro,2000,2027-08-09,false,2,0,FF-10191,"Pro plan, annual",Annual plan,Paid,80,2026-08-09,No credits used,true
+c192,Khanh Trinh,khanh.trinh@mail.example,Pro,2000,2027-08-20,false,0,1,FF-10192,"Pro plan, annual",Annual plan,Paid,110,2026-08-20,No credits used,true
+c193,Ivan Nielsen,ivan.nielsen@web.example,Team,10000,2027-09-03,false,1,0,FF-10193,"Team plan, annual",Annual plan,Paid,120,2026-09-03,No credits used,true
+c194,Xuan Ngo,xuan.ngo@mail.example,Team,10000,2027-08-15,false,1,1,FF-10194,"Team plan, annual",Annual plan,Paid,84,2026-08-15,No credits used,true
+c195,Dung Ta,dung.ta@mail.example,Pro,2000,2027-08-09,false,1,0,FF-10195,"Pro plan, annual",Annual plan,Paid,112,2026-08-09,No credits used,true
+c196,Ngoc Ly,ngoc.ly@web.example,Pro,2000,2027-08-21,false,0,0,FF-10196,"Pro plan, annual",Annual plan,Paid,98,2026-08-21,No credits used,true
+c197,Hugo Kowalski,hugo.kowalski@web.example,Pro,2000,2027-08-22,false,0,1,FF-10197,"Pro plan, annual",Annual plan,Paid,121,2026-08-22,No credits used,true
+c198,Giang Luu,giang.luu@web.example,Team,10000,2027-08-25,false,0,0,FF-10198,"Team plan, annual",Annual plan,Paid,30,2026-08-25,No credits used,true
+c199,Thu Ta,thu.ta@inbox.example,Team,10000,2027-08-09,false,0,1,FF-10199,"Team plan, annual",Annual plan,Paid,56,2026-08-09,No credits used,true
+c200,Quan Doan,quan.doan@inbox.example,Pro,2000,2027-08-09,false,1,0,FF-10200,"Pro plan, annual",Annual plan,Paid,113,2026-08-09,No credits used,true
+c201,Paula Bianchi,paula.bianchi@inbox.example,Pro,2000,2027-09-03,false,2,1,FF-10201,"Pro plan, annual",Annual plan,Paid,62,2026-09-03,No credits used,true
+c202,Marco Esposito,marco.esposito@inbox.example,Team,10000,2027-09-03,false,2,0,FF-10202,"Team plan, annual",Annual plan,Paid,130,2026-09-03,No credits used,true
+c203,Uyen Trinh,uyen.trinh@post.example,Team,10000,2027-08-17,false,0,0,FF-10203,"Team plan, annual",Annual plan,Paid,75,2026-08-17,No credits used,true
+c204,Ngoc Hoang,ngoc.hoang@inbox.example,Team,10000,2027-08-23,false,1,0,FF-10204,"Team plan, annual",Annual plan,Paid,34,2026-08-23,No credits used,true
+c205,Quang Dinh,quang.dinh@inbox.example,Team,10000,2027-08-19,false,1,0,FF-10205,"Team plan, annual",Annual plan,Paid,100,2026-08-19,No credits used,true
+c206,Phuc Vo,phuc.vo@inbox.example,Pro,2000,2027-08-10,false,2,0,FF-10206,"Pro plan, annual",Annual plan,Paid,54,2026-08-10,No credits used,true
+c207,Nhung Truong,nhung.truong@mail.example,Pro,2000,2027-09-03,false,0,0,FF-10207,"Pro plan, annual",Annual plan,Paid,124,2026-09-03,No credits used,true
+c208,Diana Pereira,diana.pereira@inbox.example,Team,10000,2027-08-17,false,0,1,FF-10208,"Team plan, annual",Annual plan,Paid,144,2026-08-17,No credits used,true
+c209,Viet Dang,viet.dang@inbox.example,Team,10000,2026-10-08,false,1,0,FF-10209,"Team plan, monthly",Monthly plan,Paid,78,2026-09-08,No credits used,true
+c210,Phuong Cao,phuong.cao@mail.example,Pro,2000,2026-10-06,false,0,0,FF-10210,"Pro plan, monthly",Monthly plan,Paid,65,2026-09-06,No credits used,true
+c211,Mateo Garcia,mateo.garcia@mail.example,Pro,2000,2026-10-10,false,2,0,FF-10211,"Pro plan, monthly",Monthly plan,Paid,165,2026-09-10,No credits used,true
+c212,An Trinh,an.trinh@mail.example,Team,10000,2026-10-16,false,0,0,FF-10212,"Team plan, monthly",Monthly plan,Paid,156,2026-09-16,No credits used,true
+c213,Lucia Grant,lucia.grant@web.example,Pro,2000,2026-10-15,false,0,0,FF-10213,"Pro plan, monthly",Monthly plan,Paid,225,2026-09-15,No credits used,true
+c214,Mateo Haas,mateo.haas@post.example,Pro,2000,2026-10-19,false,2,1,FF-10214,"Pro plan, monthly",Monthly plan,Paid,101,2026-09-19,No credits used,true
+c215,Quynh Le,quynh.le@mail.example,Pro,2000,2026-10-10,false,2,0,FF-10215,"Pro plan, monthly",Monthly plan,Paid,138,2026-09-10,No credits used,true
+c216,Minh Le,minh.le@post.example,Team,10000,2026-10-18,false,2,1,FF-10216,"Team plan, monthly",Monthly plan,Paid,85,2026-09-18,No credits used,true
+c217,Long Ha,long.ha@web.example,Team,10000,2026-10-11,false,1,1,FF-10217,"Team plan, monthly",Monthly plan,Paid,45,2026-09-11,No credits used,true
+c218,Emil Haas,emil.haas@inbox.example,Pro,2000,2026-10-16,false,2,1,FF-10218,"Pro plan, monthly",Monthly plan,Paid,84,2026-09-16,No credits used,true
+c219,Trung Ngo,trung.ngo@inbox.example,Pro,2000,2026-10-09,false,1,1,FF-10219,"Pro plan, monthly",Monthly plan,Paid,149,2026-09-09,No credits used,true
+c220,Julia Ibrahim,julia.ibrahim@web.example,Pro,2000,2026-10-13,false,1,1,FF-10220,"Pro plan, monthly",Monthly plan,Paid,70,2026-09-13,No credits used,true
+c221,Ben Dietrich,ben.dietrich@mail.example,Team,10000,2026-10-08,false,0,0,FF-10221,"Team plan, monthly",Monthly plan,Paid,56,2026-09-08,No credits used,true
+c222,Karim Zimmermann,karim.zimmermann@inbox.example,Pro,2000,2026-10-11,false,2,1,FF-10222,"Pro plan, monthly",Monthly plan,Paid,216,2026-09-11,No credits used,true
+c223,Fiona Novak,fiona.novak@mail.example,Team,10000,2026-10-13,false,2,1,FF-10223,"Team plan, monthly",Monthly plan,Paid,78,2026-09-13,No credits used,true
+c224,Linh Ly,linh.ly@inbox.example,Team,10000,2026-10-11,false,1,1,FF-10224,"Team plan, monthly",Monthly plan,Paid,99,2026-09-11,No credits used,true
+c225,Lan Do,lan.do@inbox.example,Team,10000,2026-10-16,false,0,1,FF-10225,"Team plan, monthly",Monthly plan,Paid,200,2026-09-16,No credits used,true
+c226,Nga Dang,nga.dang@post.example,Pro,2000,2026-10-09,false,1,0,FF-10226,"Pro plan, monthly",Monthly plan,Paid,156,2026-09-09,No credits used,true
+c227,Toan Duong,toan.duong@mail.example,Pro,2000,2026-10-19,false,1,0,FF-10227,"Pro plan, monthly",Monthly plan,Paid,62,2026-09-19,No credits used,true
+c228,Mateo Novak,mateo.novak@mail.example,Team,10000,2026-10-18,false,1,1,FF-10228,"Team plan, monthly",Monthly plan,Paid,185,2026-09-18,No credits used,true
+c229,Thao Dang,thao.dang@inbox.example,Pro,2000,2026-10-07,false,2,1,FF-10229,"Pro plan, monthly",Monthly plan,Paid,74,2026-09-07,No credits used,true
+c230,Rita Dietrich,rita.dietrich@mail.example,Team,10000,2026-10-14,false,2,1,FF-10230,"Team plan, monthly",Monthly plan,Paid,180,2026-09-14,No credits used,true
+c231,Loan Huynh,loan.huynh@web.example,Team,10000,2026-10-08,false,2,0,FF-10231,"Team plan, monthly",Monthly plan,Paid,164,2026-09-08,No credits used,true
+c232,Anh Ha,anh.ha@inbox.example,Team,10000,2026-10-17,false,0,1,FF-10232,"Team plan, monthly",Monthly plan,Paid,225,2026-09-17,No credits used,true
+c233,Marco Jansen,marco.jansen@inbox.example,Pro,2000,2026-10-20,false,0,0,FF-10233,"Pro plan, monthly",Monthly plan,Paid,212,2026-09-20,No credits used,true
+c234,Nam Pham,nam.pham@inbox.example,Team,10000,2026-10-14,false,1,1,FF-10234,"Team plan, monthly",Monthly plan,Paid,125,2026-09-14,No credits used,true
+c235,Tuan Ha,tuan.ha@post.example,Team,10000,2026-10-07,false,1,1,FF-10235,"Team plan, monthly",Monthly plan,Paid,57,2026-09-07,No credits used,true
+c236,Diana Romero,diana.romero@inbox.example,Team,10000,2026-10-16,false,0,1,FF-10236,"Team plan, monthly",Monthly plan,Paid,117,2026-09-16,No credits used,true
+c237,Son Ho,son.ho@mail.example,Pro,2000,2026-10-16,false,0,0,FF-10237,"Pro plan, monthly",Monthly plan,Paid,42,2026-09-16,No credits used,true
+c238,Gabriel Carter,gabriel.carter@post.example,Pro,2000,2026-10-06,false,0,1,FF-10238,"Pro plan, monthly",Monthly plan,Paid,192,2026-09-06,No credits used,true
+c239,Thuy Pham,thuy.pham@mail.example,Pro,2000,2026-10-20,false,2,1,FF-10239,"Pro plan, monthly",Monthly plan,Paid,81,2026-09-20,No credits used,true
+c240,Adam Quinn,adam.quinn@mail.example,Team,10000,2026-10-17,false,0,1,FF-10240,"Team plan, monthly",Monthly plan,Paid,210,2026-09-17,No credits used,true
+c241,Giang Ho,giang.ho@mail.example,Team,10000,2026-10-06,false,2,0,FF-10241,"Team plan, monthly",Monthly plan,Paid,205,2026-09-06,No credits used,true
+c242,Trang Doan,trang.doan@mail.example,Pro,2000,2026-10-06,false,1,1,FF-10242,"Pro plan, monthly",Monthly plan,Paid,213,2026-09-06,No credits used,true
+c243,Uyen Vu,uyen.vu@web.example,Team,10000,2026-10-06,false,1,0,FF-10243,"Team plan, monthly",Monthly plan,Paid,245,2026-09-06,No credits used,true
+c244,Thu Doan,thu.doan@post.example,Team,10000,2026-10-06,false,0,0,FF-10244,"Team plan, monthly",Monthly plan,Paid,50,2026-09-06,No credits used,true
+c245,Hugo Eriksson,hugo.eriksson@inbox.example,Pro,1510,2027-08-22,false,2,0,FF-10245,"Pro plan, annual",Annual plan,Paid,112,2026-08-22,"Used 490 of 2,000 credits",false
+c246,Grace Pereira,grace.pereira@web.example,Team,9875,2027-08-10,false,1,0,FF-10246,"Team plan, annual",Annual plan,Paid,112,2026-08-10,"Rendered 5 video clips in the web studio, 125 credits used",false
+c247,Ben Muller,ben.muller@web.example,Team,3760,2027-08-09,false,2,0,FF-10247,"Team plan, annual",Annual plan,Paid,84,2026-08-09,"Used 6,240 of 10,000 credits",false
+c248,Quan Vu,quan.vu@web.example,Team,9850,2027-08-19,false,0,1,FF-10248,"Team plan, annual",Annual plan,Paid,34,2026-08-19,"Rendered 6 video clips in the web studio, 150 credits used",false
+c249,Zoe Garcia,zoe.garcia@inbox.example,Pro,1850,2027-09-03,false,0,1,FF-10249,"Pro plan, annual",Annual plan,Paid,36,2026-09-03,"Rendered 6 video clips in the web studio, 150 credits used",false
+c250,Pablo Yamada,pablo.yamada@mail.example,Pro,990,2027-08-14,false,0,0,FF-10250,"Pro plan, annual",Annual plan,Paid,55,2026-08-14,"Used 1,010 of 2,000 credits",false
+c251,Uyen Phan,uyen.phan@inbox.example,Team,3560,2027-08-22,false,1,1,FF-10251,"Team plan, annual",Annual plan,Paid,140,2026-08-22,"Used 6,440 of 10,000 credits",false
+c252,Chi Dang,chi.dang@web.example,Team,9875,2027-08-30,false,1,1,FF-10252,"Team plan, annual",Annual plan,Paid,104,2026-08-30,"Rendered 5 video clips in the web studio, 125 credits used",false
+c253,Xuan Nguyen,xuan.nguyen@inbox.example,Pro,1050,2027-08-06,false,2,1,FF-10253,"Pro plan, annual",Annual plan,Paid,46,2026-08-06,"Used 950 of 2,000 credits",false
+c254,Binh Duong,binh.duong@web.example,Pro,630,2027-08-27,false,1,0,FF-10254,"Pro plan, annual",Annual plan,Paid,37,2026-08-27,"Used 1,370 of 2,000 credits",false
+c255,Oscar Yamada,oscar.yamada@mail.example,Team,6650,2027-08-21,false,2,0,FF-10255,"Team plan, annual",Annual plan,Paid,39,2026-08-21,"Used 3,350 of 10,000 credits",false
+c256,Ben Anderson,ben.anderson@post.example,Team,5310,2027-09-01,false,0,0,FF-10256,"Team plan, annual",Annual plan,Paid,96,2026-09-01,"Used 4,690 of 10,000 credits",false
+c257,Adam Ortega,adam.ortega@inbox.example,Team,9975,2027-08-29,false,0,0,FF-10257,"Team plan, annual",Annual plan,Paid,111,2026-08-29,"Rendered one video clip in the web studio, 25 credits used",false
+c258,Duc Ha,duc.ha@post.example,Pro,1050,2027-08-20,false,2,0,FF-10258,"Pro plan, annual",Annual plan,Paid,36,2026-08-20,"Used 950 of 2,000 credits",false
+c259,Long Le,long.le@post.example,Team,4320,2027-08-26,false,2,0,FF-10259,"Team plan, annual",Annual plan,Paid,64,2026-08-26,"Used 5,680 of 10,000 credits",false
+c260,Oscar Fischer,oscar.fischer@mail.example,Team,8340,2027-08-26,false,2,0,FF-10260,"Team plan, annual",Annual plan,Paid,84,2026-08-26,"Used 1,660 of 10,000 credits",false
+c261,Mai Ta,mai.ta@post.example,Pro,1580,2027-08-14,false,1,0,FF-10261,"Pro plan, annual",Annual plan,Paid,55,2026-08-14,"Used 420 of 2,000 credits",false
+c262,Phuong Dang,phuong.dang@inbox.example,Pro,1800,2027-08-07,false,1,0,FF-10262,"Pro plan, annual",Annual plan,Paid,103,2026-08-07,"Rendered 8 video clips in the web studio, 200 credits used",false
+c263,Daniel Silva,daniel.silva@post.example,Pro,280,2027-08-23,false,1,1,FF-10263,"Pro plan, annual",Annual plan,Paid,120,2026-08-23,"Used 1,720 of 2,000 credits",false
+c264,Nhung Duong,nhung.duong@web.example,Team,5850,2027-08-16,false,1,0,FF-10264,"Team plan, annual",Annual plan,Paid,48,2026-08-16,"Used 4,150 of 10,000 credits",false
+c265,Quyen Le,quyen.le@post.example,Pro,910,2027-08-24,false,2,0,FF-10265,"Pro plan, annual",Annual plan,Paid,89,2026-08-24,"Used 1,090 of 2,000 credits",false
+c266,Kien Tran,kien.tran@inbox.example,Pro,1770,2027-09-04,false,2,1,FF-10266,"Pro plan, annual",Annual plan,Paid,81,2026-09-04,"Used 230 of 2,000 credits",false
+c267,Emil Abbott,emil.abbott@mail.example,Pro,980,2027-08-06,false,1,1,FF-10267,"Pro plan, annual",Annual plan,Paid,106,2026-08-06,"Used 1,020 of 2,000 credits",false
+c268,Hoa Trinh,hoa.trinh@inbox.example,Pro,1975,2027-08-20,false,2,1,FF-10268,"Pro plan, annual",Annual plan,Paid,55,2026-08-20,"Rendered one video clip in the web studio, 25 credits used",false
+c269,Hanh Do,hanh.do@inbox.example,Pro,1570,2027-08-13,false,1,0,FF-10269,"Pro plan, annual",Annual plan,Paid,49,2026-08-13,"Used 430 of 2,000 credits",false
+c270,Oscar Laurent,oscar.laurent@inbox.example,Team,7500,2027-08-16,false,2,0,FF-10270,"Team plan, annual",Annual plan,Paid,52,2026-08-16,"Used 2,500 of 10,000 credits",false
+c271,Hoa Le,hoa.le@web.example,Pro,1910,2027-08-20,false,2,1,FF-10271,"Pro plan, annual",Annual plan,Paid,34,2026-08-20,"Used 90 of 2,000 credits",false
+c272,Adam Romero,adam.romero@inbox.example,Pro,1825,2027-08-25,false,2,1,FF-10272,"Pro plan, annual",Annual plan,Paid,102,2026-08-25,"Rendered 7 video clips in the web studio, 175 credits used",false
+c273,Tuan Phan,tuan.phan@post.example,Team,3180,2027-08-13,false,0,1,FF-10273,"Team plan, annual",Annual plan,Paid,78,2026-08-13,"Used 6,820 of 10,000 credits",false
+c274,Trang Ta,trang.ta@post.example,Team,9825,2026-10-13,false,1,0,FF-10274,"Team plan, monthly",Monthly plan,Paid,194,2026-09-13,"Rendered 7 video clips in the web studio, 175 credits used",false
+c275,Wendy Romero,wendy.romero@mail.example,Team,9860,2026-10-19,false,2,1,FF-10275,"Team plan, monthly",Monthly plan,Paid,105,2026-09-19,"Used 140 of 10,000 credits",false
+c276,Nora Keller,nora.keller@inbox.example,Team,9940,2026-10-20,false,1,1,FF-10276,"Team plan, monthly",Monthly plan,Paid,70,2026-09-20,"Used 60 of 10,000 credits",false
+c277,Hugo Ortega,hugo.ortega@inbox.example,Pro,1850,2026-10-14,false,1,0,FF-10277,"Pro plan, monthly",Monthly plan,Paid,224,2026-09-14,"Rendered 6 video clips in the web studio, 150 credits used",false
+c278,Ben Abbott,ben.abbott@post.example,Team,500,2026-10-12,false,0,0,FF-10278,"Team plan, monthly",Monthly plan,Paid,138,2026-09-12,"Used 9,500 of 10,000 credits",false
+c279,Lan Le,lan.le@mail.example,Pro,590,2026-10-12,false,2,0,FF-10279,"Pro plan, monthly",Monthly plan,Paid,230,2026-09-12,"Used 1,410 of 2,000 credits",false
+c280,Hugo Anderson,hugo.anderson@inbox.example,Team,9725,2026-10-11,false,2,0,FF-10280,"Team plan, monthly",Monthly plan,Paid,160,2026-09-11,"Rendered 11 video clips in the web studio, 275 credits used",false
+c281,Thao Vo,thao.vo@post.example,Pro,1820,2026-10-15,false,1,1,FF-10281,"Pro plan, monthly",Monthly plan,Paid,245,2026-09-15,"Used 180 of 2,000 credits",false
+c282,Julia Costa,julia.costa@inbox.example,Pro,70,2026-10-12,false,2,1,FF-10282,"Pro plan, monthly",Monthly plan,Paid,240,2026-09-12,"Used 1,930 of 2,000 credits",false
+c283,Elena Anderson,elena.anderson@mail.example,Pro,1725,2026-10-09,false,1,1,FF-10283,"Pro plan, monthly",Monthly plan,Paid,149,2026-09-09,"Rendered 11 video clips in the web studio, 275 credits used",false
+c284,Paula Silva,paula.silva@inbox.example,Pro,1800,2026-10-19,false,2,0,FF-10284,"Pro plan, monthly",Monthly plan,Paid,122,2026-09-19,"Rendered 8 video clips in the web studio, 200 credits used",false
+c285,Nam Cao,nam.cao@web.example,Pro,1460,2026-10-12,false,1,1,FF-10285,"Pro plan, monthly",Monthly plan,Paid,84,2026-09-12,"Used 540 of 2,000 credits",false
+c286,Irene Becker,irene.becker@post.example,Team,1820,2026-10-13,false,1,0,FF-10286,"Team plan, monthly",Monthly plan,Paid,123,2026-09-13,"Used 8,180 of 10,000 credits",false
+c287,Toan Pham,toan.pham@web.example,Team,9775,2026-10-09,false,0,0,FF-10287,"Team plan, monthly",Monthly plan,Paid,240,2026-09-09,"Rendered 9 video clips in the web studio, 225 credits used",false
+c288,Kevin Grant,kevin.grant@inbox.example,Team,7250,2026-10-07,false,1,1,FF-10288,"Team plan, monthly",Monthly plan,Paid,75,2026-09-07,"Used 2,750 of 10,000 credits",false
+c289,Cuong Hoang,cuong.hoang@web.example,Team,9570,2026-10-08,false,0,0,FF-10289,"Team plan, monthly",Monthly plan,Paid,70,2026-09-08,"Used 430 of 10,000 credits",false
+c290,Zoe Moreau,zoe.moreau@post.example,Team,8740,2026-10-20,false,0,1,FF-10290,"Team plan, monthly",Monthly plan,Paid,222,2026-09-20,"Used 1,260 of 10,000 credits",false
+c291,Tam Truong,tam.truong@web.example,Pro,1850,2026-10-10,false,0,1,FF-10291,"Pro plan, monthly",Monthly plan,Paid,134,2026-09-10,"Rendered 6 video clips in the web studio, 150 credits used",false
+c292,Elena Garcia,elena.garcia@web.example,Pro,400,2026-10-11,false,2,1,FF-10292,"Pro plan, monthly",Monthly plan,Paid,165,2026-09-11,"Used 1,600 of 2,000 credits",false
+c293,Phuong Nguyen,phuong.nguyen@web.example,Pro,1000,2026-10-14,false,2,0,FF-10293,"Pro plan, monthly",Monthly plan,Paid,71,2026-09-14,"Used 1,000 of 2,000 credits",false
+c294,Nga Vo,nga.vo@inbox.example,Team,8050,2026-10-07,false,1,1,FF-10294,"Team plan, monthly",Monthly plan,Paid,128,2026-09-07,"Used 1,950 of 10,000 credits",false
+c295,Sofia Carter,sofia.carter@web.example,Team,5140,2026-10-15,false,2,0,FF-10295,"Team plan, monthly",Monthly plan,Paid,56,2026-09-15,"Used 4,860 of 10,000 credits",false
+c296,Zoe Vogel,zoe.vogel@post.example,Team,8030,2026-10-06,false,2,0,FF-10296,"Team plan, monthly",Monthly plan,Paid,168,2026-09-06,"Used 1,970 of 10,000 credits",false
+c297,Felix Romero,felix.romero@web.example,Team,810,2026-10-16,false,1,0,FF-10297,"Team plan, monthly",Monthly plan,Paid,210,2026-09-16,"Used 9,190 of 10,000 credits",false
+c298,Sang Trinh,sang.trinh@post.example,Pro,300,2026-10-09,false,2,1,FF-10298,"Pro plan, monthly",Monthly plan,Paid,95,2026-09-09,"Used 1,700 of 2,000 credits",false
+c299,Fiona Lindgren,fiona.lindgren@mail.example,Team,5000,2026-10-13,false,2,1,FF-10299,"Team plan, monthly",Monthly plan,Paid,245,2026-09-13,"Used 5,000 of 10,000 credits",false
+c300,Oanh Bui,oanh.bui@inbox.example,Pro,1900,2026-10-08,false,0,1,FF-10300,"Pro plan, monthly",Monthly plan,Paid,57,2026-09-08,"Rendered 4 video clips in the web studio, 100 credits used",false
+c301,Sofia Keller,sofia.keller@web.example,Team,4310,2026-10-08,false,0,0,FF-10301,"Team plan, monthly",Monthly plan,Paid,240,2026-09-08,"Used 5,690 of 10,000 credits",false
+c302,Carlos Fischer,carlos.fischer@mail.example,Team,9850,2026-10-08,false,2,0,FF-10302,"Team plan, monthly",Monthly plan,Paid,164,2026-09-08,"Rendered 6 video clips in the web studio, 150 credits used",false
+c303,Oscar Anderson,oscar.anderson@mail.example,Pro,1360,2026-10-07,false,2,1,FF-10303,"Pro plan, monthly",Monthly plan,Paid,203,2026-09-07,"Used 640 of 2,000 credits",false
+c304,Trang Luu,trang.luu@web.example,Team,9925,2026-10-12,false,1,1,FF-10304,"Team plan, monthly",Monthly plan,Paid,92,2026-09-12,"Rendered 3 video clips in the web studio, 75 credits used",false
+c305,An Ho,an.ho@post.example,Team,7940,2026-10-14,false,1,1,FF-10305,"Team plan, monthly",Monthly plan,Paid,244,2026-09-14,"Used 2,060 of 10,000 credits",false
+c306,Quan Dang,quan.dang@inbox.example,Pro,1725,2026-10-09,false,2,1,FF-10306,"Pro plan, monthly",Monthly plan,Paid,159,2026-09-09,"Rendered 11 video clips in the web studio, 275 credits used",false
+c307,Laura Kowalski,laura.kowalski@inbox.example,Pro,350,2026-10-10,false,0,1,FF-10307,"Pro plan, monthly",Monthly plan,Paid,59,2026-09-10,"Used 1,650 of 2,000 credits",false
+c308,Toan Vo,toan.vo@inbox.example,Team,9620,2026-10-14,false,0,0,FF-10308,"Team plan, monthly",Monthly plan,Paid,172,2026-09-14,"Used 380 of 10,000 credits",false
+c309,Nam Le,nam.le@inbox.example,Pro,1370,2026-10-14,false,2,1,FF-10309,"Pro plan, monthly",Monthly plan,Paid,164,2026-09-14,"Used 630 of 2,000 credits",false
+c310,Linh Vu,linh.vu@inbox.example,Free,2500,2026-10-19,false,1,1,FF-10310,"Credit pack, 2,500 credits",Credit pack,Paid,25,2026-10-04,No credits used,true
+c311,Yen Cao,yen.cao@web.example,Free,1000,2026-10-14,false,1,1,FF-10311,"Credit pack, 1,000 credits",Credit pack,Paid,10,2026-09-05,No credits used,true
+c312,Quynh Nguyen,quynh.nguyen@mail.example,Pro,7000,2026-11-02,false,2,0,FF-10312,"Credit pack, 5,000 credits",Credit pack,Paid,50,2026-09-27,No credits used,true
+c313,Clara Pereira,clara.pereira@mail.example,Free,10000,2026-11-02,false,0,0,FF-10313,"Credit pack, 10,000 credits",Credit pack,Paid,100,2026-09-25,No credits used,true
+c314,Ngoc Mai,ngoc.mai@inbox.example,Pro,12000,2026-10-21,false,1,1,FF-10314,"Credit pack, 10,000 credits",Credit pack,Paid,100,2026-09-11,No credits used,true
+c315,Rita Petrov,rita.petrov@web.example,Free,10000,2026-10-30,false,2,0,FF-10315,"Credit pack, 10,000 credits",Credit pack,Paid,100,2026-09-28,No credits used,true
+c316,An Truong,an.truong@mail.example,Free,10000,2026-10-10,false,1,1,FF-10316,"Credit pack, 10,000 credits",Credit pack,Paid,100,2026-08-26,No credits used,true
+c317,Oanh Cao,oanh.cao@web.example,Pro,7000,2026-10-28,false,0,0,FF-10317,"Credit pack, 5,000 credits",Credit pack,Paid,50,2026-09-20,No credits used,true
+c318,Fiona Abbott,fiona.abbott@post.example,Free,10000,2026-10-27,false,1,1,FF-10318,"Credit pack, 10,000 credits",Credit pack,Paid,100,2026-09-14,No credits used,true
+c319,Toan Trinh,toan.trinh@mail.example,Free,10000,2026-10-23,false,1,1,FF-10319,"Credit pack, 10,000 credits",Credit pack,Paid,100,2026-09-21,No credits used,true
+c320,Marco Romero,marco.romero@mail.example,Free,10000,2026-10-30,false,2,1,FF-10320,"Credit pack, 10,000 credits",Credit pack,Paid,100,2026-09-27,No credits used,true
+c321,Thuy Vu,thuy.vu@post.example,Free,10000,2026-10-14,false,0,0,FF-10321,"Credit pack, 10,000 credits",Credit pack,Paid,100,2026-09-04,No credits used,true
+c322,Nora Nielsen,nora.nielsen@mail.example,Pro,4500,2026-10-24,false,1,0,FF-10322,"Credit pack, 2,500 credits",Credit pack,Paid,25,2026-09-02,No credits used,true
+c323,Quynh Luu,quynh.luu@post.example,Pro,7000,2026-10-23,false,0,0,FF-10323,"Credit pack, 5,000 credits",Credit pack,Paid,50,2026-09-09,No credits used,true
+c324,Viet Ly,viet.ly@inbox.example,Free,2500,2026-10-31,false,2,0,FF-10324,"Credit pack, 2,500 credits",Credit pack,Paid,25,2026-09-14,No credits used,true
+c325,Clara Ortega,clara.ortega@post.example,Pro,12000,2026-11-02,false,1,0,FF-10325,"Credit pack, 10,000 credits",Credit pack,Paid,100,2026-10-01,No credits used,true
+c326,Phat Vo,phat.vo@web.example,Free,1000,2026-11-02,false,2,1,FF-10326,"Credit pack, 1,000 credits",Credit pack,Paid,10,2026-08-26,No credits used,true
+c327,Yen Vo,yen.vo@post.example,Free,1000,2026-10-18,false,0,0,FF-10327,"Credit pack, 1,000 credits",Credit pack,Paid,10,2026-10-01,No credits used,true
+c328,Yusuf Novak,yusuf.novak@mail.example,Free,1000,2026-10-18,false,1,0,FF-10328,"Credit pack, 1,000 credits",Credit pack,Paid,10,2026-09-30,No credits used,true
+c329,Yusuf Dietrich,yusuf.dietrich@mail.example,Pro,7000,2026-10-11,false,2,1,FF-10329,"Credit pack, 5,000 credits",Credit pack,Paid,50,2026-08-28,No credits used,true
+c330,Tom Keller,tom.keller@inbox.example,Pro,12000,2026-10-24,false,1,1,FF-10330,"Credit pack, 10,000 credits",Credit pack,Paid,100,2026-09-10,No credits used,true
+c331,Trung Doan,trung.doan@inbox.example,Free,30000,2026-10-16,false,1,1,FF-10331,"Credit pack, 10,000 credits",Credit pack,Paid,300,2026-10-03,No credits used,true
+c332,Bao Doan,bao.doan@mail.example,Pro,32000,2026-10-30,false,1,1,FF-10332,"Credit pack, 10,000 credits",Credit pack,Paid,300,2026-09-14,No credits used,true
+c333,Julia Keller,julia.keller@inbox.example,Pro,22000,2026-10-24,false,2,0,FF-10333,"Credit pack, 10,000 credits",Credit pack,Paid,200,2026-09-24,No credits used,true
+c334,Karim Ibrahim,karim.ibrahim@web.example,Pro,22000,2026-10-23,false,1,1,FF-10334,"Credit pack, 10,000 credits",Credit pack,Paid,200,2026-09-01,No credits used,true
+c335,Helena Fischer,helena.fischer@web.example,Pro,32000,2026-10-20,false,1,1,FF-10335,"Credit pack, 10,000 credits",Credit pack,Paid,300,2026-09-18,No credits used,true
+c336,Wendy Keller,wendy.keller@inbox.example,Pro,22000,2026-10-26,false,2,0,FF-10336,"Credit pack, 10,000 credits",Credit pack,Paid,200,2026-09-29,No credits used,true
+c337,Quang Dang,quang.dang@mail.example,Free,30000,2026-10-27,false,1,1,FF-10337,"Credit pack, 10,000 credits",Credit pack,Paid,300,2026-09-10,No credits used,true
+c338,Sang Bui,sang.bui@inbox.example,Pro,32000,2026-10-26,false,1,0,FF-10338,"Credit pack, 10,000 credits",Credit pack,Paid,300,2026-09-25,No credits used,true
+c339,Emil Becker,emil.becker@inbox.example,Pro,22000,2026-11-01,false,2,0,FF-10339,"Credit pack, 10,000 credits",Credit pack,Paid,200,2026-09-22,No credits used,true
+c340,Victor Nielsen,victor.nielsen@post.example,Pro,32000,2026-10-31,false,1,1,FF-10340,"Credit pack, 10,000 credits",Credit pack,Paid,300,2026-09-22,No credits used,true
+c341,Trung Vu,trung.vu@post.example,Free,30000,2026-10-08,false,0,1,FF-10341,"Credit pack, 10,000 credits",Credit pack,Paid,300,2026-09-14,No credits used,true
+c342,Trung Le,trung.le@post.example,Pro,32000,2026-10-09,false,0,0,FF-10342,"Credit pack, 10,000 credits",Credit pack,Paid,300,2026-09-23,No credits used,true
+c343,Omar Anderson,omar.anderson@web.example,Free,30000,2026-10-18,false,0,1,FF-10343,"Credit pack, 10,000 credits",Credit pack,Paid,300,2026-09-09,No credits used,true
+c344,Tom Petrov,tom.petrov@post.example,Free,20000,2026-10-26,false,2,0,FF-10344,"Credit pack, 10,000 credits",Credit pack,Paid,200,2026-09-04,No credits used,true
+c345,Mateo Fontaine,mateo.fontaine@web.example,Free,440,2026-10-08,false,1,1,FF-10345,"Credit pack, 1,000 credits",Credit pack,Paid,10,2026-08-29,"560 of 1,000 credits used",false
+c346,Mai Do,mai.do@post.example,Free,4300,2026-10-10,false,2,1,FF-10346,"Credit pack, 5,000 credits",Credit pack,Paid,100,2026-09-04,"5,700 of 10,000 credits used",false
+c347,Nina Dietrich,nina.dietrich@mail.example,Free,2275,2026-10-24,false,1,1,FF-10347,"Credit pack, 2,500 credits",Credit pack,Paid,25,2026-09-25,"225 of 2,500 credits used",false
+c348,Rita Hansen,rita.hansen@web.example,Free,3500,2026-10-20,false,0,0,FF-10348,"Credit pack, 5,000 credits",Credit pack,Paid,50,2026-09-29,"1,500 of 5,000 credits used",false
+c349,Felix Ibrahim,felix.ibrahim@inbox.example,Free,2600,2026-10-23,false,2,1,FF-10349,"Credit pack, 2,500 credits",Credit pack,Paid,50,2026-09-18,"2,400 of 5,000 credits used",false
+c350,Quynh Cao,quynh.cao@web.example,Free,2000,2026-11-02,false,2,0,FF-10350,"Credit pack, 10,000 credits",Credit pack,Paid,100,2026-09-27,"8,000 of 10,000 credits used",false
+c351,Nhung Doan,nhung.doan@inbox.example,Free,4700,2026-10-26,false,0,1,FF-10351,"Credit pack, 5,000 credits",Credit pack,Paid,100,2026-09-08,"5,300 of 10,000 credits used",false
+c352,Thao Dinh,thao.dinh@web.example,Free,500,2026-10-22,false,1,1,FF-10352,"Credit pack, 1,000 credits",Credit pack,Paid,10,2026-09-16,"500 of 1,000 credits used",false
+c353,Viet Ta,viet.ta@web.example,Pro,3525,2026-10-13,false,1,0,FF-10353,"Credit pack, 2,500 credits",Credit pack,Paid,25,2026-09-02,"975 of 2,500 credits used",false
+c354,Yusuf Anderson,yusuf.anderson@web.example,Pro,3480,2026-10-30,false,0,0,FF-10354,"Credit pack, 1,000 credits",Credit pack,Paid,20,2026-09-01,"520 of 2,000 credits used",false
+c355,Anh Mai,anh.mai@inbox.example,Free,6700,2026-10-08,false,1,0,FF-10355,"Credit pack, 5,000 credits",Credit pack,Paid,100,2026-09-09,"3,300 of 10,000 credits used",false
+c356,Adam Novak,adam.novak@post.example,Free,1800,2026-10-16,false,0,0,FF-10356,"Credit pack, 2,500 credits",Credit pack,Paid,25,2026-08-28,"700 of 2,500 credits used",false
+c357,Thanh Huynh,thanh.huynh@post.example,Free,2800,2026-10-22,false,2,1,FF-10357,"Credit pack, 5,000 credits",Credit pack,Paid,100,2026-09-06,"7,200 of 10,000 credits used",false
+c358,Quyen Dinh,quyen.dinh@web.example,Pro,2375,2026-10-27,false,2,0,FF-10358,"Credit pack, 2,500 credits",Credit pack,Paid,25,2026-10-05,"2,125 of 2,500 credits used",false
+c359,Phuong Lam,phuong.lam@inbox.example,Free,120,2026-10-10,false,2,0,FF-10359,"Credit pack, 1,000 credits",Credit pack,Paid,20,2026-08-30,"1,880 of 2,000 credits used",false
+c360,Hoa Cao,hoa.cao@post.example,Pro,4750,2026-10-09,false,0,1,FF-10360,"Credit pack, 2,500 credits",Credit pack,Paid,50,2026-09-14,"2,250 of 5,000 credits used",false
+c361,Tom Dietrich,tom.dietrich@inbox.example,Pro,2100,2026-10-11,false,1,0,FF-10361,"Credit pack, 1,000 credits",Credit pack,Paid,10,2026-09-06,"900 of 1,000 credits used",false
+c362,Sang Duong,sang.duong@mail.example,Pro,3300,2026-10-16,false,1,1,FF-10362,"Credit pack, 1,000 credits",Credit pack,Paid,20,2026-09-19,"700 of 2,000 credits used",false
+c363,Felix Jansen,felix.jansen@post.example,Free,7000,2026-10-10,false,1,1,FF-10363,"Credit pack, 10,000 credits",Credit pack,Paid,100,2026-09-12,"3,000 of 10,000 credits used",false
+c364,Mateo Anderson,mateo.anderson@inbox.example,Free,4400,2026-10-22,false,2,1,FF-10364,"Credit pack, 5,000 credits",Credit pack,Paid,100,2026-09-18,"5,600 of 10,000 credits used",false
+c365,Alice Jansen,alice.jansen@inbox.example,Pro,6800,2026-10-15,false,0,0,FF-10365,"Credit pack, 10,000 credits",Credit pack,Paid,200,2026-09-04,"15,200 of 20,000 credits used",false
+c366,Binh Vu,binh.vu@inbox.example,Pro,2180,2026-10-27,false,2,1,FF-10366,"Credit pack, 1,000 credits",Credit pack,Paid,20,2026-09-25,"1,820 of 2,000 credits used",false
+c367,Nga Ngo,nga.ngo@inbox.example,Free,660,2026-10-18,false,2,0,FF-10367,"Credit pack, 1,000 credits",Credit pack,Paid,10,2026-09-28,"340 of 1,000 credits used",false
+c368,Jonas Fischer,jonas.fischer@mail.example,Free,4300,2026-10-15,false,2,0,FF-10368,"Credit pack, 5,000 credits",Credit pack,Paid,50,2026-09-01,"700 of 5,000 credits used",false
+c369,Gabriel Fontaine,gabriel.fontaine@mail.example,Pro,7800,2026-10-20,false,1,1,FF-10369,"Credit pack, 10,000 credits",Credit pack,Paid,100,2026-09-02,"4,200 of 10,000 credits used",false
+c370,Toan Tran,toan.tran@post.example,Free,5100,2026-10-15,false,0,0,FF-10370,"Credit pack, 10,000 credits",Credit pack,Paid,100,2026-09-18,"4,900 of 10,000 credits used",false
+c371,Oanh Pham,oanh.pham@web.example,Pro,3000,2026-10-26,false,2,0,FF-10371,"Credit pack, 1,000 credits",Credit pack,Paid,20,2026-08-31,"1,000 of 2,000 credits used",false
+c372,Lucia Laurent,lucia.laurent@inbox.example,Pro,5450,2026-10-20,false,0,1,FF-10372,"Credit pack, 5,000 credits",Credit pack,Paid,50,2026-09-05,"1,550 of 5,000 credits used",false
+c373,Clara Abbott,clara.abbott@mail.example,Pro,2000,2027-09-28,false,0,3,FF-10373,"Pro plan, annual",Annual plan,Paid,42,2026-09-28,No credits used,true
+c374,Giang Lam,giang.lam@inbox.example,Pro,690,2027-10-05,false,1,3,FF-10374,"Pro plan, annual",Annual plan,Paid,27,2026-10-05,"Used 1,310 of 2,000 credits",false
+c375,Uma Fischer,uma.fischer@web.example,Pro,2000,2027-09-16,false,0,2,FF-10375,"Pro plan, annual",Annual plan,Paid,27,2026-09-16,No credits used,true
+c376,Alice Haas,alice.haas@web.example,Team,10000,2027-09-22,false,2,3,FF-10376,"Team plan, annual",Annual plan,Paid,100,2026-09-22,No credits used,true
+c377,Hung Vu,hung.vu@inbox.example,Team,10000,2027-09-18,false,0,2,FF-10377,"Team plan, annual",Annual plan,Paid,82,2026-09-18,No credits used,true
+c378,Cuong Vo,cuong.vo@web.example,Team,3570,2027-09-14,false,0,2,FF-10378,"Team plan, annual",Annual plan,Paid,66,2026-09-14,"Used 6,430 of 10,000 credits",false
+c379,Thanh Ngo,thanh.ngo@web.example,Team,9825,2027-09-24,false,2,2,FF-10379,"Team plan, annual",Annual plan,Paid,39,2026-09-24,"Rendered 7 video clips in the web studio, 175 credits used",false
+c380,Lan Hoang,lan.hoang@web.example,Pro,1825,2027-09-29,false,1,2,FF-10380,"Pro plan, annual",Annual plan,Paid,73,2026-09-29,"Rendered 7 video clips in the web studio, 175 credits used",false
+c381,Binh Tran,binh.tran@inbox.example,Team,10000,2027-09-09,false,2,3,FF-10381,"Team plan, annual",Annual plan,Paid,75,2026-09-09,No credits used,true
+c382,Phuc Hoang,phuc.hoang@mail.example,Team,10000,2027-09-12,false,1,3,FF-10382,"Team plan, annual",Annual plan,Paid,40,2026-09-12,No credits used,true
+c383,Phat Tran,phat.tran@web.example,Pro,440,2027-09-18,false,0,3,FF-10383,"Pro plan, annual",Annual plan,Paid,57,2026-09-18,"Used 1,560 of 2,000 credits",false
+c384,Quynh Phan,quynh.phan@mail.example,Team,10000,2027-09-07,false,1,2,FF-10384,"Team plan, annual",Annual plan,Paid,100,2026-09-07,No credits used,true
+c385,Lucia Zimmermann,lucia.zimmermann@mail.example,Team,6260,2027-09-28,false,1,3,FF-10385,"Team plan, annual",Annual plan,Paid,68,2026-09-28,"Used 3,740 of 10,000 credits",false
+c386,Duc Doan,duc.doan@post.example,Pro,2000,2027-09-24,false,2,2,FF-10386,"Pro plan, annual",Annual plan,Paid,74,2026-09-24,No credits used,true
+c387,Carlos Bianchi,carlos.bianchi@web.example,Pro,210,2026-10-31,false,1,2,FF-10387,"Pro plan, monthly",Monthly plan,Paid,32,2026-10-01,"Used 1,790 of 2,000 credits",false
+c388,Ngoc Do,ngoc.do@inbox.example,Team,9925,2026-10-29,false,1,2,FF-10388,"Team plan, monthly",Monthly plan,Paid,95,2026-09-29,"Rendered 3 video clips in the web studio, 75 credits used",false
+c389,Omar Abbott,omar.abbott@mail.example,Team,6370,2026-11-04,false,0,2,FF-10389,"Team plan, monthly",Monthly plan,Paid,36,2026-10-05,"Used 3,630 of 10,000 credits",false
+c390,Diana Bianchi,diana.bianchi@post.example,Team,10000,2026-10-21,false,0,2,FF-10390,"Team plan, monthly",Monthly plan,Paid,58,2026-09-21,No credits used,true
+c391,Hieu Lam,hieu.lam@mail.example,Team,9750,2026-11-02,false,2,2,FF-10391,"Team plan, monthly",Monthly plan,Paid,80,2026-10-03,"Rendered 10 video clips in the web studio, 250 credits used",false
+c392,Tuan Cao,tuan.cao@mail.example,Pro,2000,2026-10-26,false,2,2,FF-10392,"Pro plan, monthly",Monthly plan,Paid,98,2026-09-26,No credits used,true
+c393,Nhi Bui,nhi.bui@web.example,Pro,2000,2026-10-29,false,0,2,FF-10393,"Pro plan, monthly",Monthly plan,Paid,53,2026-09-29,No credits used,true
+c394,Hugo Petrov,hugo.petrov@inbox.example,Team,5520,2026-10-24,false,1,2,FF-10394,"Team plan, monthly",Monthly plan,Paid,87,2026-09-24,"Used 4,480 of 10,000 credits",false
+c395,Jonas Kowalski,jonas.kowalski@inbox.example,Pro,370,2026-10-30,false,2,2,FF-10395,"Pro plan, monthly",Monthly plan,Paid,61,2026-09-30,"Used 1,630 of 2,000 credits",false
+c396,Pablo Abbott,pablo.abbott@inbox.example,Team,10000,2026-10-31,false,1,2,FF-10396,"Team plan, monthly",Monthly plan,Paid,24,2026-10-01,No credits used,true
+c397,Khanh Ha,khanh.ha@web.example,Team,10000,2026-11-02,false,1,2,FF-10397,"Team plan, monthly",Monthly plan,Paid,68,2026-10-03,No credits used,true
+c398,Hanh Huynh,hanh.huynh@inbox.example,Pro,1240,2026-10-22,false,1,2,FF-10398,"Pro plan, monthly",Monthly plan,Paid,83,2026-09-22,"Used 760 of 2,000 credits",false
+c399,Nhung Dang,nhung.dang@inbox.example,Pro,2000,2026-10-29,false,0,2,FF-10399,"Pro plan, monthly",Monthly plan,Paid,97,2026-09-29,No credits used,true
+c400,Hugo Zimmermann,hugo.zimmermann@web.example,Team,10000,2026-10-26,false,0,2,FF-10400,"Team plan, monthly",Monthly plan,Paid,68,2026-09-26,No credits used,true
+c401,Sofia Costa,sofia.costa@post.example,Pro,1860,2026-10-07,false,1,0,FF-10401,"Pro plan, annual",Annual plan,Scheduled,64,2026-10-07,Renewal not charged yet,true
+c402,Lan Phan,lan.phan@mail.example,Pro,810,2026-10-08,false,2,0,FF-10402,"Pro plan, annual",Annual plan,Scheduled,26,2026-10-08,Renewal not charged yet,true
+c403,Cuong Le,cuong.le@web.example,Pro,1530,2026-10-07,false,2,1,FF-10403,"Pro plan, annual",Annual plan,Scheduled,36,2026-10-07,Renewal not charged yet,true
+c404,Daniel Hansen,daniel.hansen@inbox.example,Pro,1430,2026-10-07,false,1,0,FF-10404,"Pro plan, annual",Annual plan,Scheduled,49,2026-10-07,Renewal not charged yet,true
+c405,Bianca Hansen,bianca.hansen@inbox.example,Team,7450,2026-10-06,false,1,0,FF-10405,"Team plan, annual",Annual plan,Scheduled,78,2026-10-06,Renewal not charged yet,true
+c406,Omar Quinn,omar.quinn@inbox.example,Team,6240,2026-10-08,false,2,0,FF-10406,"Team plan, annual",Annual plan,Scheduled,24,2026-10-08,Renewal not charged yet,true
+c407,Quynh Duong,quynh.duong@web.example,Team,4250,2026-10-07,false,2,0,FF-10407,"Team plan, annual",Annual plan,Scheduled,50,2026-10-07,Renewal not charged yet,true
+c408,Xuan Duong,xuan.duong@inbox.example,Team,5790,2026-10-07,false,2,0,FF-10408,"Team plan, annual",Annual plan,Scheduled,36,2026-10-07,Renewal not charged yet,true
+c409,Alice Silva,alice.silva@web.example,Pro,420,2026-10-08,false,0,1,FF-10409,"Pro plan, annual",Annual plan,Scheduled,84,2026-10-08,Renewal not charged yet,true
+c410,Quang Cao,quang.cao@mail.example,Team,1550,2026-10-06,false,2,1,FF-10410,"Team plan, annual",Annual plan,Scheduled,98,2026-10-06,Renewal not charged yet,true
+c411,Quynh Doan,quynh.doan@web.example,Team,9060,2026-10-08,false,0,0,FF-10411,"Team plan, annual",Annual plan,Scheduled,48,2026-10-08,Renewal not charged yet,true
+c412,Hung Hoang,hung.hoang@post.example,Team,9330,2026-10-06,false,1,0,FF-10412,"Team plan, annual",Annual plan,Scheduled,32,2026-10-06,Renewal not charged yet,true
+c413,Mateo Abbott,mateo.abbott@mail.example,Team,3840,2026-10-07,false,0,0,FF-10413,"Team plan, annual",Annual plan,Scheduled,72,2026-10-07,Renewal not charged yet,true
+c414,Sofia Bianchi,sofia.bianchi@post.example,Pro,650,2026-10-06,false,1,0,FF-10414,"Pro plan, annual",Annual plan,Scheduled,23,2026-10-06,Renewal not charged yet,true
+c415,Khanh Phan,khanh.phan@web.example,Pro,1170,2026-10-07,false,1,1,FF-10415,"Pro plan, annual",Annual plan,Scheduled,84,2026-10-07,Renewal not charged yet,true
+c416,Minh Duong,minh.duong@inbox.example,Team,2690,2026-10-06,false,1,0,FF-10416,"Team plan, annual",Annual plan,Scheduled,96,2026-10-06,Renewal not charged yet,true
+c417,Clara Nielsen,clara.nielsen@inbox.example,Pro,840,2026-10-07,false,1,0,FF-10417,"Pro plan, annual",Annual plan,Scheduled,68,2026-10-07,Renewal not charged yet,true
+c418,Ngoc Pham,ngoc.pham@mail.example,Team,4010,2026-10-07,false,0,0,FF-10418,"Team plan, annual",Annual plan,Scheduled,80,2026-10-07,Renewal not charged yet,true
+c419,Thu Dinh,thu.dinh@mail.example,Team,7130,2026-10-06,false,1,1,FF-10419,"Team plan, annual",Annual plan,Scheduled,55,2026-10-06,Renewal not charged yet,true
+c420,Phuc Dang,phuc.dang@inbox.example,Pro,490,2026-10-06,false,1,0,FF-10420,"Pro plan, annual",Annual plan,Scheduled,84,2026-10-06,Renewal not charged yet,true
+c421,Tom Okafor,tom.okafor@web.example,Pro,1500,2026-10-06,false,2,0,FF-10421,"Pro plan, annual",Annual plan,Scheduled,28,2026-10-06,Renewal not charged yet,true
+c422,Wendy Becker,wendy.becker@post.example,Pro,770,2026-10-06,false,1,0,FF-10422,"Pro plan, monthly",Monthly plan,Scheduled,34,2026-10-06,Renewal not charged yet,true
+c423,Hugo Muller,hugo.muller@inbox.example,Team,9700,2026-10-06,false,1,1,FF-10423,"Team plan, monthly",Monthly plan,Scheduled,76,2026-10-06,Renewal not charged yet,true
+c424,Emil Laurent,emil.laurent@mail.example,Team,1940,2026-10-08,false,2,1,FF-10424,"Team plan, monthly",Monthly plan,Scheduled,56,2026-10-08,Renewal not charged yet,true
+c425,Fiona Haas,fiona.haas@web.example,Team,2880,2026-10-08,false,2,0,FF-10425,"Team plan, monthly",Monthly plan,Scheduled,45,2026-10-08,Renewal not charged yet,true
+c426,Hanh Vu,hanh.vu@mail.example,Pro,1970,2026-10-07,false,0,0,FF-10426,"Pro plan, monthly",Monthly plan,Scheduled,99,2026-10-07,Renewal not charged yet,true
+c427,Thao Lam,thao.lam@web.example,Team,10000,2026-10-06,false,0,1,FF-10427,"Team plan, monthly",Monthly plan,Scheduled,50,2026-10-06,Renewal not charged yet,true
+c428,Binh Trinh,binh.trinh@inbox.example,Team,2550,2026-10-08,false,1,1,FF-10428,"Team plan, monthly",Monthly plan,Scheduled,65,2026-10-08,Renewal not charged yet,true
+c429,Tom Becker,tom.becker@mail.example,Pro,1410,2026-10-06,false,0,0,FF-10429,"Pro plan, monthly",Monthly plan,Scheduled,91,2026-10-06,Renewal not charged yet,true
+c430,Duc Le,duc.le@post.example,Pro,1160,2026-10-06,false,0,0,FF-10430,"Pro plan, monthly",Monthly plan,Scheduled,22,2026-10-06,Renewal not charged yet,true
+c431,Anh Doan,anh.doan@post.example,Pro,1440,2026-10-07,false,2,1,FF-10431,"Pro plan, monthly",Monthly plan,Scheduled,70,2026-10-07,Renewal not charged yet,true
+c432,Vy Bui,vy.bui@inbox.example,Team,8200,2026-10-07,false,1,0,FF-10432,"Team plan, monthly",Monthly plan,Scheduled,48,2026-10-07,Renewal not charged yet,true
+c433,Bianca Keller,bianca.keller@inbox.example,Team,7060,2026-10-08,false,1,0,FF-10433,"Team plan, monthly",Monthly plan,Scheduled,40,2026-10-08,Renewal not charged yet,true
+c434,Elena Eriksson,elena.eriksson@post.example,Pro,1960,2026-10-07,false,2,0,FF-10434,"Pro plan, monthly",Monthly plan,Scheduled,95,2026-10-07,Renewal not charged yet,true
+c435,Clara Keller,clara.keller@post.example,Pro,1010,2026-10-08,false,1,0,FF-10435,"Pro plan, monthly",Monthly plan,Scheduled,32,2026-10-08,Renewal not charged yet,true
+c436,Helena Eriksson,helena.eriksson@post.example,Team,6920,2026-10-06,false,0,0,FF-10436,"Team plan, monthly",Monthly plan,Scheduled,120,2026-10-06,Renewal not charged yet,true
+c437,Dung Vu,dung.vu@inbox.example,Team,8190,2026-10-08,false,2,0,FF-10437,"Team plan, monthly",Monthly plan,Scheduled,310,2026-10-08,Renewal not charged yet,true
+c438,Mateo Costa,mateo.costa@mail.example,Pro,990,2026-10-08,false,0,1,FF-10438,"Pro plan, monthly",Monthly plan,Scheduled,103,2026-10-08,Renewal not charged yet,true
+c439,Viet Mai,viet.mai@post.example,Pro,20,2026-10-08,false,2,0,FF-10439,"Pro plan, monthly",Monthly plan,Scheduled,130,2026-10-08,Renewal not charged yet,true
+c440,Giang Vu,giang.vu@post.example,Pro,770,2026-10-07,false,0,0,FF-10440,"Pro plan, monthly",Monthly plan,Scheduled,202,2026-10-07,Renewal not charged yet,true
+c441,Carlos Vogel,carlos.vogel@web.example,Pro,1200,2026-10-07,false,2,0,FF-10441,"Pro plan, monthly",Monthly plan,Scheduled,167,2026-10-07,Renewal not charged yet,true
+c442,Victor Carter,victor.carter@post.example,Pro,360,2026-10-08,false,1,0,FF-10442,"Pro plan, monthly",Monthly plan,Scheduled,139,2026-10-08,Renewal not charged yet,true
+c443,Yen Nguyen,yen.nguyen@web.example,Team,3390,2026-10-06,false,1,1,FF-10443,"Team plan, monthly",Monthly plan,Scheduled,195,2026-10-06,Renewal not charged yet,true
+c444,Gabriel Romero,gabriel.romero@post.example,Team,4290,2026-10-07,false,0,1,FF-10444,"Team plan, monthly",Monthly plan,Scheduled,208,2026-10-07,Renewal not charged yet,true
+c445,Trung Cao,trung.cao@mail.example,Team,6360,2026-10-08,false,0,0,FF-10445,"Team plan, monthly",Monthly plan,Scheduled,308,2026-10-08,Renewal not charged yet,true
+c446,Uma Moreau,uma.moreau@inbox.example,Team,4870,2026-10-08,false,1,0,FF-10446,"Team plan, monthly",Monthly plan,Scheduled,160,2026-10-08,Renewal not charged yet,true
+c447,Irene Okafor,irene.okafor@web.example,Team,6000,2026-10-08,false,2,0,FF-10447,"Team plan, monthly",Monthly plan,Scheduled,303,2026-10-08,Renewal not charged yet,true
+c448,Long Vo,long.vo@mail.example,Team,410,2026-10-08,false,1,0,FF-10448,"Team plan, monthly",Monthly plan,Scheduled,156,2026-10-08,Renewal not charged yet,true
+c449,Rita Eriksson,rita.eriksson@mail.example,Pro,150,2026-10-07,false,1,0,FF-10449,"Pro plan, monthly",Monthly plan,Scheduled,109,2026-10-07,Renewal not charged yet,true
+c450,Wendy Novak,wendy.novak@web.example,Pro,1430,2026-10-07,false,0,0,FF-10450,"Pro plan, monthly",Monthly plan,Scheduled,273,2026-10-07,Renewal not charged yet,true
+c451,Nina Pereira,nina.pereira@web.example,Team,6010,2026-10-06,false,1,1,FF-10451,"Team plan, monthly",Monthly plan,Scheduled,240,2026-10-06,Renewal not charged yet,true
+c452,Emil Novak,emil.novak@post.example,Team,7310,2026-10-07,false,1,0,FF-10452,"Team plan, monthly",Monthly plan,Scheduled,129,2026-10-07,Renewal not charged yet,true
+c453,Ivan Jansen,ivan.jansen@post.example,Team,1720,2026-10-08,false,1,0,FF-10453,"Team plan, monthly",Monthly plan,Scheduled,230,2026-10-08,Renewal not charged yet,true
+c454,Daniel Tanaka,daniel.tanaka@web.example,Team,4190,2026-10-06,false,2,0,FF-10454,"Team plan, monthly",Monthly plan,Scheduled,240,2026-10-06,Renewal not charged yet,true
+c455,Tuan Dang,tuan.dang@mail.example,Pro,1830,2026-10-07,false,2,1,FF-10455,"Pro plan, monthly",Monthly plan,Scheduled,137,2026-10-07,Renewal not charged yet,true
+c456,Zoe Ibrahim,zoe.ibrahim@inbox.example,Pro,1680,2026-10-06,false,0,0,FF-10456,"Pro plan, monthly",Monthly plan,Scheduled,110,2026-10-06,Renewal not charged yet,true
+c457,Minh Mai,minh.mai@inbox.example,Team,10000,2027-10-02,false,0,1,FF-10457,"Team plan, annual",Annual plan,Settling,125,2026-10-02,No credits used,true
+c458,Felix Tanaka,felix.tanaka@web.example,Team,10000,2027-10-02,false,1,1,FF-10458,"Team plan, annual",Annual plan,Settling,120,2026-10-02,No credits used,true
+c459,Long Trinh,long.trinh@web.example,Team,10000,2027-10-03,false,1,0,FF-10459,"Team plan, annual",Annual plan,Settling,117,2026-10-03,No credits used,true
+c460,Paula Ibrahim,paula.ibrahim@inbox.example,Pro,2000,2027-10-02,false,1,1,FF-10460,"Pro plan, annual",Annual plan,Settling,120,2026-10-02,No credits used,true
+c461,Tom Kowalski,tom.kowalski@mail.example,Pro,2000,2027-09-30,false,2,1,FF-10461,"Pro plan, annual",Annual plan,Settling,101,2026-09-30,No credits used,true
+c462,Alice Ishikawa,alice.ishikawa@mail.example,Pro,2000,2027-10-03,false,0,0,FF-10462,"Pro plan, annual",Annual plan,Settling,102,2026-10-03,No credits used,true
+c463,Lucia Jansen,lucia.jansen@web.example,Pro,2000,2027-09-30,false,2,0,FF-10463,"Pro plan, annual",Annual plan,Settling,177,2026-09-30,No credits used,true
+c464,Daniel Fontaine,daniel.fontaine@post.example,Pro,2000,2027-10-03,false,2,1,FF-10464,"Pro plan, annual",Annual plan,Settling,179,2026-10-03,No credits used,true
+c465,Toan Ta,toan.ta@inbox.example,Team,10000,2027-10-02,false,2,1,FF-10465,"Team plan, annual",Annual plan,Settling,155,2026-10-02,No credits used,true
+c466,Uma Dubois,uma.dubois@post.example,Team,10000,2027-10-01,false,1,1,FF-10466,"Team plan, annual",Annual plan,Settling,185,2026-10-01,No credits used,true
+c467,Nina Moreau,nina.moreau@inbox.example,Pro,2000,2027-09-30,false,1,0,FF-10467,"Pro plan, annual",Annual plan,Settling,153,2026-09-30,No credits used,true
+c468,Bao Le,bao.le@inbox.example,Pro,2000,2027-09-29,false,1,0,FF-10468,"Pro plan, annual",Annual plan,Settling,189,2026-09-29,No credits used,true
+c469,Bao Lam,bao.lam@web.example,Team,10000,2027-09-29,false,0,1,FF-10469,"Team plan, annual",Annual plan,Settling,105,2026-09-29,No credits used,true
+c470,Hanh Ta,hanh.ta@post.example,Pro,2000,2027-10-03,false,2,0,FF-10470,"Pro plan, annual",Annual plan,Settling,126,2026-10-03,No credits used,true
+c471,Laura Grant,laura.grant@inbox.example,Team,10000,2026-11-01,false,1,1,FF-10471,"Team plan, monthly",Monthly plan,Settling,154,2026-10-02,No credits used,true
+c472,Phuc Bui,phuc.bui@mail.example,Pro,2000,2026-10-30,false,1,1,FF-10472,"Pro plan, monthly",Monthly plan,Settling,49,2026-09-30,No credits used,true
+c473,Carlos Novak,carlos.novak@mail.example,Pro,2000,2026-11-01,false,2,0,FF-10473,"Pro plan, monthly",Monthly plan,Settling,199,2026-10-02,No credits used,true
+c474,Binh Hoang,binh.hoang@web.example,Team,10000,2026-11-01,false,1,1,FF-10474,"Team plan, monthly",Monthly plan,Settling,248,2026-10-02,No credits used,true
+c475,Thao Hoang,thao.hoang@inbox.example,Pro,2000,2026-10-30,false,0,0,FF-10475,"Pro plan, monthly",Monthly plan,Settling,181,2026-09-30,No credits used,true
+c476,Karim Esposito,karim.esposito@web.example,Pro,2000,2026-11-02,false,2,0,FF-10476,"Pro plan, monthly",Monthly plan,Settling,242,2026-10-03,No credits used,true
+c477,Tuan Vu,tuan.vu@inbox.example,Team,10000,2026-10-30,false,2,0,FF-10477,"Team plan, monthly",Monthly plan,Settling,214,2026-09-30,No credits used,true
+c478,Carlos Ibrahim,carlos.ibrahim@mail.example,Pro,2000,2026-10-30,false,2,1,FF-10478,"Pro plan, monthly",Monthly plan,Settling,184,2026-09-30,No credits used,true
+c479,Ben Becker,ben.becker@web.example,Team,10000,2026-10-31,false,2,0,FF-10479,"Team plan, monthly",Monthly plan,Settling,242,2026-10-01,No credits used,true
+c480,Uma Petrov,uma.petrov@mail.example,Pro,2000,2026-10-29,false,0,1,FF-10480,"Pro plan, monthly",Monthly plan,Settling,194,2026-09-29,No credits used,true
+c481,Julia Rossi,julia.rossi@web.example,Team,10000,2026-10-30,false,1,1,FF-10481,"Team plan, monthly",Monthly plan,Settling,230,2026-09-30,No credits used,true
+c482,Cuong Lam,cuong.lam@web.example,Team,10000,2026-10-30,false,0,1,FF-10482,"Team plan, monthly",Monthly plan,Settling,180,2026-09-30,No credits used,true
+c483,Lucia Rossi,lucia.rossi@web.example,Team,10000,2026-11-01,false,2,0,FF-10483,"Team plan, monthly",Monthly plan,Settling,162,2026-10-02,No credits used,true
+c484,Grace Laurent,grace.laurent@mail.example,Team,10000,2026-10-30,false,1,1,FF-10484,"Team plan, monthly",Monthly plan,Settling,125,2026-09-30,No credits used,true
+c485,Daniel Jansen,daniel.jansen@mail.example,Team,10000,2026-10-30,false,2,0,FF-10485,"Team plan, monthly",Monthly plan,Settling,264,2026-09-30,No credits used,true
+c486,Fiona Kowalski,fiona.kowalski@mail.example,Team,10000,2026-10-30,false,2,1,FF-10486,"Team plan, monthly",Monthly plan,Settling,44,2026-09-30,No credits used,true
+c487,Omar Muller,omar.muller@inbox.example,Pro,2000,2026-11-02,false,0,1,FF-10487,"Pro plan, monthly",Monthly plan,Settling,197,2026-10-03,No credits used,true
+c488,Nina Costa,nina.costa@mail.example,Team,10000,2026-10-29,false,1,1,FF-10488,"Team plan, monthly",Monthly plan,Settling,204,2026-09-29,No credits used,true
+c489,Nhi Phan,nhi.phan@web.example,Team,10000,2026-11-02,false,2,0,FF-10489,"Team plan, monthly",Monthly plan,Settling,142,2026-10-03,No credits used,true
+c490,Irene Anderson,irene.anderson@post.example,Pro,2000,2026-10-31,false,2,1,FF-10490,"Pro plan, monthly",Monthly plan,Settling,50,2026-10-01,No credits used,true
+c491,Quynh Do,quynh.do@inbox.example,Team,10000,2026-10-30,false,0,0,FF-10491,"Team plan, monthly",Monthly plan,Settling,120,2026-09-30,No credits used,true
+c492,Nina Bianchi,nina.bianchi@web.example,Team,10000,2027-08-29,true,2,0,FF-10492,"Team plan, annual",Annual plan,Paid,132,2026-08-29,No credits used,true
+c493,Phat Dang,phat.dang@inbox.example,Team,4640,2027-09-28,true,2,2,FF-10493,"Team plan, annual",Annual plan,Paid,56,2026-09-28,"Used 5,360 of 10,000 credits",false
+c494,Giang Pham,giang.pham@inbox.example,Pro,2000,2027-09-19,true,2,2,FF-10494,"Pro plan, annual",Annual plan,Paid,81,2026-09-19,No credits used,true
+c495,Minh Vo,minh.vo@post.example,Pro,1120,2027-08-28,true,0,1,FF-10495,"Pro plan, annual",Annual plan,Paid,53,2026-08-28,"Used 880 of 2,000 credits",false
+c496,Kevin Muller,kevin.muller@web.example,Pro,1800,2027-09-15,true,0,0,FF-10496,"Pro plan, annual",Annual plan,Paid,52,2026-09-15,"Rendered 8 video clips in the web studio, 200 credits used",false
+c497,Fiona Becker,fiona.becker@web.example,Team,10000,2027-08-16,true,1,1,FF-10497,"Team plan, annual",Annual plan,Paid,112,2026-08-16,No credits used,true
+c498,Thuy Hoang,thuy.hoang@post.example,Team,5710,2027-09-06,true,1,1,FF-10498,"Team plan, annual",Annual plan,Paid,90,2026-09-06,"Used 4,290 of 10,000 credits",false
+c499,Tam Trinh,tam.trinh@inbox.example,Pro,2000,2027-08-15,true,1,0,FF-10499,"Pro plan, annual",Annual plan,Paid,25,2026-08-15,No credits used,true
+c500,Khoa Cao,khoa.cao@web.example,Team,10000,2027-08-22,true,0,2,FF-10500,"Team plan, annual",Annual plan,Paid,165,2026-08-22,No credits used,true
+c501,Julia Becker,julia.becker@inbox.example,Pro,2000,2027-09-23,true,0,0,FF-10501,"Pro plan, annual",Annual plan,Paid,90,2026-09-23,No credits used,true
+c502,Mai Ngo,mai.ngo@mail.example,Pro,2000,2027-08-13,true,1,2,FF-10502,"Pro plan, annual",Annual plan,Paid,96,2026-08-13,No credits used,true
+c503,Kevin Fischer,kevin.fischer@mail.example,Team,7550,2027-09-28,true,1,0,FF-10503,"Team plan, annual",Annual plan,Paid,120,2026-09-28,"Used 2,450 of 10,000 credits",false
+c504,Phuong Ho,phuong.ho@inbox.example,Team,10000,2027-08-29,true,1,1,FF-10504,"Team plan, annual",Annual plan,Paid,120,2026-08-29,No credits used,true
+c505,Quan Cao,quan.cao@web.example,Pro,2000,2027-09-14,true,2,2,FF-10505,"Pro plan, annual",Annual plan,Paid,46,2026-09-14,No credits used,true
+c506,Phat Do,phat.do@post.example,Pro,1725,2027-08-11,true,1,1,FF-10506,"Pro plan, annual",Annual plan,Paid,90,2026-08-11,"Rendered 11 video clips in the web studio, 275 credits used",false
+c507,Tam Tran,tam.tran@mail.example,Pro,1825,2027-09-29,true,0,1,FF-10507,"Pro plan, annual",Annual plan,Paid,197,2026-09-29,"Rendered 7 video clips in the web studio, 175 credits used",false
+c508,Duc Nguyen,duc.nguyen@post.example,Pro,2000,2027-09-18,true,1,0,FF-10508,"Pro plan, annual",Annual plan,Paid,40,2026-09-18,No credits used,true
+c509,Lucia Moreau,lucia.moreau@web.example,Team,10000,2027-08-09,true,1,1,FF-10509,"Team plan, annual",Annual plan,Paid,174,2026-08-09,No credits used,true
+c510,Yusuf Carter,yusuf.carter@post.example,Pro,2000,2027-09-08,true,0,1,FF-10510,"Pro plan, annual",Annual plan,Paid,113,2026-09-08,No credits used,true
+c511,Khoa Trinh,khoa.trinh@post.example,Pro,1825,2027-08-12,true,0,2,FF-10511,"Pro plan, annual",Annual plan,Paid,179,2026-08-12,"Rendered 7 video clips in the web studio, 175 credits used",false
+c512,Karim Ishikawa,karim.ishikawa@inbox.example,Team,6670,2027-08-18,true,0,2,FF-10512,"Team plan, annual",Annual plan,Paid,70,2026-08-18,"Used 3,330 of 10,000 credits",false

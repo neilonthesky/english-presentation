@@ -1,7 +1,7 @@
 # Kịch bản và ghi chú thuyết trình của Diễn giả 3
 
 - **Họ và tên diễn giả:** Vu Van Son
-- **Vai trò trong đề tài:** Xây dựng tập dữ liệu tổng hợp (1.024 yêu cầu qua 24 loại); Thiết kế thế giới khách hàng FrameForge; Thực thi thực nghiệm và đo lường API trực tiếp
+- **Vai trò trong đề tài:** Xây dựng tập dữ liệu tổng hợp (1.024 yêu cầu qua 21 loại); Thiết kế thế giới khách hàng FrameForge; Thực thi thực nghiệm và đo lường API trực tiếp
 - **Tỷ lệ phân công:** 18% tổng thời lượng thuyết trình trong bài báo; về thời gian nói, Son nói 120 giây trên tổng 858 giây.
 - **Thời gian nói được phân bổ:** 2 phút 00 giây (120 giây) cho ba slide: Slide 24 (42 giây), Slide 25 (38 giây), Slide 26 (40 giây).
 - **Số từ mục tiêu:** ~340 từ trong 120 giây, tức khoảng 170 từ mỗi phút: nhanh hơn tốc độ nói rõ ràng thông thường (120 đến 130 từ/phút), nên phải bấm giờ khi luyện. Nếu vượt khung, giữ các số liệu chính và bỏ bớt các con số token chi tiết ở Slide 25
@@ -40,7 +40,7 @@
 - **Tiêu đề slide:** Level 3 reads less, so it costs about half
 - **Thời gian dự kiến trên slide:** 0 phút 38 giây (38 giây, ~110 từ)
 
-> Level Two reads the chat text, the sender role, the channel, the help articles, the whole account, and the written rules. Level Three reads less: the chat first, then only the account lines and the rule questions of one action. Jev costs four point two cents per million input tokens, and its output is free. The LLM costs fifteen cents in and sixty cents out per million tokens, with high reasoning effort. The first Jev call reads one thousand two hundred and thirty-three tokens and writes one hundred and ninety-six. The second call, on four hundred and ten of the requests, reads seven hundred and forty-three tokens and writes one hundred and five. One LLM agent call reads one thousand two hundred and twenty-nine tokens and writes two hundred and sixty-eight, because reasoning counts.
+> Level Two reads the chat text, the sender, the channel, the help articles, the whole account, and the written rules. Level Three reads less: the chat first, then only the account lines and the rule questions of one action. Jev costs four point two cents per million input tokens, and its output is free. The LLM costs fifteen cents in and sixty cents out per million tokens, with high reasoning effort. The first Jev call reads one thousand two hundred and thirty-three tokens and writes one hundred and ninety-six. The second call, on four hundred and ten of the requests, reads seven hundred and forty-three tokens and writes one hundred and five. One LLM agent call reads one thousand two hundred and twenty-nine tokens and writes two hundred and sixty-eight, because reasoning counts.
 > 
 > `[NGHỈ 1 GIÂY]`  
 > 
@@ -119,6 +119,6 @@ Luyện phát âm 10 từ vựng này theo phiên âm đơn giản dưới đây
 ## 6. Ký hiệu tốc độ và cử chỉ biểu diễn
 
 - `[NHÌN KHÁN GIẢ - MỈM CƯỜI VÀ GIAO TIẾP ÁNH MẮT]`: Tư thế ấm áp, tự tin trước khi bắt đầu phần kỹ thuật.
-- `[NGHỈ 1 GIÂY]`: Cho khán giả theo kịp các con số (1.024 yêu cầu, 1.434 lượt gọi Jev, 24 loại).
+- `[NGHỈ 1 GIÂY]`: Cho khán giả theo kịp các con số (1.024 yêu cầu, 1.434 lượt gọi Jev, 21 loại).
 - `[NHÌN SANG VUONG QUANG QUY]`: Nhìn sang người nói tiếp theo khi đọc câu bàn giao lượt nói.
 - `[CHUYỂN SANG SLIDE X]`: Bấm chuyển slide trình chiếu chuẩn xác theo kịch bản.

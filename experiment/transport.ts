@@ -199,7 +199,7 @@ function note(service: Service, response: unknown, latencyS: number, cached: boo
 }
 
 /** The shape the system under test reads. A body that does not match is a failed call, not a cache hit. */
-function validate(service: Service, json: unknown): void {
+function validate(service: Service, json: unknown, body: unknown): void {
   if (!isObject(json)) throw new ApiError(`${service}: the response body is not a JSON object`)
   if (service === "jev") {
     const answers = json.answers
@@ -210,10 +210,14 @@ function validate(service: Service, json: unknown): void {
       if (typeof a.choice !== "string" || !options.includes(a.choice)) throw new ApiError(`jev: answer ${name} is not a valid choice`)
       if (!isObject(a.probabilities)) throw new ApiError(`jev: answer ${name} has no probabilities`)
     }
-    choice("queue", QUEUES)
-    choice("action", ACTIONS)
-    choice("priority", PRIORITIES)
-    for (const name of ["risk", "injection"]) {
+    // The classifier call asks queue, action, priority, risk, and injection; the rules call asks one yes/no question for each written rule.
+    const asked = isObject(body) && isObject(body.questions) ? Object.keys(body.questions) : []
+    if (asked.includes("queue")) {
+      choice("queue", QUEUES)
+      choice("action", ACTIONS)
+      choice("priority", PRIORITIES)
+    }
+    for (const name of asked.filter((q) => q !== "queue" && q !== "action" && q !== "priority")) {
       const a = answers[name]
       const p = isObject(a) ? a.noul : undefined
       if (typeof p !== "number" && typeof p !== "string") throw new ApiError(`jev: the response has no answer for ${name}`)
@@ -300,7 +304,7 @@ async function recordedPost<T>(url: string, body: unknown): Promise<{ json: T; l
       })
       json = answer.json
       latencyS = answer.latencyS
-      validate(service, json)
+      validate(service, json, body)
       break
     } catch (err) {
       const message = err instanceof Error ? err.message : String(err)

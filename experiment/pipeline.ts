@@ -4,22 +4,22 @@
 //   New        the chat of the customer
 //   Gather     extractFacts, findArticles (saas.ts), and the account of the customer (accountText): Level 3 reads the fields that
 //              the action of Triage needs (ACCOUNT_FIELDS_OF of saas.ts); Level 2 reads every field
-//   Decide     the step that chooses the action: the Jev classifier (llm_classifier.ts) at Level 3, or the LLM agent
+//   Decide     the step that chooses the action: the first Jev call (jev_classifier.ts) at Level 3, or the LLM agent
 //              (llm_agent.ts) at Level 2
-//   Rules      Level 3: rulesStep (steps.ts), the fixed-code reading of the written rules (policyFor of saas.ts).
-//              Level 2: none. The agent applies the written rules itself, and nothing stands behind its answer.
-//   Do action  actStep (steps.ts, only what Rules check allows) at Level 3; runAction (steps.ts, what the agent decided) at Level 2
+//   Rules      Level 3: the second Jev call (jev_rules.ts): one yes/no question for each written rule of the action; a yes means
+//              broken. Level 2: none. The agent applies the written rules itself, and nothing stands behind its answer.
+//   Do action  runAction (steps.ts): at Level 3 only when no rule question is answered "broken"; at Level 2 what the agent decided
 //   Final      writeReply or answerQuestion (models.ts): the LLM writes the message the customer reads
 //
 // The two levels order the steps in the two ways of the two products:
 //   Level 3 (`jev`)   Jev classifies the chat only; the rules of Triage run (the injection rule), then Gather info (the account
-//                    fields of that action), then the fixed rules check reads the action of Triage and the facts.
+//                    lines of that action), then a second Jev call answers one question for each rule of that action.
 //   Level 2 (`llm_agent`) the agent has an account tool, so Gather info runs first and the agent reads the chat, the sender,
 //                    the channel, the help articles, and the account. It runs an action or refuses with the name of a written
 //                    rule. No rule of Triage runs, and no fixed rule runs.
 //
-// The reference run `llm` (not a level) runs the same flow as Level 3 with the LLM as the classifier (`decide()` below); `decide()`
-// is also the oracle of the dataset.
+// `decide()` below is the oracle of the dataset (build_dataset.ts, validate.ts): the gold answers through the fixed-code reading of the
+// written rules. No level runs it.
 //
 // Triage never stops the flow: every request goes on to Gather info. A request that a guard denies ends at the Final message,
 // where the LLM explains what the chat cannot do and gives the steps of the help articles. The flow has no waiting state: Chat
@@ -29,25 +29,25 @@
 // An answer that is not valid fails closed: nothing runs, the LLM writes the Final message from the reason, and the request is
 // counted as an invalid answer in per_case.json.
 import { ACCOUNT_FIELDS } from "../web/src/types"
-import { accountFieldsFor, accountText, extractFacts, findArticles, misuseReport, policyFor, requesterFor, rulingPolicy, triage } from "../web/server/saas"
+import { SECURITY_RULE, accountFieldsFor, accountText, extractFacts, findArticles, misuseReport, policyFor, rulingPolicy, triage } from "../web/server/saas"
 import {
   INVALID_REASON, MONEY_OR_DATA_ACTIONS, STATE_CHANGING_ACTIONS, actStep, deniedReasons, nothingRuns, rulesStep, runAction,
 } from "../web/server/steps"
 import { NO_RULE, answerQuestion, writeReply } from "../web/server/models"
 import type { Classifier, Executed, Facts, Policy, Requester, RulesResponse, TriageResponse } from "../web/src/types"
-import type { Classify, ClassifierRun } from "./llm_classifier"
+import type { Classify, ClassifierRun } from "./jev_classifier"
 import { agentDecision, actionOfRule, type AgentRun } from "./llm_agent"
 import { withCallLog, type CallNote, type Service } from "./transport"
 import { FIELDS, type Field, type TestRequest } from "./types"
+import { senderOf } from "./dataset"
+import { askRules, brokenRule, type RuleRun } from "./jev_rules"
 
 /**
  * The systems of the run: `llm_agent` is Level 2 (the LLM agent of the chat reads the account, applies the written rules, and
- * decides; no rule of Triage and no fixed rule), `jev` is Level 3 (Jev as the classifier, the rules of Triage, and the fixed
- * rules check), and `llm` is the classifier reference run (the same LLM as the classifier with the rules of Triage and the
- * fixed-code reading of the written rules; it is not a level, and it gives the LLM side of the classifier stage table).
+ * decides; no rule of Triage and no fixed rule) and `jev` is Level 3 (Jev classifies the chat, then answers one question for
+ * each written rule of the action; the rules of Triage run in between).
  */
-export type ClassifierSystem = "jev" | "llm"
-export type SystemName = ClassifierSystem | "llm_agent"
+export type SystemName = "jev" | "llm_agent"
 
 /** The assumed time of support staff to handle one request at Level 1 (support staff read every request). No model runs there. */
 export const STAFF_SECONDS = 90
@@ -70,7 +70,7 @@ export const PRICE: Record<Service, { input: number; output: number }> = {
 export const callCost = (service: Service, inputTokens: number, outputTokens: number): number =>
   (inputTokens * PRICE[service].input + outputTokens * PRICE[service].output) / 1_000_000
 
-/** The service of the model that chooses the action: Jev at Level 3, the LLM at Level 2 and in the classifier reference run. */
+/** The service of the model that chooses the action: Jev at Level 3, the LLM at Level 2. */
 export const decisionService = (system: SystemName): Service => (system === "jev" ? "jev" : "llm")
 
 /**
@@ -100,9 +100,8 @@ export interface Decision {
 }
 
 /**
- * Triage (part 2), Rules check by the fixed-code reading of the written rules, and Do action on one classifier answer. Level 3
- * (`jev`), the reference run `llm`, and the oracle of the dataset (build_dataset.ts, validate.ts) run this function. Do action
- * writes to `ledger`.
+ * Triage (part 2), Rules check by the fixed-code reading of the written rules, and Do action on one classifier answer. The
+ * oracle of the dataset (build_dataset.ts, validate.ts) runs this function. Do action writes to `ledger`.
  */
 export function decide(c: Classifier, who: Requester, text: string, ledger: Set<string>, customerId: string): Decision {
   const triaged = triage(c.fields)
@@ -166,10 +165,8 @@ export interface ClassifierFieldRecord {
   reported: number | null
 }
 
-/** The answer of the classifier call at Level 3 and in the classifier reference run. */
+/** The answer of the first Jev call at Level 3. */
 export interface ClassifierRecord {
-  /** The service that answered: Jev or the LLM. */
-  system: Service
   model: string
   invalid: boolean
   invalidReason: string | null
@@ -228,7 +225,6 @@ interface RunBase {
   category: string
   hard: boolean
   customerId: string
-  role: string
   text: string
   startLedger: string[]
   gold: TestRequest["gold"]
@@ -259,13 +255,15 @@ interface RunBase {
   note: string | null
 }
 
-/** A request through the flow of Level 3 or of the classifier reference run: the classifier chooses the action. */
+/** A request through the flow of Level 3: Jev classifies the chat, then answers the questions of the written rules. */
 export interface ClassifierRequestRecord extends RunBase {
-  system: ClassifierSystem
-  /** The classifier on the chat of the request. The accuracy, the reliability, and the calibration table read it. */
+  system: "jev"
+  /** The first Jev call, on the chat of the request. The accuracy, the reliability, and the calibration table read it. */
   classifier: ClassifierRecord
   /** What Triage read (null when the classifier answer was not valid). */
   triage: TriageResponse | null
+  /** The second Jev call: one question for each written rule of the action. Null when the action is Send reply (nothing changes) or the first answer was not valid. */
+  ruleCall: RuleRun | null
   /** The fields of the classifier answer that the accuracy and the calibration tables score. */
   scored: Field[]
   /** The scored fields of the classifier answer that differ from the gold answers (an answer that is not valid: every scored field). */
@@ -287,18 +285,17 @@ const isObject = (value: unknown): value is Record<string, unknown> => typeof va
 const asNumber = (value: unknown): number | null => (typeof value === "number" && Number.isFinite(value) ? value : null)
 
 function classifierRecord(run: ClassifierRun): ClassifierRecord {
-  const answers = run.system === "jev" && isObject(run.raw) && isObject(run.raw.answers) ? run.raw.answers : {}
+  const answers = isObject(run.raw) && isObject(run.raw.answers) ? run.raw.answers : {}
   const fields = {} as Record<Field, ClassifierFieldRecord>
   for (const name of FIELDS) {
     const answer = answers[name]
     fields[name] = {
       value: run.classifier ? run.classifier.fields[name].value : null,
-      chance: run.system === "jev" && run.classifier ? run.classifier.fields[name].confidence : null,
+      chance: run.classifier ? run.classifier.fields[name].confidence : null,
       reported: isObject(answer) ? asNumber(answer.confidence) : null,
     }
   }
   return {
-    system: run.system,
     model: run.model,
     invalid: run.classifier === null,
     invalidReason: run.invalidReason,
@@ -358,16 +355,18 @@ function addCalls(tokens: { input: number; output: number }, calls: readonly Cal
 }
 
 /**
- * One request through the flow of Level 3 and of the classifier reference run. `classify` reads the chat of the customer; the
- * fixed-code reading of the written rules checks the action after Gather info.
+ * One request through the flow of Level 3. `classify` is the first Jev call: it reads the chat of the customer. Triage then
+ * picks the action. When the action changes the state, a second Jev call answers one yes/no question for each written rule of
+ * that action ("is this rule broken?") on the account lines of the action, and Do action runs only when no answer says broken.
+ * No rule is applied by the program on this path.
  */
-export async function processClassifierRequest(req: TestRequest, system: ClassifierSystem, classify: Classify): Promise<ClassifierRequestRecord> {
-  const who = requesterFor(req.customerId, req.role)
+export async function processClassifierRequest(req: TestRequest, classify: Classify): Promise<ClassifierRequestRecord> {
+  const who = senderOf(req.customerId)
   const ledger = new Set(req.startLedger)
   const tokens = { input: 0, output: 0 }
   const timings: StepTimings = { decisionS: 0, finalS: 0, machineS: 0 }
 
-  // New and Triage: the classifier answers on the chat of the customer.
+  // New and Triage: Jev answers on the chat of the customer.
   const text = req.text
   const facts = extractFacts(text)
   const run = await classify(text, who)
@@ -377,17 +376,38 @@ export async function processClassifierRequest(req: TestRequest, system: Classif
   const classifier = classifierRecord(run)
   const invalid = classifier.invalid
 
-  // Triage rules, Gather info, Rules check (fixed code), and Do action.
+  // Triage rules, Gather info, Rules (the second Jev call), and Do action.
   let triaged: TriageResponse | null = null
   let rules: RulesResponse | null = null
+  let ruleCall: RuleRun | null = null
   let executed: Executed = nothingRuns([INVALID_REASON])
   let end: End = "invalid"
   if (!invalid) {
-    const decision = decide(run.classifier!, who, text, ledger, req.customerId)
-    triaged = decision.triage
-    rules = decision.rules
-    executed = decision.executed
-    end = decision.end
+    triaged = triage(run.classifier!.fields)
+    const action = triaged.action
+    if (action === "Send reply") {
+      // A reply changes nothing, so no rule question is asked.
+      rules = rulesStep(action, who, facts, ledger, req.customerId, accountFieldsFor(action), false)
+      executed = actStep(action, triaged.queue, rules, ledger, req.customerId, who)
+      end = "answer"
+    } else {
+      ruleCall = await askRules(text, who, req.customerId, ledger, action, req.gold.queue === "Security")
+      timings.decisionS += ruleCall.latencyS
+      tokens.input += ruleCall.inputTokens
+      tokens.output += ruleCall.outputTokens
+      const broken = brokenRule(ruleCall.answers)
+      if (broken === null) {
+        rules = { policy: rulingPolicy(action, null, who, facts, ledger, req.customerId), next: "act" }
+        executed = runAction(action, triaged.queue, ledger, req.customerId, who)
+        end = "act"
+      } else {
+        // The Security rule belongs to no one action: a reply with the security steps answers the customer.
+        const policy = rulingPolicy(broken === SECURITY_RULE.name ? null : action, broken, who, facts, ledger, req.customerId)
+        rules = { policy, next: "final" }
+        executed = nothingRuns(deniedReasons(policy))
+        end = "blocked"
+      }
+    }
   }
 
   // Final message: every request ends here.
@@ -399,15 +419,15 @@ export async function processClassifierRequest(req: TestRequest, system: Classif
 
   const classifierWrongFields = req.scored.filter((field) => classifier.fields[field].value === null || classifier.fields[field].value !== req.gold[field])
   // The strict label rule of v31: Jev answered "Send reply" where the gold final action is a denial, so the written rules were never asked about the action: a label error.
-  const guardNeverEngaged = system === "jev" && triaged?.action === "Send reply" && req.finalAction === null
+  const guardNeverEngaged = triaged?.action === "Send reply" && req.finalAction === null
   const outcome = requestOutcome(executed, req.finalAction, invalid, stoppedBySecurity(rules, executed))
+  const jevTokens = { input: run.inputTokens + (ruleCall?.inputTokens ?? 0), output: run.outputTokens + (ruleCall?.outputTokens ?? 0) }
   return {
     id: req.id,
-    system,
+    system: "jev",
     category: req.category,
     hard: req.hard,
     customerId: req.customerId,
-    role: req.role,
     text: req.text,
     startLedger: req.startLedger,
     scored: req.scored,
@@ -416,12 +436,13 @@ export async function processClassifierRequest(req: TestRequest, system: Classif
     facts,
     classifier,
     triage: triaged,
+    ruleCall,
     end,
     rules,
     executed,
     message,
     timings,
-    decision: { latencyS: run.latencyS, inputTokens: run.inputTokens, outputTokens: run.outputTokens },
+    decision: { latencyS: run.latencyS + (ruleCall?.latencyS ?? 0), inputTokens: jevTokens.input, outputTokens: jevTokens.output },
     tokens,
     ledgerAfter: [...ledger].sort(),
     classifierWrongFields,
@@ -444,7 +465,7 @@ export async function processClassifierRequest(req: TestRequest, system: Classif
  * rule: an action that the agent names runs.
  */
 export async function processAgentRequest(req: TestRequest): Promise<AgentRequestRecord> {
-  const who = requesterFor(req.customerId, req.role)
+  const who = senderOf(req.customerId)
   const ledger = new Set(req.startLedger)
   const tokens = { input: 0, output: 0 }
   const timings: StepTimings = { decisionS: 0, finalS: 0, machineS: 0 }
@@ -494,7 +515,6 @@ export async function processAgentRequest(req: TestRequest): Promise<AgentReques
     category: req.category,
     hard: req.hard,
     customerId: req.customerId,
-    role: req.role,
     text: req.text,
     startLedger: req.startLedger,
     gold: req.gold,

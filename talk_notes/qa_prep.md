@@ -43,7 +43,7 @@ Tài liệu này chuẩn bị cho phiên hỏi đáp 5 phút với khán giả (
 **"Your study reports one thousand and twenty-four requests. Is that enough to draw conclusions?"**
 - **Người trả lời:** Tran Thanh Long (nội dung thuộc phần của Vu Van Son: Tập dữ liệu và Thực nghiệm)
 - **Câu trả lời tiếng Anh (4 câu):**
-  > "One thousand and twenty-four requests in twenty-four types is a focused benchmark, not a sample of all customer support, and we know that. Our two-sided sign test has sixty-one pairs where only Level Two makes an error and none where only Level Three does, so p equals zero point zero three one: Level Three makes significantly fewer errors. The counts alone do not separate the two levels, because the 95 percent interval of the Level Three errors is zero to thirty-eight and that of Level Two is twenty-eight to one hundred and twenty-eight, and those intervals overlap. Zero harmful runs at Level Three is not proof that the rate is zero, so our strong claims are speed, cost, and fewer errors."
+  > "One thousand and twenty-four requests in twenty-one types is a focused benchmark, not a sample of all customer support, and we know that. Our two-sided sign test has sixty-one pairs where only Level Two makes an error and none where only Level Three does, so p equals zero point zero three one: Level Three makes significantly fewer errors. Zero harmful runs at Level Three is not proof that the rate is zero, so our strong claims are speed, cost, and fewer errors."
 
 ---
 
@@ -59,7 +59,7 @@ Tài liệu này chuẩn bị cho phiên hỏi đáp 5 phút với khán giả (
 **"Why does Level 3 make zero errors while Level 2 makes sixty-one, and is that overfitting?"**
 - **Người trả lời:** Tran Thanh Long (nội dung thuộc phần của Vuong Quang Quy: Kết quả và Mô hình)
 - **Câu trả lời tiếng Anh (4 câu):**
-  > "Part of the answer is design: the written rules are asked as separate questions, and the code runs no action when one answer says broken, so a wrong label cannot reach the customer as a wrong action. Part of the answer is the labels, and we say this in our limits: the same code that applies the written rules also produced the correct answers, so the zero is measured against our own rule reading. The sixty-one errors of Level Two are real customer outcomes: on about twenty of them the agent cancelled a plan that a written rule protects, and on about forty-one it followed an order hidden in the text. The honest claim is fewer errors on this set, with p equal to zero point zero three one."
+  > "Part of the answer is design: the written rules are asked as separate questions, and the code runs no action when one answer says broken, so a wrong label cannot reach the customer as a wrong action. Part of the answer is the labels, and we say this in our limits: the same code that applies the written rules also produced the correct answers, so the zero is measured against our own rule reading. The sixty-one errors of Level Two are real customer outcomes: on about thirteen of them the agent cancelled a plan that a written rule protects, and on about forty-eight it followed an order hidden in the text. The honest claim is fewer errors on this set, with p equal to zero point zero three one."
 
 ---
 
@@ -75,7 +75,7 @@ Tài liệu này chuẩn bị cho phiên hỏi đáp 5 phút với khán giả (
 **"Why did you use synthetic data rather than a public customer support dataset like Bitext?"**
 - **Người trả lời:** Tran Thanh Long (nội dung thuộc phần của Vu Van Son: Tập dữ liệu và Thực nghiệm)
 - **Câu trả lời tiếng Anh (3 câu):**
-  > "Public datasets like Bitext contain customer intent labels only, without the SaaS account behind them. Our written rules need real fields: the purchase date, the credits used, the state of the plan, and the teammate without billing rights. So we generated five hundred and twelve complete customer accounts, and the requests cover every branch of those rules."
+  > "Public datasets like Bitext contain customer intent labels only, without the SaaS account behind them. Our written rules need real fields: the purchase date, the credits used, and the state of the plan. So we generated five hundred and twelve complete customer accounts, and the requests cover every branch of those rules."
 
 ---
 
@@ -91,7 +91,7 @@ Tài liệu này chuẩn bị cho phiên hỏi đáp 5 phút với khán giả (
 **"How does Level 3 prevent a customer from using a prompt injection to steal a refund?"**
 - **Người trả lời:** Tran Thanh Long (nội dung thuộc phần của Nguyen Thanh Nam: Quy tắc và Kiến trúc)
 - **Câu trả lời tiếng Anh (3 câu):**
-  > "The first Jev call answers an injection flag for every request. When the flag is on, the process sets the action to Send reply, so an order hidden in the text becomes a plain answer and no state changes; our third walk-through shows exactly that case. A reply is not a rule question, so the second Jev call never runs for that request. We measured about forty-one injection requests at Level Two where the agent followed the hidden order, and none at Level Three."
+  > "The first Jev call answers an injection flag for every request. When the flag is on, the process sets the action to Send reply, so an order hidden in the text becomes a plain answer and no state changes; our third walk-through shows exactly that case. A reply is not a rule question, so the second Jev call never runs for that request. We measured about forty-eight injection requests at Level Two where the agent followed the hidden order, and none at Level Three."
 
 ---
 
@@ -107,7 +107,7 @@ Tài liệu này chuẩn bị cho phiên hỏi đáp 5 phút với khán giả (
 **"Did you test the Security rule on data that you had not seen?"**
 - **Người trả lời:** Tran Thanh Long (nội dung thuộc phần của Nguyen Thanh Nam: Quy tắc và Kiến trúc)
 - **Câu trả lời tiếng Anh (4 câu):**
-  > "No. We found the Security rule and the account fields on an earlier five-hundred-and-twelve-request set of these same twenty-four types, so the main numbers are not a blind test. We state this as a limit of the study. Future work should test adversarial inputs and real tickets."
+  > "No. We found the Security rule and the account fields on an earlier five-hundred-and-twelve-request set of these same twenty-one types, so the main numbers are not a blind test. We state this as a limit of the study. Future work should test adversarial inputs and real tickets."
 
 ---
 

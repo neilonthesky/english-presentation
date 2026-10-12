@@ -1,10 +1,10 @@
-# Customer Support Triage Experiment (v36: 24 request types, 100 requests, 5 actions, Security rule)
+# Customer Support Triage Experiment (21 request types, 1,024 requests from 512 customers, 5 actions, Security rule)
 
 This directory runs the request triage system of the FrameForge support demo (`web/`) as an experiment. The product is FrameForge, an AI video-generation SaaS where customers buy subscription plans (Free, Pro, Team) and credit packs to generate short video clips.
 
 The experiment evaluates live and cached requests against the support flow without duplicating code: it directly executes `web/server/saas.ts`, `web/server/steps.ts`, and `web/server/models.ts`.
 
-The evidence of this file is **v36: one set of 100 requests in 24 request types**. The previous evidence, v35, was 50 requests in the same 24 types; the numbers of the two sets are not comparable row by row, and this file reports only the 100-request run.
+The test data is **one set of 1,024 requests from 512 customers, in 21 request types and ten families** (see [The Dataset](#the-dataset)). The dataset is rebuilt and checked, but the experiment has **not been run on it yet**: every section from [Cost and Tokens](#cost-and-tokens) on reports the earlier run on 100 requests, and the run on the 1,024 requests replaces those sections.
 
 The paper reads the experiment as a **three-level ladder** of the support workflow. Each level adds one part to the level before:
 
@@ -30,12 +30,13 @@ The run also executes a third system, **`llm`**, which is **not a level**: it is
 ```
 types.ts           TypeScript interfaces (TestRequest, Gold, Classifier, etc.)
 dataset.ts         CSV parser and serializer for world.csv and requests.csv
-data/world.csv     72 synthetic customer accounts with plan/credit purchases, plan state, and reset log
-data/requests.csv  ONE set of 100 customer requests across 24 request types
+data/world.csv     512 synthetic customer accounts with plan/credit purchases, plan state, and reset log
+data/requests.csv  ONE set of 1,024 customer requests across 24 request types and ten families
 build_dataset.ts   Dataset generator with fixed seed 20261007
 validate.ts        Checks dataset integrity and runs an oracle classifier (zero models called)
 transport.ts       Recording and replaying transport with canonical sha256 request caching and a bounded retry
-llm_classifier.ts  The two classifier calls: Jev (Level 3) and the LLM reference run
+jev_classifier.ts  The first Jev call of Level 3: the chat -> topic, action, priority, risk flag, injection flag
+jev_rules.ts       The second Jev call of Level 3: one yes/no question for each written rule of the action
 llm_agent.ts       The step that chooses the action at Level 2: the LLM agent call and its typed answer
 pipeline.ts        The flow of one request (Gather info -> the step that chooses the action -> Rules check ->
                    Do action -> Final message), the ladder prices (PRICE), and the per-request record
@@ -44,8 +45,6 @@ metrics.ts         Metric computation (the three outcomes served, stopped, and e
 tables.ts          LaTeX table exports for paper inclusion (ladder.tex, stage.tex, calibration.tex)
 figures.ts         SVG and PDF chart exports (classifier, ladder, reliability)
 neutrality.ts      The neutrality probe: one Jev call on a state that carries no request -> results/neutrality.json
-cascade.ts         The confidence cascade to the LLM (offline over per_case.json) -> results/cascade.json,
-                   results/tables/cascade.tex
 ablation.ts        The ablation of the fixed rules code (Level 2b, and the 2x2 grid with Jev) ->
                    results/ablation.json, results/tables/ablation.tex
 robustness.ts      The robustness probes of the criteria (the option order, the label swap, the paraphrase, and
@@ -55,10 +54,10 @@ screen.ts          The result screen: four Jev questions over the recorded Final
 stats.ts           The statistics of the paper (Wilson intervals, the paired tests, and the power of the set) ->
                    results/tables/robustness.tex
 run.ts             Command-line entrypoint for the whole set and for an offline replay
-notes/             The method notes of the supplementary analyses (cascade.md, ablation.md, robustness.md,
+notes/             The method notes of the supplementary analyses (ablation.md, robustness.md,
                    screen.md); their numbers are written for the reader, the evidence is the JSON files
 results/           Output directory with results.json, per_case.json, provenance.json, neutrality.json,
-                   cascade.json, ablation.json, robustness.json, screen.json, tables/, figures/, and the
+                   ablation.json, robustness.json, screen.json, tables/, figures/, and the
                    requests/ cache
 ```
 
@@ -78,8 +77,11 @@ results/           Output directory with results.json, per_case.json, provenance
 # Show available CLI flags
 bun run experiment/run.ts --help
 
-# The run of the paper: the whole 100-request set, evidence in experiment/results
+# The whole 1,024-request set, evidence in experiment/results
 bun run experiment/run.ts --out experiment/results --cache experiment/results/requests
+
+# Level 3 only (Jev, then the LLM for the final message)
+bun run experiment/run.ts --level 3
 
 # Replay without network access (zero live calls, the same numbers)
 bun run experiment/run.ts --offline --cache experiment/results/requests
@@ -88,7 +90,6 @@ bun run experiment/run.ts --offline --cache experiment/results/requests
 bun run experiment/neutrality.ts
 
 # The supplementary analyses over the recorded answers (no new call to the LLM of the flow)
-bun run experiment/cascade.ts
 bun run experiment/ablation.ts
 bun run experiment/robustness.ts
 bun run experiment/screen.ts
@@ -98,7 +99,7 @@ bun run experiment/stats.ts
 bun run experiment/validate.ts
 ```
 
-Every request of every system is logged as it finishes (`system 3/100 R0003`), so a live run shows its progress.
+Every request of every system is logged as it finishes (`system 3/1024 R0003`), so a live run shows its progress.
 
 A run makes a live call only for a model call that the cache does not hold; every answer is recorded under `<cache>/<service>/<sha256>.json` with the latency of the original call, so `--offline` replays exactly the same numbers. There is **one evaluation set**: the `--split` flag and the dev/test split are gone (v29).
 
@@ -170,7 +171,7 @@ At Level 3, Gather info does not read the whole account. A fixed table in code (
 | --- | --- |
 | `today` | the date of today |
 | `owner` | the name and e-mail of the account owner |
-| `sender` | the name, e-mail, and role of the sender (owner or teammate) |
+| `sender` | the name and e-mail of the sender (the owner of the account) |
 | `plan` | the plan, the state of the auto-renewal, the credits left, the next renewal |
 | `reset` | the password reset links sent so far (the reset log) |
 | `purchase` | the only purchase: id, item, category, amount, status, charge date, usage |
@@ -190,7 +191,7 @@ The wide row of Send reply is the only row that is wide on purpose: the answer p
 
 ## The Neutral Criteria
 
-Both classifier systems get the same five questions from `JEV_QUESTIONS` in `web/server/models.ts`, and no other words: no examples and no hint about a request type. `experiment/llm_classifier.ts` copies the instructions and every criterion entry into its system prompt, so the two classifiers cannot drift apart. The agent of Level 2 reads the same `ACTION_QUESTION` and the same `ACTION_CRITERIA` entries (`experiment/llm_agent.ts`), so the step that chooses the action is described with the same words at both levels. The written rules that the agent reads are the names and texts of `denyingRulesOf()` in `web/server/saas.ts`; no criterion has an example phrase, a hint, or a number that is not in a written rule.
+The first Jev call gets the five questions of `JEV_QUESTIONS` in `web/server/models.ts`, and no other words: no examples and no hint about a request type. The agent of Level 2 reads the same `ACTION_QUESTION` and the same `ACTION_CRITERIA` entries (`experiment/llm_agent.ts`), so the step that chooses the action is described with the same words at both levels. The written rules that the agent reads are the names and texts of `denyingRulesOf()` in `web/server/saas.ts`; no criterion has an example phrase, a hint, or a number that is not in a written rule.
 
 The action question has five options. The criteria keep the style of v30: one plain sentence each, no example phrase, no hint, and no name of a topic:
 
@@ -210,40 +211,54 @@ No criterion and no written rule mentions help from outside the chat. The three 
 
 ## The Dataset
 
-`data/requests.csv` holds **one set of 100 requests in 24 request types**. The 24 types, their wording, and the customers are the ones of v30 to v35; the set now holds four requests per type, and six for the cancellations of an owner and the deletions. Every request has its own wording, its own sender (owner or teammate), and a customer from `world.csv` (72 accounts). The gold labels are derived from the written rules by `derive()` in `build_dataset.ts`, which runs the real code of the demo (`triage()` and `rulesStep()`) on the gold answers.
+`data/requests.csv` holds **one set of 1,024 requests in 21 request types and ten families**, sent by the 512 customers of `data/world.csv` (every customer sends one to three requests; 462 send two). `build_dataset.ts` writes both files from the seed 20261007, and `validate.ts` checks them. Every request has its own wording (no two requests of a type share a text), and a customer as its sender (the owner of the account). The gold labels are derived from the written rules by `derive()` in `build_dataset.ts`, which runs the real code of the demo (`triage()` and `rulesStep()`) on the gold answers.
 
-| Type | n | Gold action | Topic | Priority | Role |
-| --- | ---: | --- | --- | --- | --- |
-| q_plan_credits | 4 | Send reply | Plans and Credits | Low | owner |
-| bug_report | 4 | Send reply | Product Help | Medium | owner |
-| feature_request | 4 | Send reply | Product Help | Low | owner |
-| complaint_service | 4 | Send reply | Product Help | Low | owner |
-| q_unknown_topic | 4 | Send reply | Product Help | Low | owner |
-| pq_invoice_tax_id | 4 | Send reply | Payments | Low | owner |
-| person_request | 4 | Send reply | Account | Low | owner |
-| crit_card_fraud | 4 | Send reply | Security | Critical | owner |
-| crit_data_destroyed | 4 | Send reply | Security | Critical | owner |
-| refund_in_window_small | 4 | Start refund | Refunds | Low | owner |
-| refund_in_window_large | 4 | Start refund | Refunds | Medium | owner |
-| refund_credits_used | 4 | Start refund | Refunds | Low | owner |
-| refund_teammate | 4 | Start refund | Refunds | Low | teammate |
-| cancel_owner | 6 | Cancel plan | Plans and Credits | Low | owner |
-| cancel_teammate | 4 | Cancel plan | Plans and Credits | Low | teammate |
-| cancel_already | 4 | Cancel plan | Plans and Credits | Low | owner |
-| password_reset | 4 | Reset password | Account | Low | owner |
-| password_other_email | 4 | Reset password | Account | Low | owner |
-| password_teammate | 4 | Reset password | Account | Low | teammate |
-| delete_owner | 6 | Delete data | Account | Low | owner |
-| inj_refund_everything | 4 | Start refund | Refunds | Low | owner |
-| lookalike_ask_rules | 4 | Send reply | Refunds | Low | owner |
-| closing_solved | 4 | Send reply | (not scored) | Low | owner |
-| hard_mixed_billing_product | 4 | Send reply | Payments | High | owner |
+**The world.** 512 customers, each with one purchase (a monthly plan, an annual plan, or a credit pack), a plan and the state of the plan, a render-credit balance, and a log of password reset links. The profiles are chosen so that every branch of the written rules exists; 42 customers have the auto-renewal off.
 
-Counts of the gold action label, the check that `validate.ts` runs and requires at least three of each so that every row of the action confusion has support: **Send reply 48, Start refund 20, Cancel plan 14, Reset password 12, Delete data 6**. Every request type has at least four requests. The oracle run of `validate.ts` matches the gold final action on **100 of 100 requests** with no problem reported.
+**The families** (the request types of each family are listed in `FAMILIES` of `dataset.ts`):
 
-The gold final action: **30 requests end with nothing, because a written rule denies the action** (the four refunds of a teammate, the four refunds of a used credit pack, the four large refunds, the four cancellations that a teammate asks for, the four cancellations of a plan that is already off, the four resets that name another e-mail address, and the six deletions). **52 end with the answer of the LLM** ("Send reply", and the four injection requests where Triage forces that action), and **18 run an action**: 6 cancellations, 8 password resets, and 4 refunds.
+| Family | Requests | Request types |
+| --- | ---: | ---: |
+| Questions and answers | 288 | 6 |
+| Refund | 144 | 3 |
+| Cancel plan | 104 | 2 |
+| Reset password | 96 | 2 |
+| Invoice or request for a human | 96 | 2 |
+| Fraud or data loss | 96 | 2 |
+| Delete data | 56 | 1 |
+| Injection | 48 | 1 |
+| Two problems in one request | 48 | 1 |
+| Closing message | 48 | 1 |
 
-The priority is **Critical** on 8 of the 100 requests, and the risk flag is `true` on 64; the injection flag is `true` on 4, and the `hard` flag (a request that mixes two problems) on 4.
+| Type | n | Gold action | Topic | Priority |
+| --- | ---: | --- | --- | --- |
+| q_plan_credits | 48 | Send reply | Plans and Credits | Low |
+| bug_report | 48 | Send reply | Product Help | Medium |
+| feature_request | 48 | Send reply | Product Help | Low |
+| complaint_service | 48 | Send reply | Product Help | Low |
+| q_unknown_topic | 48 | Send reply | Product Help | Low |
+| pq_invoice_tax_id | 48 | Send reply | Payments | Low |
+| person_request | 48 | Send reply | Account | Low |
+| crit_card_fraud | 48 | Send reply | Security | Critical |
+| crit_data_destroyed | 48 | Send reply | Security | Critical |
+| refund_in_window_small | 48 | Start refund | Refunds | Low |
+| refund_in_window_large | 48 | Start refund | Refunds | Medium |
+| refund_credits_used | 48 | Start refund | Refunds | Low |
+| cancel_owner | 56 | Cancel plan | Plans and Credits | Low |
+| cancel_already | 48 | Cancel plan | Plans and Credits | Low |
+| password_reset | 48 | Reset password | Account | Low |
+| password_other_email | 48 | Reset password | Account | Low |
+| delete_owner | 56 | Delete data | Account | Low |
+| inj_refund_everything | 48 | Start refund | Refunds | Low |
+| lookalike_ask_rules | 48 | Send reply | Refunds | Low |
+| closing_solved | 48 | Send reply | (not scored) | Low |
+| hard_mixed_billing_product | 48 | Send reply | Payments | High |
+
+Counts of the gold action label: **Send reply 576, Start refund 192, Cancel plan 104, Reset password 96, Delete data 56**. `validate.ts` requires at least three of each action, so every row of the action confusion has support, and at least four requests of each type. Its oracle run (the gold answers through the real flow, no model called) matches the gold final action on all 1,024 requests.
+
+The gold final action: **248 requests end with nothing, because a written rule denies the action** (48 refunds of a used credit pack, 48 large refunds, 48 cancellations of a plan that is already off, 48 resets that name another e-mail address, and 56 deletions). **624 end with the answer of the LLM** ("Send reply", and the 48 injection requests where Triage forces that action), and **152 run an action**: 56 cancellations, 48 password resets, and 48 refunds.
+
+Every request is sent by the owner of the account. The priority is **Critical** on 96 of the 1,024 requests, the risk flag is `true` on 592, the injection flag is `true` on 48, and the `hard` flag (a request that mixes two problems) on 48.
 
 ---
 
@@ -376,7 +391,6 @@ Expected calibration error of Jev, measured on the chance of the answer and on t
 
 * `figures/ladder.pdf`: the three levels (the outcome of the 100 requests as stacked bars: served, stopped, errors, and the harmful part; machine and staff time; API cost).
 * `figures/classifier.pdf` and `figures/reliability.pdf`: accuracy per field and calibration of the two classifiers.
-* `figures/cascade.pdf`: the risk-coverage curve of the action answer of Jev (`cascade.ts`).
 
 ---
 

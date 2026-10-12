@@ -72,23 +72,24 @@ export async function writeTables(out: string, results: Results): Promise<string
     { sep: 1.5 },
   )
 
-  const { jev, llm } = results.systems
+  const { jev } = results.systems
   const quality = results.classifier
+  const rq = results.ruleQuestions
   written["stage.tex"] = table(
-    `Jev against the LLM as classifier, over every classifier call of the ${results.requests} requests. The tokens are the ` +
-      "mean of one call and the cost is for 1,000 requests. Wrong in any field is the share of requests with at least one wrong " +
-      "scored field. Only Jev reports a confidence, which the calibration table reads.",
+    `The two Jev calls of Level 3, over the ${results.requests} requests. The latency, the tokens, and the cost add the first call (the chat) and the ` +
+      `second call (one question for each written rule of the action, for the ${rq.calls} requests whose action changes the state). The tokens are the ` +
+      "mean of one request and the cost is for 1,000 requests. Wrong in any field is the share of requests with at least one wrong scored field of the first call.",
     "tab:stage",
-    "lrr",
-    ["Classifier call", "Jev", "LLM"],
+    "lr",
+    ["Jev calls", "Level 3"],
     [
-      ["Median latency (s)", jev.decisionLatency.median.toFixed(3), llm.decisionLatency.median.toFixed(3)],
-      ["95th percentile (s)", jev.decisionLatency.p95.toFixed(3), llm.decisionLatency.p95.toFixed(3)],
-      ["Input tokens (per call)", jev.decisionTokens.inputPerCall.toFixed(0), llm.decisionTokens.inputPerCall.toFixed(0)],
-      ["Output tokens (per call)", jev.decisionTokens.outputPerCall.toFixed(0), llm.decisionTokens.outputPerCall.toFixed(0)],
-      ["Action accuracy (\\%)", pct(quality.jev.perField.action.accuracy), pct(quality.llm.perField.action.accuracy)],
-      ["Wrong in any field (\\%)", pct(quality.jev.wrongAnyFieldRate), pct(quality.llm.wrongAnyFieldRate)],
-      ["Cost per 1k requests (\\$)", jev.decisionCostPer1000.toFixed(3), llm.decisionCostPer1000.toFixed(3)],
+      ["Median latency per request (s)", jev.decisionLatency.median.toFixed(3)],
+      ["95th percentile (s)", jev.decisionLatency.p95.toFixed(3)],
+      ["Input tokens (per request)", jev.decisionTokens.inputPerCall.toFixed(0)],
+      ["Action accuracy (\\%)", pct(quality.jev.perField.action.accuracy)],
+      ["Wrong in any field (\\%)", pct(quality.jev.wrongAnyFieldRate)],
+      ["Rule answers as the written rules (\\%)", rq.answers ? pct(rq.matching / rq.answers) : "--"],
+      ["Cost per 1k requests (\\$)", jev.decisionCostPer1000.toFixed(3)],
     ],
   )
 

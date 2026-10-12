@@ -1,6 +1,6 @@
 // The dataset files of the experiment: two CSV files (RFC 4180) in experiment/data/.
 //
-//   world.csv     one row per customer: the customer, the teammate, the plan, and the one purchase of the customer
+//   world.csv     one row per customer: the customer, the plan, and the one purchase of the customer
 //   requests.csv  one row per request: the text, the sender, the gold answers, and the gold final result
 //
 // build_dataset.ts writes them with writeDataset(); run.ts and validate.ts read them with loadDataset().
@@ -8,9 +8,26 @@
 // below, because the whole dataset is dated relative to it.
 import { mkdir, readFile } from "node:fs/promises"
 import { join } from "node:path"
-import { ACTIONS, PLANS, PRIORITIES, QUEUES, type Choice, type Classifier, type Flag, type PurchaseCategory, type PurchaseStatus, type Role } from "../web/src/types"
-import type { Customer, World } from "../web/server/saas"
+import { ACTIONS, PLANS, PRIORITIES, QUEUES, type Choice, type Classifier, type Flag, type PurchaseCategory, type PurchaseStatus, type Requester } from "../web/src/types"
+import { requesterFor, type Customer, type World } from "../web/server/saas"
 import { FIELDS, type Gold, type TestRequest } from "./types"
+
+/**
+ * The ten families of the request types, as the test-data slides show them. A family holds one or more request types. The
+ * families add up to the 21 types; the sizes of the families follow from the `count` of each type in build_dataset.ts.
+ */
+export const FAMILIES: Record<string, readonly string[]> = {
+  "Questions and answers": ["q_plan_credits", "bug_report", "feature_request", "complaint_service", "q_unknown_topic", "lookalike_ask_rules"],
+  "Refund": ["refund_in_window_small", "refund_in_window_large", "refund_credits_used"],
+  "Cancel plan": ["cancel_owner", "cancel_already"],
+  "Reset password": ["password_reset", "password_other_email"],
+  "Invoice or request for a human": ["pq_invoice_tax_id", "person_request"],
+  "Fraud or data loss": ["crit_card_fraud", "crit_data_destroyed"],
+  "Delete data": ["delete_owner"],
+  "Injection": ["inj_refund_everything"],
+  "Two problems in one request": ["hard_mixed_billing_product"],
+  "Closing message": ["closing_solved"],
+}
 
 export const TODAY = "2026-10-05"
 export const WORLD_FILE = "world.csv"
@@ -36,20 +53,28 @@ export function goldClassifier(gold: Gold): Classifier {
 }
 
 const WORLD_COLUMNS = [
-  "id", "name", "email", "teammate_name", "teammate_email", "plan", "credits_left", "renews",
+  "id", "name", "email", "plan", "credits_left", "renews",
   "plan_cancelled", "password_resets", "refunds_last_90_days",
   "purchase_id", "item", "category", "status", "amount", "charged", "usage", "unused",
 ] as const
 
 const REQUEST_COLUMNS = [
-  "id", "category", "hard", "customer_id", "role", "text", "start_ledger",
+  "id", "category", "hard", "customer_id", "text", "start_ledger",
   "gold_queue", "gold_action", "gold_priority", "gold_risk", "gold_injection", "scored",
   "final_action", "final_reason",
 ] as const
 
 const PURCHASE_CATEGORIES: readonly PurchaseCategory[] = ["Annual plan", "Monthly plan", "Credit pack"]
 const PURCHASE_STATUSES: readonly PurchaseStatus[] = ["Scheduled", "Settling", "Paid"]
-const ROLES: readonly Role[] = ["owner", "teammate"]
+
+/**
+ * The test data has one kind of sender: the owner of the account. web/server/saas.ts also models a teammate for the demo, so the
+ * type of a customer has the field; the test data leaves it empty and no request is sent as a teammate.
+ */
+export const NO_TEAMMATE = { name: "", email: "" } as const
+
+/** The sender of a request: the owner of the customer's account. */
+export const senderOf = (customerId: string): Requester => requesterFor(customerId, "owner")
 
 /** One CSV text from rows of cells. A cell with a comma, a quote, or a line break is quoted. */
 export function formatCsv(rows: readonly (readonly string[])[]): string {
@@ -123,7 +148,7 @@ function worldRows(world: World): string[][] {
   const rows = world.customers.map((c) => {
     const p = c.purchase
     return [
-      c.id, c.name, c.email, c.teammate.name, c.teammate.email, c.plan, String(c.creditsLeft), c.renews,
+      c.id, c.name, c.email, c.plan, String(c.creditsLeft), c.renews,
       String(c.planCancelled), String(c.passwordResets), String(c.refundsLast90Days),
       p.id, p.item, p.category, p.status, String(p.amount), p.charged, p.usage, String(p.unused),
     ]
@@ -133,7 +158,7 @@ function worldRows(world: World): string[][] {
 
 function requestRows(requests: readonly TestRequest[]): string[][] {
   const rows = requests.map((r) => [
-    r.id, r.category, String(r.hard), r.customerId, r.role, r.text, r.startLedger.join(";"),
+    r.id, r.category, String(r.hard), r.customerId, r.text, r.startLedger.join(";"),
     r.gold.queue ?? "", r.gold.action, r.gold.priority, String(r.gold.risk), String(r.gold.injection), r.scored.join(";"),
     r.finalAction ?? "", r.finalReason,
   ])
@@ -157,7 +182,7 @@ export async function loadDataset(dir: string, requestsName: string = REQUESTS_F
     const at = `${WORLD_FILE} row ${i + 2}`
     return {
       id: r.id, name: r.name, email: r.email,
-      teammate: { name: r.teammate_name, email: r.teammate_email },
+      teammate: NO_TEAMMATE,
       plan: oneOf(r.plan, PLANS, `${at} plan`), creditsLeft: whole(r.credits_left, `${at} credits_left`), renews: r.renews,
       planCancelled: bool(r.plan_cancelled, `${at} plan_cancelled`), passwordResets: whole(r.password_resets, `${at} password_resets`),
       refundsLast90Days: whole(r.refunds_last_90_days, `${at} refunds_last_90_days`),
@@ -185,7 +210,7 @@ export async function loadDataset(dir: string, requestsName: string = REQUESTS_F
     const finalAction = r.final_action === "" ? null : oneOf(r.final_action, ACTIONS, `${at} final_action`)
     return {
       id: r.id, category: r.category, hard: bool(r.hard, `${at} hard`),
-      customerId: r.customer_id, role: oneOf(r.role, ROLES, `${at} role`), text: r.text,
+      customerId: r.customer_id, text: r.text,
       startLedger: list(r.start_ledger),
       gold, scored: list(r.scored).map((f) => oneOf(f, FIELDS, `${at} scored`)),
       finalAction, finalReason: r.final_reason,

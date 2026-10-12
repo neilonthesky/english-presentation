@@ -42,13 +42,13 @@
 //   second run makes no live call at all.
 import { mkdir, readFile, writeFile } from "node:fs/promises"
 import { join } from "node:path"
-import { accountFieldsFor, accountText, extractFacts, findArticles, requesterFor, rulingPolicy, SECURITY_RULE, useWorld } from "../web/server/saas"
+import { accountFieldsFor, accountText, extractFacts, findArticles, rulingPolicy, SECURITY_RULE, useWorld } from "../web/server/saas"
 import { INVALID_REASON, actStep, deniedReasons, nothingRuns, rulesStep, runAction } from "../web/server/steps"
 import { NO_RULE, answerQuestion, writeReply } from "../web/server/models"
 import type { Executed, RulesResponse } from "../web/src/types"
-import { loadDataset } from "./dataset"
+import { loadDataset, senderOf } from "./dataset"
 import { actionOfRule } from "./llm_agent"
-import { classifyWithJev } from "./llm_classifier"
+import { classifyWithJev } from "./jev_classifier"
 import {
   type AgentFieldRecord, type AgentRequestRecord, type ClassifierRequestRecord, type End, type FinalMessage, type RunRecord,
   isHarmful, isStateChanging, labelOutcome, processAgentRequest, processClassifierRequest, requestOutcome,
@@ -117,7 +117,7 @@ const securityStop = (rules: RulesResponse | null, executed: Executed): boolean 
  * agent named. Nothing is enforced by the agent here: the check decides, and Do action runs only what it allows.
  */
 function fixedCheck(req: TestRequest, agent: AgentFieldRecord, ledger: Set<string>): FixedCheck {
-  const who = requesterFor(req.customerId, req.role)
+  const who = senderOf(req.customerId)
   const facts = extractFacts(req.text)
   if (agent.invalid) {
     return { proposed: null, rules: null, executed: nothingRuns([INVALID_REASON]), end: "invalid", verdict: null, agentVerdict: "allow", disagrees: false }
@@ -153,7 +153,7 @@ function fixedCheck(req: TestRequest, agent: AgentFieldRecord, ledger: Set<strin
  * `signTest` read it with the same code as every other run.
  */
 async function level2bRecord(req: TestRequest, prior: AgentRequestRecord): Promise<AgentRequestRecord> {
-  const who = requesterFor(req.customerId, req.role)
+  const who = senderOf(req.customerId)
   const ledger = new Set(req.startLedger)
   const check = fixedCheck(req, prior.agent, ledger)
   const tokens = { input: prior.decision.inputTokens, output: prior.decision.outputTokens }
@@ -194,7 +194,7 @@ async function level2bRecord(req: TestRequest, prior: AgentRequestRecord): Promi
  * Jev: the classifier, the triage answer, and the scored fields are the recorded ones.
  */
 async function level3NoCheckRecord(req: TestRequest, prior: ClassifierRequestRecord): Promise<ClassifierRequestRecord> {
-  const who = requesterFor(req.customerId, req.role)
+  const who = senderOf(req.customerId)
   const ledger = new Set(req.startLedger)
   const triage = prior.triage
   let rules: RulesResponse | null = null
@@ -330,7 +330,7 @@ async function main(): Promise<number> {
   // Level 2 and Level 3 as the paper recorded them: a replay from the cache, so the inputs of the ablation are the
   // recorded answers of the run (no live call unless the cache is missing an entry).
   const level2 = await pmap(requests, WORKERS, (req) => processAgentRequest(req))
-  const level3 = await pmap(requests, WORKERS, (req) => processClassifierRequest(req, "jev", classifyWithJev))
+  const level3 = await pmap(requests, WORKERS, (req) => processClassifierRequest(req, classifyWithJev))
 
   const perCase = record(JSON.parse(await readFile(PER_CASE, "utf8")))
   const replayCheck = [

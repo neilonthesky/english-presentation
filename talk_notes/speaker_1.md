@@ -146,7 +146,7 @@
 - **Tiêu đề slide:** Jev reads the chat first, then one rule at a time
 - **Thời gian dự kiến trên slide:** 0 phút 26 giây (26 giây, ~62 từ)
 
-> Jev is called twice. The first call reads the chat only: the text and the role of the sender. The second call runs when the action changes the state. It reads the chat, the account lines that this action needs, the actions already done, and one question for each written rule of the action, for example: is the amount above one hundred dollars? The questions are written text, not code, and a fixed table picks the account lines. Each rule needs a question that we write: questions made from the text of the rule alone made more errors.
+> Jev is called twice. The first call reads the chat only: the text and the name of the sender. The second call runs when the action changes the state. It reads the chat, the account lines that this action needs, the actions already done, and one question for each written rule of the action, for example: is the amount above one hundred dollars? The questions are written text, not code, and a fixed table picks the account lines. Each rule needs a question that we write: questions made from the text of the rule alone made more errors.
 > 
 > `[NGHỈ 1 GIÂY]`  
 > 
@@ -177,7 +177,7 @@ Bấm phím tiếp **một lần cho mỗi dòng**. Walk-through 1 nối ngay sa
 
 > **Slide 9:** A customer asks for a refund. The message is saved.  
 > **Slide 10:** Jev, first call: a refund, Start refund, low priority, no injection.  
-> **Slide 11:** Rules: Jev answers nine questions, one for each rule of a refund. No rule is broken.  
+> **Slide 11:** Rules: Jev answers eight questions, one for each rule of a refund. No rule is broken.  
 > **Slide 12:** Do action: the refund starts.  
 > **Slide 13:** Final message: the LLM replies. Chat open, then Resolved.  
 
@@ -185,7 +185,7 @@ Bấm phím tiếp **một lần cho mỗi dòng**. Walk-through 1 nối ngay sa
 
 > **Slide 14:** A second customer asks to refund a charge. Watch for the warning.  
 > **Slide 15:** Jev, first call: the same action, Start refund.  
-> **Slide 16:** Rules: Jev answers nine questions. The amount limit is broken: three hundred dollars, the limit is one hundred. Nothing runs.  
+> **Slide 16:** Rules: Jev answers eight questions. The amount limit is broken: three hundred dollars, the limit is one hundred. Nothing runs.  
 > **Slide 17:** Final message: the LLM explains why.  
 
 #### Walk-through 3: an order hidden in the message (Slide 18 đến 20; 12 giây, ~36 từ)

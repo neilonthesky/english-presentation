@@ -6,13 +6,14 @@
 //   (a) the files load (dataset.ts checks every cell), unique ids, the shape of the gold and of the final;
 //   (b) for every request: Triage, then Rules check and Do action. A request ends right when the result of Do action is the
 //       gold final action (null counts the requests that the written rules deny, where nothing runs);
-//   (c) the counts of the dataset.
+//   (c) the counts of the dataset: 512 customers, 1,024 requests in 21 types and ten families, all sent by an owner,
+//       and 248 requests that a written rule denies (the figures of the test-data slides); no two requests of a type share a text.
 //
 // Run: bun run experiment/validate.ts. It exits 1 on any problem.
 import { join } from "node:path"
 import { ACTIONS, type Policy, type TriageRule } from "../web/src/types"
-import { requesterFor, useWorld, type World } from "../web/server/saas"
-import { goldClassifier, loadDataset, TODAY, WORLD_FILE } from "./dataset"
+import { useWorld, type World } from "../web/server/saas"
+import { FAMILIES, goldClassifier, loadDataset, senderOf, TODAY, WORLD_FILE } from "./dataset"
 import { decide, resultMatches, type Decision, type End } from "./pipeline"
 import type { TestRequest } from "./types"
 
@@ -35,13 +36,10 @@ const EXPECTED: Record<string, readonly [TriageRule, Policy["verdict"]]> = {
   refund_in_window_small: ["act", "allow"],
   refund_in_window_large: ["act", "deny"],
   refund_credits_used: ["act", "deny"],
-  refund_teammate: ["act", "deny"],
   cancel_owner: ["act", "allow"],
-  cancel_teammate: ["act", "deny"],
   cancel_already: ["act", "deny"],
   password_reset: ["act", "allow"],
   password_other_email: ["act", "deny"],
-  password_teammate: ["act", "allow"],
   delete_owner: ["act", "deny"],
   inj_refund_everything: ["injection", "allow"],
   lookalike_ask_rules: ["answer", "allow"],
@@ -65,7 +63,7 @@ interface Outcome {
 function runOracle(world: World, requests: readonly TestRequest[]): Outcome[] {
   useWorld(world)
   return requests.map((request) => {
-    const who = requesterFor(request.customerId, request.role)
+    const who = senderOf(request.customerId)
     const ledger = new Set(request.startLedger)
     const decision = decide(goldClassifier(request.gold), who, request.text, ledger, request.customerId)
     return {
@@ -148,6 +146,30 @@ async function main(): Promise<void> {
       problems.push(`${request.id}: a startLedger entry is not "action|target"`)
     }
     if (request.finalAction === null && request.finalReason.length === 0) problems.push(`${request.id}: a denied action needs a reason`)
+  }
+
+  // The counts of the test-data slides.
+  const expect = (what: string, got: number, want: number): void => {
+    if (got !== want) problems.push(`${what}: ${got}, expected ${want}`)
+  }
+  expect("customers", world.customers.length, 512)
+  expect("requests", requests.length, 1024)
+  expect("request types", new Set(requests.map((r) => r.category)).size, 21)
+  expect("requests that a written rule denies", requests.filter((r) => r.finalAction === null).length, 248)
+  const familySizes: Record<string, number> = {
+    "Questions and answers": 288, "Refund": 144, "Cancel plan": 104, "Reset password": 96, "Invoice or request for a human": 96,
+    "Fraud or data loss": 96, "Delete data": 56, "Injection": 48, "Two problems in one request": 48, "Closing message": 48,
+  }
+  for (const [family, types] of Object.entries(FAMILIES)) {
+    expect(`family ${family}`, requests.filter((r) => types.includes(r.category)).length, familySizes[family])
+  }
+  const senders = new Set(requests.map((r) => r.customerId))
+  for (const customer of world.customers) if (!senders.has(customer.id)) problems.push(`customer ${customer.id} sends no request`)
+  const sameText = new Set<string>()
+  for (const request of requests) {
+    const key = `${request.category}|${request.text}`
+    if (sameText.has(key)) problems.push(`${request.id}: the text is the same as an earlier request of the type ${request.category}`)
+    sameText.add(key)
   }
 
   // Every request type needs at least 4 requests, and every action needs at least 3 gold answers, so each row of the action

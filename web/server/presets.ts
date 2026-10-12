@@ -64,9 +64,9 @@ export const presets: Preset[] = [
   ...[...firstOfType.values()].map((r): Preset => ({
     id: `type-${r.category}`,
     group: "Request types of the dataset",
-    label: `${humanize(r.category)} (${r.customerId}, ${r.role})`,
+    label: `${humanize(r.category)} (${r.customerId})`,
     customerId: r.customerId,
-    role: r.role,
+    role: "owner",
     text: r.text,
     gold: { category: r.category, action: r.gold.action, finalAction: r.finalAction, injection: r.gold.injection },
   })),

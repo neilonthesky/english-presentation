@@ -25,16 +25,16 @@ Trưởng nhóm (Tran Thanh Long) nói nhiều nhất và có phần trăm đón
 | :---: | :--- | :---: | :--- | :---: | :---: | :---: |
 | 1 | **Tran Thanh Long** (Leader) | 23010070 | Topic coordination, Abstract, Introduction, Conclusion, Final editing; toàn bộ tương tác với khán giả, phần giải thích luật và luồng xử lý, ba walk-through và toàn bộ Q&A | 28% | 7 phút 00 giây (420 s); Slide 1 đến 20 | ~845 từ trong ghi chú slide, cộng phần tương tác |
 | 2 | **Nguyen Thanh Nam** | 23010056 | Written rules, the rule questions of Level 3, the injection rule, the Security rule | 22% | 2 phút 00 giây (120 s); Slide 21 đến 23 | ~245 từ |
-| 3 | **Vu Van Son** | 23010060 | Synthetic dataset creation (1,024 requests, 24 types), Experiment execution | 18% | 2 phút 00 giây (120 s); Slide 24 đến 26 | ~340 từ |
+| 3 | **Vu Van Son** | 23010060 | Synthetic dataset creation (1,024 requests, 21 types), Experiment execution | 18% | 2 phút 00 giây (120 s); Slide 24 đến 26 | ~340 từ |
 | 4 | **Vuong Quang Quy** | 23010039 | Experimental results, Statistical analysis, Tables and chart generation | 17% | 1 phút 18 giây (78 s); Slide 27 | ~184 từ |
-| 5 | **Nguyen Phuong Nam** | 23010028 | Related work, Literature context, Slide visual support, Q&A preparation | 15% | 2 phút 05 giây (125 s); Slide 28 đến 30 | ~370 từ |
-| **Tổng** | **5 thành viên** | | | **100%** | **14 phút 23 giây (863 s)** | **~1.997 từ** |
+| 5 | **Nguyen Phuong Nam** | 23010028 | Related work, Literature context, Slide visual support, Q&A preparation | 15% | 2 phút 05 giây (125 s); Slide 28 đến 30 | ~290 từ |
+| **Tổng** | **5 thành viên** | | | **100%** | **14 phút 23 giây (863 s)** | **~1.917 từ** |
 
 *Ghi chú về phần Q&A:* Trong 5 phút hỏi đáp (300 giây), **Long trả lời tất cả câu hỏi** theo `qa_prep.md`. Bốn bạn còn lại đứng bên cạnh, lắng nghe và chỉ nói khi Long nhường lời.
 
 *Ghi chú về tương tác:* Chỉ Long tương tác với khán giả (câu chuyện, giơ tay, bình chọn, câu hỏi dự đoán). Kịch bản của Nam, Son, Quy và Phuong Nam không có câu hỏi cho khán giả và không có yêu cầu giơ tay.
 
-*Ghi chú về số từ thực tế:* Số từ tiếng Anh của lời thoại nằm trong ghi chú slide (`slides/build.js`, `slides/cases.js`), đã bao gồm câu tự giới thiệu: **Nam 258** (Slide 21: 78, Slide 22: 87, Slide 23: 93), **Son 340** (Slide 24: 84, Slide 25: 136, Slide 26: 120), **Quy 184** (Slide 27: 184), **Phuong Nam 370** (Slide 28: 90, Slide 29: 174, Slide 30: 106), **Long 845** (Slide 1 đến 8: 42, 124, 119, 27, 77, 83, 99, 78; Slide 9 đến 20, tất cả khung walk-through: 196). Tổng 1.997 từ tiếng Anh, tương đương 139 từ mỗi phút khi nói liền 863 giây. Các con số này chỉ để luyện tập: hãy bấm giờ, vì thời gian mới là tiêu chí.
+*Ghi chú về số từ thực tế:* Số từ tiếng Anh của lời thoại nằm trong ghi chú slide (`slides/build.js`, `slides/cases.js`), đã bao gồm câu tự giới thiệu: **Nam 258** (Slide 21: 78, Slide 22: 87, Slide 23: 93), **Son 340** (Slide 24: 84, Slide 25: 136, Slide 26: 120), **Quy 184** (Slide 27: 184), **Phuong Nam 290** (Slide 28: 89, Slide 29: 95, Slide 30: 106), **Long 845** (Slide 1 đến 8: 42, 124, 119, 27, 77, 83, 99, 78; Slide 9 đến 20, tất cả khung walk-through: 196). Tổng 1.972 từ tiếng Anh. tương đương 137 từ mỗi phút khi nói liền 863 giây. Các con số này chỉ để luyện tập: hãy bấm giờ, vì thời gian mới là tiêu chí.
 
 ---
 
@@ -53,17 +53,17 @@ Trưởng nhóm (Tran Thanh Long) nói nhiều nhất và có phần trăm đón
 | **7** | Jev reads the chat first, then one rule at a time | Hai lần gọi Jev: lần một chỉ đọc chat; lần hai đọc chat, các dòng tài khoản mà hành động cần, và một câu hỏi cho mỗi luật | Tran Thanh Long | 26 s |
 | **8** | Jev answers four questions, then one per rule | Bốn câu hỏi của lần gọi một (chủ đề, ưu tiên, hành động, cờ injection) và một câu hỏi cho mỗi luật ở lần gọi hai; cờ injection bật thì hành động là Send reply; chuyển sang ba walk-through | Tran Thanh Long | 24 s |
 | **9 đến 20** | Ba walk-through (9 đến 13, 14 đến 17, 18 đến 20) | Ba yêu cầu thật đi qua luồng Level 3, mỗi lần bấm phím tiếp là một slide. Walk-through 1 đi qua mọi trạng thái (5 slide): hoàn tiền không luật nào chặn (R0037). Walk-through 2 (4 slide): hoàn tiền bị luật hạn mức chặn (R0041). Walk-through 3 (3 slide): lệnh ẩn trong tin nhắn (R0086). Mọi câu trả lời của Jev là dữ liệu ghi lại thật | Tran Thanh Long | 22 + 12 + 12 = 46 s |
-| **21** | Test data: 512 customers, 1,024 requests | Một khách hàng trong dữ liệu thử nghiệm; 512 khách hàng, mỗi tài khoản có một teammate không có quyền thanh toán; 1.024 yêu cầu, 24 loại | Nguyen Thanh Nam | 41 s |
-| **22** | 1,024 requests in ten families | Biểu đồ số yêu cầu theo mười nhóm; 901 trong 1.024 yêu cầu do chủ tài khoản gửi và 123 do teammate; 307 trong 1.024 yêu cầu bị một luật từ chối; bộ sinh dữ liệu chạy mã thật của hệ thống | Nguyen Thanh Nam | 39 s |
+| **21** | Test data: 512 customers, 1,024 requests | Một khách hàng trong dữ liệu thử nghiệm; 512 khách hàng; mỗi khách gửi từ 1 đến 3 yêu cầu; 1.024 yêu cầu, 21 loại | Nguyen Thanh Nam | 41 s |
+| **22** | 1,024 requests in ten families | Biểu đồ số yêu cầu theo mười nhóm; 248 trong 1.024 yêu cầu bị một luật từ chối; 48 yêu cầu giấu lệnh trong tin nhắn; bộ sinh dữ liệu chạy mã thật của hệ thống | Nguyen Thanh Nam | 39 s |
 | **23** | Every request ends served, stopped, or in error | Served, Stopped, Error; một lần chạy gây hại là lần làm thay đổi tiền, dữ liệu, gói hoặc mật khẩu trái luật; thêm thời gian máy, chi phí API và kiểm định dấu | Nguyen Thanh Nam | 40 s |
 | **24** | Both levels run on the same 1,024 requests | 1.024 yêu cầu ở mỗi cấp; 1.434 lượt gọi Jev và 1.024 lượt gọi LLM ở Level 3; hai câu hỏi nghiên cứu | Vu Van Son | 42 s |
 | **25** | Level 3 reads less, so it costs about half | Số token mỗi lượt gọi, giá niêm yết của Jev và của LLM, chi phí mỗi 1.000 yêu cầu: Level 2 là 0,61 đô và Level 3 là 0,29 đô | Vu Van Son | 38 s |
 | **26** | Result 1: Jev is fast and cheap, and mostly right | Jev: 0,31 s mỗi lượt gọi, 0,064 đô mỗi 1.000 yêu cầu; độ đúng theo từng câu trả lời; 1.690 trên 1.700 câu trả lời luật đúng | Vu Van Son | 40 s |
-| **27** | Result 2: Level 3 is faster, cheaper, and makes fewer errors | Level 3: 717 phục vụ, 307 chặn, 0 lỗi; Level 2: 676 phục vụ, 287 chặn, 61 lỗi; nhanh hơn 1,8 lần, rẻ hơn 2,1 lần; kiểm định dấu p = 0,031 | Vuong Quang Quy | 78 s |
+| **27** | Result 2: Level 3 is faster, cheaper, and makes fewer errors | Level 3: 776 phục vụ, 248 chặn, 0 lỗi; Level 2: 728 phục vụ, 235 chặn, 61 lỗi; nhanh hơn 1,8 lần, rẻ hơn 2,1 lần; kiểm định dấu p = 0,031 | Vuong Quang Quy | 78 s |
 | **28** | Our idea: limit what each model can trigger | Ba vai trò trong Level 3: Jev chỉ trả lời câu hỏi có kiểu, quy trình (process) kiểm tra luật và chạy hành động, LLM chỉ viết tin nhắn cuối; không dùng nguồn ngoài | Nguyen Phuong Nam | 35 s |
-| **29** | The gain is clear, but our evidence is small | Dữ liệu tổng hợp và nhãn do chính mã áp luật sinh ra; khoảng tin cậy rộng; mỗi luật cần một câu hỏi do nhóm viết; Security rule được tìm thấy trên tập 512 yêu cầu trước đó nên số liệu chính không phải kiểm tra mù | Nguyen Phuong Nam | 55 s |
+| **29** | Why Level 3 stays safe when Jev is wrong | Ba lớp bảo vệ: cờ injection đúng 96%, câu hỏi luật khớp luật 99,4%, 0 trên 174 nhãn hành động sai dẫn tới kết cục sai (các số đã có ở Slide 26) | Nguyen Phuong Nam | 55 s |
 | **30** | Conclusion | Tóm tắt các phát hiện cốt lõi, cảm ơn và mời khán giả đặt câu hỏi cho Long | Nguyen Phuong Nam | 35 s |
-| **31** | Questions? | Slide câu hỏi: bốn thẻ chỉ slide cần mở khi bị hỏi (Slide 6, Slide 21 đến 23, Slide 26 và 27, Slide 29) | Long trả lời | không tính vào 863 s |
+| **31** | Questions? | Slide câu hỏi: bốn thẻ chỉ slide cần mở khi bị hỏi (Slide 6, Slide 21 đến 23, Slide 26 và 27, Slide 29: vì sao an toàn) | Long trả lời | không tính vào 863 s |
 
 ---
 

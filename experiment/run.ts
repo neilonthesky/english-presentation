@@ -8,19 +8,18 @@
 //
 // The run reads <data>/world.csv and <data>/requests.csv (written by experiment/build_dataset.ts), installs the recording
 // transport, runs every system through the same pipeline (pipeline.ts) -- Level 2 (the LLM agent of the chat and the written
-// rules; no rule of Triage), Level 3 (Jev, the LLM, and the Triage rules), and the classifier
-// reference run "llm" (the same LLM as classifier with the rules of Triage; it is not a level, it gives the LLM side of the
-// stage table) -- then writes results.json, per_case.json,
+// rules; no rule of Triage) and Level 3 (Jev with one question per written rule, and the LLM for the final message); --level 3
+// runs only Level 3 -- then writes results.json, per_case.json,
 // provenance.json, tables/*.tex, and figures/ into <out>. The recorded calls are in <cache>/<service>/<sha256>.json
 // (default: <out>/requests). Every request of every system is logged as it finishes.
 import { mkdir, readdir, readFile, writeFile } from "node:fs/promises"
 import { join, resolve } from "node:path"
 import { useWorld } from "../web/server/saas"
 import { LLM_MODEL } from "../web/server/models"
-import { classifyWithJev, classifyWithLlm, type Classify } from "./llm_classifier"
+import { classifyWithJev } from "./jev_classifier"
 import {
   processAgentRequest, processClassifierRequest,
-  type ClassifierSystem, type RunRecord, type SystemName,
+  type RunRecord, type SystemName,
 } from "./pipeline"
 import { buildResults, type Results } from "./metrics"
 import { pmap } from "./pmap"
@@ -31,10 +30,9 @@ import { loadDataset, REQUESTS_FILE, WORLD_FILE } from "./dataset"
 import type { TestRequest } from "./types"
 
 const HERE = import.meta.dir
-const SYSTEMS: readonly SystemName[] = ["jev", "llm", "llm_agent"]
-
-/** The classifier of a classifier system: Jev at Level 3, the LLM in the classifier reference run. */
-const classifierOf = (system: ClassifierSystem): Classify => (system === "jev" ? classifyWithJev : classifyWithLlm)
+const ALL_SYSTEMS: readonly SystemName[] = ["jev", "llm_agent"]
+/** The level of the ladder that each system is (Level 1 is the staff reference: no model runs). */
+const LEVEL_OF: Record<SystemName, number> = { llm_agent: 2, jev: 3 }
 
 interface Args {
   limit: number | null
@@ -46,6 +44,7 @@ interface Args {
   data: string
   requests: string
   report: boolean
+  systems: readonly SystemName[]
   help: boolean
 }
 
@@ -63,6 +62,7 @@ Options:
   --cache DIR        directory of the recorded calls (default: <out>/requests)
   --data DIR         directory with world.csv and the requests file (default: experiment/data)
   --requests FILE    the requests file of that directory (default: requests.csv)
+  --level N          run only Level N (2 or 3); default: both levels
   --no-report        write no tables and no figures
   --help             print this text
 
@@ -82,6 +82,7 @@ function parseArgs(argv: readonly string[]): Args {
     data: join(HERE, "data"),
     requests: REQUESTS_FILE,
     report: true,
+    systems: ALL_SYSTEMS,
     help: false,
   }
   for (let i = 0; i < argv.length; i++) {
@@ -103,6 +104,13 @@ function parseArgs(argv: readonly string[]): Args {
       case "--llm-workers":
         args.llmWorkers = count()
         break
+      case "--level": {
+        const system = ALL_SYSTEMS.find((s) => String(LEVEL_OF[s]) === value)
+        if (!system) throw new Error("--level needs 2 or 3")
+        args.systems = [system]
+        i++
+        break
+      }
       case "--offline":
         args.offline = true
         break
@@ -173,7 +181,7 @@ const isFailedRecord = (entry: CaseEntry): entry is FailedRecord => "failure" in
 /** One request through one system. A model failure is recorded and does not stop the run. */
 async function runOne(request: TestRequest, system: SystemName): Promise<CaseEntry> {
   try {
-    return system === "llm_agent" ? await processAgentRequest(request) : await processClassifierRequest(request, system, classifierOf(system))
+    return system === "llm_agent" ? await processAgentRequest(request) : await processClassifierRequest(request, classifyWithJev)
   } catch (err) {
     return {
       id: request.id,
@@ -232,9 +240,9 @@ async function main(): Promise<number> {
   // The calls of each phase of the run: the live calls and the cache hits that each system made.
   const phases: { phase: string; jevLive: number; jevCacheHits: number; llmLive: number; llmCacheHits: number }[] = []
   let before = snapshot(handle.counters)
-  const cases: Record<SystemName, CaseEntry[]> = { jev: [], llm: [], llm_agent: [] }
-  const ran: Record<SystemName, number> = { jev: 0, llm: 0, llm_agent: 0 }
-  for (const system of SYSTEMS) {
+  const cases: Record<SystemName, CaseEntry[]> = { jev: [], llm_agent: [] }
+  const ran: Record<SystemName, number> = { jev: 0, llm_agent: 0 }
+  for (const system of args.systems) {
     let finished = 0
     const entries = await pmap(requests, Math.max(args.jevWorkers, args.llmWorkers), async (request) => {
       const entry = await runOne(request, system)
@@ -249,8 +257,8 @@ async function main(): Promise<number> {
     before = snapshot(handle.counters)
   }
 
-  const records = SYSTEMS.flatMap((system) => cases[system].filter((entry): entry is RunRecord => !isFailedRecord(entry)))
-  const failedRequests = SYSTEMS.reduce((total, system) => total + cases[system].filter(isFailedRecord).length, 0)
+  const records = args.systems.flatMap((system) => cases[system].filter((entry): entry is RunRecord => !isFailedRecord(entry)))
+  const failedRequests = args.systems.reduce((total, system) => total + cases[system].filter(isFailedRecord).length, 0)
   const results: Results = buildResults({
     limit: args.limit,
     offline: args.offline,
@@ -265,7 +273,6 @@ async function main(): Promise<number> {
     generated_utc: results.generated_utc,
     offline: args.offline,
     jev: cases.jev,
-    llm: cases.llm,
     llm_agent: cases.llm_agent,
   })
   const written = args.report ? [...(await writeTables(args.out, results)), ...(await writeFigures(args.out, results))] : []
@@ -311,7 +318,7 @@ async function main(): Promise<number> {
       "it is never cached. The llm_settings are the ones of web/server/models.ts chat().",
   })
 
-  for (const system of SYSTEMS) {
+  for (const system of args.systems) {
     const summary = results.systems[system]
     log(
       `  ${system}: served ${summary.served}, stopped ${summary.stopped}, errors ${summary.errors}, ` +

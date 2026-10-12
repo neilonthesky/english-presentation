@@ -1,7 +1,6 @@
 // The shape of the data of the experiment. The dataset builder writes these files (see dataset.ts), the runner reads them.
 //   experiment/data/world.csv     -> World (from web/server/saas.ts): "today" and the customers
 //   experiment/data/requests.csv  -> TestRequest[]
-import type { Role } from "../web/src/types"
 
 export type Field = "queue" | "action" | "priority" | "risk" | "injection"
 export const FIELDS: readonly Field[] = ["queue", "action", "priority", "risk", "injection"]
@@ -27,8 +26,6 @@ export interface TestRequest {
   hard: boolean
   /** The customer (account) of the request; an id from world.csv. */
   customerId: string
-  /** Who sends it: the owner of the account, or a teammate of the workspace without rights over billing or data. */
-  role: Role
   text: string
   /** "action|target" pairs that ran before this request (for example "Start refund|FF-10482"). Each request starts from its own ledger. */
   startLedger: string[]

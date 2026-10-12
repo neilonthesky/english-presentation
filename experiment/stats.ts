@@ -152,7 +152,6 @@ function bootstrapPairedDifference(errorsFirst: readonly number[], errorsSecond:
 
 interface PerCase {
   jev: ClassifierRequestRecord[]
-  llm: ClassifierRequestRecord[]
   llm_agent: AgentRequestRecord[]
 }
 
@@ -161,7 +160,7 @@ function readPerCase(value: unknown): PerCase {
   const isObject = (v: unknown): v is Record<string, unknown> => typeof v === "object" && v !== null
   if (!isObject(value)) throw new Error("results/per_case.json is not a JSON object")
   const lists: Record<string, unknown[]> = {}
-  for (const name of ["jev", "llm", "llm_agent"]) {
+  for (const name of ["jev", "llm_agent"]) {
     const list = value[name]
     if (!Array.isArray(list) || list.length === 0) throw new Error(`results/per_case.json holds no ${name} records`)
     for (const record of list) {
@@ -172,7 +171,7 @@ function readPerCase(value: unknown): PerCase {
     lists[name] = list
   }
   // The records are the shape that pipeline.ts wrote into this file; the check above covers the parts read here.
-  return { jev: lists.jev as ClassifierRequestRecord[], llm: lists.llm as ClassifierRequestRecord[], llm_agent: lists.llm_agent as AgentRequestRecord[] }
+  return { jev: lists.jev as ClassifierRequestRecord[], llm_agent: lists.llm_agent as AgentRequestRecord[] }
 }
 
 interface Results {
@@ -241,16 +240,13 @@ async function main(): Promise<void> {
   const perCase = readPerCase(JSON.parse(await readFile(join(OUT, "per_case.json"), "utf8")) as unknown)
   const results = await readResults(join(OUT, "results.json"))
   const n = perCase.jev.length
-  if (n !== perCase.llm.length || n !== perCase.llm_agent.length) throw new Error("results/per_case.json holds sets of different sizes")
+  if (n !== perCase.llm_agent.length) throw new Error("results/per_case.json holds sets of different sizes")
 
-  // The classifier proportions: the action of every system against the gold action, and every field of the five.
-  const classifier: Record<string, Record<string, Interval>> = {}
-  for (const system of ["jev", "llm"] as const) {
-    classifier[system] = {}
-    for (const field of FIELDS) {
-      const scored = perCase[system].filter((record) => goldOf(record, field) !== null)
-      classifier[system][field] = wilson(scored.filter((record) => fieldRight(record, field)).length, scored.length)
-    }
+  // The classifier proportions: every field of the first Jev call against the gold answer.
+  const classifier: Record<string, Interval> = {}
+  for (const field of FIELDS) {
+    const scored = perCase.jev.filter((record) => goldOf(record, field) !== null)
+    classifier[field] = wilson(scored.filter((record) => fieldRight(record, field)).length, scored.length)
   }
 
   // The outcome proportions of the two automated levels: served, stopped, and errors.
@@ -288,21 +284,6 @@ async function main(): Promise<void> {
     ...signTestExact(level2Only, level3Only),
   }
 
-  const actionRight = { jev: perCase.jev.map((record) => (fieldRight(record, "action") ? 1 : 0)), llm: perCase.llm.map((record) => (fieldRight(record, "action") ? 1 : 0)) }
-  let jevWrongOnly = 0
-  let llmWrongOnly = 0
-  actionRight.jev.forEach((right, index) => {
-    const other = actionRight.llm[index]
-    if (right === 0 && other === 1) jevWrongOnly++
-    if (right === 1 && other === 0) llmWrongOnly++
-  })
-  const actionTest = {
-    comparison: "the action label against the gold action, Jev against the LLM",
-    against_first: jevWrongOnly,
-    against_second: llmWrongOnly,
-    ...signTestExact(jevWrongOnly, llmWrongOnly),
-  }
-
   const bootstrap = bootstrapPairedDifference(errorAtLevel2, errorAtLevel3)
   const cut = minimalDiscordant(n)
   const atCut = signTestExact(cut, 0).pValue
@@ -319,8 +300,7 @@ async function main(): Promise<void> {
     return step
   }
   const crossChecks = [
-    { quantity: "action correct, Jev", per_case: classifier.jev.action.successes, results_json: results.classifier.jev.perField.action.correct },
-    { quantity: "action correct, LLM", per_case: classifier.llm.action.successes, results_json: results.classifier.llm.perField.action.correct },
+    { quantity: "action correct, Jev", per_case: classifier.action.successes, results_json: results.classifier.jev.perField.action.correct },
     { quantity: "errors, Level 2", per_case: levels.level2.errors.successes, results_json: ladderOf("LLM agent").errors },
     { quantity: "errors, Level 3", per_case: levels.level3.errors.successes, results_json: ladderOf("Jev + LLM + rules").errors },
     { quantity: "sign test p, Level 2 against Level 3", per_case: outcomeTest.pValue, results_json: results.sign_test.pValue },
@@ -349,33 +329,26 @@ async function main(): Promise<void> {
     outcomeRows,
   )
 
-  const classifierRows = FIELDS.flatMap((field) => [
+  const classifierRows = FIELDS.map((field) =>
     row([
       `${field === "queue" ? "Topic" : field.charAt(0).toUpperCase() + field.slice(1)}${field === "action" ? " (the headline)" : ""}`,
-      `${classifier.jev[field].successes}/${classifier.jev[field].n}`,
-      pct(classifier.jev[field].rate),
-      ci(classifier.jev[field]),
-      `${classifier.llm[field].successes}/${classifier.llm[field].n}`,
-      pct(classifier.llm[field].rate),
-      ci(classifier.llm[field]),
+      `${classifier[field].successes}/${classifier[field].n}`,
+      pct(classifier[field].rate),
+      ci(classifier[field]),
     ]),
-  ])
+  )
   const tableClassifier = table(
-    "The accuracy of the two classifiers over the scored requests, field by field, with the Wilson 95\\% interval of every " +
-      `proportion. The intervals overlap on every field, so no field of this set separates the two classifiers; the action ` +
-      `accuracy of the paper (Jev ${pct(classifier.jev.action.rate)}\\% against the LLM ${pct(classifier.llm.action.rate)}\\%) is a difference of ` +
-      `${classifier.llm.action.successes - classifier.jev.action.successes} requests of ${n}.`,
+    "The accuracy of the first Jev call over the scored requests, field by field, with the Wilson 95\\% interval of every proportion.",
     "tab:robustness-classifier",
-    "lrrlrrl",
-    ["Field", "Jev", "\\%", "95\\% CI", "LLM", "\\%", "95\\% CI"],
+    "lrrl",
+    ["Field", "Jev", "\\%", "95\\% CI"],
     classifierRows,
   )
 
   const tableTests = table(
     `The paired tests and the power of the set. Every request is one pair, so only the discordant requests carry information: ` +
       `the two-sided exact sign test (McNemar's exact test) on the errors of Level 2 against Level 3 (${outcomeTest.against_first} ` +
-      `against ${outcomeTest.against_second}, p = ${outcomeTest.pValue.toFixed(4)}, ${significance(outcomeTest.pValue)}) and on the action label of Jev against the LLM ` +
-      `(${actionTest.against_first} against ${actionTest.against_second}, p = ${actionTest.pValue.toFixed(4)}, ${significance(actionTest.pValue)}). The bootstrap ` +
+      `against ${outcomeTest.against_second}, p = ${outcomeTest.pValue.toFixed(4)}, ${significance(outcomeTest.pValue)}). The bootstrap ` +
       `resamples the ${n} requests with replacement (seed ${SEED}, ${RESAMPLES} resamples) and reports the interval of the paired ` +
       `difference in the count of errors (Level 2 minus Level 3); Level 3 makes no error on this set, so the difference is never ` +
       `negative and the interval describes the sampling of the ${levels.level2.errors.successes} errors of Level 2. The last rows state the power of the set: at least ${cut} discordant requests, every one ` +
@@ -387,7 +360,6 @@ async function main(): Promise<void> {
     ["Test", "First", "Second", "p", "Note"],
     [
       row(["Sign test, errors, Level 2 against Level 3", outcomeTest.against_first, outcomeTest.against_second, outcomeTest.pValue.toFixed(4), significance(outcomeTest.pValue)]),
-      row(["Sign test, action label, Jev against the LLM", actionTest.against_first, actionTest.against_second, actionTest.pValue.toFixed(4), significance(actionTest.pValue)]),
       row(["Bootstrap, the paired difference in errors", bootstrap.observed, "", "", `95\\% CI [${bootstrap.low}, ${bootstrap.high}], seed ${SEED}, ${RESAMPLES} resamples`]),
       row(["Bootstrap, the share of resamples with no worse result", pct(bootstrap.share_at_or_below_zero), "\\%", "", "Level 3 makes no error, so the difference is 0 only in the resamples that draw no error of Level 2"]),
       row(["Power, the smallest significant split", cut, `/ ${n}`, atCut.toFixed(3), "all discordant against one system"]),
@@ -407,15 +379,9 @@ async function main(): Promise<void> {
     )
   }
   log(`classifier accuracy (Wilson 95% CI):`)
-  for (const field of FIELDS) {
-    log(
-      `  ${field.padEnd(10)} jev ${classifier.jev[field].successes}/${classifier.jev[field].n} (${pct(classifier.jev[field].rate)}%, ${ci(classifier.jev[field])})  ` +
-        `llm ${classifier.llm[field].successes}/${classifier.llm[field].n} (${pct(classifier.llm[field].rate)}%, ${ci(classifier.llm[field])})`,
-    )
-  }
+  for (const field of FIELDS) log(`  ${field.padEnd(10)} jev ${classifier[field].successes}/${classifier[field].n} (${pct(classifier[field].rate)}%, ${ci(classifier[field])})`)
   log(`paired tests:`)
   log(`  errors, Level 2 against Level 3: ${outcomeTest.against_first} against ${outcomeTest.against_second} of ${outcomeTest.discordant} discordant, p = ${outcomeTest.pValue.toFixed(4)} (results.json: p = ${results.sign_test.pValue.toFixed(4)}, ${results.sign_test.discordant} discordant)`)
-  log(`  action label, Jev against the LLM: ${actionTest.against_first} against ${actionTest.against_second} of ${actionTest.discordant} discordant, p = ${actionTest.pValue.toFixed(4)}`)
   log(`bootstrap of the paired difference in errors (Level 2 minus Level 3): observed ${bootstrap.observed}, mean ${bootstrap.mean.toFixed(3)}, 95% CI [${bootstrap.low}, ${bootstrap.high}], ${pct(bootstrap.share_at_or_below_zero)}% of resamples at or below 0`)
   log(`power: the smallest significant split is ${cut} of ${n} discordant pairs, all against one system (p = ${atCut.toFixed(4)}; ${cut - 1} pairs give p = ${underCut.toFixed(3)}); a real difference below ${pct(detectable)}% of the requests (${detectableRequests} of ${n}) leaves the test under 80% power`)
   log(`cross-check: ${crossChecks.length} of ${crossChecks.length} quantities recomputed here equal results.json`)

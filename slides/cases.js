@@ -12,7 +12,7 @@ const FIELDS = ["today", "owner", "sender", "plan", "purchase", "refunds"]; // t
 const FLAG = (on) => (on ? "on" : "off");
 
 // The rules of a refund, as short names in the order of the questions that Jev answers.
-const REFUND_RULES = ["Owner only", "Own account", "Credit pack", "Settled charge", "Refund window", "Refunded once", "Amount limit", "Refund count", "Security"];
+const REFUND_RULES = ["Own account", "Credit pack", "Settled charge", "Refund window", "Refunded once", "Amount limit", "Refund count", "Security"];
 // [name, confidence of the answer] with "broken" set for the rules whose answer is yes.
 const rules = (broken, conf) => REFUND_RULES.map((name, i) => [name, broken.includes(name) ? "broken" : "met", conf[i]]);
 
@@ -33,9 +33,9 @@ const CASES = [
       note: "Jev gave four answers from the chat alone: no rules and no account are in this call.",
     },
     rules: {
-      chips: rules([], [0.99, 0.97, 0.97, 0.98, 0.83, 0.95, 0.97, 0.98, 0.98]),
+      chips: rules([], [0.97, 0.97, 0.98, 0.83, 0.95, 0.97, 0.98, 0.98]),
       rule: "No rule is broken: the refund runs.",
-      note: "Jev answered 9 questions with the account lines of a refund. Code runs the action when no answer says broken.",
+      note: "Jev answered 8 questions with the account lines of a refund. Code runs the action when no answer says broken.",
     },
     act: ["A refund of $21 started for Pro plan, monthly (FF-10016).", "The money returns to the original payment method in 5 to 10 business days."],
     final: {
@@ -45,7 +45,7 @@ const CASES = [
     notes: [
       "A customer asks for a refund. The message is saved.",
       "Jev, first call: a refund, Start refund, low priority, no injection.",
-      "Rules: Jev answers nine questions, one for each rule of a refund. No rule is broken.",
+      "Rules: Jev answers eight questions, one for each rule of a refund. No rule is broken.",
       "Do action: the refund starts.",
       "Final message: the LLM replies. Chat open, then Resolved.",
     ],
@@ -68,10 +68,10 @@ const CASES = [
       note: "Jev gave four answers from the chat alone: no rules and no account are in this call.",
     },
     rules: {
-      chips: rules(["Amount limit"], [0.99, 0.97, 0.97, 0.98, 0.97, 0.95, 0.99, 0.97, 0.97]),
-      warn: 6, // the chip of the rule that is broken
+      chips: rules(["Amount limit"], [0.97, 0.97, 0.98, 0.97, 0.95, 0.99, 0.97, 0.97]),
+      warn: 5, // the chip of the rule that is broken
       rule: "Amount limit is broken: the refund is $300 and the limit is $100. Nothing runs.",
-      note: "Jev answered 9 questions. One answer says broken, so code runs nothing. Next: Final message.",
+      note: "Jev answered 8 questions. One answer says broken, so code runs nothing. Next: Final message.",
     },
     act: null,
     final: {
@@ -81,7 +81,7 @@ const CASES = [
     notes: [
       "A second customer asks to refund a charge. Watch for the warning.",
       "Jev, first call: the same action, Start refund.",
-      "Rules: Jev answers nine questions. The amount limit is broken: 300 dollars, the limit is 100. Nothing runs.",
+      "Rules: Jev answers eight questions. The amount limit is broken: 300 dollars, the limit is 100. Nothing runs.",
       "Final message: the LLM explains why.",
     ],
   },
@@ -105,7 +105,7 @@ const CASES = [
     rules: null,
     act: ["A reply goes out. Nothing changes in the account."],
     final: {
-      text: "I can't start a refund above $100 in this chat, and your only charge is FF-10070, the annual Pro plan at $191 (charged 2026-09-21). Refunds must be requested by the account owner, which you are, but this limit means you'd need to take that request elsewhere. I don't know what other route is available for it.",
+      text: "I can't start a refund above $100 in this chat, and your only charge is FF-10070, the annual Pro plan at $191 (charged 2026-09-21). This limit means you'd need to take that request elsewhere. I don't know what other route is available for it.",
       meta: "An answer from the help articles \"Refunds and cancelling\" and \"Payments and invoices\", and the account.",
     },
     notes: [

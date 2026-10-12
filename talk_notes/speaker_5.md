@@ -4,7 +4,7 @@
 - **Vai trò trong đề tài:** Tổng quan tài liệu nghiên cứu liên quan; Thảo luận hạn chế nghiên cứu; Thiết kế trực quan slide; Hỗ trợ chuẩn bị tài liệu hỏi đáp cho Long
 - **Tỷ lệ phân công:** 15% tổng thời lượng thuyết trình trong bài báo; về thời gian nói, Phuong Nam nói 125 giây trên tổng 863 giây.
 - **Thời gian nói được phân bổ:** 2 phút 05 giây (125 giây) cho ba slide: Slide 28 (35 giây), Slide 29 (55 giây), Slide 30 (35 giây).
-- **Số từ mục tiêu:** ~370 từ trong 125 giây, tức khoảng 178 từ mỗi phút: nhanh hơn tốc độ nói rõ ràng thông thường, nên phải bấm giờ khi luyện. Nếu vượt khung, bỏ bớt câu phụ ở Slide 29 (ví dụ câu về tập yêu cầu thứ hai) và giữ nguyên các số liệu chính
+- **Số từ mục tiêu:** ~290 từ trong 125 giây, tức khoảng 139 từ mỗi phút: nhanh hơn tốc độ nói rõ ràng thông thường, nên phải bấm giờ khi luyện. Nếu vượt khung, bỏ bớt câu phụ ở Slide 29 (ví dụ câu "One broken rule stops the action") và giữ nguyên các số liệu chính
 - **Các slide phụ trách:** Slide 28 (35 giây), Slide 29 (55 giây) và Slide 30 (35 giây). Cuối Slide 30, Phuong Nam mời khán giả hỏi Long. Phuong Nam **không đặt câu hỏi** cho khán giả.
 
 ---
@@ -13,7 +13,7 @@
 
 Đọc to và rõ ràng câu giới thiệu này khi nhận lượt nói:
 
-> "Thank you, Quy. My name is Nguyen Phuong Nam. I will explain how Level 3 limits each model, and the limits of our work, and its limits."
+> "Thank you, Quy. My name is Nguyen Phuong Nam. I will explain how Level 3 limits each model, and why it stays safe."
 
 ---
 
@@ -24,7 +24,7 @@
 - **Thời gian dự kiến trên slide:** 0 phút 35 giây (35 giây, ~90 từ)
 
 > `[NHÌN KHÁN GIẢ - MỈM CƯỜI]`  
-> Thank you, Quy. My name is Nguyen Phuong Nam. I will explain how Level 3 limits each model, and the limits of our work, and its limits. Text in a request can give orders to a model. So at Level Three, no model decides alone. Jev only answers typed questions. It cannot run an action. The process checks the written rules and runs the action. One broken rule is enough to stop it. The LLM only writes the final message. It does not change any decision. Result Two shows what this design buys.
+> Thank you, Quy. My name is Nguyen Phuong Nam. I will explain how Level 3 limits each model, and why it stays safe. Text in a request can give orders to a model. So at Level Three, no model decides alone. Jev only answers typed questions. It cannot run an action. The process checks the written rules and runs the action. One broken rule is enough to stop it. The LLM only writes the final message. It does not change any decision. Result Two shows what this design buys.
 > 
 > `[NGHỈ 1 GIÂY]`  
 > 
@@ -32,23 +32,19 @@
 
 ---
 
-### Slide 29: Giới hạn nghiên cứu và điều chúng tôi khẳng định
-- **Tiêu đề slide:** The gain is clear, but our evidence is small
-- **Thời gian dự kiến trên slide:** 0 phút 55 giây (55 giây, ~140 từ)
+### Slide 29: Vì sao Level 3 vẫn an toàn khi Jev trả lời sai
+- **Tiêu đề slide:** Why Level 3 stays safe when Jev is wrong
+- **Thời gian dự kiến trên slide:** 0 phút 55 giây (55 giây, ~95 từ)
 
-> Our evidence is small: two hosted models, one synthetic SaaS product, and our own labels, which the same code that applies the rules produced. Both levels run on the same one thousand and twenty-four requests, and the intervals are wide: for example, the Level Three errors are zero, with a ninety-five percent interval from zero to thirty-eight, and the sign test gives p equal to zero point zero three one.
+> Jev is not always right. So three guards stand between a wrong answer and the customer. First, the injection flag. Jev sets it right on ninety-six percent of the requests. When it is on, the process sets the action to Send reply.
 > 
 > `[NGHỈ 1 GIÂY]`  
 > 
-> Jev needs a question that we write for each rule. We tried questions made from the text of the rule alone, and they made about sixty-one to one hundred and twenty-three errors of one thousand and twenty-four, against none for ours. We wrote our questions knowing the twenty-four request types, and a second set of requests did not change the result.
+> Second, the rule questions. Jev answers ninety-nine point four percent of them as the written rules do. One broken rule stops the action.
 > 
 > `[NGHỈ 1 GIÂY]`  
 > 
-> Real users write slang and make spelling mistakes. Our test data does not. The ninety seconds at Level One is assumed. We did not simulate the popup or the silence timer.
-> 
-> `[NGHỈ 1 GIÂY]`  
-> 
-> We found the Security rule and the account fields on an earlier five-hundred-and-twelve-request set of these same twenty-four types, so the main numbers are not a blind test.
+> Third, the outcome. The action label is wrong on one hundred and seventy-four requests, and none of them ends in a wrong outcome. That is why Level Three makes no error and no harmful run.
 > 
 > `[NGHỈ 1 GIÂY]`  
 > 
@@ -60,7 +56,7 @@
 - **Tiêu đề slide:** Conclusion
 - **Thời gian dự kiến trên slide:** 0 phút 35 giây (35 giây, ~110 từ)
 
-> To finish, we tested three levels of customer support on the same one thousand and twenty-four requests. Level Two serves six hundred and seventy-six, stops two hundred and eighty-seven, and makes sixty-one errors. Level Three serves seven hundred and seventeen, stops three hundred and seven, and makes no error. Level Three is one point eight times faster and two point one times cheaper, and it makes fewer errors: it was never wrong where Level Two was right, and Level Two was wrong on sixty-one requests where it was right.
+> To finish, we tested three levels of customer support on the same one thousand and twenty-four requests. Level Two serves seven hundred and twenty-eight, stops two hundred and thirty-five, and makes sixty-one errors. Level Three serves seven hundred and seventy-six, stops two hundred and forty-eight, and makes no error. Level Three is one point eight times faster and two point one times cheaper, and it makes fewer errors: it was never wrong where Level Two was right, and Level Two was wrong on sixty-one requests where it was right.
 > 
 > `[NGHỈ 1 GIÂY]`  
 > 
@@ -96,7 +92,7 @@ Nói chính xác câu tiếng Anh này để chuyển tiếp cho Long (Q&A):
 ### Câu hỏi 2:
 **"Which limitation of your study would you fix first?"**
 - **Câu trả lời ngắn (3 câu):**
-  > "The labels, because the same code that applies the written rules also produced the correct answers, so the comparison is not independent. After that, the question bank: each rule needs a question that we wrote, and questions generated from the rule text alone made about sixty-one to one hundred and twenty-three errors of one thousand and twenty-four. Third, real tickets with slang and spelling mistakes."
+  > "The labels, because the same code that applies the written rules also produced the correct answers, so the comparison is not independent. After that, the question bank: each rule needs a question that we wrote. Third, real tickets with slang and spelling mistakes."
 
 ### Câu hỏi 3:
 **"What is the next experiment?"**

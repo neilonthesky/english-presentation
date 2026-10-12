@@ -2,7 +2,6 @@
 // The paper includes the PDFs with \includegraphics, so LaTeX has no drawing to compute (Overleaf compiles fast).
 import { mkdir, writeFile } from "node:fs/promises"
 import { join } from "node:path"
-import type { Cascade, Gate } from "./cascade"
 import type { Results } from "./metrics"
 import { FIELDS, type Field } from "./types"
 
@@ -41,16 +40,16 @@ function legend(x: number, y: number, items: readonly (readonly [string, string]
   }
 }
 
-/** Accuracy per field of the first pass, Jev against the LLM. */
+/** Accuracy per field of the first Jev call. */
 function classifierChart(r: Results): string {
   const out: string[] = []
   const [x0, x1, top, bottom] = [30, 236, 18, 118]
   const y = yAxis(x0, x1, top, bottom, 50, 100, 10, (v) => `${v}`, out)
   out.push(t(8, (top + bottom) / 2, "% correct", "middle", 6.5, "#4b5563", `transform="rotate(-90 8 ${(top + bottom) / 2})"`))
-  legend(x0 + 4, 9, [["Jev", BLUE], ["LLM", AMBER]], out)
+  legend(x0 + 4, 9, [["Jev", BLUE]], out)
   const gw = (x1 - x0) / FIELDS.length
   FIELDS.forEach((f, i) => {
-    const bars = [[r.classifier.jev.perField[f].accuracy * 100, BLUE], [r.classifier.llm.perField[f].accuracy * 100, AMBER]] as const
+    const bars = [[r.classifier.jev.perField[f].accuracy * 100, BLUE]] as const
     bars.forEach(([v, color], k) => {
       const bx = x0 + i * gw + gw * 0.12 + k * gw * 0.38
       out.push(rect(bx, y(v), gw * 0.36, bottom - y(v), color), t(bx + gw * 0.18, y(v) - 2, v.toFixed(0), "middle", 5.5))
@@ -172,80 +171,6 @@ function reliabilityChart(r: Results): string {
     out.push(t(bx0 + (i + 0.5) * gw, bottom + 9, NAMES[f], "middle", 6.5))
   })
   return svg(504, 145, out)
-}
-
-/**
- * The confidence cascade of the recorded answers: (a) the risk-coverage curve of Jev alone with abstention, (b) the
- * action-label accuracy of the cascade to the LLM against the coverage, for the two gates, and (c) the escalation of
- * a wrong action label (precision against recall), with the chance level of the request set.
- */
-export function cascadeChart(c: Cascade): string {
-  const GREY = "#9ca3af"
-  const out: string[] = []
-  const [top, bottom] = [20, 112]
-  const ticks = (x: (v: number) => number): void => {
-    for (const v of [0, 0.25, 0.5, 0.75, 1]) out.push(t(x(v), bottom + 8, v === 0 || v === 1 ? `${v}` : v.toFixed(2).replace(/0$/, ""), "middle", 6, "#4b5563"))
-  }
-  const polyline = (points: readonly (readonly [number, number])[], color: string): void => {
-    out.push(`<polyline points="${points.map(([x, y]) => `${x.toFixed(1)},${y.toFixed(1)}`).join(" ")}" fill="none" stroke="${color}" stroke-width="1"/>`)
-    for (const [x, y] of points) out.push(`<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="1.7" fill="${color}"/>`)
-  }
-
-  // (a) the risk-coverage curve of Jev alone: the action error rate of the answered requests against the coverage
-  out.push(title(20, "(a) Jev alone: risk against coverage"))
-  const [ax0, ax1] = [34, 170]
-  const risk = c.riskCoverage
-  const ay = yAxis(ax0, ax1, top, bottom, 0, 20, 5, (v) => `${v}`, out)
-  const ax = (v: number) => ax0 + v * (ax1 - ax0)
-  out.push(t(10, (top + bottom) / 2, "action error rate (%)", "middle", 6.5, "#4b5563", `transform="rotate(-90 10 ${(top + bottom) / 2})"`))
-  ticks(ax)
-  out.push(t((ax0 + ax1) / 2, bottom + 17, "coverage (share answered by Jev)", "middle", 6.5, "#4b5563"))
-  polyline([...risk.points].sort((p, q) => p.coverage - q.coverage).map((p) => [ax(p.coverage), ay(100 * p.risk)] as const), BLUE)
-  const llmRisk = 100 * (1 - c.labelEnds.llm.actionAccuracy)
-  out.push(line(ax0, ay(llmRisk), ax1, ay(llmRisk), GREY, 0.8), t(ax1 - 2, ay(llmRisk) - 3, `LLM alone ${llmRisk.toFixed(1)}`, "end", 6, "#6b7280"))
-  out.push(t(ax0 + 2, ay(0) - 3, `AURC ${risk.aurc.toFixed(3)}`, "start", 6, "#4b5563"))
-  legend(ax0, 138, [["Jev alone", BLUE], ["LLM alone, no abstention", GREY]], out)
-
-  // (b) the action-label accuracy of the cascade to the LLM, against the coverage, for the two gates
-  out.push(title(200, "(b) The cascade to the LLM: action accuracy"))
-  const [bx0, bx1] = [232, 368]
-  const by = yAxis(bx0, bx1, top, bottom, 80, 95, 5, (v) => `${v}`, out)
-  const bx = (v: number) => bx0 + v * (bx1 - bx0)
-  out.push(t(206, (top + bottom) / 2, "action correct (%)", "middle", 6.5, "#4b5563", `transform="rotate(-90 206 ${(top + bottom) / 2})"`))
-  ticks(bx)
-  out.push(t((bx0 + bx1) / 2, bottom + 17, "coverage (share answered by Jev)", "middle", 6.5, "#4b5563"))
-  const ends: readonly (readonly [Gate, string])[] = [["action", BLUE], ["decision", AMBER]]
-  for (const [gate, color] of ends)
-    polyline(
-      c.labelQuality.filter((l) => l.gate === gate).sort((p, q) => p.coverage - q.coverage).map((l) => [bx(l.coverage), by(100 * l.actionAccuracy)] as const),
-      color,
-    )
-  const jevAccuracy = 100 * c.labelEnds.jev.actionAccuracy
-  const llmAccuracy = 100 * c.labelEnds.llm.actionAccuracy
-  out.push(
-    line(bx0, by(llmAccuracy), bx1, by(llmAccuracy), GREY, 0.8), t(bx0 + 2, by(llmAccuracy) - 3, `LLM alone ${llmAccuracy.toFixed(1)}`, "start", 6, "#6b7280"),
-    line(bx0, by(jevAccuracy), bx1, by(jevAccuracy), GREY, 0.8), t(bx1 - 2, by(jevAccuracy) + 8, `Jev alone ${jevAccuracy.toFixed(1)}`, "end", 6, "#6b7280"),
-  )
-  legend(bx0, 138, [["Action gate", BLUE], ["Decision gate", AMBER]], out)
-
-  // (c) escalating a wrong action label: the precision against the recall, both gates, with the chance level
-  out.push(title(390, "(c) Escalating a wrong action"))
-  const [cx0, cx1] = [430, 514]
-  const cy = yAxis(cx0, cx1, top, bottom, 0, 50, 10, (v) => `${v}`, out)
-  const cx = (v: number) => cx0 + v * (cx1 - cx0)
-  out.push(t(404, (top + bottom) / 2, "precision (%)", "middle", 6.5, "#4b5563", `transform="rotate(-90 404 ${(top + bottom) / 2})"`))
-  ticks(cx)
-  out.push(t((cx0 + cx1) / 2, bottom + 17, "recall of the errors", "middle", 6.5, "#4b5563"))
-  const chance = 100 * (1 - c.labelEnds.jev.actionAccuracy)
-  out.push(line(cx0, cy(chance), cx1, cy(chance), GREY, 0.8), t(cx0 + 2, cy(chance) - 3, `chance level ${chance.toFixed(0)}`, "start", 6, "#6b7280"))
-  for (const [gate, color] of ends) {
-    const view = c.escalation.find((e) => e.gate === gate)
-    if (!view) continue
-    polyline(view.points.filter((p) => p.precision !== null).map((p) => [cx(p.recall), cy(100 * (p.precision ?? 0))] as const), color)
-  }
-  legend(cx0 - 14, 138, [["Action gate", BLUE], ["Decision gate", AMBER]], out)
-
-  return svg(524, 148, out)
 }
 
 /** Write one chart as `figures/<name>.svg` and `figures/<name>.pdf` under `out`; returns the file name of the PDF. */
