@@ -52,9 +52,9 @@ const cost2 = level2.apiCostPer1000.toFixed(2), cost3 = level3.apiCostPer1000.to
 const time2 = level2.machineSeconds.mean.toFixed(2), time3 = level3.machineSeconds.mean.toFixed(2);
 const speedRatio = (level2.machineSeconds.mean / level3.machineSeconds.mean).toFixed(1);
 const costRatio = (level2.apiCostPer1000 / level3.apiCostPer1000).toFixed(1);
-// The titles and notes say that Level 3 is lower in machine time, API cost, and errors. Stop the build if the recorded runs do not show it.
-if (!(level3.machineSeconds.mean < level2.machineSeconds.mean && level3.apiCostPer1000 < level2.apiCostPer1000 && level3.errors < level2.errors)) {
-  throw new Error("The slides say that Level 3 is lower in time, cost, and errors; the two runs do not show that");
+// The titles and notes say that Level 3 is lower in API cost and errors, and that it needs less than half the machine time of Level 2. Stop the build if the recorded runs do not show it.
+if (!(level3.machineSeconds.mean * 2 < level2.machineSeconds.mean && level3.apiCostPer1000 < level2.apiCostPer1000 && level3.errors < level2.errors)) {
+  throw new Error("The slides say that Level 3 needs less than half the machine time and has lower cost and fewer errors; the two runs do not show that");
 }
 const ruleCalls = records3.filter((record) => record.ruleCall).map((record) => record.ruleCall);
 const jevCalls = level3.requests + ruleCalls.length;
@@ -859,7 +859,7 @@ async function photo(file, w, h, radius = 0.08, dpi = 150) {
     const s = base(
       13,
       `Test data: ${data.customers} customers, ${sampleSize} requests`,
-      `Public datasets have no SaaS accounts, so we built our own: ${data.customers} FrameForge customers, each with one purchase, a credit balance, and a log of password reset links. Each customer sends ${requestsPerCustomer} requests, so we have ${sampleSize} requests of ${data.categories} types in five groups. High-impact actions are the largest group, with ${groupSize[0]} requests. We made the set hard on purpose: a written rule denies the action on ${data.finalDenied} requests, and ${injectionRequests} requests hide an order in the message. A seeded generator writes the requests and runs the real code of the system to make the correct answers. This is a challenge set, not production traffic.`
+      `Public datasets have no SaaS accounts, so we built our own: ${data.customers} FrameForge customers, each with one purchase, a credit balance, and a log of password reset links. Each customer sends ${requestsPerCustomer} requests, so we have ${sampleSize} requests of ${data.categories} types in five groups. High-impact actions are the largest group, with ${groupSize[0]} requests. We made the set hard on purpose: a written rule denies the action on ${data.finalDenied} requests, and ${injectionRequests} requests hide an order in the message. A program writes the requests from a fixed start number and runs the real code of the system to make the correct answers. This is a challenge set, not production traffic.`
     );
     const cardH = 4.05;
     box(s, ML, 1.6, 7.9, cardH);
@@ -967,7 +967,7 @@ async function photo(file, w, h, radius = 0.08, dpi = 150) {
     const s = base(
       16,
       "Jev on our SaaS test set: speed, cost, and accuracy",
-      `Now the first result, for Jev alone. The median Jev time per request, including rule calls, is ${level3.decisionLatency.median.toFixed(2)} seconds, and all Jev calls cost $${level3.decisionCostPer1000.toFixed(3)} per 1,000 requests. The first call gives the right topic on ${(100 * quality.queue.accuracy).toFixed(1)} percent of the scored requests, the priority on ${(100 * quality.priority.accuracy).toFixed(1)} percent, the action on ${(100 * quality.action.accuracy).toFixed(1)} percent, and the injection flag on ${(100 * quality.injection.accuracy).toFixed(1)} percent. ${count(ruleStats.matching)} of ${count(ruleStats.answers)} rule answers match the written rules. The first-call action label is wrong on ${wrongActions.length} requests, and ${wrongActionOutcomes === 0 ? "none" : wrongActionOutcomes} of these end in a wrong outcome. ${CHANGED_SHORT}, so the rule evaluation was not blind.`
+      `Now the first result, for Jev alone. Half of the requests need ${level3.decisionLatency.median.toFixed(2)} seconds or less of Jev time, including rule calls, and all Jev calls cost $${level3.decisionCostPer1000.toFixed(3)} per 1,000 requests. The first call gives the right topic on ${(100 * quality.queue.accuracy).toFixed(1)} percent of the scored requests, the priority on ${(100 * quality.priority.accuracy).toFixed(1)} percent, the action on ${(100 * quality.action.accuracy).toFixed(1)} percent, and the injection flag on ${(100 * quality.injection.accuracy).toFixed(1)} percent. ${count(ruleStats.matching)} of ${count(ruleStats.answers)} rule answers match the written rules. The first-call action label is wrong on ${wrongActions.length} requests, and ${wrongActionOutcomes === 0 ? "none" : wrongActionOutcomes} of these end in a wrong outcome. ${CHANGED_SHORT}, so we saw these failures before the last test.`
     );
     box(s, ML, 1.65, 7.6, 4.9);
     const labels = ["Topic", "Priority", "Action", "Injection flag", "Rule answers"];
@@ -994,7 +994,7 @@ async function photo(file, w, h, radius = 0.08, dpi = 150) {
     const s = base(
       17,
       "On our SaaS test set: lower time, cost, and error count",
-      `We compare the two levels on the same ${sampleSize} requests. Level 2 serves ${level2.served}, stops ${level2.stopped}, and makes ${level2.errors} errors, ${level2.harmful} of them harmful. Level 3 serves ${level3.served}, stops ${level3.stopped}, and makes ${level3.errors} errors and ${level3.harmful} harmful runs. Level 3 has ${speedRatio} times lower mean machine time, ${time3} seconds against ${time2}, and ${costRatio} times lower API cost, $${cost3} against $${cost2} per 1,000 requests. Of the ${level2.errors} Level 2 errors, ${injectionErrors2} are injection requests. The harmful errors run ${harmfulRefunds2} refunds and ${harmfulCancellations2} plan cancellations. These are outcomes on this synthetic set, not a guarantee of safety.`
+      `We compare the two levels on the same ${sampleSize} requests. Level 2 serves ${level2.served}, stops ${level2.stopped}, and makes ${level2.errors} errors, ${level2.harmful} of them harmful. Level 3 serves ${level3.served}, stops ${level3.stopped}, and makes ${level3.errors} errors and ${level3.harmful} harmful runs. Level 3 needs less than half the average machine time, ${time3} seconds against ${time2}, and has ${costRatio} times lower API cost, $${cost3} against $${cost2} per 1,000 requests. Of the ${level2.errors} Level 2 errors, ${injectionErrors2} are injection requests. The harmful errors run ${harmfulRefunds2} refunds and ${harmfulCancellations2} plan cancellations. These are outcomes on the set that we made ourselves, not a guarantee of safety.`
     );
     box(s, ML, 1.65, 7.6, 3.95);
     const cats = ["Level 2: LLM agent", "Level 3: Jev + LLM"];
@@ -1032,7 +1032,7 @@ async function photo(file, w, h, radius = 0.08, dpi = 150) {
         `First, Jev sets the injection flag right on ${(100 * quality.injection.accuracy).toFixed(1)} percent of the requests, and when it is on, the process sends a reply. ` +
         `Second, ${count(ruleStats.matching)} of ${count(ruleStats.answers)} rule answers match the written rules on this set. ` +
         `Third, the first-call action label is wrong on ${wrongActions.length} requests, and ${wrongActionOutcomes === 0 ? "none" : wrongActionOutcomes} of them end in a wrong outcome. ` +
-        `Level 3 makes ${level3.errors} errors and ${level3.harmful} harmful runs on this set. ${CHANGED_SHORT}, so this is not a blind evaluation.`
+        `Level 3 makes ${level3.errors} errors and ${level3.harmful} harmful runs on this set. ${CHANGED_SHORT}, so we saw these failures before this last test.`
     );
     const gap = 0.3, cw = (CW - 2 * gap) / 3, y0 = 1.6, h0 = 3.95;
     [
@@ -1101,9 +1101,9 @@ async function photo(file, w, h, radius = 0.08, dpi = 150) {
       { icon: "LuDollarSign", big: `${costRatio}x`, label: `lower API cost: $${cost3} vs $${cost2} per 1,000 requests`, color: C.l3 },
     ].forEach((o, i) => callout(s, CX, 0.7 + i * 2.1, CWd, 1.9, { ...o, bigSize: 38, bigH: 0.8, bigY: 0.25, labelSize: 15 }));
     s.addNotes(
-      `Speaker: ${PNAM}, about ${SPEAKER[19][1]} s. To finish, we measured two automated levels of customer support in separate runs on the same ${sampleSize} requests. Level 2 serves ${level2.served}, stops ${level2.stopped}, and makes ${level2.errors} errors. Level 3 serves ${level3.served}, stops ${level3.stopped}, and makes ${level3.errors} errors. ` +
-        `Level 3 has ${speedRatio} times lower mean machine time and ${costRatio} times lower API cost. Jev needs a question that we write for each rule. ${CHANGED_SHORT}, so this rule evaluation was not blind. We did not test trained classifiers or other decision models. Next, we need real tickets, a held-out request set, and stronger baselines. ` +
-        "The Red Hat link on this slide is outside context, not our data. " +
+      `Speaker: ${PNAM}, about ${SPEAKER[19][1]} s. Finally, we measured two automated levels in separate runs on the same ${sampleSize} requests. Level 2 serves ${level2.served}, stops ${level2.stopped}, and makes ${level2.errors} errors. Level 3 serves ${level3.served}, stops ${level3.stopped}, and makes ${level3.errors} errors. ` +
+        `Level 3 needs less than half the average machine time and has ${costRatio} times lower API cost. Jev needs a question that we write for each rule. ${CHANGED_SHORT}, so we saw these failures before the last test. We did not test programs that learn from examples, or other decision models. Next, we need real tickets, a separate request set, and stronger systems to compare with. ` +
+        "The Red Hat link is outside context, not our data. " +
         "Thank you for listening."
     );
   }

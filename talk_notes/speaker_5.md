@@ -4,7 +4,7 @@
 - **Vai trò trong đề tài:** Tổng quan tài liệu nghiên cứu liên quan; Thảo luận hạn chế nghiên cứu; Thiết kế trực quan slide; Hỗ trợ chuẩn bị tài liệu hỏi đáp cho Long
 - **Tỷ lệ đóng góp trong bài báo:** 15% (đây không phải tỷ lệ thời gian nói). Về thời gian nói, Phuong Nam nói 120 giây trên tổng 820 giây (14,6%).
 - **Thời gian nói được phân bổ:** 2 phút 00 giây (120 giây) cho hai slide: Slide 28 (60 giây) và Slide 29 (60 giây).
-- **Số từ mục tiêu:** ~222 từ tiếng Anh (86 + 136) trong 120 giây, tức khoảng 111 từ mỗi phút. Số từ đếm trên lời nói thật, các số viết thành chữ. Nếu chậm hơn, cắt theo dòng "Nếu vượt khung" của từng slide.
+- **Số từ mục tiêu:** ~223 từ tiếng Anh (86 + 137) trong 120 giây, tức khoảng 112 từ mỗi phút. Số từ đếm trên lời nói thật, các số viết thành chữ. Nếu chậm hơn, cắt theo dòng "Nếu vượt khung" của từng slide.
 - **Các slide phụ trách:** Slide 28 (60 giây): ý tưởng của nhóm (giới hạn điều mỗi mô hình có thể kích hoạt); Slide 29 (60 giây): kết luận. Phuong Nam nói thẳng từ trên xuống dưới: **không chào, không tự giới thiệu, không đặt câu hỏi** cho khán giả; toàn bộ phần hỏi đáp sau Slide 29 do Long phụ trách. Long đã đọc tên Phuong Nam ở Slide 1.
 
 ---
@@ -34,18 +34,18 @@
 
 ### Slide 29: Kết luận
 - **Tiêu đề slide:** Conclusion
-- **Thời gian dự kiến trên slide:** 1 phút 00 giây (60 giây, ~136 từ)
-- **Nếu vượt khung:** bỏ câu "Next, we need real tickets..." và câu về Red Hat; giữ nguyên các số của hai level, câu "not blind" và câu cảm ơn.
+- **Thời gian dự kiến trên slide:** 1 phút 00 giây (60 giây, ~137 từ)
+- **Nếu vượt khung:** bỏ câu "Next, we need real tickets..." và câu về Red Hat; giữ nguyên các số của hai level, câu "we saw these failures before the last test" và câu cảm ơn.
 
-> To finish, we measured two automated levels of customer support in separate runs on the same one thousand and twenty-four requests. Level Two serves seven hundred and ninety-five, stops one hundred and ninety-eight, and makes thirty-one errors. Level Three serves eight hundred and twenty-five, stops one hundred and ninety-nine, and makes zero errors.
+> Finally, we measured two automated levels in separate runs on the same one thousand and twenty-four requests. Level Two serves seven hundred and ninety-five, stops one hundred and ninety-eight, and makes thirty-one errors. Level Three serves eight hundred and twenty-five, stops one hundred and ninety-nine, and makes zero errors.
 > 
 > `[NGHỈ 1 GIÂY]`  
 > 
-> Level Three has two point one times lower mean machine time and two point two times lower API cost. Jev needs a question that we write for each rule. Two refund inputs were changed after earlier failures, so this rule evaluation was not blind. We did not test trained classifiers or other decision models.
+> Level Three needs less than half the average machine time and has two point two times lower API cost. Jev needs a question that we write for each rule. Two refund inputs were changed after earlier failures, so we saw these failures before the last test. We did not test programs that learn from examples, or other decision models.
 > 
 > `[NGHỈ 1 GIÂY]`  
 > 
-> Next, we need real tickets, a held-out request set, and stronger baselines. The Red Hat link on this slide is outside context, not our data.
+> Next, we need real tickets, a separate request set, and stronger systems to compare with. The Red Hat link is outside context, not our data.
 > 
 > `[NGHỈ 1 GIÂY]`  
 > 
@@ -65,9 +65,9 @@ Luyện phát âm 10 từ vựng này theo phiên âm đơn giản dưới đây
 | **Execution** | **ek-sih-KYOO-shun** | Có 4 âm tiết; nhấn vào 'KYOO'; đuôi 'shun' đọc nhẹ. |
 | **Policy** | **POL-ih-see** | Có 3 âm tiết; nhấn vào 'POL'; đuôi 'see' đọc nhẹ. |
 | **Refusal** | **rih-FYOO-zul** | Có 3 âm tiết; nhấn vào 'FYOO'; 's' đọc như 'z'. |
-| **Baselines** | **BAYS-lynz** | Có 2 âm tiết; nhấn vào 'BAYS'; kết thúc bằng âm 'z'. |
-| **Classifiers** | **KLASS-ih-fy-erz** | Có 4 âm tiết; nhấn vào 'KLASS'; kết thúc bằng âm 'z'. |
-| **Evaluation** | **ih-val-yoo-AY-shun** | Có 5 âm tiết; nhấn vào 'AY'; đuôi 'shun' đọc nhẹ. |
+| **Examples** | **ig-ZAM-pulz** | Có 3 âm tiết; nhấn vào 'ZAM'; kết thúc bằng âm 'z'. |
+| **Decision** | **dih-SIZH-un** | Có 3 âm tiết; nhấn vào 'SIZH'; âm 'zh' như trong 'vision'. |
+| **Compare** | **kum-PAIR** | Có 2 âm tiết; nhấn vào 'PAIR'; âm đầu 'kum' đọc nhẹ. |
 | **Conclusion** | **kun-KLOO-zhun** | Có 3 âm tiết; nhấn vào 'KLOO'; âm 'zh' như trong 'vision'. |
 
 ---

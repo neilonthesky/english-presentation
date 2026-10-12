@@ -15,11 +15,11 @@ Tài liệu này liệt kê các bước tập luyện và bảng tự chấm đ
 | Người nói | Số slide phụ trách | Slide | Thời gian nói | Tỷ lệ thời gian | Tốc độ cần |
 | :--- | :---: | :--- | :---: | :---: | :---: |
 | **Tran Thanh Long** | 21 slide (9 slide riêng + 12 khung của ba walk-through) | Slide 1 đến 21 | 340 giây (5 phút 40 giây) | 41,5% | 121 từ/phút |
-| **Nguyen Thanh Nam** | 2 slide | Slide 22 và 23 | 120 giây (2 phút 00 giây) | 14,6% | 101 từ/phút |
-| **Vu Van Son** | 2 slide | Slide 24 và 25 | 120 giây (2 phút 00 giây) | 14,6% | 117 từ/phút |
-| **Vuong Quang Quy** | 2 slide | Slide 26 và 27 | 120 giây (2 phút 00 giây) | 14,6% | 118 từ/phút |
-| **Nguyen Phuong Nam** | 2 slide | Slide 28 và 29 | 120 giây (2 phút 00 giây) | 14,6% | 111 từ/phút |
-| **Tổng cộng** | **29 slide (cộng Slide 30 là slide câu hỏi)** | **Toàn bộ bài trình bày** | **820 giây (13 phút 40 giây)** | **100%** | 116 từ/phút |
+| **Nguyen Thanh Nam** | 2 slide | Slide 22 và 23 | 120 giây (2 phút 00 giây) | 14,6% | 103 từ/phút |
+| **Vu Van Son** | 2 slide | Slide 24 và 25 | 120 giây (2 phút 00 giây) | 14,6% | 120 từ/phút |
+| **Vuong Quang Quy** | 2 slide | Slide 26 và 27 | 120 giây (2 phút 00 giây) | 14,6% | 120 từ/phút |
+| **Nguyen Phuong Nam** | 2 slide | Slide 28 và 29 | 120 giây (2 phút 00 giây) | 14,6% | 112 từ/phút |
+| **Tổng cộng** | **29 slide (cộng Slide 30 là slide câu hỏi)** | **Toàn bộ bài trình bày** | **820 giây (13 phút 40 giây)** | **100%** | 117 từ/phút |
 
 (Tỷ lệ làm tròn đến một chữ số thập phân. "Tốc độ cần" là số từ của kịch bản chia cho số giây của khối nói, đã gồm các lần nghỉ.)
 
@@ -54,7 +54,7 @@ Tài liệu này liệt kê các bước tập luyện và bảng tự chấm đ
 
 **Lưu ý về thời gian:** thời gian trên là thời gian ghi trong ghi chú của bộ slide hiện tại (`slides/build.js`, mảng `SPEAKER`). Cả ba walk-through đều được tính là một khối nói liền: Long bấm phím để đi qua từng khung, và toàn bộ chuỗi khung nằm trong số giây của slide mở đầu chuỗi. Tổng cộng 820 giây nói, tiếp theo là tối đa 300 giây hỏi đáp.
 
-**Cảnh báo về tốc độ nói:** tốc độ rõ ràng thông thường là 120 đến 130 từ mỗi phút. Theo số từ của kịch bản, tốc độ trung bình của từng người nằm trong khoảng 101 đến 121 từ/phút, nên không ai vượt 130 từ/phút. Ba slide có lời nói dày nhất là Slide 7 (136 từ/phút), Slide 29 (136 từ/phút) và Slide 9 (131 từ/phút): người nói phải bấm giờ khi luyện tập và dùng dòng "Nếu vượt khung" của slide đó nếu chậm (Slide 7 và Slide 9 của Long không có dòng này, nên Long bấm giờ riêng hai chỗ này). Nam nói chậm nhất (101 từ/phút) và còn dư khoảng 19 giây trong 120 giây của mình nếu nói 120 từ/phút.
+**Cảnh báo về tốc độ nói:** tốc độ rõ ràng thông thường là 120 đến 130 từ mỗi phút. Theo số từ của kịch bản, tốc độ trung bình của từng người nằm trong khoảng 103 đến 121 từ/phút, nên không ai vượt 130 từ/phút. Ba slide có lời nói dày nhất là Slide 29 (137 từ/phút), Slide 7 (136 từ/phút) và Slide 9 (131 từ/phút): người nói phải bấm giờ khi luyện tập và dùng dòng "Nếu vượt khung" của slide đó nếu chậm (Slide 7 và Slide 9 của Long không có dòng này, nên Long bấm giờ riêng hai chỗ này). Nam nói chậm nhất (103 từ/phút) và còn dư khoảng 17 giây trong 120 giây của mình nếu nói 120 từ/phút.
 
 ---
 

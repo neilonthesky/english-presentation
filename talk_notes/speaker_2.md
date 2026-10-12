@@ -4,7 +4,7 @@
 - **Vai trò trong đề tài:** Quy tắc bằng văn bản (Written rules); Các câu hỏi luật của Level 3; Quy tắc điều hướng khi phát hiện injection; Security rule
 - **Tỷ lệ đóng góp trong bài báo:** 22% (đây không phải tỷ lệ thời gian nói). Về thời gian nói, Nam nói 120 giây trên tổng 820 giây (14,6%).
 - **Thời gian nói được phân bổ:** 2 phút 00 giây (120 giây) cho hai slide: Slide 22 (60 giây) và Slide 23 (60 giây).
-- **Số từ mục tiêu:** ~202 từ tiếng Anh (117 + 85) trong 120 giây, tức khoảng 101 từ mỗi phút (chậm hơn mục tiêu nên còn dư thời gian để nghỉ và nhấn số liệu). Số từ đếm trên lời nói thật, các số viết thành chữ. Nếu chậm hơn, cắt theo dòng "Nếu vượt khung" của từng slide.
+- **Số từ mục tiêu:** ~206 từ tiếng Anh (121 + 85) trong 120 giây, tức khoảng 103 từ mỗi phút (chậm hơn mục tiêu nên còn dư thời gian để nghỉ và nhấn số liệu). Số từ đếm trên lời nói thật, các số viết thành chữ. Nếu chậm hơn, cắt theo dòng "Nếu vượt khung" của từng slide.
 - **Các slide phụ trách:** Slide 22 (60 giây): dữ liệu thử nghiệm (512 khách hàng, 1.024 yêu cầu, năm nhóm); Slide 23 (60 giây): cách chấm (ba kết cục và lần chạy gây hại). Nam nói ngay sau ba walk-through của Long, thẳng từ trên xuống dưới: **không chào, không tự giới thiệu, không đặt câu hỏi** và **không tổ chức bình chọn** với khán giả; mọi tương tác do Long thực hiện ở Slide 1 đến 3. Long đã đọc tên Nam ở Slide 1.
 
 ---
@@ -13,7 +13,7 @@
 
 ### Slide 22: Dữ liệu thử nghiệm: 512 khách hàng, 1.024 yêu cầu
 - **Tiêu đề slide:** Test data: 512 customers, 1,024 requests
-- **Thời gian dự kiến trên slide:** 1 phút 00 giây (60 giây, ~117 từ)
+- **Thời gian dự kiến trên slide:** 1 phút 00 giây (60 giây, ~121 từ)
 - **Nếu vượt khung:** bỏ câu "High-impact actions are the largest group..." và giữ nguyên các số: 512 khách hàng, 1.024 yêu cầu, 199 yêu cầu bị một luật từ chối.
 
 > Public datasets have no SaaS accounts, so we built our own: five hundred and twelve FrameForge customers, each with one purchase, a credit balance, and a log of password reset links.
@@ -24,7 +24,7 @@
 > 
 > `[NGHỈ 1 GIÂY]`  
 > 
-> We made the set hard on purpose: a written rule denies the action on one hundred and ninety-nine requests, and twenty-seven requests hide an order in the message. A seeded generator writes the requests and runs the real code of the system to make the correct answers. This is a challenge set, not production traffic.
+> We made the set hard on purpose: a written rule denies the action on one hundred and ninety-nine requests, and twenty-seven requests hide an order in the message. A program writes the requests from a fixed start number and runs the real code of the system to make the correct answers. This is a challenge set, not production traffic.
 > 
 > `[NGHỈ 1 GIÂY]`  
 > 
@@ -53,10 +53,10 @@ Luyện phát âm 10 từ vựng này theo phiên âm đơn giản dưới đây
 
 | Từ tiếng Anh | Phiên âm đơn giản | Hướng dẫn phát âm và trọng âm |
 | :--- | :--- | :--- |
-| **Synthetic** | **sin-THET-ik** | Có 3 âm tiết; nhấn vào 'THET'; đuôi 'ik' ngắn. |
+| **Program** | **PROH-gram** | Có 2 âm tiết; nhấn vào 'PROH'; 'gram' đọc rõ, không nuốt âm 'r'. |
 | **Customers** | **KUS-tuh-merz** | Có 3 âm tiết; nhấn vào 'KUS'; đuôi 'merz' đọc nhẹ. |
-| **Generator** | **JEN-uh-ray-ter** | Có 4 âm tiết; nhấn vào 'JEN'; đuôi 'ter' đọc nhẹ. |
-| **Seeded** | **SEE-did** | Có 2 âm tiết; nhấn vào 'SEE'; phát âm rõ 'did'. |
+| **Balance** | **BAL-uns** | Có 2 âm tiết; nhấn vào 'BAL'; đuôi 'uns' đọc nhẹ. |
+| **Purchase** | **PUR-chus** | Có 2 âm tiết; nhấn vào 'PUR'; đuôi 'chus' đọc nhẹ. |
 | **Challenge** | **CHAL-inj** | Có 2 âm tiết; nhấn vào 'CHAL'; đuôi 'inj' đọc nhẹ. |
 | **Injection** | **in-JEK-shun** | Có 3 âm tiết; nhấn vào 'JEK'; đuôi 'shun' đọc nhẹ. |
 | **Harmful** | **HARM-ful** | Có 2 âm tiết; nhấn vào 'HARM'; đuôi 'ful' đọc nhẹ. |
