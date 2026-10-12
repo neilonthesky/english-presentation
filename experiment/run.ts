@@ -24,7 +24,7 @@ import { pmap } from "./pmap"
 import { installRecordedTransport } from "./transport"
 import { writeTables } from "./tables"
 import { writeFigures } from "./figures"
-import { loadDataset, REQUESTS_FILE, WORLD_FILE } from "./dataset"
+import { DATA_DIR, loadDataset, REQUESTS_FILE, WORLD_FILE } from "./dataset"
 import type { TestRequest } from "./types"
 
 const HERE = import.meta.dir
@@ -48,7 +48,7 @@ interface Args {
 
 const USAGE = `Usage: bun run experiment/run.ts [options]
 
-Runs the request triage experiment on the requests of experiment/data/requests.csv and writes the evidence files:
+Runs the request triage experiment on the requests of experiment/data/high-impact/requests.csv and writes the evidence files:
 results.json, per_case.json, provenance.json, tables/*.tex, figures/.
 
 Options:
@@ -56,9 +56,9 @@ Options:
   --offline          replay the recorded calls; no network, no credentials
   --jev-workers N    Jev calls in flight at the same time (default: 4)
   --llm-workers N    LLM calls in flight at the same time (default: 3)
-  --out DIR          output root; evidence goes in DIR/levelN (default: experiment/results)
+  --out DIR          output root; evidence goes in DIR/levelN (default: experiment/results/high-impact)
   --cache DIR        directory of the recorded calls (default: <out>/requests)
-  --data DIR         directory with world.csv and the requests file (default: experiment/data)
+  --data DIR         directory with world.csv and the requests file (default: experiment/data/high-impact)
   --requests FILE    the requests file of that directory (default: requests.csv)
   --level N          REQUIRED: run only Level N (2 or 3), never both
   --no-report        write no tables and no figures
@@ -75,9 +75,9 @@ function parseArgs(argv: readonly string[]): Args {
     offline: false,
     jevWorkers: 4,
     llmWorkers: 3,
-    out: join(HERE, "results"),
+    out: join(HERE, "results", "high-impact"),
     cache: null,
-    data: join(HERE, "data"),
+    data: DATA_DIR,
     requests: REQUESTS_FILE,
     report: true,
     systems: [],

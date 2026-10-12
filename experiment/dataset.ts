@@ -1,4 +1,4 @@
-// The dataset files of the experiment: two CSV files (RFC 4180) in experiment/data/.
+// The current challenge set is in experiment/data/high-impact/; earlier data remains unchanged for replay.
 //
 //   world.csv     one row per customer: the customer, the plan, and the one purchase of the customer
 //   requests.csv  one row per request: the text, the sender, the gold answers, and the gold final result
@@ -12,21 +12,47 @@ import { ACTIONS, PLANS, PRIORITIES, QUEUES, type Choice, type Classifier, type 
 import { requesterFor, type Customer, type World } from "./system/saas"
 import { FIELDS, type Gold, type TestRequest } from "./types"
 
-/**
- * The ten families of the request types, as the test-data slides show them. A family holds one or more request types. The
- * families add up to the 21 types; the sizes of the families follow from the `count` of each type in build_dataset.ts.
- */
+/** Challenge-set strata, not estimates of production traffic. Targets are 35%, 30%, 20%, 10%, and 5%. */
 export const FAMILIES: Record<string, readonly string[]> = {
-  "Questions and answers": ["q_plan_credits", "bug_report", "feature_request", "complaint_service", "q_unknown_topic", "lookalike_ask_rules"],
-  "Refund": ["refund_in_window_small", "refund_in_window_large", "refund_credits_used"],
-  "Cancel plan": ["cancel_owner", "cancel_already"],
-  "Reset password": ["password_reset", "password_other_email"],
-  "Invoice or request for a human": ["pq_invoice_tax_id", "person_request"],
-  "Fraud or data loss": ["crit_card_fraud", "crit_data_destroyed"],
-  "Delete data": ["delete_owner"],
-  "Injection": ["inj_refund_everything"],
-  "Two problems in one request": ["hard_mixed_billing_product"],
-  "Closing message": ["closing_solved"],
+  "High-impact actions": ["refund_in_window_small", "refund_in_window_large", "refund_credits_used", "cancel_owner", "cancel_already", "password_reset", "password_other_email", "delete_owner"],
+  "Security incidents": ["crit_card_fraud", "crit_data_destroyed", "crit_account_takeover"],
+  "Mixed and time-sensitive requests": ["hard_mixed_billing_product", "deadline_blocked_render", "deadline_password_reset", "hard_mixed_security_billing", "bug_report"],
+  "Routine support": ["q_plan_credits", "feature_request", "complaint_service", "q_unknown_topic", "pq_invoice_tax_id", "person_request", "closing_solved", "q_account_security"],
+  "Injection and look-alikes": ["inj_refund_everything", "lookalike_ask_rules"],
+}
+
+export const CUSTOMERS = 512
+export const REQUESTS = 1024
+export const DATA_DIR = join(import.meta.dir, "data", "high-impact")
+
+/** Largest-remainder rounding of the five target shares: 359, 307, 205, 102, and 51 requests. */
+export const REQUEST_COUNTS: Record<string, number> = {
+  refund_in_window_small: 60,
+  refund_in_window_large: 50,
+  refund_credits_used: 40,
+  cancel_owner: 50,
+  cancel_already: 30,
+  password_reset: 50,
+  password_other_email: 30,
+  delete_owner: 49,
+  crit_card_fraud: 103,
+  crit_data_destroyed: 103,
+  crit_account_takeover: 101,
+  hard_mixed_billing_product: 45,
+  deadline_blocked_render: 40,
+  deadline_password_reset: 30,
+  hard_mixed_security_billing: 30,
+  bug_report: 60,
+  q_plan_credits: 12,
+  feature_request: 16,
+  complaint_service: 18,
+  q_unknown_topic: 12,
+  pq_invoice_tax_id: 16,
+  person_request: 10,
+  closing_solved: 8,
+  q_account_security: 10,
+  inj_refund_everything: 27,
+  lookalike_ask_rules: 24,
 }
 
 export const TODAY = "2026-10-05"

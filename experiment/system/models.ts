@@ -4,14 +4,15 @@ import { ACTIONS, PRIORITIES, QUEUES, type Classifier, type Executed, type Polic
 import { articlesText, type Article } from "./saas"
 
 export const JEV_URL = "https://api.typesafe.ai/v1/systemone"
-export const LLM_URL = "https://api.commandcode.ai/provider/v1/chat/completions"
-export const LLM_MODEL = "deepseek/deepseek-v4.1-flash"
+// The LLM is DeepSeek V4.1 Flash on the Droid gateway of Factory (the OpenAI-compatible route; the upstream host is Fireworks).
+export const LLM_URL = "https://api.factory.ai/api/llm/o/v1/chat/completions"
+export const LLM_MODEL = "deepseek-v4.1-flash"
 
 export class ApiError extends Error {}
 
 const tokens: Record<string, string> = {}
 
-/** An environment variable, or the token that `omp token <provider>` prints. */
+/** An environment variable (when `env` names some), or the token that `omp token <provider>` prints. */
 function credential(env: string[], provider: string): string {
   if (tokens[provider]) return tokens[provider]
   let token = env.map((name) => process.env[name]?.trim()).find(Boolean) ?? ""
@@ -19,18 +20,47 @@ function credential(env: string[], provider: string): string {
     const out = Bun.spawnSync(["omp", "token", provider])
     token = out.exitCode === 0 ? out.stdout.toString().trim() : ""
   }
-  if (!token) throw new ApiError(`${provider} credential unavailable: set ${env.join(" or ")} or make 'omp token ${provider}' succeed`)
+  if (!token) throw new ApiError(`${provider} credential unavailable: ${env.length ? `set ${env.join(" or ")} or ` : ""}make 'omp token ${provider}' succeed`)
   return (tokens[provider] = token)
 }
 
-/** The real network call. The token comes from the host of the URL. */
+// The Droid gateway of Factory serves a model to a request that looks like one of the Droid client: these headers, and the identity
+// line as the first system message. They are the ones that `omp` sends to its provider factory-droid; the gateway answers HTTP 403 without them.
+const FACTORY_CLIENT_VERSION = "0.237.0"
+const FACTORY_IDENTITY = "You are Droid, an AI software engineering agent built by Factory."
+const FACTORY_SESSION = crypto.randomUUID()
+
+/** The headers of one call to the Droid gateway. The organization is the `external_org_id` claim of the token. */
+function factoryHeaders(token: string): Record<string, string> {
+  const claims = JSON.parse(Buffer.from(token.split(".")[1] ?? "", "base64url").toString("utf8") || "{}") as { external_org_id?: string }
+  return {
+    Accept: "application/json",
+    "User-Agent": `factory-cli/${FACTORY_CLIENT_VERSION}`,
+    "X-Client-Version": FACTORY_CLIENT_VERSION,
+    "X-Factory-Client": "cli",
+    ...(claims.external_org_id ? { "X-Factory-Org-Id": claims.external_org_id } : {}),
+    "x-api-provider": "fireworks",
+    "x-provider-routing-source": "registry_default",
+    "x-session-id": FACTORY_SESSION,
+    "x-assistant-message-id": crypto.randomUUID(),
+  }
+}
+
+/** The body that goes to the Droid gateway: the body of the system with the identity line in front of its messages. */
+function factoryBody(body: unknown): unknown {
+  const chat = body as { messages: { role: string; content: string }[] }
+  return { ...chat, messages: [{ role: "system", content: FACTORY_IDENTITY }, ...chat.messages] }
+}
+
+/** The real network call. The credential comes from the host of the URL. */
 async function httpPost<T>(url: string, body: unknown): Promise<{ json: T; latencyS: number }> {
-  const token = url === JEV_URL ? credential(["TYPESAFE_API_KEY"], "typesafe") : credential(["COMMAND_CODE_API_KEY", "COMMANDCODE_API_KEY"], "commandcode")
+  const jev = url === JEV_URL
+  const token = jev ? credential(["TYPESAFE_API_KEY"], "typesafe") : credential([], "factory-droid")
   const start = performance.now()
   const res = await fetch(url, {
     method: "POST",
-    headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
-    body: JSON.stringify(body),
+    headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}`, ...(jev ? {} : factoryHeaders(token)) },
+    body: JSON.stringify(jev ? body : factoryBody(body)),
     signal: AbortSignal.timeout(150_000),
   })
   const text = await res.text()

@@ -31,7 +31,7 @@ export function ruleQuestions(action: string): Record<string, NoulQuestion> {
       "Is the status of the purchase Settling? Read the purchase line of the account.",
       "The status of the purchase is Settling.", "The status of the purchase is not Settling.")
     q["Refund rule: refund window"] =
-      noul("Is the purchase a plan that was already charged (not a planned charge) more than 14 days before today if it is monthly, or more than 30 days before today if it is annual? Read the dates in the account.",
+      noul("Is the purchase a plan that was already charged (not a planned charge) more than 14 days before today if it is monthly, or more than 30 days before today if it is annual? Read the days since the charge in the account.",
           "The plan was charged after the end of its refund window.", "The purchase is inside its refund window, or no window applies.")
     q["Refund rule: refunded once"] = noul(
       "Does actions_already_done show a refund of this purchase?",

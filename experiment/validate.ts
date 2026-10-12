@@ -6,14 +6,13 @@
 //   (a) the files load (dataset.ts checks every cell), unique ids, the shape of the gold and of the final;
 //   (b) for every request: Triage, then Rules check and Do action. A request ends right when the result of Do action is the
 //       gold final action (null counts the requests that the written rules deny, where nothing runs);
-//   (c) the counts of the dataset: 512 customers, 1,024 requests in 21 types and ten families, all sent by an owner,
-//       and 248 requests that a written rule denies (the figures of the test-data slides); no two requests of a type share a text.
+//   (c) challenge-set quotas and family membership from dataset.ts, all requests sent by owners,
+//       and each category's intended policy branch; no request type repeats a complete text.
 //
 // Run: bun run experiment/validate.ts. It exits 1 on any problem.
-import { join } from "node:path"
 import { ACTIONS, type Policy, type TriageRule } from "./system/types"
 import { useWorld, type World } from "./system/saas"
-import { FAMILIES, goldClassifier, loadDataset, senderOf, TODAY, WORLD_FILE } from "./dataset"
+import { CUSTOMERS, DATA_DIR, FAMILIES, REQUEST_COUNTS, REQUESTS, goldClassifier, loadDataset, senderOf, TODAY, WORLD_FILE } from "./dataset"
 import { decide, resultMatches, type Decision, type End } from "./pipeline"
 import type { TestRequest } from "./types"
 
@@ -32,6 +31,11 @@ const EXPECTED: Record<string, readonly [TriageRule, Policy["verdict"]]> = {
   person_request: ["answer", "allow"],
   crit_card_fraud: ["answer", "allow"],
   crit_data_destroyed: ["answer", "allow"],
+  crit_account_takeover: ["answer", "allow"],
+  deadline_blocked_render: ["answer", "allow"],
+  deadline_password_reset: ["act", "allow"],
+  hard_mixed_security_billing: ["answer", "allow"],
+  q_account_security: ["answer", "allow"],
   hard_mixed_billing_product: ["answer", "allow"],
   refund_in_window_small: ["act", "allow"],
   refund_in_window_large: ["act", "deny"],
@@ -124,7 +128,7 @@ function printSummary(label: string, requests: readonly TestRequest[], outcomes:
 // ---------------------------------------------------------------------------------------------------------------
 
 async function main(): Promise<void> {
-  const dataDir = join(import.meta.dir, "data")
+  const dataDir = DATA_DIR
   const problems: string[] = []
   const { world, requests } = await loadDataset(dataDir)
 
@@ -148,20 +152,28 @@ async function main(): Promise<void> {
     if (request.finalAction === null && request.finalReason.length === 0) problems.push(`${request.id}: a denied action needs a reason`)
   }
 
-  // The counts of the test-data slides.
+  // Exact challenge-set quotas and a disjoint, complete family partition.
   const expect = (what: string, got: number, want: number): void => {
     if (got !== want) problems.push(`${what}: ${got}, expected ${want}`)
   }
-  expect("customers", world.customers.length, 512)
-  expect("requests", requests.length, 1024)
-  expect("request types", new Set(requests.map((r) => r.category)).size, 21)
-  expect("requests that a written rule denies", requests.filter((r) => r.finalAction === null).length, 248)
-  const familySizes: Record<string, number> = {
-    "Questions and answers": 288, "Refund": 144, "Cancel plan": 104, "Reset password": 96, "Invoice or request for a human": 96,
-    "Fraud or data loss": 96, "Delete data": 56, "Injection": 48, "Two problems in one request": 48, "Closing message": 48,
+  expect("customers", world.customers.length, CUSTOMERS)
+  expect("requests", requests.length, REQUESTS)
+  expect("request types", new Set(requests.map((r) => r.category)).size, Object.keys(REQUEST_COUNTS).length)
+  const expectedDenied = Object.entries(REQUEST_COUNTS)
+    .filter(([category]) => EXPECTED[category]?.[1] === "deny")
+    .reduce((total, [, count]) => total + count, 0)
+  expect("requests that a written rule denies", requests.filter((r) => r.finalAction === null).length, expectedDenied)
+  for (const [category, count] of Object.entries(REQUEST_COUNTS)) {
+    expect(`category ${category}`, requests.filter((r) => r.category === category).length, count)
+    const memberships = Object.values(FAMILIES).filter((types) => types.includes(category)).length
+    expect(`family memberships of ${category}`, memberships, 1)
   }
   for (const [family, types] of Object.entries(FAMILIES)) {
-    expect(`family ${family}`, requests.filter((r) => types.includes(r.category)).length, familySizes[family])
+    const size = types.reduce((total, category) => total + (REQUEST_COUNTS[category] ?? 0), 0)
+    expect(`family ${family}`, requests.filter((r) => types.includes(r.category)).length, size)
+    for (const category of types) {
+      if (REQUEST_COUNTS[category] === undefined) problems.push(`family ${family}: unknown category ${category}`)
+    }
   }
   const senders = new Set(requests.map((r) => r.customerId))
   for (const customer of world.customers) if (!senders.has(customer.id)) problems.push(`customer ${customer.id} sends no request`)

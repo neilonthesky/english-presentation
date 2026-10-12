@@ -106,7 +106,9 @@ export const accountFieldsFor = (action: string | null): readonly AccountField[]
 export function accountText(customerId: string, who: Requester, fields: readonly AccountField[]): string {
   const a = accountOf(customerId)
   const p = a.purchase
-  const charge = p.status === "Scheduled" ? `Planned charge: ${p.charged}.` : `Charged ${p.charged}.`
+  // Gather info does the date arithmetic: a model reads the number of days and never subtracts two dates (a model that does
+  // the subtraction answers "past the 30-day window" near 50% for a charge made 24 days ago).
+  const charge = p.status === "Scheduled" ? `Planned charge: ${p.charged}.` : `Charged ${p.charged}. Days since the charge: ${daysSince(p.charged)}.`
   const lines: Record<AccountField, string> = {
     today: `Today: ${world.today}.`,
     owner: `Account owner: ${a.customer.name} <${a.customer.email}>.`,

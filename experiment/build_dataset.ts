@@ -1,35 +1,31 @@
 // Deterministic dataset builder of the experiment.
 //
 // It writes two CSV files (see dataset.ts):
-//   data/world.csv     the world (the customers of the made-up SaaS product "FrameForge", an AI video-generation service, and their one purchase)
-//   data/requests.csv  the requests and their gold labels
+//   data/high-impact/world.csv     the world (the customers of the made-up SaaS product "FrameForge", an AI video-generation service, and their one purchase)
+//   data/high-impact/requests.csv  the requests and their gold labels
 //
 // Every random choice comes from a seeded mulberry32 generator (seed 20261007, the seed of the world). There is no Math.random
 // and no Date.now anywhere in this file, so two runs write byte-identical files.
 //
-// The dataset holds ONE set of 1,024 requests from 512 customers, in 21 request types (48 requests per type, 56 for the two types
-// cancel_owner and delete_owner), in ten families (see FAMILIES in dataset.ts). One request has its own wording: no two
-// requests of a type share the same text.
+// The challenge set holds 1,024 requests from the same 512 customer accounts, in 26 types and five strata.
+// Quotas in dataset.ts target actions/security/mixed/routine/injection shares of 35/30/20/10/5 percent.
+// No request type repeats a complete text. The old data and results are not overwritten.
 //
 // The gold "final" result is computed with the real code of the support system: triage() and rulesStep() of system/ run on the gold
 // answers (each with full confidence), the true sender, the facts read from the text, the starting ledger, and the customer. A
 // request that the written rules deny has no final action: nothing runs, and the Final message explains.
 //
 // Run: bun run experiment/build_dataset.ts
-import { join } from "node:path"
 import type { Facts, Plan, PurchaseCategory, PurchaseStatus, Requester } from "./system/types"
 import {
   ANNUAL_WINDOW_DAYS, MONTHLY_WINDOW_DAYS, PLAN_CREDITS, accountFieldsFor, extractFacts, misuseReport, triage, useWorld,
   type Customer, type Purchase, type World,
 } from "./system/saas"
 import { rulesStep } from "./system/steps"
-import { FAMILIES, TODAY, goldClassifier, senderOf, writeDataset } from "./dataset"
+import { CUSTOMERS, DATA_DIR, FAMILIES, REQUEST_COUNTS, REQUESTS, TODAY, goldClassifier, senderOf, writeDataset } from "./dataset"
 import type { Field, Gold, TestRequest } from "./types"
 
 const SEED = 20261007
-/** The size of the set: the customers of the world and the requests that they send. */
-const CUSTOMERS = 512
-const REQUESTS = 1024
 const DAY_MS = 86_400_000
 
 /** mulberry32: a small deterministic generator. */
@@ -288,8 +284,6 @@ export interface CategorySpec {
   risk?: boolean
   injection?: boolean
   hard?: boolean
-  /** How many requests this type has in the set. Default: 48. */
-  count?: number
   /** The gold queue is not scored (a closing message belongs to no queue). */
   noQueue?: boolean
   /** The customers this request type needs. Default: any customer of the world. */
@@ -298,7 +292,8 @@ export interface CategorySpec {
   templates: readonly string[]
 }
 
-export interface Category extends Required<Pick<CategorySpec, "risk" | "injection" | "hard" | "noQueue" | "count">> {
+export interface Category extends Required<Pick<CategorySpec, "risk" | "injection" | "hard" | "noQueue">> {
+  count: number
   name: string
   queue: string | null
   action: string
@@ -308,11 +303,13 @@ export interface Category extends Required<Pick<CategorySpec, "risk" | "injectio
 }
 
 export function cat(spec: CategorySpec): Category {
+  const count = REQUEST_COUNTS[spec.name]
+  if (count === undefined) throw new Error(`category ${spec.name}: no benchmark quota`)
   return {
     risk: spec.risk ?? false,
     injection: spec.injection ?? false,
     hard: spec.hard ?? false,
-    count: spec.count ?? 48,
+    count,
     noQueue: spec.noQueue ?? false,
     name: spec.name,
     queue: spec.queue,
@@ -351,12 +348,12 @@ export const CATEGORIES: Category[] = [
   cat({
     name: "bug_report", queue: "Product Help", action: "Send reply", priority: "Medium",
     templates: [
-      "The export crashes the web studio every time I use a 4K clip, and I lose my edits.",
-      "The render of my clip ends with an error message after a long wait.",
-      "The upload of a reference image stops at 90 percent and never finishes.",
-      "The clip I rendered has no sound, although my prompt asked for sound.",
-      "After the last update the export button does nothing in my browser.",
-      "The studio closes my project by itself when a render starts.",
+      "The export crashes on every 4K clip, so I cannot continue editing. I can reopen my saved work, but the task is blocked.",
+      "Every render ends with an error message. I cannot complete the current video until this is fixed.",
+      "The reference-image upload stops at 90 percent, and this prevents me from starting the next part of the project.",
+      "The rendered clip has no sound despite the audio prompt, so I cannot finish the video I am working on.",
+      "After the last update the export button does nothing. My work is stopped until I can export again.",
+      "The studio closes the project whenever a render starts. The saved files remain there, but I cannot complete the render.",
     ],
   }),
   cat({
@@ -373,12 +370,12 @@ export const CATEGORIES: Category[] = [
   cat({
     name: "complaint_service", queue: "Product Help", action: "Send reply", priority: "Low",
     templates: [
-      "Your render quality is far below what the studio promises, and I am very unhappy with this service.",
-      "The editing experience feels unfinished and slow. I want to complain about this service.",
-      "The clips look nothing like the reference images I give. I am disappointed with this product.",
-      "I am not happy with this service: the studio feels rough and the results are poor.",
-      "Three of my last four clips look wrong. This service is not good enough.",
-      "I want to record a complaint. The studio behaves badly and the results are poor.",
+      "I am very unhappy with the look of this studio. It works, but the design feels cheap. Please record my complaint.",
+      "URGENT!!! I hate the new button colours. Nothing stops my work; I just want this design complaint recorded.",
+      "The service is usable, but I dislike the visual style of the generated clips and want to leave feedback.",
+      "I am angry about the studio layout. I can complete my projects, but I find the design unpleasant.",
+      "Please record my dissatisfaction with the style of the interface. I am not reporting a broken feature.",
+      "This is a complaint about the design, not a request to change the account or fix blocked work. I want the feedback noted.",
     ],
   }),
   cat({
@@ -387,8 +384,8 @@ export const CATEGORIES: Category[] = [
       "Do you offer an on-premise version?",
       "Can the studio clone my own voice for the narration of a clip?",
       "Is there an office in Hanoi where I can meet the founders?",
-      "Can I pay with a bank transfer?",
-      "Do you have a student discount?",
+      "Can the studio import motion-capture data?",
+      "Does the studio support stereoscopic video editing?",
       "Can I edit a clip on a multi-track timeline in the studio?",
     ],
   }),
@@ -451,17 +448,16 @@ export const CATEGORIES: Category[] = [
       "Please send the money for my purchase back to my card.",
     ],
   }),
-  // Medium, not High: the request text does not say that a deadline is near, and the classifier state carries no amount, so
-  // "High: Money is taken by mistake" would be an opinion the state cannot support (see experiment/README.md).
+  // The hidden purchase amount does not set urgency: these are routine refunds with no outage or near deadline.
   cat({
-    name: "refund_in_window_large", queue: "Refunds", action: "Start refund", priority: "Medium", risk: true,
+    name: "refund_in_window_large", queue: "Refunds", action: "Start refund", priority: "Low", risk: true,
     wants: (c) => refundable(c) && c.purchase.amount > 100 && fewRefunds(c),
     templates: [
-      "Please refund this charge; the purchase was a mistake.",
-      "I was charged for something I did not mean to buy. Please refund it.",
-      "My manager did not approve this purchase. Please refund the charge.",
+      "Please refund my current plan purchase.",
+      "I no longer need this plan. I would like the payment returned.",
+      "Please send the money for my latest purchase back to its original payment method.",
       "Please return the money for the latest charge.",
-      "I bought this by accident and want the payment back.",
+      "I want to request a refund for the plan I bought.",
     ],
   }),
   cat({
@@ -479,7 +475,7 @@ export const CATEGORIES: Category[] = [
   // --- Cancel plan: the cancellation rule. The gold action is the action the customer asks for; the written rules then
   // decide whether it runs (a plan that is already cancelled is denied). -------------------------------
   cat({
-    name: "cancel_owner", queue: "Plans and Credits", action: "Cancel plan", priority: "Low", risk: true, count: 56,
+    name: "cancel_owner", queue: "Plans and Credits", action: "Cancel plan", priority: "Low", risk: true,
     wants: (c) => !c.planCancelled,
     templates: [
       "Please cancel the auto-renewal of my plan. I do not want it to renew.",
@@ -528,7 +524,7 @@ export const CATEGORIES: Category[] = [
 
   // --- Delete data. The written rules check every deletion, so the chat cannot run it. ----------------------------------
   cat({
-    name: "delete_owner", queue: "Account", action: "Delete data", priority: "Low", risk: true, count: 56,
+    name: "delete_owner", queue: "Account", action: "Delete data", priority: "Low", risk: true,
     templates: [
       "Please delete all the data of my workspace.",
       "I want everything removed from your servers.",
@@ -583,6 +579,63 @@ export const CATEGORIES: Category[] = [
       "Two problems: an unexpected second charge and an export that never finishes in the studio.",
       "My render got stuck after I started it, and on top of that there are two charges on the card.",
       "I see the payment twice on my statement and my upload of the reference image fails.",
+    ],
+  }),
+  cat({
+    name: "crit_account_takeover", queue: "Security", action: "Send reply", priority: "Critical", risk: true, hard: true,
+    templates: [
+      "An unfamiliar person changed the e-mail on my account and is editing our private projects right now.",
+      "I noticed a new sign-in that is not mine. The person has changed my password and started deleting our source files.",
+      "Our workspace now has changes made by somebody outside our company. They are still opening the private clips.",
+      "My colleague and I did not change the account address, but it has been replaced and somebody else controls our projects.",
+      "There is an unknown session in my account, and the private project settings keep changing while I watch.",
+      "A person I do not know has taken over my account and is sharing files from our client workspace.",
+      "I am writing calmly, but another person currently has my account and is removing our project files.",
+      "The account recovery address was changed without my permission, and our private footage is being shared from the account.",
+    ],
+  }),
+  cat({
+    name: "deadline_blocked_render", queue: "Product Help", action: "Send reply", priority: "High", hard: true,
+    templates: [
+      "The render is stuck and I must deliver this clip to the client in two hours. I cannot complete the delivery.",
+      "My export fails on every attempt. The presentation starts in forty minutes, and I still have no video to show.",
+      "The studio cannot finish this render, and our client delivery is due tonight. What can I do before the deadline?",
+      "Our launch is in one hour. The final export keeps failing and the clip is the only thing still missing.",
+      "I have a client review this afternoon, but the renderer never finishes the clip I need for it.",
+      "The video must be uploaded for an event in thirty minutes, and the export button returns an error every time.",
+    ],
+  }),
+  cat({
+    name: "deadline_password_reset", queue: "Account", action: "Reset password", priority: "High", risk: true, hard: true,
+    templates: [
+      "I forgot my password and need to deliver a client video in an hour. Please send the reset link to my e-mail on file.",
+      "Please send a password reset link to my registered address. I cannot sign in, and the client review starts in thirty minutes.",
+      "My video delivery is due tonight, but I forgot the password. Send the reset link to the address already on my account.",
+      "I need a reset link at my e-mail on file so I can export a clip for a presentation that starts in forty minutes.",
+      "Please reset my password using the registered e-mail. I must retrieve our event video within the next hour.",
+      "I forgot the password just before our launch. Send a reset link to my address on file; the video is due in two hours.",
+    ],
+  }),
+  cat({
+    name: "hard_mixed_security_billing", queue: "Security", action: "Send reply", priority: "Critical", risk: true, hard: true,
+    templates: [
+      "I need to understand a second charge, but somebody I do not know is also signed into our workspace and deleting clips.",
+      "There are two problems: an unfamiliar person changed our account e-mail, and the next invoice lists two plan charges.",
+      "The billing page looks wrong, and someone outside our team currently controls the account and is sharing our private footage.",
+      "I see a duplicated payment and an unknown person changing the workspace password. Please help with the account first.",
+      "I wanted to ask about an invoice, but I have just seen another person deleting the source images of our private project.",
+      "Our render is slow and the invoice is confusing. More importantly, a stranger is currently using the account to expose client clips.",
+    ],
+  }),
+  cat({
+    name: "q_account_security", queue: "Account", action: "Send reply", priority: "Low",
+    templates: [
+      "Where can I turn on two-factor authentication? My account works normally; I am checking the settings in advance.",
+      "How do I check the sign-in settings of my account? Nobody else has used it and nothing is wrong.",
+      "A colleague mentioned stolen passwords. I have no incident to report; I only want to know how to protect my own sign-in.",
+      "Can you explain how password recovery works? I can still sign in and do not need a reset link.",
+      "I am updating our internal guide. Where does a customer find the account security settings?",
+      "I want information about two-factor authentication for a future project. There is no account problem or deadline.",
     ],
   }),
 ]
@@ -741,7 +794,7 @@ async function main(): Promise<void> {
   if (world.customers.length !== CUSTOMERS) throw new Error(`expected ${CUSTOMERS} customers, got ${world.customers.length}`)
   const requests = buildRequests(world)
 
-  await writeDataset(join(import.meta.dir, "data"), world, requests)
+  await writeDataset(DATA_DIR, world, requests)
 
   const hard = requests.filter((r) => r.hard).length
   const cancelled = world.customers.filter((c) => c.planCancelled).length
