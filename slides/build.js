@@ -223,6 +223,36 @@ async function curveArrowPng(svg) {
   return "image/png;base64," + buf.toString("base64");
 }
 
+// Corner ornament for the pale background: concentric discs, outline rings, a dotted
+// ring, and a dot trail around one slide corner. Pure decoration, no meaning; the
+// 900x900 canvas sits on a 6x6 inch frame at 150 dpi, with the corner at (900, 0).
+function cornerOrnamentSvg(mirror) {
+  const CX = 900, CY = 0, el = [];
+  const circle = (r, attrs) => el.push(`<circle cx="${CX}" cy="${CY}" r="${r}" ${attrs}/>`);
+  const dot = (r, aDeg, dr, fill) => {
+    const a = (aDeg * Math.PI) / 180;
+    el.push(`<circle cx="${(CX - r * Math.cos(a)).toFixed(1)}" cy="${(r * Math.sin(a)).toFixed(1)}" r="${dr}" fill="${fill}"/>`);
+  };
+  circle(260, `fill="#E4EAF1"`);
+  circle(165, `fill="#EDF1F6"`);
+  circle(330, `fill="none" stroke="#C7D1DE" stroke-width="3"`);
+  circle(410, `fill="none" stroke="#D3DCE6" stroke-width="2.5"`);
+  circle(372, `fill="none" stroke="#A9B7C7" stroke-width="3.5" stroke-dasharray="1 24" stroke-linecap="round"`);
+  dot(300, 10, 5, "#93A5BB"); dot(300, 24, 8, "#93A5BB"); dot(300, 39, 5, "#93A5BB");
+  dot(300, 55, 7, "#93A5BB"); dot(300, 72, 4, "#93A5BB");
+  dot(330, 38, 8, "#1B365D"); // navy accent on the outline ring
+  dot(410, 62, 6, "#E4B75C"); // gold accent on the outer ring
+  dot(150, 35, 6, "#C2CEDD"); dot(205, 60, 5, "#C2CEDD"); // quiet dots on the inner disc
+  const body = mirror ? `<g transform="translate(900 900) scale(-1 -1)">${el.join("")}</g>` : el.join("");
+  return `<svg xmlns="http://www.w3.org/2000/svg" width="900" height="900" viewBox="0 0 900 900">${body}</svg>`;
+}
+
+// Same ornament at a different size and anchor: `xf` maps the base corner to the
+// wanted spot, so a slide can tuck the family style into its free areas.
+function scaleOrnament(svg, xf) {
+  return svg.replace(/^(<svg[^>]*>)/, `$1<g transform="${xf}">`).replace(/<\/svg>$/, "</g></svg>");
+}
+
 (async () => {
   const pres = new pptxgen();
   pres.layout = "LAYOUT_WIDE"; // 13.333 x 7.5 in
@@ -261,10 +291,28 @@ async function curveArrowPng(svg) {
     machine: await photo("assets/machine.jpg", 2.4, 2.4),
     human: await photo("assets/human.jpg", 2.4, 2.4),
   };
+  const ornamentTRsvg = cornerOrnamentSvg(false);
+  const ornamentBLsvg = cornerOrnamentSvg(true);
+  const decorTR = await curveArrowPng(ornamentTRsvg);
+  const decorBL = await curveArrowPng(ornamentBLsvg);
+  // Slide 5 has road labels in both corners, so its ornament lives elsewhere: a small
+  // nub pinned to the bottom-left corner and a mid-size arc on the right edge.
+  const decor5BL = await curveArrowPng(scaleOrnament(ornamentBLsvg, "translate(0 900) scale(0.45) translate(0 -900)"));
+  const decor5BR = await curveArrowPng(scaleOrnament(ornamentTRsvg, "translate(360 570) scale(0.6)"));
 
   function base(n, title, notes, withSpeaker = true, titleName, titleBox = {}) {
     const s = pres.addSlide();
     s.background = { color: C.bg };
+    // Corner ornaments (see cornerOrnamentSvg): pure decoration, drawn first so every
+    // content element covers them. The "!!" names make Morph match the same image on
+    // consecutive slides, so it stays put instead of fading in and out at each step.
+    if (n === 5) {
+      s.addImage({ data: decor5BL, x: 0, y: 1.5, w: 6, h: 6, objectName: "!!decor-bl" });
+      s.addImage({ data: decor5BR, x: 13.333 - 6, y: 1.5, w: 6, h: 6, objectName: "!!decor-br" });
+    } else {
+      s.addImage({ data: decorTR, x: 13.333 - 6, y: 0, w: 6, h: 6, objectName: "!!decor-tr" });
+      s.addImage({ data: decorBL, x: 0, y: 7.5 - 6, w: 6, h: 6, objectName: "!!decor-bl" });
+    }
     s.addText(title, { x: ML, y: 0.4, w: CW, h: 0.95, margin: 0, fontFace: FONT, fontSize: 36, bold: true, color: C.navy, valign: "middle", objectName: titleName, ...titleBox });
     s.slideNumber = { x: 12.3, y: 7.0, w: 0.5, h: 0.3, fontFace: FONT, fontSize: 11, color: C.muted };
     const [name, secs] = SPEAKER[n - 1];
