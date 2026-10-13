@@ -590,7 +590,7 @@ async function curveArrowPng(svg) {
     });
     textBox(
       s,
-      [{ text: "Two ways to apply the rules. ", options: { bold: true } }, { text: "Autonomous agent: reads rules in prompt text.   Hybrid pipeline: intent classifier and a deterministic check." }],
+      [{ text: "Two ways to apply the rules. ", options: { bold: true } }, { text: "LLM agent: reads the rules in prompt text.   Jev pipeline: Jev answers one question for each rule." }],
       ML, 6.35, CW, 0.5, { size: 17, color: C.navy, valign: "middle" }
     );
   }
@@ -1170,7 +1170,7 @@ async function curveArrowPng(svg) {
         `First, Jev sets the injection flag right on ${(100 * quality.injection.accuracy).toFixed(1)} percent of the requests, and when it is on, the process sends a reply. ` +
         `Second, ${count(ruleStats.matching)} of ${count(ruleStats.answers)} rule answers match the written rules on this set. ` +
         `Third, the first-call action label is wrong on ${wrongActions.length} requests, and ${wrongActionOutcomes === 0 ? "none" : wrongActionOutcomes} of them end in a wrong outcome. ` +
-        `The hybrid pipeline makes ${level3.errors} errors and ${level3.harmful} harmful runs on this set. ${CHANGED_SHORT}, so we saw these failures before this last test.`
+        `The Jev pipeline gets ${level3.errors} wrong and has ${level3.harmful} harmful runs on this set. ${CHANGED_SHORT}, so we saw these failures before this last test.`
     );
     const gap = 0.3, cw = (CW - 2 * gap) / 3, y0 = 1.6, h0 = 3.95;
     [
@@ -1185,7 +1185,7 @@ async function curveArrowPng(svg) {
       textBox(s, big, x + 0.3, y0 + 1.3, cw - 0.6, 0.9, { size: 54, bold: true, color: col, valign: "middle" });
       textBox(s, text, x + 0.3, y0 + 2.3, cw - 0.6, 1.5, { size: 18 });
     });
-    band(s, 5.85, 0.95, "LuShieldCheck", [{ text: "The result: ", options: { bold: true } }, { text: `Hybrid pipeline: ${level3.errors} errors and ${level3.harmful} harmful runs on this synthetic set. Not a safety guarantee.` }]);
+    band(s, 5.85, 0.95, "LuShieldCheck", [{ text: "The result: ", options: { bold: true } }, { text: `Jev pipeline: ${level3.errors} wrong and ${level3.harmful} harmful runs on our test set. Not a safety guarantee.` }]);
   }
 
   // ---------- 17. Our idea: limit each model ----------
@@ -1224,8 +1224,8 @@ async function curveArrowPng(svg) {
     s.addText("Conclusion", { x: M, y: 0.7, w: LW, h: 0.7, margin: 0, fontFace: FONT, fontSize: 38, bold: true, color: C.white, valign: "top" });
     s.addText(
       bullets([
-        `Same ${sampleSize} requests in both independent runs. Autonomous agent: ${level2.served} served, ${level2.stopped} stopped, ${level2.errors} errors. Hybrid pipeline: ${level3.served} served, ${level3.stopped} stopped, ${level3.errors} errors.`,
-        `Hybrid pipeline has ${speedRatio}x lower mean machine time and ${costRatio}x lower API cost, with zero errors on this request set.`,
+        `Same ${sampleSize} requests in both independent runs. LLM agent: ${level2.served} served, ${level2.stopped} stopped, ${level2.errors} wrong. Jev pipeline: ${level3.served} served, ${level3.stopped} stopped, ${level3.errors} wrong.`,
+        `Jev pipeline has ${speedRatio}x lower mean machine time and ${costRatio}x lower API cost, and none wrong on this request set.`,
         `Each rule needs a written question. ${CHANGED_SHORT}; this rule evaluation was not blind.`,
         "Not tested: trained classifiers, other decision models, or a held-out request set.",
       ]),
@@ -1234,14 +1234,14 @@ async function curveArrowPng(svg) {
     s.addText("Next: real tickets, a held-out set, and stronger baselines.", { x: M, y: 5.85, w: LW, h: 0.8, margin: 0, fontFace: FONT, fontSize: 22, bold: true, color: C.white, valign: "bottom" });
     s.addText("External context: Red Hat Developer, 2 Oct 2026", { x: M, y: 6.78, w: LW, h: 0.22, margin: 0, fontFace: FONT, fontSize: 11, color: C.white, underline: true, hyperlink: { url: RED_HAT_BENCHMARK_URL } });
     [
-      { icon: "LuBadgeCheck", big: `${level2.errors} vs ${level3.errors}`, label: "errors: autonomous agent vs hybrid pipeline", color: C.teal },
+      { icon: "LuBadgeCheck", big: `${level2.errors} vs ${level3.errors}`, label: "wrong: LLM agent vs Jev pipeline", color: C.teal },
       { icon: "LuTimer", big: `${speedRatio}x`, label: `lower mean machine time: ${time3}\u00A0s vs ${time2}\u00A0s`, color: C.l3 },
       { icon: "LuDollarSign", big: `${costRatio}x`, label: `lower API cost: $${cost3} vs $${cost2} per 1,000 requests`, color: C.l3 },
     ].forEach((o, i) => callout(s, CX, 0.7 + i * 2.1, CWd, 1.9, { ...o, bigSize: 38, bigH: 0.8, bigY: 0.25, labelSize: 15 }));
     s.addNotes(
-      `Speaker: ${PNAM}, about ${SPEAKER[19][1]} s. Finally, we measured both automated architectures in separate runs on the same ${sampleSize} requests. The autonomous agent serves ${level2.served}, stops ${level2.stopped}, and makes ${level2.errors} errors. The hybrid pipeline serves ${level3.served}, stops ${level3.stopped}, and makes ${level3.errors} errors. ` +
-        `The hybrid pipeline needs less than half the average machine time and has ${costRatio} times lower API cost. Each rule needs a question that we write. ${CHANGED_SHORT}, so we saw these failures before the last test. We did not test programs that learn from examples, or other decision models. Next, we need real tickets, a separate request set, and stronger systems to compare with. ` +
-        "The Red Hat link is outside context, not our data. " +
+      `Speaker: ${PNAM}, about ${SPEAKER[19][1]} s. Last, we tested both systems on the same ${sampleSize} requests. The LLM agent serves ${level2.served} and stops ${level2.stopped}. It gets ${level2.errors} wrong. The Jev pipeline serves ${level3.served} and stops ${level3.stopped}. It gets none wrong. ` +
+        `The Jev pipeline is ${speedRatio} times faster and ${costRatio} times cheaper. Each rule needs a question that we write. ${CHANGED_SHORT}, so we saw these failures before the last test. We did not test other models. ` +
+        "Next, we need real tickets, a separate request set, and stronger systems to compare with. The Red Hat link is outside context, not our data. " +
         "Thank you for listening."
     );
   }
