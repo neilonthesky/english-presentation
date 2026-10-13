@@ -94,7 +94,7 @@ const C = {
   gold: "E4B75C", // evidence headline on the dark band
 };
 const FONT = "Calibri";
-const TITLE = "Customer Support Automation: Intent Classification and Deterministic Rules versus Autonomous LLM Agents";
+const TITLE = "Structured Decision Gates for Customer Support Agents: Intent Detection and Rule Checks";
 const RED_HAT_BENCHMARK_URL = "https://developers.redhat.com/articles/2026/10/02/benchmarking-ai-decision-models-against-traditional-guardrails";
 
 // Speakers and speaking time per logical section; each walk-through section spans several slides.
@@ -344,7 +344,7 @@ async function curveArrowPng(svg) {
 
   // ---------- 1. Title ----------
   // Left: the approved topic-driven title and the team (x 0.7 to 6.6 on deep blue).
-  // Right: the two automated paradigms compared (x 7.6 to 12.63 on light panel).
+  // Right: the two agent designs compared (x 7.6 to 12.63 on light panel).
   {
     const s = pres.addSlide();
     s.background = { color: C.l3 };
@@ -355,8 +355,8 @@ async function curveArrowPng(svg) {
       [{ text: "Phenikaa School of Computing", options: { bold: true, breakLine: true } }, { text: "English Writing and Presentation Skills \u00b7 October 2026" }],
       { x: M, y: 0.7, w: LW, h: 0.65, margin: 0, fontFace: FONT, fontSize: 16, color: light, valign: "top", paraSpaceAfter: 2 }
     );
-    s.addText("Customer Support\nAutomation", { x: M, y: 1.55, w: LW, h: 1.35, margin: 0, fontFace: FONT, fontSize: 38, bold: true, color: C.white, valign: "top" });
-    s.addText("Intent Classification and Deterministic Rules\nversus Autonomous LLM Agents", {
+    s.addText("Structured Decision\nGates", { x: M, y: 1.55, w: LW, h: 1.35, margin: 0, fontFace: FONT, fontSize: 38, bold: true, color: C.white, valign: "top" });
+    s.addText("Customer Support Agents:\nIntent Detection and Rule Checks", {
       x: M, y: 2.98, w: LW, h: 0.95, margin: 0, fontFace: FONT, fontSize: 20, color: light, valign: "top",
     });
     s.addText("Team", { x: M, y: 4.15, w: LW, h: 0.32, margin: 0, fontFace: FONT, fontSize: 16, bold: true, color: light, valign: "middle" });
@@ -365,16 +365,16 @@ async function curveArrowPng(svg) {
       x: M, y: 4.52, w: LW, h: 1.5, margin: 0, fontFace: FONT, fontSize: 18, color: C.white, valign: "top",
     });
 
-    // Right panel: The two automated paradigms
-    s.addText("Two approaches to\nautomation", { x: SX, y: 0.7, w: SW, h: 1.05, margin: 0, fontFace: FONT, fontSize: 26, bold: true, color: C.navy, valign: "top" });
+    // Right panel: The two agent designs
+    s.addText("Two agent designs\nfor support", { x: SX, y: 0.7, w: SW, h: 1.05, margin: 0, fontFace: FONT, fontSize: 26, bold: true, color: C.navy, valign: "top" });
     s.addText("Which architecture can handle consequential customer actions?", { x: SX, y: 1.82, w: SW, h: 0.45, margin: 0, fontFace: FONT, fontSize: 14, color: C.text, valign: "top" });
 
     const gap = 0.25, cardW = (SW - gap) / 2, cardY = 2.38, cardH = 4.42;
-    // Paradigm 1: Autonomous LLM Agent
+    // Paradigm 1: LLM Agent
     box(s, SX, cardY, cardW, cardH, { fill: C.white });
     s.addShape(pres.ShapeType.roundRect, { x: SX, y: cardY, w: cardW, h: 0.82, rectRadius: 0.08, fill: { color: C.blue }, line: { color: C.blue, width: 0 } });
     s.addImage({ data: img.LuBot, x: SX + 0.16, y: cardY + 0.16, w: 0.5, h: 0.5 });
-    s.addText("Autonomous\nLLM Agent", { x: SX + 0.72, y: cardY + 0.08, w: cardW - 0.8, h: 0.66, margin: 0, fontFace: FONT, fontSize: 15, bold: true, color: C.white, valign: "middle" });
+    s.addText("LLM\nAgent", { x: SX + 0.72, y: cardY + 0.08, w: cardW - 0.8, h: 0.66, margin: 0, fontFace: FONT, fontSize: 15, bold: true, color: C.white, valign: "middle" });
     s.addText(
       bullets([
         "One monolithic model",
@@ -396,7 +396,7 @@ async function curveArrowPng(svg) {
       bullets([
         "Structured intent triage",
         "Facts parsed by classifier",
-        "Deterministic rules in code",
+        "Code applies the rule answers",
         "LLM drafts reply only",
         "Zero unchecked actions",
       ]),
@@ -404,21 +404,21 @@ async function curveArrowPng(svg) {
     );
 
     s.addNotes(
-      `Speaker: ${LONG}, about ${SPEAKER[0][1]} s. Good morning. When customers request refunds, plan changes, or account deletions, an automated system that handles money and data can cause severe harm. ` +
-        "Companies often deploy autonomous LLM agents that read policy text and act directly, but these agents are slow, expensive, and vulnerable to prompt injection. " +
-        "Today, we study an alternative architecture: combining lightweight intent classification and deterministic code rules with LLM response generation, and compare both on consequential customer requests."
+      `Speaker: ${LONG}, about ${SPEAKER[0][1]} s. Good morning. When customers request refunds, plan changes, or account deletions, a system that handles money and data without a check can cause severe harm. ` +
+        "Companies often deploy LLM agents that read policy text and act directly, but these agents are slow, expensive, and vulnerable to prompt injection. " +
+        "Today, we study an alternative architecture: combining intent classification, rule checks in code, and an LLM that writes the reply, and compare both on consequential customer requests."
     );
   }
 
-  // ---------- 2. The core problem: autonomous agents and consequential actions ----------
+  // ---------- 2. The core problem: LLM agents and consequential actions ----------
   // Evo-2 design: the anatomy flow of one request on the light top band, the three failure modes
   // on a dark bottom band. No quiz bar; the quiz lives on the next two slides.
   {
     const s = base(
       2,
-      "Consequential actions: why autonomous agents fail alone",
-      "Customer support automation goes beyond answering FAQs: it executes consequential actions on customer accounts, such as refunds, plan changes, and deletions. " +
-        "Companies deploy autonomous LLM agents with direct API tools, pasting complex policies into system prompts. " +
+      "Consequential actions: why LLM agents fail alone",
+      "Customer support goes beyond answering FAQs: it executes consequential actions on customer accounts, such as refunds, plan changes, and deletions. " +
+        "Companies deploy LLM agents with direct API tools, pasting complex policies into system prompts. " +
         "Because LLMs evaluate rules probabilistically, prompt injections and hallucinations trigger unauthorized, irreversible actions with no independent code check. " +
         "External evidence: on the Artificial Analysis Omniscience benchmark, even the model ranked number one of 369 still hallucinates on hard questions, and most companies deploy cheaper open-weight models, so only architecture can stop it. " +
         "Then the quiz runs on the next two slides: the question with four options, then the answer."
@@ -438,7 +438,7 @@ async function curveArrowPng(svg) {
     s.addImage({ data: injArrow, x: 5.65, y: 2.4, w: 1.3, h: 0.75 });
     textBox(s, "prompt injection", 5.82, 2.3, 1.05, 0.28, { size: 12.5, bold: true, color: C.red, align: "center" });
     iconCircle(s, "LuBot", 6.93, 2.03, 1.15, C.navy);
-    textBox(s, "Autonomous LLM agent", 6.2, 3.35, 2.6, 0.3, { size: 15, bold: true, color: C.navy, align: "center" });
+    textBox(s, "LLM agent", 6.2, 3.35, 2.6, 0.3, { size: 15, bold: true, color: C.navy, align: "center" });
     textBox(s, "rules live in its prompt", 6.2, 3.66, 2.6, 0.28, { size: 13, color: C.muted, align: "center" });
     s.addImage({ data: callArrow, x: 8.0, y: 2.35, w: 0.85, h: 0.5 });
     textBox(s, "calls the tool\ndirectly", 7.5, 1.32, 1.3, 0.6, { size: 12.5, color: C.muted, align: "center", valign: "top" });
@@ -532,8 +532,8 @@ async function curveArrowPng(svg) {
   {
     const s = base(
       5,
-      "A short history of support automation",
-      "Support automation has run the same steps for years: a classifier labels the message, fixed rules decide what to do, and something writes the reply. " +
+      "A short history of support systems",
+      "Support systems have run the same steps for years: a classifier labels the message, fixed rules decide what to do, and something writes the reply. " +
         "Rules means ordinary program code written by people, such as: a refund above 100 dollars is denied. It runs the same way every time and is not a model. " +
         "Until 2022, the classifier was a trained intent model that sorts a message into a fixed list of intents, rules ran the flow, and the replies came from templates. " +
         "From 2023 until now, the classifier is an LLM, and an LLM agent holds the rules, decides, and acts. The steps stay the same, and only the model inside a step changes. " +
@@ -568,7 +568,7 @@ async function curveArrowPng(svg) {
     const s = base(
       6,
       "Every action meets a written rule: allow or deny",
-      "Here is the essential gate, one rule for each action. First, the Security rule: if someone else used the account or the card, deny. A refund above 100 dollars is denied. So is a password link to an e-mail that is not on file, and a plan that is already cancelled. Deleting data is always denied. The autonomous agent reads these rules as prompt text. Our hybrid pipeline evaluates each rule with a deterministic check."
+      "Here is the essential gate, one rule for each action. First, the Security rule: if someone else used the account or the card, deny. A refund above 100 dollars is denied. So is a password link to an e-mail that is not on file, and a plan that is already cancelled. Deleting data is always denied. The LLM agent reads these rules as prompt text. Our pipeline checks each rule with one question, and the code runs the answer."
     );
     // One deny rule for each action; the walk-throughs show the full gate.
     const RULE_ROWS = [

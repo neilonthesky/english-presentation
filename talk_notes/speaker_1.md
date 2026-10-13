@@ -20,11 +20,11 @@ Slide 1 đến 20
 
 ### Slide 2: Hai kiến trúc tự động
 
-> On the left is the standard choice today: an autonomous LLM agent. One model reads your chat and your account, puts the written rules into its system prompt, and calls the tools directly: refunds, cancellations, deletions. This is what most products ship. And here is the evidence: on the Artificial Analysis Omniscience benchmark, the smartest models we have still hallucinate on hard questions. A smarter model lowers the chance, but the hallucination rate is only about half as good, while the price is far bigger.
+> On the left is the standard choice today: an LLM agent. One model reads your chat and your account, puts the written rules into its system prompt, and calls the tools directly: refunds, cancellations, deletions. This is what most products ship. And here is the evidence: on the Artificial Analysis Omniscience benchmark, the smartest models we have still hallucinate on hard questions. A smarter model lowers the chance, but the hallucination rate is only about half as good, while the price is far bigger.
 > 
 > `[NGHỈ 1 GIÂY]`  
 > 
-> And most companies do not even ship those smartest models: they deploy cheaper open-weight models, like Qwen or DeepSeek, and fine-tune them for their own business. That keeps the cost low, but the hallucination stays. That is why our alternative is architectural: on the right, a lightweight classifier labels the intent first, deterministic code checks every written rule, and the LLM only drafts the reply. A draft cannot run a refund; only the code can. The model never touches the tools.
+> And most companies do not even ship those smartest models: they deploy cheaper open-weight models, like Qwen or DeepSeek, and fine-tune them for their own business. That keeps the cost low, but the hallucination stays. That is why our alternative is architectural: on the right, a lightweight classifier labels the intent first, code applies each rule answer, and the LLM only drafts the reply. A draft cannot run a refund; only the code can. The model never touches the tools.
 > 
 > `[NGHỈ 1 GIÂY]`  
 > 
@@ -50,7 +50,7 @@ Slide 1 đến 20
 
 ### Slide 5: Lịch sử tự động hóa hỗ trợ
 
-> Support automation has run the same steps for years: a classifier labels the message, fixed rules decide what to do, and something writes the reply. Rules are ordinary program code, written by people: for example, a refund above one hundred dollars is denied. They run the same way every time. Until 2022, the classifier was a trained intent model, and the replies came from templates. From 2023 until now, the classifier is an LLM, and an LLM agent holds the rules, decides, and acts. The steps stay the same. Only the model inside a step changes. So how do we improve it?
+> Support systems have run the same steps for years: a classifier labels the message, fixed rules decide what to do, and something writes the reply. Rules are ordinary program code, written by people: for example, a refund above one hundred dollars is denied. They run the same way every time. Until 2022, the classifier was a trained intent model, and the replies came from templates. From 2023 until now, the classifier is an LLM, and an LLM agent holds the rules, decides, and acts. The steps stay the same. Only the model inside a step changes. So how do we improve it?
 > 
 > `[NGHỈ 1 GIÂY]`
 > 

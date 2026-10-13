@@ -19,11 +19,11 @@ Slide 29 là slide câu hỏi, không tính vào thời gian nói. Long trả l�
 
 | Slide | Tiêu đề | Người nói |
 | :---: | :--- | :--- |
-| 1 | Customer Support Automation: Intent Classification and Deterministic Rules versus Autonomous LLM Agents | Tran Thanh Long |
-| 2 | Consequential actions: why autonomous agents fail alone | Tran Thanh Long |
+| 1 | Structured Decision Gates for Customer Support Agents: Intent Detection and Rule Checks | Tran Thanh Long |
+| 2 | Consequential actions: why LLM agents fail alone | Tran Thanh Long |
 | 3 | Quick quiz: guess the error rate of the smartest model we have | Tran Thanh Long |
 | 4 | The answer: the smartest model still misses about half | Tran Thanh Long |
-| 5 | A short history of support automation | Tran Thanh Long |
+| 5 | A short history of support systems | Tran Thanh Long |
 | 6 | Every action meets a written rule: allow or deny | Tran Thanh Long |
 | 7 | Real support policies have many rules | Tran Thanh Long |
 | 8 | Meet Jev, a fast classifier | Tran Thanh Long |

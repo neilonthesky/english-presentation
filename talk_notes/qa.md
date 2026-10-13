@@ -8,7 +8,7 @@ Long trả lời. Bốn bạn còn lại chỉ nói khi Long nhường lời. N�
 | Why not use a bigger LLM? | We did not test that. The reply model is the same in both systems. The decision step is different: its model, its input, and its flow. |
 | Is it safe to use now? | Not yet. The Jev pipeline got none wrong on 1,024 requests. That does not prove it is always safe. |
 | What if Jev answers a rule wrongly? | It can happen. The code does not check the answer again. This is a limit of our test. |
-| Does this replace support staff? | We did not test that. We compared two automated systems. |
+| Does this replace support staff? | We did not test that. We compared two systems. |
 | Who wrote the rules? | We wrote them by hand. Each rule has one yes/no question. |
 | Does it work in other languages? | We did not test that. All requests are in English. |
 | How much does it cost? | One thousand requests cost thirty cents with the Jev pipeline and one dollar twelve with the LLM agent. |
