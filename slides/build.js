@@ -1229,7 +1229,6 @@ async function curveArrowPng(svg) {
       ]),
       { x: M, y: 1.65, w: LW, h: 4.05, margin: 0, fontFace: FONT, fontSize: 18, color: C.white, paraSpaceAfter: 9, valign: "top" }
     );
-    s.addText("Next: real tickets, a held-out set, and stronger baselines.", { x: M, y: 5.85, w: LW, h: 0.8, margin: 0, fontFace: FONT, fontSize: 22, bold: true, color: C.white, valign: "bottom" });
     [
       { icon: "LuBadgeCheck", big: `${level2.errors} vs ${level3.errors}`, label: "wrong: LLM agent vs Jev pipeline", color: C.teal },
       { icon: "LuTimer", big: `${speedRatio}x`, label: `lower mean machine time: ${time3}\u00A0s vs ${time2}\u00A0s`, color: C.l3 },
@@ -1238,7 +1237,7 @@ async function curveArrowPng(svg) {
     s.addNotes(
       `Speaker: ${PNAM}, about ${SPEAKER[19][1]} s. Last, we tested both systems on the same ${sampleSize} requests. The LLM agent serves ${level2.served} and stops ${level2.stopped}. It gets ${level2.errors} wrong. The Jev pipeline serves ${level3.served} and stops ${level3.stopped}. It gets none wrong. ` +
         `The Jev pipeline is ${speedRatio} times faster and ${costRatio} times cheaper. Each rule needs a question that we write. ${CHANGED_SHORT}, so we saw these failures before the last test. We did not test other models. ` +
-        "Next, we need real tickets, a separate request set, and stronger systems to compare with. The Red Hat link is outside context, not our data. " +
+         +
         "Thank you for listening."
     );
   }
