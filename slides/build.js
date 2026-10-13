@@ -401,9 +401,8 @@ function scaleOrnament(svg, xf) {
       [{ text: "Phenikaa School of Computing", options: { bold: true, breakLine: true } }, { text: "English Writing and Presentation Skills \u00b7 October 2026" }],
       { x: M, y: 0.7, w: LW, h: 0.65, margin: 0, fontFace: FONT, fontSize: 16, color: light, valign: "top", paraSpaceAfter: 2 }
     );
-    s.addText("Structured Decision\nGates", { x: M, y: 1.55, w: LW, h: 1.35, margin: 0, fontFace: FONT, fontSize: 38, bold: true, color: C.white, valign: "top" });
-    s.addText("Customer Support Agents:\nIntent Detection and Rule Checks", {
-      x: M, y: 2.98, w: LW, h: 0.95, margin: 0, fontFace: FONT, fontSize: 20, color: light, valign: "top",
+    s.addText("Structured Decision Gates for\nCustomer Support Agents:\nIntent Detection and Rule Checks", {
+      x: M, y: 1.55, w: LW, h: 2.4, margin: 0, fontFace: FONT, fontSize: 28, bold: true, color: C.white, valign: "top",
     });
     s.addText("Team", { x: M, y: 4.15, w: LW, h: 0.32, margin: 0, fontFace: FONT, fontSize: 16, bold: true, color: light, valign: "middle" });
     const team = [LONG, NAM, SON, QUY, PNAM];

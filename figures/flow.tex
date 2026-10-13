@@ -17,8 +17,6 @@
   \node[md, text width=26mm] (rul) at (12.2,0) {Rules\\[-1pt]{\scriptsize Jev: one yes/no answer for each written rule}};
   \node[fx] (act) at (16.2,0) {Do action\\[-1pt]{\scriptsize refund, cancel plan, or reset password}};
   \node[md, text width=22mm] (fin) at (16.2,-1.9) {Final message\\[-1pt]{\scriptsize the LLM tells the result}};
-  \node[fx, text width=23mm] (cha) at (16.2,-3.6) {Chat open\\[-1pt]{\scriptsize popup: did this solve your issue?}};
-  \node[fx] (res) at (0,-3.6) {Resolved\\[-1pt]{\scriptsize chat closed}};
 
   \draw[ar] (new) -- (tri);
   \draw[ar] (tri) -- node[lb, above=1pt, text width=18mm]{the classifier answer} node[lb, below=1pt, text width=18mm]{injection: orders ignored} (gat);
@@ -28,9 +26,5 @@
   \draw[ar] (act) -- node[lw, right]{ok or failed} (fin);
   \draw[ar] ([xshift=-8mm]rul.south) -- (11.4,-1.0) -- (15.4,-1.0) -- ([xshift=-8mm]fin.north);
   \node[lw] at (13.4,-1.0) {a rule is broken: nothing runs};
-  \draw[ar] (fin) -- (cha);
-  \draw[ar] (cha.west) -- node[lw, above]{popup: yes, silent for T, or no N times} (res.east);
-  \draw[ar] (cha.east) -- (18.0,-3.6) -- (18.0,1.0) -- (new.north |- 0,1.0) -- (new.north);
-  \node[lw] at (9.0,1.0) {same chat: customer writes again};
 \end{tikzpicture}
 \end{document}
