@@ -1,4 +1,6 @@
-# Speaker 1: spoken script
+# Speaker 1: Tran Thanh Long
+
+Slide 1 đến 20
 
 ### Slide 1: Tiêu đề và câu chuyện mở đầu
 
@@ -11,7 +13,7 @@
 > 
 > `[NGHỈ 1 GIÂY]`  
 > 
-> But an AI chatbot that handles money is dangerous: one bad answer can refund the wrong customer. Today, we study this problem for FrameForge, a made-up AI video service.
+> But an AI chatbot that handles money is dangerous: one bad answer can refund the wrong customer. Today, we study this problem for a made-up AI video maker service company.
 > 
 > `[NGHỈ 1 GIÂY]`  
 > `[CHUYỂN SANG SLIDE 2]`

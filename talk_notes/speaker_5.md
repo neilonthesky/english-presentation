@@ -1,4 +1,6 @@
-# Speaker 5: spoken script
+# Speaker 5: Nguyen Phuong Nam
+
+Slide 27 và 28
 
 ### Slide 27: Ý tưởng của chúng tôi: giới hạn điều mỗi mô hình có thể kích hoạt
 

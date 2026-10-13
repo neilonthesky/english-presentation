@@ -990,7 +990,7 @@ async function curveArrowPng(svg) {
     const s = base(
       14,
       `Test data: ${data.customers} customers, ${sampleSize} requests`,
-      `Public datasets have no SaaS accounts, so we built our own: ${data.customers} FrameForge customers, each with one purchase, a credit balance, and a log of password reset links. Each customer sends ${requestsPerCustomer} requests, so we have ${sampleSize} requests of ${data.categories} types in five groups. High-impact actions are the largest group, with ${groupSize[0]} requests. We made the set hard on purpose: a written rule denies the action on ${data.finalDenied} requests, and ${injectionRequests} requests hide an order in the message. A program writes the requests from a fixed start number and runs the real code of the system to make the correct answers. This is a challenge set, not production traffic.`
+      `We made our own test set. It has ${data.customers} customers of a made-up AI video maker service company. Each customer has one purchase, some credits, and a list of password reset links. Each customer sends ${requestsPerCustomer} requests. So we have ${sampleSize} requests, in ${data.categories} types and five groups. The biggest group is high-impact actions, with ${groupSize[0]} requests. We made the set hard on purpose. On ${data.finalDenied} requests, a written rule says no. On ${injectionRequests} requests, an order hides inside the message. A program wrote all the requests and the correct answers. This is a hard test set, not real customer traffic.`
     );
     const cardH = 5.1;
     box(s, ML, 1.6, 7.9, cardH);

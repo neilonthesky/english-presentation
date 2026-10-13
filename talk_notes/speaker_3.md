@@ -1,4 +1,6 @@
-# Speaker 3: spoken script
+# Speaker 3: Vu Van Son
+
+Slide 23 và 24
 
 ### Slide 23: Cách chạy và giá: hai kiến trúc, hai mô hình, một bảng giá
 

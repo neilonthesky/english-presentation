@@ -1,4 +1,6 @@
-# Speaker 4: spoken script
+# Speaker 4: Vuong Quang Quy
+
+Slide 25 và 26
 
 ### Slide 25: Kết quả 2: cùng model viết câu trả lời, khác bước quyết định
 

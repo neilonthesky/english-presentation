@@ -7,11 +7,11 @@ Học phần English Writing and Presentation Skills, Phenikaa School of Computi
 | Người nói | Slide | Thời gian | Số từ |
 | :--- | :---: | :---: | :---: |
 | Tran Thanh Long | 1 đến 20 | 345 s | ~833 |
-| Nguyen Thanh Nam | 21 và 22 | 120 s | ~206 |
+| Nguyen Thanh Nam | 21 và 22 | 120 s | ~190 |
 | Vu Van Son | 23 và 24 | 120 s | ~256 |
 | Vuong Quang Quy | 25 và 26 | 120 s | ~253 |
 | Nguyen Phuong Nam | 27 và 28 | 120 s | ~219 |
-| **Tổng** | 1 đến 28 | **825 s** | **~1767** |
+| **Tổng** | 1 đến 28 | **825 s** | **~1751** |
 
 Slide 29 là slide câu hỏi, không tính vào thời gian nói. Long trả lời Q&A theo `qa.md`.
 
