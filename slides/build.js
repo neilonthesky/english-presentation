@@ -796,14 +796,13 @@ function scaleOrnament(svg, xf) {
         const w = o.length * 0.078 + 0.22;
         if (cx > 0 && cx + w > inner) { cx = 0; cy += 0.36; }
         const bad = o === "on" || o === "Broken"; // the value that changes what the process does
-        pill(o, x + 0.2 + cx, cy, w, bad ? "FAD4D0" : last ? C.white : "E9F0F8", bad ? "B91C1C" : C.navy);
+        pill(o, x + 0.2 + cx, cy, w, bad ? "B91C1C" : last ? C.white : "E9F0F8", bad ? C.white : C.navy);
         cx += w + 0.08;
       });
       cy += 0.45;
       if (i === 3) textBox(s, [{ text: "If on: ", options: { bold: true, color: "B91C1C" } }, { text: "the action is Send reply, so the orders in the text are ignored." }], x + 0.2, cy, inner, 1.1, { size: 14 });
       if (last) textBox(s, "Only if the action changes the state", x + 0.2, cy, inner, 0.7, { size: 14, color: C.navy });
     });
-    band(s, 6.05, 0.8, "LuShieldCheck", [{ text: "Typed answers do not guarantee truth: ", options: { bold: true } }, { text: "code follows Jev's answers. A missed violation can still allow an unsafe action." }]);
   }
 
 
@@ -819,7 +818,9 @@ function scaleOrnament(svg, xf) {
   // `accent`: the verdict in the title and the key state; `light`: the tint of the key state; `line`: the path of a denied request; `verdict`: the colour of the verdict of the rules.
   const TONES = {
     ok: { accent: C.teal, light: "E9F0F8", line: C.teal },
-    warn: { accent: "B45309", light: "FDEBC8", line: "B45309" },
+    // FFB282 is a light fill: navy ink and a navy icon ring on it, and a darker shade of the same hue
+    // (`title`, `line`) wherever the colour is text or a thin line on the pale background.
+    warn: { accent: "FFB282", ink: C.navy, ring: C.navy, light: "FDEBC8", line: "BA5C10", title: "BA5C10" },
     danger: { accent: "BE4F4F", light: "F3DEDC", line: "BE4F4F" },
   };
 
@@ -849,7 +850,7 @@ function scaleOrnament(svg, xf) {
     const tone = TONES[c.tone ?? "ok"];
     // The tone is the colour of the second half of the title.
     const [lead, verdict] = c.title.split(": ");
-        const s = base(speakerRow, [{ text: `${lead}: ` }, { text: verdict, options: { color: tone.accent } }], notes, frame === 0, "!!title");
+        const s = base(speakerRow, [{ text: `${lead}: ` }, { text: verdict, options: { color: tone.title ?? tone.accent } }], notes, frame === 0, "!!title");
     // Morph matches the objects of two slides by name when the name starts with "!!". The diagram (message, states, arrows, ring) and the
     // frame, icon circle, and icon of the panel card get such names, so the same object has the same name on every slide and Morph
     // moves it. The icon circle and its icon are matched together: a matched circle with an unmatched icon hides the icon during the
@@ -911,10 +912,10 @@ function scaleOrnament(svg, xf) {
         const on = frame >= litAt[i];
         const hot = on && i === c.hot; // the key state of the tone: full colour, white icon and text
         const [fill, accent] = hot ? [tone.accent, tone.accent] : kinds[kind];
-        const ink = hot ? C.white : on ? C.navy : DIM.text;
+        const ink = hot ? (tone.ink ?? C.white) : on ? C.navy : DIM.text;
         box(g, X[i], yN[i], wN[i], hN[i], { fill: on ? fill : DIM.fill });
         if (i < 5) {
-          iconCircle(g, icon, cx[i] - 0.25, y0 + 0.12, 0.5, on ? accent : DIM.ring);
+          iconCircle(g, icon, cx[i] - 0.25, y0 + 0.12, 0.5, on ? (hot ? (tone.ring ?? accent) : accent) : DIM.ring);
           textBox(g, name, X[i] + 0.04, y0 + 0.68, wN[i] - 0.08, 0.34, { size: 15, bold: true, color: ink, align: "center", valign: "middle", margin: 0 });
         } else {
           iconCircle(g, icon, cx[i] - 0.18, yN[i] + 0.1, 0.36, on ? accent : DIM.ring);
@@ -978,10 +979,11 @@ function scaleOrnament(svg, xf) {
           r.chips.forEach(([name, state, conf], i) => {
             const blocks = state === "blocks";
             textBox(g, [
-              { text: name, options: { fontSize: 14, color: C.muted, breakLine: true } },
-              { text: `${state}  ${conf.toFixed(2)}`, options: { fontSize: 16, bold: true, color: blocks ? tone.accent : C.navy } },
+              { text: name, options: { fontSize: 14, color: blocks ? (tone.ink ?? C.white) : C.muted, breakLine: true } },
+              // The blocking chip follows the rule of the "on" chip of slide 10: solid colour, tone ink on top.
+              { text: `${state}  ${conf.toFixed(2)}`, options: { fontSize: 16, bold: true, color: blocks ? (tone.ink ?? C.white) : C.navy } },
             ], PX + 0.25 + (i % per) * (w + 0.12), PY + 0.68 + Math.floor(i / per) * 0.68, w, 0.58, {
-              shape: pres.ShapeType.roundRect, fill: blocks ? tone.light : CHIP, line: blocks ? tone.accent : CHIP, lineW: blocks ? 3 : 1, margin: [0.03, 0.1, 0.03, 0.1], valign: "middle",
+              shape: pres.ShapeType.roundRect, fill: blocks ? tone.accent : CHIP, line: blocks ? tone.accent : CHIP, lineW: 1, margin: [0.03, 0.1, 0.03, 0.1], valign: "middle",
             });
           });
           textBox(g, r.rule, PX + 0.25, PY + 2.05, PW - 0.5, 0.28, { size: 16, bold: true, color: C.navy, valign: "middle" });
