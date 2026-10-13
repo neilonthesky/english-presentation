@@ -1,7 +1,6 @@
 // Builds slides/deck.pptx from the independent Level 2 and Level 3 experiment results.
 // Claims apply only to the stored synthetic SaaS set and the measured hosted API configurations.
 // Fixed execution follows Jev's answers; it is not independent policy verification or a safety guarantee.
-// The conclusion slide links the Red Hat guardrail benchmark as external context, not replacement experiment data.
 // Run: node build.js   (from the slides/ directory), or ./render.sh to also validate and render.
 // Style: light-to-mid blue/grey/teal tones, borderless cards, solid fills, no glow or shadow,
 // no dark theme, no yellow/orange. Photographs live in assets/ and are generated for this deck.
@@ -95,7 +94,6 @@ const C = {
 };
 const FONT = "Calibri";
 const TITLE = "Structured Decision Gates for Customer Support Agents: Intent Detection and Rule Checks";
-const RED_HAT_BENCHMARK_URL = "https://developers.redhat.com/articles/2026/10/02/benchmarking-ai-decision-models-against-traditional-guardrails";
 
 // Speakers and speaking time per logical section; each walk-through section spans several slides.
 const LONG = "Tran Thanh Long", NAM = "Nguyen Thanh Nam", SON = "Vu Van Son", QUY = "Vuong Quang Quy", PNAM = "Nguyen Phuong Nam";
@@ -1232,7 +1230,6 @@ async function curveArrowPng(svg) {
       { x: M, y: 1.65, w: LW, h: 4.05, margin: 0, fontFace: FONT, fontSize: 18, color: C.white, paraSpaceAfter: 9, valign: "top" }
     );
     s.addText("Next: real tickets, a held-out set, and stronger baselines.", { x: M, y: 5.85, w: LW, h: 0.8, margin: 0, fontFace: FONT, fontSize: 22, bold: true, color: C.white, valign: "bottom" });
-    s.addText("External context: Red Hat Developer, 2 Oct 2026", { x: M, y: 6.78, w: LW, h: 0.22, margin: 0, fontFace: FONT, fontSize: 11, color: C.white, underline: true, hyperlink: { url: RED_HAT_BENCHMARK_URL } });
     [
       { icon: "LuBadgeCheck", big: `${level2.errors} vs ${level3.errors}`, label: "wrong: LLM agent vs Jev pipeline", color: C.teal },
       { icon: "LuTimer", big: `${speedRatio}x`, label: `lower mean machine time: ${time3}\u00A0s vs ${time2}\u00A0s`, color: C.l3 },

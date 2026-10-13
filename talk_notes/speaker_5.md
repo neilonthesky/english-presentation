@@ -28,4 +28,4 @@ Slide 27 và 28
 > 
 > `[NGHỈ 1 GIÂY]`
 > 
-> Next, we need real tickets, a separate request set, and stronger systems to compare with. The Red Hat link is outside context, not our data. Thank you for listening.
+> Next, we need real tickets, a separate request set, and stronger systems to compare with. Thank you for listening.
