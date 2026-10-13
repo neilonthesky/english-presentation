@@ -11,6 +11,7 @@ Long trả lời. Bốn bạn còn lại chỉ nói khi Long nhường lời. N�
 | Does this replace support staff? | We did not test that. We compared two systems. |
 | Who wrote the rules? | We wrote them by hand. Each rule has one yes/no question. |
 | Does it work in other languages? | We did not test that. All requests are in English. |
+| How does the reply know the charge date if Rules did not run? | The LLM that writes the reply reads the help articles and the customer's account. It only writes text. It runs no action, and we do not score its words. We score the action that ran. |
 | How much does it cost? | One thousand requests cost thirty cents with the Jev pipeline and one dollar twelve with the LLM agent. |
 | How fast is it? | One request takes 5.89 seconds with the Jev pipeline and 12.45 seconds with the LLM agent. |
 | What did you learn? | A fixed process around a fast classifier got fewer requests wrong, and it is faster and cheaper on this set. |

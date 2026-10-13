@@ -832,12 +832,10 @@ function scaleOrnament(svg, xf) {
     ["Rules", "LuScale", "md"],
     ["Do action", "LuZap", "fx"],
     ["Final message", "LuMessageSquareText", "md"],
-    ["Chat open", "LuMessageCircle", "fx"],
-    ["Resolved", "LuCircleCheck", "fx"],
   ];
 
   // `speakerRow`: the row of SPEAKER; `frame`: the slide of the series, 0 to K. Frame 0 shows only the diagram; frame k lights the
-  // k-th state of the path, and the last frame lights Chat open and Resolved together.
+  // k-th state of the path, and the last frame lights the rest of the path together.
   function walkthrough(c, speakerRow, frame) {
     // `c.show`: the indices of `c.path` that get a slide of their own (default: all). The slide of a shown state lights every state
     // up to it; the last slide lights the rest of the path too. State 0 (New) is lit from the first slide.
@@ -871,8 +869,8 @@ function scaleOrnament(svg, xf) {
     transitions[frame === 0 ? "fade" : "morph"].push(pres.slides.length);
 
     const dy = frame === 0 ? 1.4 : 0; // frame 0 has no panel, so the diagram sits lower on the slide
-    const H = 1.35, S = 1.1, y0 = 2.15 + dy, yDeny = 3.72 + dy, wN = FLOW.map((_, i) => (i < 5 ? 1.6 : S)), hN = FLOW.map((_, i) => (i < 5 ? H : 1.0));
-    const gap = (CW - wN.reduce((a, v) => a + v, 0)) / 6;
+    const H = 1.35, W = 1.9, y0 = 2.15 + dy, yDeny = 3.72 + dy, wN = FLOW.map(() => W), hN = FLOW.map(() => H);
+    const gap = (CW - wN.reduce((a, v) => a + v, 0)) / (FLOW.length - 1);
     const X = FLOW.map((_, i) => ML + wN.slice(0, i).reduce((a, v) => a + v, 0) + i * gap);
     const yN = hN.map((h) => y0 + (H - h) / 2);
     const cx = X.map((x, i) => x + wN[i] / 2);
@@ -890,19 +888,17 @@ function scaleOrnament(svg, xf) {
     // during the morph.) `litAt[n]`: the slide where state n lights up; `arrowAt[i]`: the slide where the arrow after state i does.
     const litAt = Array(FLOW.length).fill(Infinity);
     const arrowAt = Array(FLOW.length - 1).fill(Infinity);
-    let denyAt = Infinity;
+    let denyAt = Infinity, denyFrom = 0, denyTo = 0; // the jump of a request that skips states: from which state to which
     c.path.forEach((n, p) => {
       let f = 0;
       while (cover(f) < p) f++;
       litAt[n] = f;
       if (p > 0) {
         const from = c.path[p - 1];
-        if (n !== from + 1) denyAt = f;
+        if (n !== from + 1) { denyAt = f; denyFrom = from; denyTo = n; }
         else arrowAt[from] = f;
       }
     });
-    litAt[6] = K; // Resolved lights with Chat open, on the last slide
-    arrowAt[5] = K;
     const seg = (g, x, y, w, h, on, arrow, flipV) =>
       g.addShape(pres.ShapeType.line, {
         x, y, w, h, flipV, line: { color: on ? C.navy : DIM.arrow, width: on ? 3.5 : 2, endArrowType: arrow ? "triangle" : undefined },
@@ -914,24 +910,21 @@ function scaleOrnament(svg, xf) {
         const [fill, accent] = hot ? [tone.accent, tone.accent] : kinds[kind];
         const ink = hot ? (tone.ink ?? C.white) : on ? C.navy : DIM.text;
         box(g, X[i], yN[i], wN[i], hN[i], { fill: on ? fill : DIM.fill });
-        if (i < 5) {
-          iconCircle(g, icon, cx[i] - 0.25, y0 + 0.12, 0.5, on ? (hot ? (tone.ring ?? accent) : accent) : DIM.ring);
-          textBox(g, name, X[i] + 0.04, y0 + 0.68, wN[i] - 0.08, 0.34, { size: 15, bold: true, color: ink, align: "center", valign: "middle", margin: 0 });
-        } else {
-          iconCircle(g, icon, cx[i] - 0.18, yN[i] + 0.1, 0.36, on ? accent : DIM.ring);
-          textBox(g, name, X[i] + 0.02, yN[i] + 0.58, wN[i] - 0.04, 0.34, { size: 14, bold: true, color: ink, align: "center", valign: "middle", margin: 0 });
-        }
+        iconCircle(g, icon, cx[i] - 0.25, y0 + 0.12, 0.5, on ? (hot ? (tone.ring ?? accent) : accent) : DIM.ring);
+        textBox(g, name, X[i] + 0.04, y0 + 0.68, wN[i] - 0.08, 0.34, { size: 15, bold: true, color: ink, align: "center", valign: "middle", margin: 0 });
       });
-      if (i < 6) sc.group(`arrow-${i}`, {}, (g) => seg(g, X[i] + wN[i] + 0.02, y0 + H / 2, gap - 0.04, 0, frame >= arrowAt[i], true, false));
+      // An arrow that the request never takes (it skips Do action) is not drawn, so the diagram shows no path that is not used.
+      if (i < FLOW.length - 1 && arrowAt[i] < Infinity) sc.group(`arrow-${i}`, {}, (g) => seg(g, X[i] + wN[i] + 0.02, y0 + H / 2, gap - 0.04, 0, frame >= arrowAt[i], true, false));
     });
-    sc.group("deny", {}, (g) => {
-      const on = frame >= denyAt, color = on ? tone.line : DIM.arrow, width = on ? 3.5 : 2;
+    // The route of a stopped request appears only on the slide where the request takes it: no grey preview before, none when unused.
+    sc.group("deny", { in: denyAt }, (g) => {
+      const color = tone.line, width = 3.5;
       const part = (x, y, w, h, arrow, flipV) =>
         g.addShape(pres.ShapeType.line, { x, y, w, h, flipV, line: { color, width, endArrowType: arrow ? "triangle" : undefined } });
-      part(cx[2], y0 + H, 0, yDeny - (y0 + H), false, false);
-      part(cx[2], yDeny, cx[4] - cx[2], 0, false, false);
-      part(cx[4], y0 + H, 0, yDeny - (y0 + H), true, true);
-      textBox(g, c.denyLabel ?? "a rule blocks it: nothing runs", cx[2], yDeny + 0.03, cx[4] - cx[2], 0.3, { size: 14, color: DIM.text, align: "center", valign: "middle" });
+      part(cx[denyFrom], y0 + H, 0, yDeny - (y0 + H), false, false);
+      part(cx[denyFrom], yDeny, cx[denyTo] - cx[denyFrom], 0, false, false);
+      part(cx[denyTo], y0 + H, 0, yDeny - (y0 + H), true, true);
+      textBox(g, c.denyLabel ?? "a rule blocks it: nothing runs", cx[denyFrom], yDeny + 0.03, cx[denyTo] - cx[denyFrom], 0.3, { size: 14, color: DIM.text, align: "center", valign: "middle" });
     });
 
     // The card of a panel: the icon and the title of the state, and the kind of the state.
@@ -952,7 +945,6 @@ function scaleOrnament(svg, xf) {
         "Rules: Jev answers one question for each rule",
         "Do action: fixed code runs the action",
         "Final message: the LLM writes the reply",
-        "Chat open: a popup asks if the issue is solved",
       ][node];
       card(named("card", 3), node, title);
       if (node === 0) {
@@ -996,14 +988,6 @@ function scaleOrnament(svg, xf) {
         textBox(g, `\u201C${c.final.text}\u201D`, PX + 0.25, PY + 0.72, PW - 0.5, 1.75, {
           shape: pres.ShapeType.roundRect, fill: CHIP, line: CHIP, size: 19, margin: [0.1, 0.2, 0.1, 0.2], valign: "middle",
         });
-      } else if (node === 5) {
-        box(g, PX + 0.25, PY + 0.75, 3.7, 1.15, { fill: CHIP });
-        textBox(g, "Did this solve your issue?", PX + 0.45, PY + 0.82, 3.3, 0.4, { size: 16, bold: true, color: C.navy, valign: "middle" });
-        textBox(g, "Yes", PX + 0.45, PY + 1.3, 1.5, 0.4, { shape: pres.ShapeType.roundRect, fill: C.blue, line: C.blue, color: C.white, bold: true, size: 15, margin: 0, valign: "middle", align: "center" });
-        textBox(g, "No", PX + 2.15, PY + 1.3, 1.5, 0.4, { shape: pres.ShapeType.roundRect, fill: C.greyL, line: C.greyL, color: C.navy, bold: true, size: 15, margin: 0, valign: "middle", align: "center" });
-        g.addText(bullets(["Yes: the chat closes (Resolved).", "No: the popup comes again. After 2 times the chat closes.", "Not simulated in our experiment."]), {
-          x: PX + 4.35, y: PY + 0.85, w: PW - 4.6, h: 1.1, margin: 0, fontFace: FONT, fontSize: 16, color: C.text, paraSpaceAfter: 6, valign: "top",
-        });
       }
     };
 
@@ -1011,17 +995,19 @@ function scaleOrnament(svg, xf) {
     show.forEach((pi, p) => {
       const node = c.path[pi], click = p + 1, last = p === K - 1;
       if (c.deny && node === 4) {
+        // Every state that the request jumped over is marked, and none of them lights up.
         sc.group("skipped", { in: click }, (g) => {
-          textBox(g, "skipped", X[3], y0 + 1.02, wN[3], 0.28, { size: 14, bold: true, color: tone.line, align: "center", valign: "middle" });
+          FLOW.forEach((_, n) => {
+            if (n > 0 && !c.path.includes(n)) textBox(g, "skipped", X[n], y0 + 1.02, wN[n], 0.28, { size: 14, bold: true, color: tone.line, align: "center", valign: "middle" });
+          });
         });
       }
       sc.group(`panel-${node}`, { in: click, out: last ? undefined : click + 1 }, (g) => panel(g, node));
     });
 
-    // One ring that moves from state to state: Morph slides it from the old state to the new one. On the last slide it rests on Resolved.
+    // One ring that moves from state to state: Morph slides it from the old state to the new one.
     {
-      const lastNode = c.path[show[K - 1]];
-      const n = frame === 0 ? 0 : frame === K && lastNode === 5 ? 6 : c.path[show[frame - 1]];
+      const n = frame === 0 ? 0 : c.path[show[frame - 1]];
       named("ring").addShape(pres.ShapeType.roundRect, {
         x: X[n] - 0.05, y: yN[n] - 0.05, w: wN[n] + 0.1, h: hN[n] + 0.1, rectRadius: 0.1, fill: { color: C.card, transparency: 100 }, line: { color: C.navy, width: 3 },
       });

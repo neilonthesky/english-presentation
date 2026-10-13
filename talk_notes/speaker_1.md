@@ -116,3 +116,5 @@ Slide 1 đến 20
 > **Slide 18:** A third customer orders a refund of everything.  
 > **Slide 19:** Jev raises the injection flag.  
 > **Slide 20:** The LLM ignores the order.
+
+**Ghi chú cho Long (không đọc lên):** Ở slide 20, Rules không chạy vì cờ injection ép action thành Send reply, nên Jev không được gọi lần hai. Nhưng LLM viết Final message vẫn đọc được tài khoản của khách và các bài help (code gọi `answerQuestion` với account và help articles). Vì vậy câu trả lời có thể nhắc ngày charge, credits đã dùng, hay cửa sổ hoàn tiền. Đó là LLM tự diễn giải từ dữ kiện, không phải kết quả của một rule. Nó chỉ viết chữ, không chạy action nào, và ta chấm theo action đã chạy, không chấm lời văn. Nếu bị hỏi, dùng câu trả lời của dòng "How does the reply know the charge date if Rules did not run?" trong `qa.md`.
