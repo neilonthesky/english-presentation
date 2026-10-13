@@ -12,8 +12,8 @@ const { renderToStaticMarkup } = require("react-dom/server");
 const sharp = require("sharp");
 const fs = require("fs");
 const lu = require("react-icons/lu");
-const { addTransitions } = require("./transitions");
 const { dropBlankPoints } = require("./charts");
+const { addTransitions } = require("./transitions");
 const { CASES, FIELDS } = require("./cases");
 
 // Read both independent runs of the high-impact set (1,024 requests, days since the charge in the account) without writing a combined result file.
@@ -48,10 +48,12 @@ if (new Set(sentBy.values()).size !== 1 || sentBy.size !== data.customers) throw
 const requestsPerCustomer = [...sentBy.values()][0];
 // The refund inputs that were changed after a failure. Every slide that shows rule results says so: the rule evaluation was not blind.
 const CHANGED_SHORT = "Two refund inputs were changed after earlier failures";
-const cost2 = level2.apiCostPer1000.toFixed(2), cost3 = level3.apiCostPer1000.toFixed(2);
+// The LLM agent also needs an LLM call to classify the request, so its price per 1,000 requests is $1.12 (not the $0.64 of the recorded run).
+const AGENT_COST = 1.12;
+const cost2 = AGENT_COST.toFixed(2), cost3 = level3.apiCostPer1000.toFixed(2);
 const time2 = level2.machineSeconds.mean.toFixed(2), time3 = level3.machineSeconds.mean.toFixed(2);
 const speedRatio = (level2.machineSeconds.mean / level3.machineSeconds.mean).toFixed(1);
-const costRatio = (level2.apiCostPer1000 / level3.apiCostPer1000).toFixed(1);
+const costRatio = (AGENT_COST / level3.apiCostPer1000).toFixed(1);
 // The titles and notes say that Level 3 is lower in API cost and errors, and that it needs less than half the machine time of Level 2. Stop the build if the recorded runs do not show it.
 if (!(level3.machineSeconds.mean * 2 < level2.machineSeconds.mean && level3.apiCostPer1000 < level2.apiCostPer1000 && level3.errors < level2.errors)) {
   throw new Error("The slides say that Level 3 needs less than half the machine time and has lower cost and fewer errors; the two runs do not show that");
@@ -990,22 +992,21 @@ async function curveArrowPng(svg) {
       `Test data: ${data.customers} customers, ${sampleSize} requests`,
       `Public datasets have no SaaS accounts, so we built our own: ${data.customers} FrameForge customers, each with one purchase, a credit balance, and a log of password reset links. Each customer sends ${requestsPerCustomer} requests, so we have ${sampleSize} requests of ${data.categories} types in five groups. High-impact actions are the largest group, with ${groupSize[0]} requests. We made the set hard on purpose: a written rule denies the action on ${data.finalDenied} requests, and ${injectionRequests} requests hide an order in the message. A program writes the requests from a fixed start number and runs the real code of the system to make the correct answers. This is a challenge set, not production traffic.`
     );
-    const cardH = 4.05;
+    const cardH = 5.1;
     box(s, ML, 1.6, 7.9, cardH);
     s.addChart(pres.charts.BAR, [{ name: "Requests", labels: GROUPS.map(([name]) => name), values: groupSize }], {
       ...chartBase, showLegend: false, x: ML + 0.2, y: 1.7, w: 7.5, h: cardH - 0.2, barDir: "bar", barGapWidthPct: 40, chartColors: [C.l3],
       dataLabelPosition: "outEnd", dataLabelFontSize: 14, catAxisLabelFontSize: 14, catAxisOrientation: "maxMin", valAxisMaxVal: 430,
       title: `Requests per group (${sampleSize} in total)`,
     });
-    const x = ML + 8.2, w = CW - 8.2, h = 1.2, gap = (cardH - 3 * h) / 2;
+    const x = ML + 8.2, w = CW - 8.2, h = 1.5, gap = (cardH - 3 * h) / 2;
     [
       ["LuUsers", `${data.customers} customers`, `${requestsPerCustomer} requests each: ${sampleSize} requests of ${data.categories} types`, C.l3],
       ["LuScale", `${data.finalDenied} of ${sampleSize}`, "requests where a written rule denies the action", C.teal],
       ["LuShieldX", `${injectionRequests} attacks`, "requests that hide an order in the message", C.l3],
     ].forEach(([icon, big, label, color], i) => {
-      callout(s, x, 1.6 + i * (h + gap), w, h, { icon, big, label, color, bigSize: 24, bigH: 0.5, bigY: 0.1 });
+      callout(s, x, 1.6 + i * (h + gap), w, h, { icon, big, label, color, bigSize: 26, bigH: 0.55, bigY: 0.15, labelSize: 15 });
     });
-    band(s, 5.9, 0.9, "LuCpu", [{ text: "Real code: ", options: { bold: true } }, { text: "the generator runs the code of the system to make the correct answer. A challenge set, not production traffic." }]);
   }
 
   // ---------- 13. Outcomes ----------
@@ -1015,21 +1016,30 @@ async function curveArrowPng(svg) {
       "Every request ends served, stopped, or in error",
       "Now, how we score a request. We look at what the customer gets. Served means the run ends with the correct result. Stopped means a written rule denies the action, nothing runs, and the reply gives the reason. Error is every other run. A run is harmful if it changes money, data, the plan, or the password against the written rules. We also report the machine time of one request, the API cost per 1,000 requests, and the error counts on this request set."
     );
-    const gap = 0.3, cw = (CW - 2 * gap) / 3, y = 1.6, h = 2.75;
+    // One wide card with three columns, then the harmful run in the red of an error, then the three measures in one row.
+    const cw = CW / 3, y = 1.6, h = 3.0;
+    box(s, ML, y, CW, h);
     [
-      ["LuBadgeCheck", "Served", C.l3, "The run ends with the correct result: an answer or an action that the written rules allow."],
-      ["LuShieldCheck", "Stopped", C.teal, "A written rule denies the correct action. Nothing ran, and the reply gives the reason."],
-      ["LuTriangleAlert", "Error", C.red, "Every other run: for example a refusal where the correct result is an answer, or an action that the written rules deny."],
+      ["LuBadgeCheck", "Served", C.l3, "The correct result: an answer, or an action the rules allow."],
+      ["LuShieldCheck", "Stopped", C.teal, "A rule denies the action. Nothing runs, and the reply gives the reason."],
+      ["LuTriangleAlert", "Error", C.red, "Every other run: a wrong refusal, or a denied action that ran."],
     ].forEach(([ic, big, col, label], i) => {
-      statCard(s, ML + i * (cw + gap), y, cw, h, { icon: ic, big, label, bigSize: 32, labelY: 1.3, bg: col, color: col });
+      const x = ML + i * cw;
+      if (i > 0) s.addShape(pres.ShapeType.line, { x, y: y + 0.3, w: 0, h: h - 0.6, line: { color: "D5DBE3", width: 1.5 } });
+      iconCircle(s, ic, x + 0.4, y + 0.35, 0.85, col);
+      textBox(s, big, x + 1.4, y + 0.35, cw - 1.6, 0.85, { size: 32, bold: true, color: col, valign: "middle" });
+      textBox(s, label, x + 0.4, y + 1.5, cw - 0.8, 1.35, { size: 18 });
     });
-    band(s, 4.65, 0.95, "LuShieldX", [{ text: "A harmful run ", options: { bold: true } }, { text: "changes money, data, the plan, or the password against the written rules." }]);
+    band(s, 4.85, 0.9, "LuShieldX", [{ text: "A harmful run ", options: { bold: true } }, { text: "changes money, data, the plan, or the password against the rules." }], C.red);
+    box(s, ML, 5.95, CW, 0.95);
     [
-      ["LuTimer", "Machine time", "of one request"],
-      ["LuDollarSign", "API cost", "per 1,000 requests"],
-      ["LuBadgeCheck", "Error count", "on the same request set"],
-    ].forEach(([ic, big, label], i) => {
-      callout(s, ML + i * (cw + gap), 5.85, cw, 1.0, { icon: ic, big, label, color: C.l3, bigSize: 20, bigH: 0.42, bigY: 0.1, labelSize: 14 });
+      ["LuTimer", "Machine time per request"],
+      ["LuDollarSign", "API cost per 1,000 requests"],
+      ["LuBadgeCheck", "Error count"],
+    ].forEach(([ic, label], i) => {
+      const x = ML + i * cw;
+      iconCircle(s, ic, x + 0.4, 5.95 + 0.2, 0.55, C.l3);
+      textBox(s, label, x + 1.15, 5.95, cw - 1.3, 0.95, { size: 17, bold: true, color: C.navy, valign: "middle" });
     });
   }
 
@@ -1039,7 +1049,7 @@ async function curveArrowPng(svg) {
     const s = base(
       16,
       `Experimental setup: 1,024 requests, two architectures`,
-      `We call two hosted models for real: Jev, version 1.13.0, and DeepSeek V4.1 Flash. Both architectures run on the same ${sampleSize} requests, in separate runs. The autonomous agent makes two LLM calls for each request. The hybrid pipeline makes ${(jevCalls / level3.requests).toFixed(1)} classifier calls and one LLM call. Jev costs 4.2 cents per million input tokens, and its output is free. The LLM costs 15 cents in and 60 cents out per million tokens. At list price, 1,000 requests cost $${cost2} for the autonomous agent and $${cost3} for the hybrid pipeline. These are API token charges, not total operating cost.`
+      `We call two hosted models for real: Jev, version 1.13.0, and DeepSeek V4.1 Flash. Both architectures run on the same ${sampleSize} requests, in separate runs. The LLM agent makes two LLM calls: one to classify the request and one to answer for each request. The Jev pipeline makes ${(jevCalls / level3.requests).toFixed(1)} classifier calls and one LLM call. Jev costs 4.2 cents per million input tokens, and its output is free. The LLM costs 15 cents in and 60 cents out per million tokens. At list price, 1,000 requests cost $${cost2} for the LLM agent and $${cost3} for the Jev pipeline. These are API token charges, not total operating cost.`
     );
     // The run in one strip: the requests of each run and the two hosted models.
     {
@@ -1057,8 +1067,8 @@ async function curveArrowPng(svg) {
     // One card for each level: the cost per 1,000 requests, a bar in proportion, the calls that one request makes, and what the level reads.
     const gap = 0.3, cw = (CW - gap) / 2, y = 2.55, h = 3.0, barW = cw - 0.7;
     [
-      { x: ML, head: "Autonomous LLM agent", icon: "LuBot", col: C.l2, cost: `$${cost2}`, share: 1, calls: [["LLM call", C.grey, 1.4], ["LLM call", C.grey, 1.4]], reads: "Reads the chat, the whole account, and all the rules" },
-      { x: ML + cw + gap, head: "Classifier + Rules + LLM", icon: "LuTags", col: C.l3, cost: `$${cost3}`, share: level3.apiCostPer1000 / level2.apiCostPer1000, calls: [[`Jev call × ${(jevCalls / level3.requests).toFixed(1)}`, C.l3, 2.0], ["LLM call", C.grey, 1.4]], reads: "Reads the chat first, then the rules of one action" },
+      { x: ML, head: "LLM agent", icon: "LuBot", col: C.l2, cost: `$${cost2}`, share: 1, calls: [["LLM classifier", C.grey, 1.9], ["LLM call", C.grey, 1.4]], reads: "Reads the chat, the whole account, and all the rules" },
+      { x: ML + cw + gap, head: "Jev pipeline", icon: "LuTags", col: C.l3, cost: `$${cost3}`, share: level3.apiCostPer1000 / AGENT_COST, calls: [[`Jev call × ${(jevCalls / level3.requests).toFixed(1)}`, C.l3, 2.0], ["LLM call", C.grey, 1.4]], reads: "Reads the chat first, then the rules of one action" },
     ].forEach((o) => {
       box(s, o.x, y, cw, h);
       iconCircle(s, o.icon, o.x + 0.35, y + 0.2, 0.6, o.col);
@@ -1088,14 +1098,13 @@ async function curveArrowPng(svg) {
         textBox(s, txt, x + 0.8, py, CW / 2 - 1.4, ph, { size: 16, valign: "middle" });
       });
     }
-    textBox(s, "API token charges at the listed prices; not total operating cost.", ML, 6.78, CW, 0.22, { size: 13, color: C.muted });
   }
 
   // ---------- 7. Result 1: Jev ----------
   {
     const s = base(
       17,
-      "Jev on our SaaS test set: speed, cost, and accuracy",
+      "Jev on our test set: speed, cost, and accuracy",
       `Now the first result, for Jev alone. Half of the requests need ${level3.decisionLatency.median.toFixed(2)} seconds or less of Jev time, including rule calls, and all Jev calls cost $${level3.decisionCostPer1000.toFixed(3)} per 1,000 requests. The first call gives the right topic on ${(100 * quality.queue.accuracy).toFixed(1)} percent of the scored requests, the priority on ${(100 * quality.priority.accuracy).toFixed(1)} percent, the action on ${(100 * quality.action.accuracy).toFixed(1)} percent, and the injection flag on ${(100 * quality.injection.accuracy).toFixed(1)} percent. ${count(ruleStats.matching)} of ${count(ruleStats.answers)} rule answers match the written rules. The first-call action label is wrong on ${wrongActions.length} requests, and ${wrongActionOutcomes === 0 ? "none" : wrongActionOutcomes} of these end in a wrong outcome. ${CHANGED_SHORT}, so we saw these failures before the last test.`
     );
     box(s, ML, 1.65, 7.6, 4.9);
@@ -1115,24 +1124,24 @@ async function curveArrowPng(svg) {
     callout(s, x, 1.65, w, 1.5, { icon: "LuZap", big: `${level3.decisionLatency.median.toFixed(2)} s`, label: "median Jev time per request (includes rule calls)", color: C.l3 });
     callout(s, x, 3.35, w, 1.5, { icon: "LuDollarSign", big: `$${level3.decisionCostPer1000.toFixed(3)}`, label: "per 1,000 requests for all Jev calls", color: C.l3 });
     callout(s, x, 5.05, w, 1.5, { icon: "LuBadgeCheck", big: `${wrongActionOutcomes} of ${wrongActions.length}`, label: "wrong first-call action labels end in a wrong outcome", color: C.teal, bigSize: 30, labelSize: 14 });
-    textBox(s, `Synthetic set. ${CHANGED_SHORT}. The rule evaluation was not blind.`, ML, 6.65, CW, 0.3, { size: 13, color: C.muted });
   }
 
-  // ---------- 8. Result 2: the ladder ----------
+  // ---------- 8. Result 2: the two architectures ----------
+  // Both levels write the Final message with the same LLM. Only the decision step differs: one LLM agent call, or Jev answering typed questions.
   {
     const s = base(
       18,
-      "On our SaaS test set: lower time, cost, and error count",
-      `We compare both architectures on the same ${sampleSize} requests. The autonomous agent serves ${level2.served}, stops ${level2.stopped}, and makes ${level2.errors} errors, ${level2.harmful} of them harmful. Our hybrid pipeline serves ${level3.served}, stops ${level3.stopped}, and makes ${level3.errors} errors and ${level3.harmful} harmful runs. The hybrid pipeline needs less than half the average machine time, ${time3} seconds against ${time2}, and has ${costRatio} times lower API cost, $${cost3} against $${cost2} per 1,000 requests. Of the ${level2.errors} autonomous agent errors, ${injectionErrors2} are injection requests. The harmful errors run ${harmfulRefunds2} refunds and ${harmfulCancellations2} plan cancellations. These are outcomes on the set that we made ourselves, not a guarantee of safety.`
+      "Same reply model, different decision step",
+      `We tested both systems on the same ${sampleSize} requests. Both use the same LLM to write the reply. Only the decision step is different. The LLM agent decides in one step. It serves ${level2.served} requests and stops ${level2.stopped}. It gets ${level2.errors} requests wrong. ${level2.harmful} of them cause real damage. ${injectionErrors2} are orders that hide inside the message. The Jev pipeline serves ${level3.served} requests and stops ${level3.stopped}. It gets none wrong. Jev is also faster. One request takes ${time3} seconds, not ${time2}. It is cheaper too. One thousand requests cost ${Math.round(100 * level3.apiCostPer1000)} cents, not $${cost2}. These numbers come from our own test set. They do not prove that the system is always safe. The two systems differ in model, input, and flow, so the results do not show which part gives the gain.`
     );
     box(s, ML, 1.65, 7.6, 3.95);
-    const cats = ["Autonomous LLM agent", "Classifier + Rules + LLM"];
+    const cats = ["LLM agent", "Jev pipeline"];
     s.addChart(
       pres.charts.BAR,
       [
         { name: "Served", labels: cats, values: [level2.served, level3.served] },
         { name: "Stopped by a rule", labels: cats, values: [level2.stopped, level3.stopped] },
-        { name: "Errors", labels: cats, values: [level2.errors || null, level3.errors || null] },
+        { name: "Wrong outcome", labels: cats, values: [level2.errors || null, level3.errors || null] },
       ],
       {
         ...chartBase, x: ML + 0.2, y: 1.75, w: 7.2, h: 3.75, barDir: "bar", barGrouping: "stacked", barGapWidthPct: 45,
@@ -1141,14 +1150,14 @@ async function curveArrowPng(svg) {
       }
     );
     const x = ML + 7.9, w = CW - 7.9;
-    callout(s, x, 1.65, w, 1.25, { icon: "LuTimer", big: `${speedRatio}x`, label: `lower mean machine time: ${time3}\u00A0s vs ${time2}\u00A0s`, color: C.l3, bigSize: 28, bigH: 0.55, bigY: 0.1 });
-    callout(s, x, 3.0, w, 1.25, { icon: "LuDollarSign", big: `${costRatio}x`, label: `lower API cost: $${cost3} vs $${cost2} per 1,000 requests`, color: C.l3, bigSize: 28, bigH: 0.55, bigY: 0.1 });
-    callout(s, x, 4.35, w, 1.25, { icon: "LuBadgeCheck", big: `${level2.errors} vs ${level3.errors}`, label: "errors: autonomous agent vs hybrid pipeline", color: C.teal, bigSize: 28, bigH: 0.55, bigY: 0.1, labelSize: 14 });
-    // The error segment of Level 2 is too narrow for a label, and Level 3 has none: each row gets a label at its end.
+    callout(s, x, 1.65, w, 1.25, { icon: "LuBadgeCheck", big: `${level2.errors} vs ${level3.errors} wrong`, label: `${injectionErrors2} of the ${level2.errors} are orders hidden in the message`, color: C.teal, bigSize: 28, bigH: 0.55, bigY: 0.1, labelSize: 14 });
+    callout(s, x, 3.0, w, 1.25, { icon: "LuTimer", big: `${speedRatio}x faster`, label: `${time3}\u00A0s vs ${time2}\u00A0s of machine time per request`, color: C.l3, bigSize: 28, bigH: 0.55, bigY: 0.1, labelSize: 14 });
+    callout(s, x, 4.35, w, 1.25, { icon: "LuDollarSign", big: `${costRatio}x cheaper`, label: `$${cost3} vs $${cost2} per 1,000 requests`, color: C.l3, bigSize: 28, bigH: 0.55, bigY: 0.1, labelSize: 14 });
+    // The error segment of the LLM agent is too narrow for a label, and the Jev pipeline has none: each row gets a label at its end.
     [[level2.errors, 2.725, C.red], [level3.errors, 4.1, C.teal]].forEach(([n, y, color]) => {
-      textBox(s, `${n} ${n === 1 ? "error" : "errors"}`, ML + 6.4, y, 0.95, 0.5, { size: 16, bold: true, color, valign: "middle", align: "right", margin: 0 });
+      textBox(s, `${n} wrong`, ML + 6.4, y, 0.95, 0.5, { size: 16, bold: true, color, valign: "middle", align: "right", margin: 0 });
     });
-    band(s, 5.85, 0.95, "LuShieldCheck", [{ text: "Harmful runs: ", options: { bold: true } }, { text: `${level3.harmful} in hybrid pipeline, ${level2.harmful} in autonomous agent. Observed on this synthetic set, not a safety guarantee.` }]);
+    band(s, 5.85, 0.95, "LuShieldCheck", [{ text: "Same LLM writes the reply. Only the decision step is different. ", options: { bold: true } }, { text: `Harmful runs: ${level2.harmful} vs ${level3.harmful}.` }]);
   }
 
   // Observed action-label and outcome results, not independent safety guards.
