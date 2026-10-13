@@ -2,37 +2,37 @@
 
 - **Họ và tên diễn giả:** Vu Van Son
 - **Vai trò trong đề tài:** Xây dựng tập dữ liệu tổng hợp (1.024 yêu cầu, 26 loại); Thiết kế thế giới khách hàng FrameForge; Thực thi thực nghiệm và đo lường API trực tiếp
-- **Tỷ lệ đóng góp trong bài báo:** 18% (đây không phải tỷ lệ thời gian nói). Về thời gian nói, Son nói 120 giây trên tổng 820 giây (14,6%).
-- **Thời gian nói được phân bổ:** 2 phút 00 giây (120 giây) cho hai slide: Slide 24 (60 giây) và Slide 25 (60 giây).
+- **Tỷ lệ đóng góp trong bài báo:** 18% (đây không phải tỷ lệ thời gian nói). Về thời gian nói, Son nói 120 giây trên tổng 835 giây (14,4%).
+- **Thời gian nói được phân bổ:** 2 phút 00 giây (120 giây) cho hai slide: Slide 26 (60 giây) và Slide 27 (60 giây).
 - **Số từ mục tiêu:** ~239 từ tiếng Anh (109 + 130) trong 120 giây, tức khoảng 120 từ mỗi phút. Số từ đếm trên lời nói thật, các số viết thành chữ. Nếu chậm hơn, cắt theo dòng "Nếu vượt khung" của từng slide.
-- **Các slide phụ trách:** Slide 24 (60 giây): cách chạy thí nghiệm, hai mô hình, giá niêm yết và chi phí của hai level; Slide 25 (60 giây): Kết quả 1 (Jev nhanh, rẻ và độ đúng theo từng câu trả lời). Son nói thẳng từ trên xuống dưới: **không chào, không tự giới thiệu, không đặt câu hỏi** cho khán giả. Long đã đọc tên Son ở Slide 1.
+- **Các slide phụ trách:** Slide 26 (60 giây): cách chạy thí nghiệm, hai mô hình, giá niêm yết và chi phí của hai level; Slide 27 (60 giây): Kết quả 1 (Jev nhanh, rẻ và độ đúng theo từng câu trả lời). Son nói thẳng từ trên xuống dưới: **không chào, không tự giới thiệu, không đặt câu hỏi** cho khán giả. Long đã đọc tên Son ở Slide 1.
 
 ---
 
 ## 1. Kịch bản nói chi tiết từng từ (Word-for-Word Spoken Script)
 
-### Slide 24: Cách chạy và giá: hai level, hai mô hình, một bảng giá
-- **Tiêu đề slide:** Both levels run on the same 1,024 requests
+### Slide 26: Cách chạy và giá: hai kiến trúc, hai mô hình, một bảng giá
+- **Tiêu đề slide:** Experimental setup: 1,024 requests, two architectures
 - **Thời gian dự kiến trên slide:** 1 phút 00 giây (60 giây, ~109 từ)
 - **Nếu vượt khung:** bỏ câu giá của Jev và của LLM, giữ nguyên hai con số chi phí (0.64 đô và 0.30 đô cho 1.000 yêu cầu).
 
-> We call two hosted models for real: Jev, version one point thirteen, and DeepSeek V four point one Flash. Both levels run on the same one thousand and twenty-four requests, in separate runs.
+> We call two hosted models for real: Jev, version one point thirteen, and DeepSeek V four point one Flash. Both architectures run on the same one thousand and twenty-four requests, in separate runs.
 > 
 > `[NGHỈ 1 GIÂY]`  
 > 
-> Level Two makes two LLM calls for each request. Level Three makes one point five Jev calls and one LLM call. Jev costs four point two cents per million input tokens, and its output is free. The LLM costs fifteen cents in and sixty cents out per million tokens.
+> The autonomous agent makes two LLM calls for each request. The hybrid pipeline makes one point five classifier calls and one LLM call. Jev costs four point two cents per million input tokens, and its output is free. The LLM costs fifteen cents in and sixty cents out per million tokens.
 > 
 > `[NGHỈ 1 GIÂY]`  
 > 
-> At list price, one thousand requests cost sixty-four cents at Level Two and thirty cents at Level Three. These are API token charges, not total operating cost.
+> At list price, one thousand requests cost sixty-four cents for the autonomous agent and thirty cents for the hybrid pipeline. These are API token charges, not total operating cost.
 > 
 > `[NGHỈ 1 GIÂY]`  
 > 
-> `[CHUYỂN SANG SLIDE 25]`
+> `[CHUYỂN SANG SLIDE 29]`
 
 ---
 
-### Slide 25: Kết quả 1: Jev nhanh, rẻ và phần lớn đúng
+### Slide 27: Kết quả 1: Jev nhanh, rẻ và phần lớn đúng
 - **Tiêu đề slide:** Jev on our SaaS test set: speed, cost, and accuracy
 - **Thời gian dự kiến trên slide:** 1 phút 00 giây (60 giây, ~130 từ)
 - **Ý chính:** một nửa số yêu cầu cần 0.47 s hoặc ít hơn cho phần Jev (gồm lần gọi luật); 0.066 đô cho 1.000 yêu cầu; độ đúng: chủ đề 93,3%, ưu tiên 86,5%, hành động 72,9%, cờ injection 98,4%; 2.050 trên 2.050 câu trả lời luật khớp luật; 278 nhãn hành động sai ở lần gọi đầu, 0 dẫn tới kết cục sai.

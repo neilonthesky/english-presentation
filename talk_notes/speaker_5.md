@@ -2,16 +2,16 @@
 
 - **Họ và tên diễn giả:** Nguyen Phuong Nam
 - **Vai trò trong đề tài:** Tổng quan tài liệu nghiên cứu liên quan; Thảo luận hạn chế nghiên cứu; Thiết kế trực quan slide; Hỗ trợ chuẩn bị tài liệu hỏi đáp cho Long
-- **Tỷ lệ đóng góp trong bài báo:** 15% (đây không phải tỷ lệ thời gian nói). Về thời gian nói, Phuong Nam nói 120 giây trên tổng 820 giây (14,6%).
-- **Thời gian nói được phân bổ:** 2 phút 00 giây (120 giây) cho hai slide: Slide 28 (60 giây) và Slide 29 (60 giây).
+- **Tỷ lệ đóng góp trong bài báo:** 15% (đây không phải tỷ lệ thời gian nói). Về thời gian nói, Phuong Nam nói 120 giây trên tổng 835 giây (14,4%).
+- **Thời gian nói được phân bổ:** 2 phút 00 giây (120 giây) cho hai slide: Slide 30 (60 giây) và Slide 31 (60 giây).
 - **Số từ mục tiêu:** ~223 từ tiếng Anh (86 + 137) trong 120 giây, tức khoảng 112 từ mỗi phút. Số từ đếm trên lời nói thật, các số viết thành chữ. Nếu chậm hơn, cắt theo dòng "Nếu vượt khung" của từng slide.
-- **Các slide phụ trách:** Slide 28 (60 giây): ý tưởng của nhóm (giới hạn điều mỗi mô hình có thể kích hoạt); Slide 29 (60 giây): kết luận. Phuong Nam nói thẳng từ trên xuống dưới: **không chào, không tự giới thiệu, không đặt câu hỏi** cho khán giả; toàn bộ phần hỏi đáp sau Slide 29 do Long phụ trách. Long đã đọc tên Phuong Nam ở Slide 1.
+- **Các slide phụ trách:** Slide 30 (60 giây): ý tưởng của nhóm (giới hạn điều mỗi mô hình có thể kích hoạt); Slide 31 (60 giây): kết luận. Phuong Nam nói thẳng từ trên xuống dưới: **không chào, không tự giới thiệu, không đặt câu hỏi** cho khán giả; toàn bộ phần hỏi đáp sau Slide 31 do Long phụ trách. Long đã đọc tên Phuong Nam ở Slide 1.
 
 ---
 
 ## 1. Kịch bản nói chi tiết từng từ (Word-for-Word Spoken Script)
 
-### Slide 28: Ý tưởng của chúng tôi: giới hạn điều mỗi mô hình có thể kích hoạt
+### Slide 30: Ý tưởng của chúng tôi: giới hạn điều mỗi mô hình có thể kích hoạt
 - **Tiêu đề slide:** Our idea: limit what each model can trigger
 - **Thời gian dự kiến trên slide:** 1 phút 00 giây (60 giây, ~86 từ)
 - **Nếu vượt khung:** giữ nguyên câu cuối ("This is fixed execution, not independent policy verification...") và bỏ câu "The LLM writes the final message...".
@@ -20,7 +20,7 @@
 > 
 > `[NGHỈ 1 GIÂY]`  
 > 
-> Fixed code runs the action only when no answer reports a broken rule. The LLM writes the final message after the action or the refusal, and it cannot change that decision.
+> Fixed code runs the action only when no answer reports a broken rule. The LLM drafts the final message after the action or the refusal, and it cannot change that decision. A draft cannot touch money or data; only the code can.
 > 
 > `[NGHỈ 1 GIÂY]`  
 > 
@@ -28,20 +28,20 @@
 > 
 > `[NGHỈ 1 GIÂY]`  
 > 
-> `[CHUYỂN SANG SLIDE 29]`
+> `[CHUYỂN SANG SLIDE 33]`
 
 ---
 
-### Slide 29: Kết luận
+### Slide 31: Kết luận
 - **Tiêu đề slide:** Conclusion
 - **Thời gian dự kiến trên slide:** 1 phút 00 giây (60 giây, ~137 từ)
 - **Nếu vượt khung:** bỏ câu "Next, we need real tickets..." và câu về Red Hat; giữ nguyên các số của hai level, câu "we saw these failures before the last test" và câu cảm ơn.
 
-> Finally, we measured two automated levels in separate runs on the same one thousand and twenty-four requests. Level Two serves seven hundred and ninety-five, stops one hundred and ninety-eight, and makes thirty-one errors. Level Three serves eight hundred and twenty-five, stops one hundred and ninety-nine, and makes zero errors.
+> Finally, we measured both automated architectures in separate runs on the same one thousand and twenty-four requests. The autonomous agent serves seven hundred and ninety-five, stops one hundred and ninety-eight, and makes thirty-one errors. Our hybrid pipeline serves eight hundred and twenty-five, stops one hundred and ninety-nine, and makes zero errors.
 > 
 > `[NGHỈ 1 GIÂY]`  
 > 
-> Level Three needs less than half the average machine time and has two point two times lower API cost. Jev needs a question that we write for each rule. Two refund inputs were changed after earlier failures, so we saw these failures before the last test. We did not test programs that learn from examples, or other decision models.
+> The hybrid pipeline needs less than half the average machine time and has two point two times lower API cost. Each rule needs a question that we write. Two refund inputs were changed after earlier failures, so we saw these failures before the last test. We did not test programs that learn from examples, or other decision models.
 > 
 > `[NGHỈ 1 GIÂY]`  
 > 

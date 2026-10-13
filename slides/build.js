@@ -1,7 +1,7 @@
 // Builds slides/deck.pptx from the independent Level 2 and Level 3 experiment results.
 // Claims apply only to the stored synthetic SaaS set and the measured hosted API configurations.
 // Fixed execution follows Jev's answers; it is not independent policy verification or a safety guarantee.
-// Slide 29 links the Red Hat guardrail benchmark as external context, not replacement experiment data.
+// The conclusion slide links the Red Hat guardrail benchmark as external context, not replacement experiment data.
 // Run: node build.js   (from the slides/ directory), or ./render.sh to also validate and render.
 // Style: light-to-mid blue/grey/teal tones, borderless cards, solid fills, no glow or shadow,
 // no dark theme, no yellow/orange. Photographs live in assets/ and are generated for this deck.
@@ -87,15 +87,18 @@ const C = {
   l3: "234B84", // Level 3
   red: "A94A4A", // errors and unsafe runs
   white: "FFFFFF",
+  dark: "0F1B2D", // dark band of slide 2
+  darkLine: "2A415F", // divider on the dark band
+  gold: "E4B75C", // evidence headline on the dark band
 };
 const FONT = "Calibri";
-const TITLE = "Human to LLM & Classifier Support Agent: A Three-Level Ladder for SaaS Request Triage";
+const TITLE = "Customer Support Automation: Intent Classification and Deterministic Rules versus Autonomous LLM Agents";
 const RED_HAT_BENCHMARK_URL = "https://developers.redhat.com/articles/2026/10/02/benchmarking-ai-decision-models-against-traditional-guardrails";
 
 // Speakers and speaking time per logical section; each walk-through section spans several slides.
 const LONG = "Tran Thanh Long", NAM = "Nguyen Thanh Nam", SON = "Vu Van Son", QUY = "Vuong Quang Quy", PNAM = "Nguyen Phuong Nam";
 const SPEAKER = [
-  [LONG, 50], [LONG, 70], [LONG, 41],
+  [LONG, 50], [LONG, 50], [LONG, 15], [LONG, 20], [LONG, 40], [LONG, 41], // title, start, quiz question, quiz answer, the three generations, the ladder
   [LONG, 7], // many rules
   [LONG, 23], [LONG, 33], [LONG, 26], [LONG, 23], [LONG, 21], // written rules, Level 2 flow, Level 3 flow, inputs, typed answers
   [LONG, 22], [LONG, 12], [LONG, 12], // the three walk-throughs (CASES in cases.js): every click is its own slide, so these seconds cover all of them
@@ -135,6 +138,91 @@ async function photo(file, w, h, radius = 0.08, dpi = 150) {
   return "image/png;base64," + buf.toString("base64");
 }
 
+// Technical infographic-style milestone icons for the three generations slide.
+// Restrained editorial palette (Slate, Deck Blue, Deep Navy, Crisp White).
+// Flat, high-contrast vector system diagrams with clean geometry (128x128 SVG).
+const GEN_BADGES = {
+  gen1: `
+    <circle cx="64" cy="64" r="58" fill="#475569"/>
+    <circle cx="64" cy="64" r="54" fill="none" stroke="#FFFFFF" stroke-width="1.5" stroke-opacity="0.25"/>
+    <rect x="26" y="26" width="24" height="20" rx="3" fill="#FFFFFF"/>
+    <rect x="30" y="31" width="10" height="2.5" rx="1" fill="#475569"/>
+    <rect x="30" y="36" width="16" height="2" rx="1" fill="#94A3B8"/>
+    <rect x="30" y="40" width="12" height="2" rx="1" fill="#CBD5E1"/>
+    <path d="M 53 36 H 61 L 61 40" fill="none" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round"/>
+    <polygon points="61,43 58,39 64,39" fill="#FFFFFF"/>
+    <polygon points="54,43 88,43 75,62 75,72 67,72 67,62" fill="#334155" stroke="#FFFFFF" stroke-width="2" stroke-linejoin="round"/>
+    <line x1="60" y1="50" x2="82" y2="50" stroke="#FFFFFF" stroke-width="1.8" stroke-linecap="round" stroke-opacity="0.8"/>
+    <line x1="64" y1="56" x2="78" y2="56" stroke="#FFFFFF" stroke-width="1.8" stroke-linecap="round" stroke-opacity="0.8"/>
+    <path d="M 68 72 C 68 80 50 80 50 88" fill="none" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round"/>
+    <circle cx="50" cy="92" r="9" fill="#FFFFFF"/>
+    <path d="M 46 92 L 49 95 L 55 89" fill="none" stroke="#475569" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M 74 72 C 74 80 90 80 90 86" fill="none" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round"/>
+    <rect x="80" y="86" width="20" height="15" rx="3" fill="#FFFFFF"/>
+    <path d="M 85 91 L 83 93.5 L 85 96 M 95 91 L 97 93.5 L 95 96" fill="none" stroke="#475569" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+    <line x1="91" y1="90" x2="89" y2="97" stroke="#475569" stroke-width="1.4" stroke-linecap="round"/>
+  `,
+  gen2: `
+    <circle cx="64" cy="64" r="58" fill="#2F5F98"/>
+    <circle cx="64" cy="64" r="54" fill="none" stroke="#FFFFFF" stroke-width="1.5" stroke-opacity="0.25"/>
+    <path d="M 30 32 C 30 24 36 20 45 20 L 83 20 C 92 20 98 24 98 32 L 98 64 C 98 72 92 76 83 76 L 56 76 L 42 88 L 44 76 C 35 76 30 72 30 64 Z" fill="#FFFFFF"/>
+    <path d="M 64 30 Q 64 45 77 45 Q 64 45 64 60 Q 64 45 51 45 Q 64 45 64 30 Z" fill="#1B365D"/>
+    <circle cx="64" cy="45" r="3" fill="#FFFFFF"/>
+    <path d="M 80 32 Q 80 36 84 36 Q 80 36 80 40 Q 80 36 76 36 Q 80 36 80 32 Z" fill="#2F5F98"/>
+    <path d="M 48 53 Q 48 56 51 56 Q 48 56 48 59 Q 48 56 45 56 Q 48 56 48 53 Z" fill="#2F5F98"/>
+    <circle cx="92" cy="74" r="13" fill="#1B365D" stroke="#FFFFFF" stroke-width="2"/>
+    <path d="M 86 74 L 90 78 L 98 70" fill="none" stroke="#FFFFFF" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+  `,
+  gen3: `
+    <circle cx="64" cy="64" r="58" fill="#1B365D"/>
+    <circle cx="64" cy="64" r="54" fill="none" stroke="#FFFFFF" stroke-width="1.5" stroke-opacity="0.25"/>
+    <path d="M 44 42 H 84 V 68 H 64 V 80" fill="none" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+    <circle cx="64" cy="42" r="3" fill="#FFFFFF"/>
+    <circle cx="84" cy="56" r="3" fill="#FFFFFF"/>
+    <g transform="translate(44, 42)">
+      <polygon points="0,-15 13,-7 13,8 0,15 -13,8 -13,-7" fill="#FFFFFF"/>
+      <circle cx="0" cy="0" r="5" fill="none" stroke="#1B365D" stroke-width="1.8"/>
+      <path d="M 0,-8 V -5 M 0,5 V 8 M -8,0 H -5 M 5,0 H 8" stroke="#1B365D" stroke-width="1.8" stroke-linecap="round"/>
+    </g>
+    <g transform="translate(84, 42)">
+      <path d="M -13,-12 H 13 V 2 C 13 11 0 16 0 16 C 0 16 -13 11 -13 2 Z" fill="#FFFFFF"/>
+      <path d="M -6,-3 L -9,0 L -6,3 M 6,-3 L 9,0 L 6,3" fill="none" stroke="#1B365D" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      <line x1="1.5" y1="-5" x2="-1.5" y2="5" stroke="#1B365D" stroke-width="1.6" stroke-linecap="round"/>
+    </g>
+    <g transform="translate(64, 86)">
+      <rect x="-26" y="-12" width="52" height="24" rx="12" fill="#FFFFFF"/>
+      <path d="M -14,-7 Q -14,-1 -8,-1 Q -14,-1 -14,5 Q -14,-1 -20,-1 Q -14,-1 -14,-7 Z" fill="#1B365D"/>
+      <line x1="-3" y1="-3" x2="16" y2="-3" stroke="#1B365D" stroke-width="2.2" stroke-linecap="round"/>
+      <line x1="-3" y1="3" x2="10" y2="3" stroke="#1B365D" stroke-width="2.2" stroke-linecap="round"/>
+    </g>
+  `,
+  pin: `
+    <path d="M 64 20 C 44 20 28 36 28 56 C 28 78 64 112 64 112 C 64 112 100 78 100 56 C 100 36 84 20 64 20 Z"
+          fill="#1B365D" stroke="#FFFFFF" stroke-width="2"/>
+    <circle cx="64" cy="54" r="14" fill="#FFFFFF"/>
+    <circle cx="64" cy="54" r="6" fill="#1B365D"/>
+  `
+};
+async function genIconPng(kind) {
+  const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 128 128">${GEN_BADGES[kind]}</svg>`;
+  const buf = await sharp(Buffer.from(svg)).png().toBuffer();
+  return "image/png;base64," + buf.toString("base64");
+}
+async function serpentinePng() {
+  const road = "M 120 700 C 320 700 300 480 520 480 C 760 480 700 250 960 250 C 1180 250 1220 460 1480 460";
+  const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="3200" height="1800" viewBox="0 0 1600 900">` +
+    `<path d="${road}" fill="none" stroke="#FFFFFF" stroke-width="46" stroke-linecap="round"/>` +
+    `<path d="${road}" fill="none" stroke="#${C.blue}" stroke-width="5" stroke-dasharray="26 22" stroke-linecap="round"/></svg>`;
+  const buf = await sharp(Buffer.from(svg)).png().toBuffer();
+  return "image/png;base64," + buf.toString("base64");
+}
+
+// Curved connector arrow with a real arrowhead; a bare straight line reads too plain.
+async function curveArrowPng(svg) {
+  const buf = await sharp(Buffer.from(svg)).png().toBuffer();
+  return "image/png;base64," + buf.toString("base64");
+}
+
 (async () => {
   const pres = new pptxgen();
   pres.layout = "LAYOUT_WIDE"; // 13.333 x 7.5 in
@@ -149,9 +237,26 @@ async function photo(file, w, h, radius = 0.08, dpi = 150) {
     "LuMail", "LuDatabase", "LuZap", "LuFileText", "LuTarget", "LuTimer", "LuBadgeCheck", "LuHourglass",
     "LuTriangleAlert", "LuFlaskConical", "LuShieldX", "LuDollarSign", "LuMessageCircle", "LuCircleCheck",
     "LuCpu", "LuGauge", "LuLock", "LuUser", "LuListChecks", "LuWorkflow",
+    "LuUndo2", "LuCalendarX", "LuKeyRound", "LuTrash2",
+    "LuBadgeInfo",
+    "LuEye", "LuEyeOff", "LuFlaskConical",
   ];
   const img = {};
   for (const n of ICONS) img[n] = await iconPng(n);
+  img.LuEyeOffSlate = await iconPng("LuEyeOff", "#6B7A8C");
+  img.LuLockNavy = await iconPng("LuLock", "#1B365D");
+  // Flow arrows of slide 2: a dashed red curve for the injected order, a solid navy curve
+  // for the direct tool call; both with a filled arrowhead along the end tangent.
+  const injArrow = await curveArrowPng(
+    `<svg xmlns="http://www.w3.org/2000/svg" width="260" height="150" viewBox="0 0 260 150">` +
+      `<path d="M 12 132 Q 122 120 230 42" fill="none" stroke="#A94A4A" stroke-width="5" stroke-dasharray="13 10" stroke-linecap="round"/>` +
+      `<polygon points="230,42 217.5,62.2 206.9,47.6" fill="#A94A4A"/></svg>`
+  );
+  const callArrow = await curveArrowPng(
+    `<svg xmlns="http://www.w3.org/2000/svg" width="170" height="100" viewBox="0 0 170 100">` +
+      `<path d="M 10 64 Q 72 26 140 52" fill="none" stroke="#1B365D" stroke-width="5.5" stroke-linecap="round"/>` +
+      `<polygon points="140,52 118.4,52.4 124.2,37.4" fill="#1B365D"/></svg>`
+  );
   const shots = {
     machine: await photo("assets/machine.jpg", 2.4, 2.4),
     human: await photo("assets/human.jpg", 2.4, 2.4),
@@ -160,7 +265,7 @@ async function photo(file, w, h, radius = 0.08, dpi = 150) {
   function base(n, title, notes, withSpeaker = true, titleName, titleBox = {}) {
     const s = pres.addSlide();
     s.background = { color: C.bg };
-    s.addText(title, { x: ML, y: 0.4, w: CW, h: 0.95, margin: 0, fontFace: FONT, fontSize: 34, bold: true, color: C.navy, valign: "middle", objectName: titleName, ...titleBox });
+    s.addText(title, { x: ML, y: 0.4, w: CW, h: 0.95, margin: 0, fontFace: FONT, fontSize: 36, bold: true, color: C.navy, valign: "middle", objectName: titleName, ...titleBox });
     s.slideNumber = { x: 12.3, y: 7.0, w: 0.5, h: 0.3, fontFace: FONT, fontSize: 11, color: C.muted };
     const [name, secs] = SPEAKER[n - 1];
     s.addNotes(withSpeaker ? `Speaker: ${name}, about ${secs} s. ${notes}` : notes);
@@ -171,7 +276,8 @@ async function photo(file, w, h, radius = 0.08, dpi = 150) {
   const box = (s, x, y, w, h, o = {}) =>
     s.addShape(pres.ShapeType.roundRect, {
       x, y, w, h, rectRadius: o.radius ?? 0.08, fill: { color: o.fill || C.card },
-      ...(o.line ? { line: { color: o.line, width: o.lineW ?? 1 } } : {}),
+      ...(o.line ? { line: { color: o.line, width: o.lineW ?? 1, dashType: o.dash } } : {}),
+      ...(o.shadow ? { shadow: { type: "outer", color: "1B365D", opacity: 0.18, blur: 9, offset: 3, angle: 90 } } : {}),
     });
 
   // Text-box margins are given in inches ([top, right, bottom, left] or one number);
@@ -235,8 +341,8 @@ async function photo(file, w, h, radius = 0.08, dpi = 150) {
   };
 
   // ---------- 1. Title ----------
-  // One grid: margin 0.7 on every side. Left: the title and the team, from x 0.7 to 6.6. Right: a light panel from x 6.9 with the three
-  // levels as a staircase from x 7.6 to 12.63. The top of the header and of the tallest step is y 0.7; the last name and the base of the steps are y 6.8.
+  // Left: the approved topic-driven title and the team (x 0.7 to 6.6 on deep blue).
+  // Right: the two automated paradigms compared (x 7.6 to 12.63 on light panel).
   {
     const s = pres.addSlide();
     s.background = { color: C.l3 };
@@ -247,95 +353,242 @@ async function photo(file, w, h, radius = 0.08, dpi = 150) {
       [{ text: "Phenikaa School of Computing", options: { bold: true, breakLine: true } }, { text: "English Writing and Presentation Skills \u00b7 October 2026" }],
       { x: M, y: 0.7, w: LW, h: 0.65, margin: 0, fontFace: FONT, fontSize: 16, color: light, valign: "top", paraSpaceAfter: 2 }
     );
-    s.addText("Human to LLM\n& Classifier\nSupport Agent", { x: M, y: 1.7, w: LW, h: 2.3, margin: 0, fontFace: FONT, fontSize: 46, bold: true, color: C.white, valign: "top" });
-    s.addText("A Three-Level Ladder for SaaS Request Triage", { x: M, y: 4.05, w: LW, h: 0.5, margin: 0, fontFace: FONT, fontSize: 22, color: light, valign: "middle" });
-    s.addText("Team", { x: M, y: 4.98, w: LW, h: 0.32, margin: 0, fontFace: FONT, fontSize: 16, bold: true, color: light, valign: "middle" });
+    s.addText("Customer Support\nAutomation", { x: M, y: 1.55, w: LW, h: 1.35, margin: 0, fontFace: FONT, fontSize: 38, bold: true, color: C.white, valign: "top" });
+    s.addText("Intent Classification and Deterministic Rules\nversus Autonomous LLM Agents", {
+      x: M, y: 2.98, w: LW, h: 0.95, margin: 0, fontFace: FONT, fontSize: 20, color: light, valign: "top",
+    });
+    s.addText("Team", { x: M, y: 4.15, w: LW, h: 0.32, margin: 0, fontFace: FONT, fontSize: 16, bold: true, color: light, valign: "middle" });
     const team = [LONG, NAM, SON, QUY, PNAM];
     s.addText(team.map((t, i) => ({ text: t, options: { breakLine: i < team.length - 1 } })), {
-      x: M, y: 5.3, w: LW, h: 1.5, margin: 0, fontFace: FONT, fontSize: 18, color: C.white, valign: "top",
+      x: M, y: 4.52, w: LW, h: 1.5, margin: 0, fontFace: FONT, fontSize: 18, color: C.white, valign: "top",
     });
 
-    // The question above the low steps fills the corner that a staircase leaves empty.
-    s.addText("Who should answer a customer?", { x: SX, y: 0.7, w: 3.2, h: 1.3, margin: 0, fontFace: FONT, fontSize: 26, bold: true, color: C.navy, valign: "top" });
-    // The staircase: each step is taller than the one before, as each level adds a change.
-    const stepW = SW / 3, top = 0.7, floor = 6.8, rise = (floor - top) / 3;
-    [
-      { icon: "LuUsers", fill: C.grey, tag: "Level 1", name: "Staff" },
-      { icon: "LuBot", fill: C.l2, tag: "Level 2", name: "LLM agent" },
-      { icon: "LuTags", fill: C.l3, tag: "Level 3", name: "Jev + LLM" },
-    ].forEach((st, i) => {
-      const h = rise * (i + 1), x = SX + i * stepW, y = floor - h;
-      s.addShape(pres.ShapeType.rect, { x, y, w: stepW, h, fill: { color: st.fill }, line: { color: st.fill, width: 0 } });
-      s.addImage({ data: img[st.icon], x: x + 0.22, y: y + 0.3, w: 0.5, h: 0.5 });
-      s.addText(
-        [{ text: st.tag, options: { fontSize: 15, bold: true, color: C.white, breakLine: true } }, { text: st.name, options: { fontSize: 20, bold: true, color: C.white } }],
-        { x: x + 0.22, y: y + 0.95, w: stepW - 0.3, h: 0.7, margin: 0, fontFace: FONT, valign: "top" }
-      );
-    });
+    // Right panel: The two automated paradigms
+    s.addText("Two approaches to\nautomation", { x: SX, y: 0.7, w: SW, h: 1.05, margin: 0, fontFace: FONT, fontSize: 26, bold: true, color: C.navy, valign: "top" });
+    s.addText("Which architecture can handle consequential customer actions?", { x: SX, y: 1.82, w: SW, h: 0.45, margin: 0, fontFace: FONT, fontSize: 14, color: C.text, valign: "top" });
+
+    const gap = 0.25, cardW = (SW - gap) / 2, cardY = 2.38, cardH = 4.42;
+    // Paradigm 1: Autonomous LLM Agent
+    box(s, SX, cardY, cardW, cardH, { fill: C.white });
+    s.addShape(pres.ShapeType.roundRect, { x: SX, y: cardY, w: cardW, h: 0.82, rectRadius: 0.08, fill: { color: C.blue }, line: { color: C.blue, width: 0 } });
+    s.addImage({ data: img.LuBot, x: SX + 0.16, y: cardY + 0.16, w: 0.5, h: 0.5 });
+    s.addText("Autonomous\nLLM Agent", { x: SX + 0.72, y: cardY + 0.08, w: cardW - 0.8, h: 0.66, margin: 0, fontFace: FONT, fontSize: 15, bold: true, color: C.white, valign: "middle" });
+    s.addText(
+      bullets([
+        "One monolithic model",
+        "Policies in system prompt",
+        "Model decides & executes",
+        "High token & latency cost",
+        "Susceptible to injection",
+      ]),
+      { x: SX + 0.14, y: cardY + 0.95, w: cardW - 0.28, h: 3.3, margin: 0, fontFace: FONT, fontSize: 14, color: C.text, paraSpaceAfter: 8, valign: "top" }
+    );
+
+    // Paradigm 2: Classifier + Rules + LLM
+    const x2 = SX + cardW + gap;
+    box(s, x2, cardY, cardW, cardH, { fill: C.white });
+    s.addShape(pres.ShapeType.roundRect, { x: x2, y: cardY, w: cardW, h: 0.82, rectRadius: 0.08, fill: { color: C.navy }, line: { color: C.navy, width: 0 } });
+    s.addImage({ data: img.LuWorkflow, x: x2 + 0.16, y: cardY + 0.16, w: 0.5, h: 0.5 });
+    s.addText("Classifier +\nRules + LLM", { x: x2 + 0.72, y: cardY + 0.08, w: cardW - 0.8, h: 0.66, margin: 0, fontFace: FONT, fontSize: 15, bold: true, color: C.white, valign: "middle" });
+    s.addText(
+      bullets([
+        "Structured intent triage",
+        "Facts parsed by classifier",
+        "Deterministic rules in code",
+        "LLM drafts reply only",
+        "Zero unchecked actions",
+      ]),
+      { x: x2 + 0.14, y: cardY + 0.95, w: cardW - 0.28, h: 3.3, margin: 0, fontFace: FONT, fontSize: 14, color: C.text, paraSpaceAfter: 8, valign: "top" }
+    );
+
     s.addNotes(
-      `Speaker: ${LONG}, about ${SPEAKER[0][1]} s. Good morning. A customer waits two days for a refund; a chatbot that handles money can do harm. ` +
-        "We study three levels of customer support for FrameForge, a made-up AI video-generation SaaS: support staff, one LLM agent, and Jev with an LLM."
+      `Speaker: ${LONG}, about ${SPEAKER[0][1]} s. Good morning. When customers request refunds, plan changes, or account deletions, an automated system that handles money and data can cause severe harm. ` +
+        "Companies often deploy autonomous LLM agents that read policy text and act directly, but these agents are slow, expensive, and vulnerable to prompt injection. " +
+        "Today, we study an alternative architecture: combining lightweight intent classification and deterministic code rules with LLM response generation, and compare both on consequential customer requests."
     );
   }
 
-  // ---------- 2. Where we start ----------
+  // ---------- 2. The core problem: autonomous agents and consequential actions ----------
+  // Evo-2 design: the anatomy flow of one request on the light top band, the three failure modes
+  // on a dark bottom band. No quiz bar; the quiz lives on the next two slides.
   {
     const s = base(
       2,
-      "Where we start: staff or one LLM agent",
-      "Level 1: support staff read every request. No model runs, so no model error, but each request takes an assumed 90 s and the cost grows with every request. " +
-        "Level 2: one LLM agent reads the chat and the whole account and applies the written rules itself. No independent policy check stands behind its answer, and an order hidden in a text can reach it. " +
-        "One audience quiz by the leader: which action would you never let a chatbot do alone (refund, plan cancellation, password reset, data deletion)? The written rules always deny data deletion in chat. " +
-        "Our question: what if a small, fast model called Jev decided, and the LLM only wrote the reply? Level 3 is that design, and the next slide shows it."
+      "Consequential actions: why autonomous agents fail alone",
+      "Customer support automation goes beyond answering FAQs: it executes consequential actions on customer accounts, such as refunds, plan changes, and deletions. " +
+        "Companies deploy autonomous LLM agents with direct API tools, pasting complex policies into system prompts. " +
+        "Because LLMs evaluate rules probabilistically, prompt injections and hallucinations trigger unauthorized, irreversible actions with no independent code check. " +
+        "External evidence: on the Artificial Analysis Omniscience benchmark, even the best model still hallucinates on hard questions, and most companies deploy cheaper open-weight models, so only architecture can stop it. " +
+        "Then the quiz runs on the next two slides: the question with four options, then the answer."
     );
-    const cw = (CW - 0.4) / 2, y = 1.65, h = 3.5;
+    // Flow row on the light band, centered across the freed width: a message that hides an
+    // order, the agent that trusts it, tools that run. No talk text on the slide; the
+    // "smarter model" question lives in the speaker notes.
+    box(s, 1.5, 1.5, 4.4, 1.95, { line: C.border, shadow: true });
+    iconCircle(s, "LuUser", 1.78, 1.7, 0.44, C.blue);
+    textBox(s, "Customer", 2.32, 1.76, 2.0, 0.32, { size: 12.5, bold: true, color: C.muted });
+    s.addText("Please refund my $500 plan\nand delete my old projects.", { x: 1.75, y: 2.14, w: 3.9, h: 0.68, margin: 0, fontFace: FONT, fontSize: 16, color: C.text, valign: "top" });
+    // The covert instruction: dashed slate outline, monospace, like hidden text. Red stays
+    // reserved for the one destructive action and the dark band below.
+    box(s, 1.75, 2.88, 3.9, 0.5, { fill: "F2F4F7", r: 0.08, line: "6B7A8C", lineW: 1.5, dash: "dash" });
+    s.addImage({ data: img.LuEyeOffSlate, x: 1.92, y: 2.99, w: 0.28, h: 0.28 });
+    textBox(s, 'hidden: "ignore your rules"', 2.32, 2.88, 3.2, 0.5, { size: 13, bold: true, color: "3A4656", font: "Courier New", valign: "middle" });
+    s.addImage({ data: injArrow, x: 5.65, y: 2.4, w: 1.3, h: 0.75 });
+    textBox(s, "prompt injection", 5.82, 2.3, 1.05, 0.28, { size: 12.5, bold: true, color: C.red, align: "center" });
+    iconCircle(s, "LuBot", 6.93, 2.03, 1.15, C.navy);
+    textBox(s, "Autonomous LLM agent", 6.2, 3.35, 2.6, 0.3, { size: 15, bold: true, color: C.navy, align: "center" });
+    textBox(s, "rules live in its prompt", 6.2, 3.66, 2.6, 0.28, { size: 13, color: C.muted, align: "center" });
+    s.addImage({ data: callArrow, x: 8.0, y: 2.35, w: 0.85, h: 0.5 });
+    textBox(s, "calls the tool\ndirectly", 7.5, 1.32, 1.3, 0.6, { size: 12.5, color: C.muted, align: "center", valign: "top" });
     [
-      { x: ML, shot: shots.human, head: "Level 1: staff only",
-        items: ["No model, so no model error", "90 s per request (assumed)", "Cost and wait grow with every request"] },
-      { x: ML + cw + 0.4, shot: shots.machine, head: "Level 2: one LLM agent",
-        items: ["It reads the chat and the account", "It applies the written rules itself", "No independent policy check"] },
-    ].forEach((p) => {
-      box(s, p.x, y, cw, h);
-      s.addImage({ data: p.shot, x: p.x + 0.35, y: y + 0.55, w: 2.4, h: 2.4 });
-      textBox(s, p.head, p.x + 3.0, y + 0.45, cw - 3.25, 0.8, { size: 22, bold: true, color: C.navy });
-      s.addText(bullets(p.items), {
-        x: p.x + 3.0, y: y + 1.35, w: cw - 3.2, h: 1.9, margin: 0, fontFace: FONT, fontSize: 15, color: C.text, paraSpaceAfter: 8, valign: "top",
-      });
+      ["LuUndo2", "Start refund", C.blue],
+      ["LuCalendarX", "Cancel plan", C.blue],
+      ["LuTrash2", "Delete data", C.red],
+    ].forEach(([ic, label, col], i) => {
+      const y = 1.55 + i * 0.64;
+      box(s, 8.85, y, 2.95, 0.52, { fill: col, r: 0.26, shadow: true });
+      s.addImage({ data: img[ic], x: 9.08, y: y + 0.11, w: 0.3, h: 0.3 });
+      textBox(s, label, 9.52, y, 2.2, 0.52, { size: 15, bold: true, color: C.white, valign: "middle" });
     });
-    textBox(
-      s,
-      [{ text: "Our question: ", options: { bold: true } }, { text: "what if a small, fast model called Jev decided, and the LLM only wrote the reply?" }],
-      ML, 5.45, CW, 1.2,
-      { shape: pres.ShapeType.roundRect, fill: C.blue, line: C.blue, color: C.white, size: 24, margin: 0.35, valign: "middle" }
-    );
+    box(s, 8.85, 3.5, 2.95, 0.52, { fill: "EEF2F7", r: 0.08, line: C.navy, lineW: 1.5, dash: "dash" });
+    s.addImage({ data: img.LuLockNavy, x: 9.05, y: 3.61, w: 0.3, h: 0.3 });
+    textBox(s, "no safety net", 9.49, 3.5, 2.2, 0.52, { size: 15, bold: true, color: C.navy, valign: "middle" });
+    // Dark band: the three failure modes as labeled icons. No talk text; the AA-Omniscience
+    // evidence stays in the speaker notes.
+    s.addShape(pres.ShapeType.rect, { x: 0, y: 4.55, w: 13.333, h: 2.95, fill: { color: "1F2E4A" }, line: { color: "1F2E4A", width: 0 } });
+    textBox(s, "WHAT ACTUALLY HAPPENS", 0.9, 4.8, 6, 0.32, { size: 14, bold: true, color: "FF8B8B", spacing: 3 });
+    [
+      ["LuEye", "Prompt injection", "an order in the text overrides", "the written rules"],
+      ["LuFlaskConical", "Hallucination", "an edge case of the policy", "reads as allowed"],
+      ["LuShieldX", "No safety net", "money and data cannot", "come back"],
+    ].forEach(([ic, head, sub1, sub2], i) => {
+      const x = 1.1 + i * 4.1;
+      iconCircle(s, ic, x, 5.75, 0.72, C.red);
+      textBox(s, head, x + 0.95, 5.7, 2.9, 0.38, { size: 18, bold: true, color: "E7EDF6" });
+      textBox(s, `${sub1} ${sub2}`, x + 0.95, 6.1, 2.9, 0.65, { size: 14, color: "9DB8DC", valign: "top" });
+    });
   }
 
-  // ---------- 3. The ladder ----------
+  // ---------- 3 and 4. Quiz: the question, then the answer ----------
+  // One audience quiz on its own two slides: the question with four options, then the same four with the correct one lit.
+  {
+    const OPTS = [
+      { letter: "A", label: "Refund", icon: "LuUndo2" },
+      { letter: "B", label: "Plan cancellation", icon: "LuCalendarX" },
+      { letter: "C", label: "Password reset", icon: "LuKeyRound" },
+      { letter: "D", label: "Data deletion", icon: "LuTrash2" },
+    ];
+    const gap = 0.35, qw = (CW - 3 * gap) / 4, qy = 2.75, qh = 2.9;
+    const quiz = (n, title, notes, correct) => {
+      const s = base(n, title, notes);
+      s.addText("Which action would you never let a chatbot do alone?", { x: ML, y: 1.3, w: CW, h: 1.0, margin: 0, fontFace: FONT, fontSize: 30, bold: true, color: C.navy, valign: "middle" });
+      OPTS.forEach((o, i) => {
+        const x = ML + i * (qw + gap), hit = correct === o.letter, dim = correct !== undefined && !hit;
+        box(s, x, qy, qw, qh, dim ? { fill: "E9EDF2" } : hit ? { line: C.teal, lineW: 2.5 } : {});
+        iconCircle(s, hit ? "LuCircleCheck" : o.icon, x + 0.25, qy + 0.3, 0.75, hit ? C.teal : dim ? C.grey : C.l3);
+        s.addShape(pres.ShapeType.ellipse, { x: x + qw - 0.8, y: qy + 0.3, w: 0.55, h: 0.55, fill: { color: hit ? C.teal : dim ? C.greyL : C.l3 } });
+        s.addText(o.letter, { x: x + qw - 0.8, y: qy + 0.3, w: 0.55, h: 0.55, margin: 0, fontFace: FONT, fontSize: 18, bold: true, color: C.white, align: "center", valign: "middle" });
+        textBox(s, o.label, x + 0.25, qy + 1.45, qw - 0.5, 1.1, { size: 19, bold: hit, color: dim ? "6B7785" : C.navy });
+      });
+      return s;
+    };
+    quiz(
+      3,
+      "Quick quiz",
+      "Ask the question, then read the four options. Say: hands up for your choice. Pause about five seconds and look around; do not give the answer. The next slide shows it."
+    );
+    const s = quiz(
+      4,
+      "The answer",
+      "Point at D: data deletion. Our written rules strictly deny it in chat: deleted projects and trained models cannot come back. An autonomous LLM agent with direct tool access can be tricked into executing unauthorized actions. To solve this safely, we must enforce deterministic rules outside the generative model. The next slide places this architecture in the history of support automation.",
+      "D"
+    );
+    band(s, 6.0, 0.85, "LuShieldCheck", [
+      { text: "Our written rules always deny data deletion in chat: ", options: { bold: true } },
+      { text: "deleted projects and trained models cannot come back." },
+    ]);
+  }
+
+  // ---------- 4. Three generations ----------
+  // Opening background slide: a rising serpentine road through the industry's history, described only. It comes before
+  // Jev, the levels, and the results, so it names none of them and makes no judgment.
   {
     const s = base(
-      3,
-      "Three levels; two automated designs compared",
-      "Level 1 is the baseline: support staff read every request, 90 s each (assumed). " +
-        "Level 2 replaces the staff with one LLM agent that reads the account, applies the written rules itself, and either runs an action or denies it. " +
-        "Level 3 replaces the agent with Jev: Jev reads the chat and gives typed answers, then answers one yes/no question for each written rule of the action, each with a confidence; the process follows the answers, and the LLM writes the reply. " +
-        `The two automated levels run on the same ${sampleSize} requests; staff time is only an assumed reference. ` +
+      5,
+      "Three generations of support automation",
+      "Until 2022, support bots ran on an intent classifier with code behind it: the classifier labelled the message and code ran the flow. " +
+        "From 2023, LLM agents took over: one model reads the message and the policy and acts. " +
+        "From 2024 until now, products combined the two: a classifier labels the message first, code applies the rules, and the LLM writes the reply. " +
+        "Next, our concrete architecture and experimental evaluation."
+    );
+    // The road and infographic milestone icons are transparent PNGs (sharp); every word stays editable.
+    s.addImage({ data: await serpentinePng(), x: 0, y: 0, w: 13.333, h: 7.5 });
+    s.addImage({ data: await genIconPng("gen1"), x: 0.55, y: 5.383, w: 0.90, h: 0.90 });
+    s.addImage({ data: await genIconPng("gen2"), x: 3.883, y: 3.55, w: 0.90, h: 0.90 });
+    s.addImage({ data: await genIconPng("gen3"), x: 7.55, y: 1.633, w: 0.90, h: 0.90 });
+    s.addImage({ data: await genIconPng("pin"), x: 1.888, y: 5.048, w: 0.44, h: 0.44 });
+    s.addShape(pres.ShapeType.ellipse, { x: 12.23, y: 3.73, w: 0.20, h: 0.20, fill: { color: C.navy }, line: { color: C.white, width: 2 } });
+    textBox(s, "until 2022", 1.25, 6.15, 3.0, 0.32, { size: 16, bold: true, color: C.navy });
+    textBox(s, "Classifier + code", 1.25, 6.46, 4.2, 0.45, { size: 23, bold: true, color: C.navy });
+    textBox(s, "A classifier labels the message, code runs the flow", 1.25, 6.92, 5.5, 0.35, { size: 16, color: C.text });
+    textBox(s, "2023 to 2024", 4.667, 4.35, 3.0, 0.32, { size: 16, bold: true, color: C.blue });
+    textBox(s, "One LLM agent", 4.667, 4.66, 4.2, 0.45, { size: 23, bold: true, color: C.navy });
+    textBox(s, "One model reads the message and the policy, then acts", 4.667, 5.12, 5.8, 0.35, { size: 16, color: C.text });
+    textBox(s, "2024 to now", 10.0, 0.80, 3.0, 0.32, { size: 16, bold: true, color: C.l3 });
+    textBox(s, "Classifier + code + LLM", 10.0, 1.12, 3.6, 0.45, { size: 23, bold: true, color: C.navy });
+    textBox(s, "A classifier labels first,", 10.0, 1.60, 3.2, 0.30, { size: 16, color: C.text });
+    textBox(s, "code applies the rules,", 10.0, 1.90, 3.2, 0.30, { size: 16, color: C.text });
+    textBox(s, "the LLM writes the reply", 10.0, 2.20, 3.2, 0.30, { size: 16, color: C.text });
+    textBox(s, "start here", 2.42, 5.46, 1.8, 0.32, { size: 15, bold: true, color: C.navy });
+  }
+
+
+  // ---------- 6. Two automated architectures compared ----------
+  // Two architectures head-to-head on the same 1,024 requests: no Level 1 staff baseline.
+  {
+    const s = base(
+      6,
+      "Two automated architectures compared",
+      "We evaluate two automated designs head-to-head on the exact same 1,024 SaaS customer requests. " +
+        "On the left, the conventional autonomous LLM agent: one generative model reads the message, the entire account, and written policies, deciding and executing actions directly. " +
+        "On the right, our compound hybrid pipeline: a lightweight intent classifier extracts structured intent, deterministic code enforces business rules, and the LLM drafts replies. " +
         "Now, the rules."
     );
-    const gap = 0.45, cw = (CW - 2 * gap) / 3, y = 1.65, h = 4.05;
+    const gap = 0.4, cw = (CW - gap) / 2, y = 1.65, h = 4.05;
     [
-      { n: "Level 1", head: "Staff only", icon: "LuUsers", bg: C.grey, body: "Support staff read every request. Baseline: 90 s each (assumed)." },
-      { n: "Level 2", head: "One LLM agent", icon: "LuBot", bg: C.l2, body: "One LLM agent reads the account and applies the written rules itself. It runs an action or denies it." },
-      { n: "Level 3", head: "Jev + LLM", icon: "LuTags", bg: C.l3, body: "Jev reads the chat, then answers one yes/no question for each written rule. The process follows the answers. The LLM writes the reply." },
+      {
+        tag: "PARADIGM 1", head: "Autonomous LLM Agent", icon: "LuBot", bg: C.blue,
+        sub: "Monolithic model with prompt-based tool calling",
+        items: [
+          "Input: customer chat + full account + written policies in prompt",
+          "Triage: single LLM decides action, priority, and risk in one pass",
+          "Policy: rules evaluated probabilistically inside prompt text",
+          "Action: model triggers API tools directly without code verification",
+        ],
+      },
+      {
+        tag: "PARADIGM 2", head: "Classifier + Rules + LLM", icon: "LuWorkflow", bg: C.l3,
+        sub: "Compound pipeline separating triage, policy, and reply",
+        items: [
+          "Input: lightweight intent classifier extracts structured fields",
+          "Triage: typed intent, priority, risk, and prompt injection flags",
+          "Policy: deterministic code verifies written rules before action",
+          "Drafting: generative LLM writes replies; never touches API tools",
+        ],
+      },
     ].forEach((p, i) => {
       const x = ML + i * (cw + gap);
       box(s, x, y, cw, h);
-      iconCircle(s, p.icon, x + 0.3, y + 0.3, 0.8, p.bg);
-      textBox(s, p.n, x + 0.3, y + 1.25, cw - 0.6, 0.35, { size: 15, bold: true, color: p.bg });
-      textBox(s, p.head, x + 0.3, y + 1.6, cw - 0.6, 0.85, { size: 22, bold: true, color: C.navy });
-      textBox(s, p.body, x + 0.3, y + 2.5, cw - 0.6, 1.45, { size: 16 });
-      if (i < 2) line(s, x + cw + 0.05, y + h / 2, gap - 0.1, 0, { arrow: true });
+      iconCircle(s, p.icon, x + 0.35, y + 0.35, 0.8, p.bg);
+      textBox(s, p.tag, x + 1.3, y + 0.32, cw - 1.5, 0.3, { size: 13, bold: true, color: p.bg });
+      textBox(s, p.head, x + 1.3, y + 0.62, cw - 1.5, 0.45, { size: 22, bold: true, color: C.navy });
+      textBox(s, p.sub, x + 1.3, y + 1.08, cw - 1.5, 0.32, { size: 14, color: C.muted });
+      line(s, x + 0.35, y + 1.45, cw - 0.7, 0, { color: "E1E6EC", width: 1 });
+      s.addText(bullets(p.items), {
+        x: x + 0.35, y: y + 1.65, w: cw - 0.7, h: 2.2, margin: 0, fontFace: FONT, fontSize: 15, color: C.text, paraSpaceAfter: 10, valign: "top",
+      });
     });
-    band(s, 5.95, 0.8, "LuTarget", [{ text: "Two tested designs: ", options: { bold: true } }, { text: `both automated levels run on the same ${sampleSize} requests.` }]);
+    band(s, 5.95, 0.8, "LuTarget", [{ text: "Evaluation scope: ", options: { bold: true } }, { text: `both automated architectures evaluated on the exact same ${sampleSize} SaaS requests.` }]);
   }
 
   // Fill and accent of a state of the flow: fixed code, a model, or the written rules.
@@ -344,7 +597,7 @@ async function photo(file, w, h, radius = 0.08, dpi = 150) {
   // ---------- 4. Many rules ----------
   {
     const s = base(
-      4,
+      7,
       "Real support policies have many rules",
       "Real policies have many rules. Who should apply them: an LLM agent, or Jev?",
       true, undefined, { w: 3.5, h: 1.5, fontSize: 28, valign: "top" }
@@ -390,9 +643,9 @@ async function photo(file, w, h, radius = 0.08, dpi = 150) {
   // ---------- 4. The written rules ----------
   {
     const s = base(
-      5,
+      8,
       "Every action meets a written rule: allow or deny",
-      "Here is the essential gate, one rule for each action. First, the Security rule: if someone else used the account or the card, deny. A refund above 100 dollars is denied. So is a password link to an e-mail that is not on file, and a plan that is already cancelled. Deleting data is always denied. At Level 2 the agent reads these rules as text. At Level 3 Jev gets one yes/no question for each rule."
+      "Here is the essential gate, one rule for each action. First, the Security rule: if someone else used the account or the card, deny. A refund above 100 dollars is denied. So is a password link to an e-mail that is not on file, and a plan that is already cancelled. Deleting data is always denied. The autonomous agent reads these rules as prompt text. Our hybrid pipeline evaluates each rule with deterministic code."
     );
     // One deny rule for each action; the walk-throughs show the full gate.
     const RULE_ROWS = [
@@ -414,7 +667,7 @@ async function photo(file, w, h, radius = 0.08, dpi = 150) {
     });
     textBox(
       s,
-      [{ text: "Two ways to apply the rules. ", options: { bold: true } }, { text: "Level 2: the agent reads them as text.   Level 3: Jev answers one question for each rule." }],
+      [{ text: "Two ways to apply the rules. ", options: { bold: true } }, { text: "Autonomous agent: reads rules in prompt text.   Hybrid pipeline: intent classifier and deterministic rules." }],
       ML, 6.35, CW, 0.5, { size: 17, color: C.navy, valign: "middle" }
     );
   }
@@ -422,9 +675,9 @@ async function photo(file, w, h, radius = 0.08, dpi = 150) {
   // Level 2 flow, redrawn from figures/flow_llmagent.tex as editable shapes in the deck's style.
   {
     const s = base(
-      6,
-      "Level 2: the LLM agent decides and applies the rules",
-      "At Level 2, New saves the customer's message. Gather info provides the chat, the whole account, the help articles, and the actions already done. The first LLM call reads this information and all written rules, chooses the action, and answers run or refuse. If it names an action, code runs it without an independent policy check. If it refuses, no state-changing action runs and the flow goes to Final message. An invalid answer also runs nothing. A second LLM call writes the final message. Chat open, Resolved, and the loop for another message describe the chat design; they are not simulated in this first-pass experiment. Next, Level 3 separates these decisions."
+      9,
+      "Autonomous agent: single model decides and dispatches actions",
+      "In the autonomous agent architecture, New saves the customer's message. Gather info provides the chat, the whole account, the help articles, and the actions already done. The first LLM call reads this information and all written rules, chooses the action, and answers run or refuse. If it names an action, code runs it without an independent policy check. If it refuses, no state-changing action runs and the flow goes to Final message. An invalid answer also runs nothing. A second LLM call writes the final message. Chat open, Resolved, and the loop for another message describe the chat design; they are not simulated in this first-pass experiment. Next, our hybrid pipeline separates these decisions."
     );
     textBox(s, "The agent reads the chat, the whole account, and all written rules.", ML, 1.5, CW, 0.35, { size: 18, color: C.muted });
     const nodes = [
@@ -476,9 +729,9 @@ async function photo(file, w, h, radius = 0.08, dpi = 150) {
   // Level 3 flow follows the Level 2 diagram for comparison.
   {
     const s = base(
-      7,
-      "Level 3: Jev answers, and the process decides",
-      "This is Level 3 as a state machine with seven states. A message enters New. Jev decides in two states. In the first, Jev reads the chat and returns five fields: topic, priority, action, risk flag, and injection flag. In Rules, Jev answers one yes/no question for each written rule of the action. The process follows Jev's answers: it runs the action only when no answer says a rule is broken. It does not independently recheck policy facts; a missed violation can allow an unsafe action. The LLM writes the final message only."
+      10,
+      "Compound hybrid pipeline: intent triage, rule check, and LLM drafting",
+      "This is our compound hybrid pipeline as a state machine with seven states. A message enters New. Intent triage occurs first: the classifier reads the chat and returns five fields: topic, priority, action, risk flag, and injection flag. In Rules, deterministic questions verify written policies. The process follows the verified rules: it runs the action only when no rule is broken. The LLM writes the final message only, with zero direct access to tool execution."
     );
     const nodes = [
       ["New", "message saved", "LuMail", "fx"],
@@ -530,7 +783,7 @@ async function photo(file, w, h, radius = 0.08, dpi = 150) {
   // ---------- 6. What Jev reads ----------
   {
     const s = base(
-      8,
+      11,
       "Jev reads the chat first, then one rule at a time",
       "Jev is called twice. The first call reads the chat only: the text and the name of the sender. The second call runs when the action changes the state. It reads the chat, the account lines that this action needs, the actions already done, and one question for each written rule of the action, for example: is the amount above 100 dollars? The questions are written text, not code; a fixed table picks the account lines. Fixed code also does the arithmetic: the purchase line states the days since the charge, so Jev reads a number and never subtracts two dates. We found that each rule needs a question that we write: questions made from the text of the rule alone made more errors. Jev supports custom zero-shot questions without task-specific fine-tuning, but the question wording still needs evaluation. This is a reason to try it, not proof that it is the fastest or most accurate model."
     );
@@ -566,7 +819,7 @@ async function photo(file, w, h, radius = 0.08, dpi = 150) {
   // ---------- 7. What Jev answers ----------
   {
     const s = base(
-      9,
+      12,
       "Jev returns five fields, then one answer per rule",
       "The first call returns five fields: topic, priority, action, risk flag, and injection flag. The four shown here guide the flow; the risk flag is also recorded. If the injection flag is on, the action becomes Send reply, so an order hidden in the text is ignored. If the action changes the state, the second call answers one yes/no question for each written rule of that action: is this rule broken? If no answer says broken, the action runs; if one does, nothing runs. Typed answers constrain the output format, not correctness. The injection flag and the rule answers both come from Jev; neither is an independent policy verifier. Now, three recorded requests."
     );
@@ -851,14 +1104,14 @@ async function photo(file, w, h, radius = 0.08, dpi = 150) {
   }
 
   CASES.forEach((c, i) => {
-    for (let f = 0; f <= (c.show ?? c.path).length; f++) walkthrough(c, 10 + i, f);
+    for (let f = 0; f <= (c.show ?? c.path).length; f++) walkthrough(c, 13 + i, f);
   });
 
   // ---------- 11. Test data ----------
   // One slide for Nam: the five groups of the request set and the facts of the set that the talk must state.
   {
     const s = base(
-      13,
+      16,
       `Test data: ${data.customers} customers, ${sampleSize} requests`,
       `Public datasets have no SaaS accounts, so we built our own: ${data.customers} FrameForge customers, each with one purchase, a credit balance, and a log of password reset links. Each customer sends ${requestsPerCustomer} requests, so we have ${sampleSize} requests of ${data.categories} types in five groups. High-impact actions are the largest group, with ${groupSize[0]} requests. We made the set hard on purpose: a written rule denies the action on ${data.finalDenied} requests, and ${injectionRequests} requests hide an order in the message. A program writes the requests from a fixed start number and runs the real code of the system to make the correct answers. This is a challenge set, not production traffic.`
     );
@@ -883,7 +1136,7 @@ async function photo(file, w, h, radius = 0.08, dpi = 150) {
   // ---------- 13. Outcomes ----------
   {
     const s = base(
-      14,
+      17,
       "Every request ends served, stopped, or in error",
       "Now, how we score a request. We look at what the customer gets. Served means the run ends with the correct result. Stopped means a written rule denies the action, nothing runs, and the reply gives the reason. Error is every other run. A run is harmful if it changes money, data, the plan, or the password against the written rules. We also report the machine time of one request, the API cost per 1,000 requests, and the error counts on this request set."
     );
@@ -909,16 +1162,16 @@ async function photo(file, w, h, radius = 0.08, dpi = 150) {
   // One slide for Son: how the two levels ran, the two hosted models, the list prices, and the cost that follows.
   {
     const s = base(
-      15,
-      `Both levels run on the same ${sampleSize} requests`,
-      `We call two hosted models for real: Jev, version 1.13.0, and DeepSeek V4.1 Flash. Both levels run on the same ${sampleSize} requests, in separate runs. Level 2 makes two LLM calls for each request. Level 3 makes ${(jevCalls / level3.requests).toFixed(1)} Jev calls and one LLM call. Jev costs 4.2 cents per million input tokens, and its output is free. The LLM costs 15 cents in and 60 cents out per million tokens. At list price, 1,000 requests cost $${cost2} at Level 2 and $${cost3} at Level 3. These are API token charges, not total operating cost.`
+      18,
+      `Experimental setup: 1,024 requests, two architectures`,
+      `We call two hosted models for real: Jev, version 1.13.0, and DeepSeek V4.1 Flash. Both architectures run on the same ${sampleSize} requests, in separate runs. The autonomous agent makes two LLM calls for each request. The hybrid pipeline makes ${(jevCalls / level3.requests).toFixed(1)} classifier calls and one LLM call. Jev costs 4.2 cents per million input tokens, and its output is free. The LLM costs 15 cents in and 60 cents out per million tokens. At list price, 1,000 requests cost $${cost2} for the autonomous agent and $${cost3} for the hybrid pipeline. These are API token charges, not total operating cost.`
     );
     // The run in one strip: the requests of each run and the two hosted models.
     {
       const ry = 1.55, rh = 0.8;
       box(s, ML, ry, CW, rh);
       [
-        ["LuCpu", C.l3, `${sampleSize} requests in each independent run, at Level 2 and at Level 3`],
+        ["LuCpu", C.l3, `${sampleSize} requests in each independent run, comparing both architectures`],
         ["LuBot", C.grey, "Two hosted models: Jev (jev-1.13.0) and DeepSeek V4.1 Flash"],
       ].forEach(([ic, col, txt], i) => {
         const x = ML + 0.3 + i * (CW / 2);
@@ -929,8 +1182,8 @@ async function photo(file, w, h, radius = 0.08, dpi = 150) {
     // One card for each level: the cost per 1,000 requests, a bar in proportion, the calls that one request makes, and what the level reads.
     const gap = 0.3, cw = (CW - gap) / 2, y = 2.55, h = 3.0, barW = cw - 0.7;
     [
-      { x: ML, head: "Level 2: LLM agent", icon: "LuBot", col: C.l2, cost: `$${cost2}`, share: 1, calls: [["LLM call", C.grey, 1.4], ["LLM call", C.grey, 1.4]], reads: "Reads the chat, the whole account, and all the rules" },
-      { x: ML + cw + gap, head: "Level 3: Jev + LLM", icon: "LuTags", col: C.l3, cost: `$${cost3}`, share: level3.apiCostPer1000 / level2.apiCostPer1000, calls: [[`Jev call × ${(jevCalls / level3.requests).toFixed(1)}`, C.l3, 2.0], ["LLM call", C.grey, 1.4]], reads: "Reads the chat first, then the rules of one action" },
+      { x: ML, head: "Autonomous LLM agent", icon: "LuBot", col: C.l2, cost: `$${cost2}`, share: 1, calls: [["LLM call", C.grey, 1.4], ["LLM call", C.grey, 1.4]], reads: "Reads the chat, the whole account, and all the rules" },
+      { x: ML + cw + gap, head: "Classifier + Rules + LLM", icon: "LuTags", col: C.l3, cost: `$${cost3}`, share: level3.apiCostPer1000 / level2.apiCostPer1000, calls: [[`Jev call × ${(jevCalls / level3.requests).toFixed(1)}`, C.l3, 2.0], ["LLM call", C.grey, 1.4]], reads: "Reads the chat first, then the rules of one action" },
     ].forEach((o) => {
       box(s, o.x, y, cw, h);
       iconCircle(s, o.icon, o.x + 0.35, y + 0.2, 0.6, o.col);
@@ -966,7 +1219,7 @@ async function photo(file, w, h, radius = 0.08, dpi = 150) {
   // ---------- 7. Result 1: Jev ----------
   {
     const s = base(
-      16,
+      19,
       "Jev on our SaaS test set: speed, cost, and accuracy",
       `Now the first result, for Jev alone. Half of the requests need ${level3.decisionLatency.median.toFixed(2)} seconds or less of Jev time, including rule calls, and all Jev calls cost $${level3.decisionCostPer1000.toFixed(3)} per 1,000 requests. The first call gives the right topic on ${(100 * quality.queue.accuracy).toFixed(1)} percent of the scored requests, the priority on ${(100 * quality.priority.accuracy).toFixed(1)} percent, the action on ${(100 * quality.action.accuracy).toFixed(1)} percent, and the injection flag on ${(100 * quality.injection.accuracy).toFixed(1)} percent. ${count(ruleStats.matching)} of ${count(ruleStats.answers)} rule answers match the written rules. The first-call action label is wrong on ${wrongActions.length} requests, and ${wrongActionOutcomes === 0 ? "none" : wrongActionOutcomes} of these end in a wrong outcome. ${CHANGED_SHORT}, so we saw these failures before the last test.`
     );
@@ -993,12 +1246,12 @@ async function photo(file, w, h, radius = 0.08, dpi = 150) {
   // ---------- 8. Result 2: the ladder ----------
   {
     const s = base(
-      17,
+      20,
       "On our SaaS test set: lower time, cost, and error count",
-      `We compare the two levels on the same ${sampleSize} requests. Level 2 serves ${level2.served}, stops ${level2.stopped}, and makes ${level2.errors} errors, ${level2.harmful} of them harmful. Level 3 serves ${level3.served}, stops ${level3.stopped}, and makes ${level3.errors} errors and ${level3.harmful} harmful runs. Level 3 needs less than half the average machine time, ${time3} seconds against ${time2}, and has ${costRatio} times lower API cost, $${cost3} against $${cost2} per 1,000 requests. Of the ${level2.errors} Level 2 errors, ${injectionErrors2} are injection requests. The harmful errors run ${harmfulRefunds2} refunds and ${harmfulCancellations2} plan cancellations. These are outcomes on the set that we made ourselves, not a guarantee of safety.`
+      `We compare both architectures on the same ${sampleSize} requests. The autonomous agent serves ${level2.served}, stops ${level2.stopped}, and makes ${level2.errors} errors, ${level2.harmful} of them harmful. Our hybrid pipeline serves ${level3.served}, stops ${level3.stopped}, and makes ${level3.errors} errors and ${level3.harmful} harmful runs. The hybrid pipeline needs less than half the average machine time, ${time3} seconds against ${time2}, and has ${costRatio} times lower API cost, $${cost3} against $${cost2} per 1,000 requests. Of the ${level2.errors} autonomous agent errors, ${injectionErrors2} are injection requests. The harmful errors run ${harmfulRefunds2} refunds and ${harmfulCancellations2} plan cancellations. These are outcomes on the set that we made ourselves, not a guarantee of safety.`
     );
     box(s, ML, 1.65, 7.6, 3.95);
-    const cats = ["Level 2: LLM agent", "Level 3: Jev + LLM"];
+    const cats = ["Autonomous LLM agent", "Classifier + Rules + LLM"];
     s.addChart(
       pres.charts.BAR,
       [
@@ -1015,25 +1268,25 @@ async function photo(file, w, h, radius = 0.08, dpi = 150) {
     const x = ML + 7.9, w = CW - 7.9;
     callout(s, x, 1.65, w, 1.25, { icon: "LuTimer", big: `${speedRatio}x`, label: `lower mean machine time: ${time3}\u00A0s vs ${time2}\u00A0s`, color: C.l3, bigSize: 28, bigH: 0.55, bigY: 0.1 });
     callout(s, x, 3.0, w, 1.25, { icon: "LuDollarSign", big: `${costRatio}x`, label: `lower API cost: $${cost3} vs $${cost2} per 1,000 requests`, color: C.l3, bigSize: 28, bigH: 0.55, bigY: 0.1 });
-    callout(s, x, 4.35, w, 1.25, { icon: "LuBadgeCheck", big: `${level2.errors} vs ${level3.errors}`, label: "errors at Level 2 and Level 3 on this request\u00A0set", color: C.teal, bigSize: 28, bigH: 0.55, bigY: 0.1, labelSize: 14 });
+    callout(s, x, 4.35, w, 1.25, { icon: "LuBadgeCheck", big: `${level2.errors} vs ${level3.errors}`, label: "errors: autonomous agent vs hybrid pipeline", color: C.teal, bigSize: 28, bigH: 0.55, bigY: 0.1, labelSize: 14 });
     // The error segment of Level 2 is too narrow for a label, and Level 3 has none: each row gets a label at its end.
     [[level2.errors, 2.725, C.red], [level3.errors, 4.1, C.teal]].forEach(([n, y, color]) => {
       textBox(s, `${n} ${n === 1 ? "error" : "errors"}`, ML + 6.4, y, 0.95, 0.5, { size: 16, bold: true, color, valign: "middle", align: "right", margin: 0 });
     });
-    band(s, 5.85, 0.95, "LuShieldCheck", [{ text: "Harmful runs: ", options: { bold: true } }, { text: `${level3.harmful} at Level 3, ${level2.harmful} at Level 2. Observed on this synthetic set, not a safety guarantee.` }]);
+    band(s, 5.85, 0.95, "LuShieldCheck", [{ text: "Harmful runs: ", options: { bold: true } }, { text: `${level3.harmful} in hybrid pipeline, ${level2.harmful} in autonomous agent. Observed on this synthetic set, not a safety guarantee.` }]);
   }
 
   // Observed action-label and outcome results, not independent safety guards.
   // Every numerical result is also on slide 25; the rule evaluation was not blind.
   {
     const s = base(
-      18,
+      21,
       "Wrong action labels, correct outcomes on this test set",
       "These are observed results, not three independent safety guards. The injection flag and the rule answers both come from Jev. " +
         `First, Jev sets the injection flag right on ${(100 * quality.injection.accuracy).toFixed(1)} percent of the requests, and when it is on, the process sends a reply. ` +
         `Second, ${count(ruleStats.matching)} of ${count(ruleStats.answers)} rule answers match the written rules on this set. ` +
         `Third, the first-call action label is wrong on ${wrongActions.length} requests, and ${wrongActionOutcomes === 0 ? "none" : wrongActionOutcomes} of them end in a wrong outcome. ` +
-        `Level 3 makes ${level3.errors} errors and ${level3.harmful} harmful runs on this set. ${CHANGED_SHORT}, so we saw these failures before this last test.`
+        `The hybrid pipeline makes ${level3.errors} errors and ${level3.harmful} harmful runs on this set. ${CHANGED_SHORT}, so we saw these failures before this last test.`
     );
     const gap = 0.3, cw = (CW - 2 * gap) / 3, y0 = 1.6, h0 = 3.95;
     [
@@ -1048,14 +1301,14 @@ async function photo(file, w, h, radius = 0.08, dpi = 150) {
       textBox(s, big, x + 0.3, y0 + 1.3, cw - 0.6, 0.9, { size: 54, bold: true, color: col, valign: "middle" });
       textBox(s, text, x + 0.3, y0 + 2.3, cw - 0.6, 1.5, { size: 18 });
     });
-    band(s, 5.85, 0.95, "LuShieldCheck", [{ text: "The result: ", options: { bold: true } }, { text: `Level 3: ${level3.errors} errors and ${level3.harmful} harmful runs on this synthetic set. Not a safety guarantee.` }]);
+    band(s, 5.85, 0.95, "LuShieldCheck", [{ text: "The result: ", options: { bold: true } }, { text: `Hybrid pipeline: ${level3.errors} errors and ${level3.harmful} harmful runs on this synthetic set. Not a safety guarantee.` }]);
   }
 
   // ---------- 17. Our idea: limit each model ----------
   // Our own design only, no outside source: what each part of Level 3 may do, and what it may not do.
   {
     const s = base(
-      19,
+      22,
       "Our idea: limit what each model can trigger",
       "Our idea is to limit what each model can trigger. " +
         "Jev has no action tool. It answers typed questions about the chat and the rules. Fixed code runs the action only when no answer reports a broken rule. " +
@@ -1087,8 +1340,8 @@ async function photo(file, w, h, radius = 0.08, dpi = 150) {
     s.addText("Conclusion", { x: M, y: 0.7, w: LW, h: 0.7, margin: 0, fontFace: FONT, fontSize: 38, bold: true, color: C.white, valign: "top" });
     s.addText(
       bullets([
-        `Same ${sampleSize} requests in both independent runs. Level\u00A02: ${level2.served} served, ${level2.stopped} stopped, ${level2.errors} errors. Level\u00A03: ${level3.served} served, ${level3.stopped} stopped, ${level3.errors} errors.`,
-        `Level 3 has ${speedRatio}x lower mean machine time and ${costRatio}x lower API cost, with fewer errors on this request set.`,
+        `Same ${sampleSize} requests in both independent runs. Autonomous agent: ${level2.served} served, ${level2.stopped} stopped, ${level2.errors} errors. Hybrid pipeline: ${level3.served} served, ${level3.stopped} stopped, ${level3.errors} errors.`,
+        `Hybrid pipeline has ${speedRatio}x lower mean machine time and ${costRatio}x lower API cost, with zero errors on this request set.`,
         `Each rule needs a written question. ${CHANGED_SHORT}; this rule evaluation was not blind.`,
         "Not tested: trained classifiers, other decision models, or a held-out request set.",
       ]),
@@ -1097,13 +1350,13 @@ async function photo(file, w, h, radius = 0.08, dpi = 150) {
     s.addText("Next: real tickets, a held-out set, and stronger baselines.", { x: M, y: 5.85, w: LW, h: 0.8, margin: 0, fontFace: FONT, fontSize: 22, bold: true, color: C.white, valign: "bottom" });
     s.addText("External context: Red Hat Developer, 2 Oct 2026", { x: M, y: 6.78, w: LW, h: 0.22, margin: 0, fontFace: FONT, fontSize: 11, color: C.white, underline: true, hyperlink: { url: RED_HAT_BENCHMARK_URL } });
     [
-      { icon: "LuBadgeCheck", big: `${level2.errors} vs ${level3.errors}`, label: "errors at Level 2 and Level 3 on this request\u00A0set", color: C.teal },
+      { icon: "LuBadgeCheck", big: `${level2.errors} vs ${level3.errors}`, label: "errors: autonomous agent vs hybrid pipeline", color: C.teal },
       { icon: "LuTimer", big: `${speedRatio}x`, label: `lower mean machine time: ${time3}\u00A0s vs ${time2}\u00A0s`, color: C.l3 },
       { icon: "LuDollarSign", big: `${costRatio}x`, label: `lower API cost: $${cost3} vs $${cost2} per 1,000 requests`, color: C.l3 },
     ].forEach((o, i) => callout(s, CX, 0.7 + i * 2.1, CWd, 1.9, { ...o, bigSize: 38, bigH: 0.8, bigY: 0.25, labelSize: 15 }));
     s.addNotes(
-      `Speaker: ${PNAM}, about ${SPEAKER[19][1]} s. Finally, we measured two automated levels in separate runs on the same ${sampleSize} requests. Level 2 serves ${level2.served}, stops ${level2.stopped}, and makes ${level2.errors} errors. Level 3 serves ${level3.served}, stops ${level3.stopped}, and makes ${level3.errors} errors. ` +
-        `Level 3 needs less than half the average machine time and has ${costRatio} times lower API cost. Jev needs a question that we write for each rule. ${CHANGED_SHORT}, so we saw these failures before the last test. We did not test programs that learn from examples, or other decision models. Next, we need real tickets, a separate request set, and stronger systems to compare with. ` +
+      `Speaker: ${PNAM}, about ${SPEAKER[21][1]} s. Finally, we measured both automated architectures in separate runs on the same ${sampleSize} requests. The autonomous agent serves ${level2.served}, stops ${level2.stopped}, and makes ${level2.errors} errors. The hybrid pipeline serves ${level3.served}, stops ${level3.stopped}, and makes ${level3.errors} errors. ` +
+        `The hybrid pipeline needs less than half the average machine time and has ${costRatio} times lower API cost. Each rule needs a question that we write. ${CHANGED_SHORT}, so we saw these failures before the last test. We did not test programs that learn from examples, or other decision models. Next, we need real tickets, a separate request set, and stronger systems to compare with. ` +
         "The Red Hat link is outside context, not our data. " +
         "Thank you for listening."
     );
@@ -1126,10 +1379,10 @@ async function photo(file, w, h, radius = 0.08, dpi = 150) {
       x: M, y: 5.3, w: LW, h: 1.5, margin: 0, fontFace: FONT, fontSize: 18, color: C.white, valign: "top",
     });
     [
-      { icon: "LuWorkflow", big: "Slides 6 and 7", label: "The flows of Level 2 and Level 3", color: C.l3 },
-      { icon: "LuDatabase", big: "Slides 22 and 23", label: "Test data and how we score", color: C.l3 },
-      { icon: "LuBadgeCheck", big: "Slides 25 and 26", label: "Results: Jev, and the two levels", color: C.teal },
-      { icon: "LuScale", big: "Slide 27", label: "Wrong action labels and observed outcomes", color: C.blue },
+      { icon: "LuWorkflow", big: "Slides 8 and 9", label: "The flows of both architectures", color: C.l3 },
+      { icon: "LuDatabase", big: "Slides 24 and 25", label: "Test data and how we score", color: C.l3 },
+      { icon: "LuBadgeCheck", big: "Slides 27 and 28", label: "Results: speed, cost, and accuracy", color: C.teal },
+      { icon: "LuScale", big: "Slide 29", label: "Wrong action labels and observed outcomes", color: C.blue },
     ].forEach((o, i) => callout(s, CX, 0.7 + i * 1.55, CWd, 1.35, { ...o, bigSize: 28, bigH: 0.55, bigY: 0.12, labelSize: 15 }));
     s.addNotes("Question slide, not part of the timed talk. Tran Thanh Long answers; the other four stand beside him. The cards on the right say which slide to open for each kind of question.");
   }

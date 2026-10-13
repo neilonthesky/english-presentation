@@ -2,38 +2,38 @@
 
 - **Họ và tên diễn giả:** Vuong Quang Quy
 - **Vai trò trong đề tài:** Phân tích kết quả thực nghiệm; Kiểm định thống kê; Tạo các bảng biểu LaTeX và đồ thị trực quan
-- **Tỷ lệ đóng góp trong bài báo:** 17% (đây không phải tỷ lệ thời gian nói). Về thời gian nói, Quy nói 120 giây trên tổng 820 giây (14,6%).
-- **Thời gian nói được phân bổ:** 2 phút 00 giây (120 giây) cho hai slide: Slide 26 (60 giây) và Slide 27 (60 giây).
+- **Tỷ lệ đóng góp trong bài báo:** 17% (đây không phải tỷ lệ thời gian nói). Về thời gian nói, Quy nói 120 giây trên tổng 835 giây (14,4%).
+- **Thời gian nói được phân bổ:** 2 phút 00 giây (120 giây) cho hai slide: Slide 28 (60 giây) và Slide 29 (60 giây).
 - **Số từ mục tiêu:** ~241 từ tiếng Anh (126 + 115) trong 120 giây, tức khoảng 120 từ mỗi phút. Số từ đếm trên lời nói thật, các số viết thành chữ. Nếu chậm hơn, cắt theo dòng "Nếu vượt khung" của từng slide.
-- **Các slide phụ trách:** Slide 26 (60 giây): Kết quả 2 (hai level trên cùng 1.024 yêu cầu); Slide 27 (60 giây): nhãn hành động sai nhưng kết cục đúng (ba bằng chứng quan sát được). Quy nói thẳng từ trên xuống dưới: **không chào, không tự giới thiệu, không đặt câu hỏi** cho khán giả; Quy chỉ trình bày số liệu. Long đã đọc tên Quy ở Slide 1.
+- **Các slide phụ trách:** Slide 28 (60 giây): Kết quả 2 (hai level trên cùng 1.024 yêu cầu); Slide 29 (60 giây): nhãn hành động sai nhưng kết cục đúng (ba bằng chứng quan sát được). Quy nói thẳng từ trên xuống dưới: **không chào, không tự giới thiệu, không đặt câu hỏi** cho khán giả; Quy chỉ trình bày số liệu. Long đã đọc tên Quy ở Slide 1.
 
 ---
 
 ## 1. Kịch bản nói chi tiết từng từ (Word-for-Word Spoken Script)
 
-### Slide 26: Kết quả 2: Level 3 nhanh hơn, rẻ hơn và ít lỗi hơn
+### Slide 28: Kết quả 2: Hybrid pipeline nhanh hơn, rẻ hơn và không có lỗi
 - **Tiêu đề slide:** On our SaaS test set: lower time, cost, and error count
 - **Thời gian dự kiến trên slide:** 1 phút 00 giây (60 giây, ~126 từ)
 - **Ý chính:** Level 2: 795 phục vụ, 198 chặn, 31 lỗi (10 gây hại: 5 hoàn tiền, 5 hủy gói). Level 3: 825 phục vụ, 199 chặn, 0 lỗi, 0 gây hại. Thời gian máy trung bình 5,89 s so với 12,45 s (2,1 lần); chi phí API 0,30 đô so với 0,64 đô cho 1.000 yêu cầu (2,2 lần).
 - **Nếu vượt khung:** bỏ câu "Of the 31 Level Two errors..." và giữ nguyên các số của hai level.
 
-> We compare the two levels on the same one thousand and twenty-four requests. Level Two serves seven hundred and ninety-five, stops one hundred and ninety-eight, and makes thirty-one errors, ten of them harmful. Level Three serves eight hundred and twenty-five, stops one hundred and ninety-nine, and makes zero errors and zero harmful runs.
+> We compare both architectures on the same one thousand and twenty-four requests. The autonomous agent serves seven hundred and ninety-five, stops one hundred and ninety-eight, and makes thirty-one errors, ten of them harmful. Our hybrid pipeline serves eight hundred and twenty-five, stops one hundred and ninety-nine, and makes zero errors and zero harmful runs.
 > 
 > `[NGHỈ 1 GIÂY]`  
 > 
-> Level Three needs less than half the average machine time, five point eight nine seconds against twelve point four five, and has two point two times lower API cost, thirty cents against sixty-four cents per one thousand requests.
+> The hybrid pipeline needs less than half the average machine time, five point eight nine seconds against twelve point four five, and has two point two times lower API cost, thirty cents against sixty-four cents per one thousand requests.
 > 
 > `[NGHỈ 1 GIÂY]`  
 > 
-> Of the thirty-one Level Two errors, twenty-seven are injection requests. The harmful errors run five refunds and five plan cancellations. These are outcomes on the set that we made ourselves, not a guarantee of safety.
+> Of the thirty-one autonomous agent errors, twenty-seven are injection requests. The harmful errors run five refunds and five plan cancellations. These are outcomes on the set that we made ourselves, not a guarantee of safety.
 > 
 > `[NGHỈ 1 GIÂY]`  
 > 
-> `[CHUYỂN SANG SLIDE 27]`
+> `[CHUYỂN SANG SLIDE 31]`
 
 ---
 
-### Slide 27: Nhãn hành động sai, kết cục đúng
+### Slide 29: Nhãn hành động sai, kết cục đúng
 - **Tiêu đề slide:** Wrong action labels, correct outcomes on this test set
 - **Thời gian dự kiến trên slide:** 1 phút 00 giây (60 giây, ~115 từ)
 - **Ý chính:** cờ injection đúng 98,4%; 2.050 trên 2.050 câu trả lời luật khớp luật; 278 nhãn hành động sai ở lần gọi đầu và 0 dẫn tới kết cục sai; Level 3: 0 lỗi, 0 gây hại; hai đầu vào hoàn tiền đã đổi sau các lần chạy đầu nên nhóm đã biết các lỗi này trước lần thử cuối.
@@ -47,7 +47,7 @@
 > 
 > `[NGHỈ 1 GIÂY]`  
 > 
-> Level Three makes zero errors and zero harmful runs on this set. Two refund inputs were changed after earlier failures, so we saw these failures before this last test.
+> The hybrid pipeline makes zero errors and zero harmful runs on this set. Two refund inputs were changed after earlier failures, so we saw these failures before this last test.
 > 
 > `[NGHỈ 1 GIÂY]`
 

@@ -2,16 +2,16 @@
 
 - **Họ và tên diễn giả:** Nguyen Thanh Nam
 - **Vai trò trong đề tài:** Quy tắc bằng văn bản (Written rules); Các câu hỏi luật của Level 3; Quy tắc điều hướng khi phát hiện injection; Security rule
-- **Tỷ lệ đóng góp trong bài báo:** 22% (đây không phải tỷ lệ thời gian nói). Về thời gian nói, Nam nói 120 giây trên tổng 820 giây (14,6%).
-- **Thời gian nói được phân bổ:** 2 phút 00 giây (120 giây) cho hai slide: Slide 22 (60 giây) và Slide 23 (60 giây).
+- **Tỷ lệ đóng góp trong bài báo:** 22% (đây không phải tỷ lệ thời gian nói). Về thời gian nói, Nam nói 120 giây trên tổng 835 giây (14,4%).
+- **Thời gian nói được phân bổ:** 2 phút 00 giây (120 giây) cho hai slide: Slide 24 (60 giây) và Slide 25 (60 giây).
 - **Số từ mục tiêu:** ~206 từ tiếng Anh (121 + 85) trong 120 giây, tức khoảng 103 từ mỗi phút (chậm hơn mục tiêu nên còn dư thời gian để nghỉ và nhấn số liệu). Số từ đếm trên lời nói thật, các số viết thành chữ. Nếu chậm hơn, cắt theo dòng "Nếu vượt khung" của từng slide.
-- **Các slide phụ trách:** Slide 22 (60 giây): dữ liệu thử nghiệm (512 khách hàng, 1.024 yêu cầu, năm nhóm); Slide 23 (60 giây): cách chấm (ba kết cục và lần chạy gây hại). Nam nói ngay sau ba walk-through của Long, thẳng từ trên xuống dưới: **không chào, không tự giới thiệu, không đặt câu hỏi** và **không tổ chức bình chọn** với khán giả; câu quiz duy nhất do Long đặt ở Slide 2. Long đã đọc tên Nam ở Slide 1.
+- **Các slide phụ trách:** Slide 24 (60 giây): dữ liệu thử nghiệm (512 khách hàng, 1.024 yêu cầu, năm nhóm); Slide 25 (60 giây): cách chấm (ba kết cục và lần chạy gây hại). Nam nói ngay sau ba walk-through của Long, thẳng từ trên xuống dưới: **không chào, không tự giới thiệu, không đặt câu hỏi** và **không tổ chức bình chọn** với khán giả; câu quiz duy nhất do Long đặt ở Slide 2. Long đã đọc tên Nam ở Slide 1.
 
 ---
 
 ## 1. Kịch bản nói chi tiết từng từ (Word-for-Word Spoken Script)
 
-### Slide 22: Dữ liệu thử nghiệm: 512 khách hàng, 1.024 yêu cầu
+### Slide 24: Dữ liệu thử nghiệm: 512 khách hàng, 1.024 yêu cầu
 - **Tiêu đề slide:** Test data: 512 customers, 1,024 requests
 - **Thời gian dự kiến trên slide:** 1 phút 00 giây (60 giây, ~121 từ)
 - **Nếu vượt khung:** bỏ câu "High-impact actions are the largest group..." và giữ nguyên các số: 512 khách hàng, 1.024 yêu cầu, 199 yêu cầu bị một luật từ chối.
@@ -28,11 +28,11 @@
 > 
 > `[NGHỈ 1 GIÂY]`  
 > 
-> `[CHUYỂN SANG SLIDE 23]`
+> `[CHUYỂN SANG SLIDE 27]`
 
 ---
 
-### Slide 23: Cách chấm: ba kết cục và một lần chạy gây hại
+### Slide 25: Cách chấm: ba kết cục và một lần chạy gây hại
 - **Tiêu đề slide:** Every request ends served, stopped, or in error
 - **Thời gian dự kiến trên slide:** 1 phút 00 giây (60 giây, ~85 từ)
 - **Nếu vượt khung:** bỏ câu "We also report the machine time..." và đọc nhanh ba định nghĩa Served, Stopped, Error.
