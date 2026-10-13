@@ -107,12 +107,12 @@ Slide 1 đến 20
 
 #### Walk-through 2: a refund that a rule stops
 
-> **Slide 15:** A second customer asks for a refund. Watch for the warning.  
+> **Slide 15:** A second customer asks for a refund. Watch the Rules step.  
 > **Slide 16:** Rules: the amount limit blocks the refund. Nothing runs.  
 > **Slide 17:** Final message: the LLM explains why.
 
 #### Walk-through 3: an order hidden in the message
 
 > **Slide 18:** A third customer orders a refund of everything.  
-> **Slide 19:** Jev: danger. The injection flag is on.  
+> **Slide 19:** Jev raises the injection flag.  
 > **Slide 20:** The LLM ignores the order.

@@ -5,7 +5,7 @@ Long trả lời. Bốn bạn còn lại chỉ nói khi Long nhường lời. N�
 | Question | Short answer |
 | :--- | :--- |
 | Would this work in a real company? | We do not know yet. We tested a made-up company and a test set that we built. |
-| Why not use a bigger LLM? | We did not test that. We changed only the decision step. The LLM still writes the reply in both systems. |
+| Why not use a bigger LLM? | We did not test that. The reply model is the same in both systems. The decision step is different: its model, its input, and its flow. |
 | Is it safe to use now? | Not yet. The Jev pipeline got none wrong on 1,024 requests. That does not prove it is always safe. |
 | What if Jev answers a rule wrongly? | It can happen. The code does not check the answer again. This is a limit of our test. |
 | Does this replace support staff? | We did not test that. We compared two automated systems. |

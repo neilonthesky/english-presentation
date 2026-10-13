@@ -79,7 +79,7 @@ const CASES = [
       meta: "Written by the LLM from the reason why nothing ran.",
     },
     notes: [
-      "A second customer asks for a refund. Watch for the warning.",
+      "A second customer asks for a refund. Watch the Rules step.",
       "Rules: the amount limit blocks the refund. Nothing runs.",
       "Final message: the LLM explains why.",
     ],
@@ -109,7 +109,7 @@ const CASES = [
     },
     notes: [
       "A third customer orders a refund of everything.",
-      "Jev: danger. The injection flag is on.",
+      "Jev raises the injection flag.",
       "The LLM ignores the order.",
     ],
   },

@@ -24,7 +24,7 @@ Slide 23 và 24
 > 
 > `[NGHỈ 1 GIÂY]`  
 > 
-> The first call gives the right topic on ninety-three point three percent of the scored requests, the priority on eighty-six point five percent, the action on seventy-two point nine percent, and the injection flag on ninety-eight point four percent. two thousand and fifty of two thousand and fifty rule answers match the written rules.
+> The first call gives the right topic on ninety-three point three percent of the scored requests, the priority on eighty-six point five percent, the action on seventy-two point nine percent, and the injection flag on ninety-eight point four percent. Two thousand and fifty of two thousand and fifty rule answers match the written rules.
 > 
 > `[NGHỈ 1 GIÂY]`  
 > 

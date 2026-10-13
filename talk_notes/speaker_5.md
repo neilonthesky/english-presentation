@@ -8,7 +8,7 @@ Slide 27 và 28
 > 
 > `[NGHỈ 1 GIÂY]`  
 > 
-> Fixed code runs the action only when no rule blocks it. The LLM drafts the final message after the action or the refusal, and it cannot change that decision. A draft cannot touch money or data; only the code can.
+> Fixed code runs the action only when no rule blocks it. The LLM drafts the final message after the action or the refusal, and it cannot change that decision. A draft cannot touch money or data. Only the code can.
 > 
 > `[NGHỈ 1 GIÂY]`  
 > 
