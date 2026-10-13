@@ -418,7 +418,7 @@ async function curveArrowPng(svg) {
       "Customer support automation goes beyond answering FAQs: it executes consequential actions on customer accounts, such as refunds, plan changes, and deletions. " +
         "Companies deploy autonomous LLM agents with direct API tools, pasting complex policies into system prompts. " +
         "Because LLMs evaluate rules probabilistically, prompt injections and hallucinations trigger unauthorized, irreversible actions with no independent code check. " +
-        "External evidence: on the Artificial Analysis Omniscience benchmark, even the best model still hallucinates on hard questions, and most companies deploy cheaper open-weight models, so only architecture can stop it. " +
+        "External evidence: on the Artificial Analysis Omniscience benchmark, even the model ranked number one of 369 still hallucinates on hard questions, and most companies deploy cheaper open-weight models, so only architecture can stop it. " +
         "Then the quiz runs on the next two slides: the question with four options, then the answer."
     );
     // Flow row on the light band, centered across the freed width: a message that hides an
@@ -470,43 +470,55 @@ async function curveArrowPng(svg) {
   }
 
   // ---------- 3 and 4. Quiz: the question, then the answer ----------
-  // One audience quiz on its own two slides: the question with four options, then the same four with the correct one lit.
+  // One audience quiz on its own two slides, built on the AA-Omniscience benchmark that slide 2
+  // cited: one percentage spectrum where each option is a marker with a big stat above it,
+  // then the same spectrum with the correct marker lit.
   {
     const OPTS = [
-      { letter: "A", label: "Refund", icon: "LuUndo2" },
-      { letter: "B", label: "Plan cancellation", icon: "LuCalendarX" },
-      { letter: "C", label: "Password reset", icon: "LuKeyRound" },
-      { letter: "D", label: "Data deletion", icon: "LuTrash2" },
+      { letter: "A", label: "Almost never", sub: "0 to 5% of questions", big: "0-5%" },
+      { letter: "B", label: "About one in five", sub: "around 20%", big: "~20%" },
+      { letter: "C", label: "About half", sub: "around 50%", big: "~50%" },
+      { letter: "D", label: "Nearly always", sub: "over 90%", big: "90%+" },
     ];
-    const gap = 0.35, qw = (CW - 3 * gap) / 4, qy = 2.75, qh = 2.9;
-    const quiz = (n, title, notes, correct) => {
+    const quiz = (n, title, notes, correct, attribution) => {
       const s = base(n, title, notes);
-      s.addText("Which action would you never let a chatbot do alone?", { x: ML, y: 1.3, w: CW, h: 1.0, margin: 0, fontFace: FONT, fontSize: 30, bold: true, color: C.navy, valign: "middle" });
+      textBox(s, 'The smartest AI should say "I don\'t know" on hard questions. How often does it still answer wrongly?', ML, 1.7, CW, 0.45, { size: 19, bold: true, color: C.navy });
+      textBox(s, attribution, ML, 2.3, CW, 0.4, { size: 14, color: C.muted });
+      // deco: a few dots like the AA leaderboard scatter
+      [[10.95, 1.5, C.red], [11.35, 1.48, C.blue], [11.7, 1.52, C.teal], [12.05, 1.45, C.navy], [12.35, 1.48, C.blue], [12.6, 1.5, C.red]]
+        .forEach(([x, y, col]) => s.addShape(pres.ShapeType.ellipse, { x, y, w: 0.17, h: 0.17, fill: { color: col }, line: { color: col, width: 0 } }));
+      // the spectrum: every option is a marker at its percentage of the axis
+      const ax = ML + 0.4, aw = CW - 0.8, ay = 4.7;
+      line(s, ax, ay, aw, 0, { color: C.border, width: 2.5 });
       OPTS.forEach((o, i) => {
-        const x = ML + i * (qw + gap), hit = correct === o.letter, dim = correct !== undefined && !hit;
-        box(s, x, qy, qw, qh, dim ? { fill: "E9EDF2" } : hit ? { line: C.teal, lineW: 2.5 } : {});
-        iconCircle(s, hit ? "LuCircleCheck" : o.icon, x + 0.25, qy + 0.3, 0.75, hit ? C.teal : dim ? C.grey : C.l3);
-        s.addShape(pres.ShapeType.ellipse, { x: x + qw - 0.8, y: qy + 0.3, w: 0.55, h: 0.55, fill: { color: hit ? C.teal : dim ? C.greyL : C.l3 } });
-        s.addText(o.letter, { x: x + qw - 0.8, y: qy + 0.3, w: 0.55, h: 0.55, margin: 0, fontFace: FONT, fontSize: 18, bold: true, color: C.white, align: "center", valign: "middle" });
-        textBox(s, o.label, x + 0.25, qy + 1.45, qw - 0.5, 1.1, { size: 19, bold: hit, color: dim ? "6B7785" : C.navy });
+        const cx = ax + [0.05, 0.20, 0.50, 0.90][i] * aw;
+        const hit = correct === o.letter, dim = correct != null && !hit;
+        const col = hit ? C.teal : dim ? "77828F" : C.navy;
+        textBox(s, o.big, cx - 1.2, 3.35, 2.4, 0.85, { size: 44, bold: true, color: col, align: "center" });
+        s.addShape(pres.ShapeType.ellipse, { x: cx - 0.16, y: ay - 0.16, w: 0.32, h: 0.32, fill: { color: col }, line: { color: col, width: 0 } });
+        s.addShape(pres.ShapeType.ellipse, { x: cx - 0.23, y: ay + 0.47, w: 0.46, h: 0.46, fill: { color: col }, line: { color: col, width: 0 } });
+        s.addText(o.letter, { x: cx - 0.23, y: ay + 0.47, w: 0.46, h: 0.46, margin: 0, fontFace: FONT, fontSize: 15, bold: true, color: C.white, align: "center", valign: "middle" });
+        const row = i % 2 === 0 ? 1.0 : 1.5; // stagger labels so close ticks never collide
+        textBox(s, o.label, cx - 1.6, ay + row, 3.2, 0.4, { size: 18, bold: true, color: col, align: "center" });
       });
       return s;
     };
     quiz(
       3,
-      "Quick quiz",
-      "Ask the question, then read the four options. Say: hands up for your choice. Pause about five seconds and look around; do not give the answer. The next slide shows it."
+      "Quick quiz: guess the error rate",
+      "Set up the benchmark: AA-Omniscience scores 369 reasoning models on questions so hard that a good model should refuse or say it does not know; the hallucination rate is the share of wrong answers among all non-correct responses. " +
+        "Ask the question, then read the four options. Say: hands up for your guess. Pause about five seconds and look around; do not give the answer. The next slide shows it.",
+      null,
+      "AA-Omniscience: 369 models tested."
     );
     const s = quiz(
       4,
-      "The answer",
-      "Point at D: data deletion. Our written rules strictly deny it in chat: deleted projects and trained models cannot come back. An autonomous LLM agent with direct tool access can be tricked into executing unauthorized actions. To solve this safely, we must enforce deterministic rules outside the generative model. The next slide places this architecture in the history of support automation.",
-      "D"
+      "The answer: about half",
+      "Point at C: about half. The frontier models everyone calls the smartest, GPT, Gemini, Claude, still answer roughly half of the hard questions wrongly instead of refusing. Even the leaderboard minimum, a cheaper open-weight model, is 18%, and most companies deploy models in the 30 to 65% band. " +
+        "A smarter model shrinks the number but cannot reach zero: hallucination is probabilistic. Only architecture stops it: deterministic rules and code outside the model. The next slide places that architecture in the history of support automation.",
+      "C",
+      "The smartest models: about half wrong. The minimum on the board: 18%."
     );
-    band(s, 6.0, 0.85, "LuShieldCheck", [
-      { text: "Our written rules always deny data deletion in chat: ", options: { bold: true } },
-      { text: "deleted projects and trained models cannot come back." },
-    ]);
   }
 
   // ---------- 4. Three generations ----------

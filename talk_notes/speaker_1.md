@@ -6,7 +6,7 @@
 - **Thời gian nói được phân bổ:** 5 phút 55 giây (355 giây) = 176 giây ở Slide 1 đến 5 (gồm cặp quiz ở Slide 3 và 4) + 7 giây ở Slide 6 (bức tường luật) + 126 giây ở Slide 7 đến 11 (luật, luồng Level 2, luồng Level 3, Jev đọc gì, Jev trả lời gì) + 46 giây cho ba walk-through (Slide 12 đến 23).
 - **Số từ mục tiêu:** ~712 từ tiếng Anh trong 355 giây, tức khoảng 120 từ mỗi phút; ở Slide 3 và 4 tốc độ chậm hơn vì có một lần chờ khán giả trả lời quiz. Ở Slide 1 đến 5 và Slide 7 đến 11, lời nói thật là kịch bản trong tệp này: ghi chú slide trong `slides/deck.pptx` là bản tóm tắt hoặc bản chi tiết kèm các điều kiện và giới hạn, nên không đọc nguyên văn. Slide 6 và ba walk-through (Slide 12 đến 23) trùng từng từ với ghi chú slide.
 - **Các slide phụ trách:** Slide 1 (50 giây), Slide 2 (50 giây), Slide 3 (15 giây, câu hỏi quiz), Slide 4 (20 giây, đáp án và câu hỏi dẫn sang Slide 5), Slide 5 (41 giây), Slide 6 (7 giây), Slide 7 đến 11 (23 + 33 + 26 + 23 + 21 giây), ba walk-through ở Slide 12 đến 23 (22 + 12 + 12 = 46 giây), cộng toàn bộ phần Q&A sau bài nói (5 phút, xem `qa.md`). Long nói liền một mạch từ Slide 1 đến Slide 23: luật và luồng xử lý được giải thích trước, rồi ba yêu cầu thật đi qua đúng luồng đó. Sau Slide 23, Long không nói nữa cho đến phần Q&A.
-- **Quy ước tương tác:** Cả nhóm chỉ có một câu quiz với khán giả, do Long đặt ở Slide 3, với đáp án hiện ở Slide 4 (hành động nào bạn không bao giờ để chatbot tự làm? — xóa dữ liệu). Câu chuyện mở đầu ở Slide 1 chỉ là lời kể, không yêu cầu khán giả làm gì. Bốn bạn còn lại chỉ trình bày, nói thẳng từ trên xuống dưới, không chào, không bàn giao và không hỏi khán giả. Sau Slide 31, Long tự mở phần hỏi đáp và trả lời tất cả câu hỏi.
+- **Quy ước tương tác:** Cả nhóm chỉ có một câu quiz với khán giả, do Long đặt ở Slide 3, với đáp án hiện ở Slide 4 (model tốt nhất trên benchmark AA-Omniscience trả lời sai bao nhiêu phần trăm? — khoảng một phần năm, 18%). Câu chuyện mở đầu ở Slide 1 chỉ là lời kể, không yêu cầu khán giả làm gì. Bốn bạn còn lại chỉ trình bày, nói thẳng từ trên xuống dưới, không chào, không bàn giao và không hỏi khán giả. Sau Slide 31, Long tự mở phần hỏi đáp và trả lời tất cả câu hỏi.
 
 ---
 
@@ -38,11 +38,11 @@ Lời tự giới thiệu nằm ngay ở đầu Slide 1 (nói một lần, khôn
 - **Tiêu đề slide:** Consequential actions: why autonomous agents fail alone
 - **Thời gian dự kiến trên slide:** 0 phút 50 giây (50 giây, ~93 từ)
 
-> On the left is the standard choice today: an autonomous LLM agent. One model reads your chat and your account, puts the written rules into its system prompt, and calls the tools directly: refunds, cancellations, deletions. This is what most products ship. And here is the evidence: on the Artificial Analysis Omniscience benchmark, even the best model still hallucinates on hard questions. A smarter model lowers the chance, but the hallucination rate is only about half as good, while the price is far bigger.
+> On the left is the standard choice today: an autonomous LLM agent. One model reads your chat and your account, puts the written rules into its system prompt, and calls the tools directly: refunds, cancellations, deletions. This is what most products ship. And here is the evidence: on the Artificial Analysis Omniscience benchmark, the smartest models we have still hallucinate on hard questions. A smarter model lowers the chance, but the hallucination rate is only about half as good, while the price is far bigger.
 > 
 > `[NGHỈ 1 GIÂY]`  
 > 
-> And most companies do not even ship that best model: they deploy cheaper open-weight models, like Qwen or DeepSeek, and fine-tune them for their own business. That keeps the cost low, but the hallucination stays. That is why our alternative is architectural: on the right, a lightweight classifier labels the intent first, deterministic code checks every written rule, and the LLM only drafts the reply. A draft cannot run a refund; only the code can. The model never touches the tools.
+> And most companies do not even ship those smartest models: they deploy cheaper open-weight models, like Qwen or DeepSeek, and fine-tune them for their own business. That keeps the cost low, but the hallucination stays. That is why our alternative is architectural: on the right, a lightweight classifier labels the intent first, deterministic code checks every written rule, and the LLM only drafts the reply. A draft cannot run a refund; only the code can. The model never touches the tools.
 > 
 > `[NGHỈ 1 GIÂY]`  
 > 
@@ -51,10 +51,10 @@ Lời tự giới thiệu nằm ngay ở đầu Slide 1 (nói một lần, khôn
 ---
 
 ### Slide 3: Câu hỏi quiz
-- **Tiêu đề slide:** Quick quiz
+- **Tiêu đề slide:** Quick quiz: guess the error rate of the smartest model we have
 - **Thời gian dự kiến trên slide:** 0 phút 15 giây (15 giây, ~31 từ)
 
-> Now, a quick quiz: which action would you never let a chatbot do alone? A: a refund. B: a cancellation. C: a password reset. D: a data deletion? Hands up, please.
+> Now, a quick quiz. AA-Omniscience is a test of very hard questions. A good AI should say "I don't know". But how often does the smartest model we have still answer wrongly? A: almost never. B: about one in five. C: about half. D: nearly always? Hands up, please.
 >
 > `[NGHỈ 5 GIÂY]`  
 > `[CHUYỂN SANG SLIDE 4]`
@@ -66,10 +66,10 @@ Lời tự giới thiệu nằm ngay ở đầu Slide 1 (nói một lần, khôn
 ---
 
 ### Slide 4: Đáp án quiz
-- **Tiêu đề slide:** The answer
+- **Tiêu đề slide:** The answer: the smartest model still misses about half
 - **Thời gian dự kiến trên slide:** 0 phút 20 giây (20 giây, ~40 từ)
 
-> The answer is D: a data deletion. Our written rules always deny it in chat: deleted projects cannot come back.
+> The answer is C: about half. The frontier models everyone calls the smartest, GPT, Gemini, Claude, still answer roughly half of the hard questions wrongly, instead of refusing. Even the leaderboard minimum is 18%, from a cheaper open-weight model. And most companies ship models in the 30 to 65% band.
 >
 > `[NGHỈ 1 GIÂY]`  
 > 
@@ -78,7 +78,7 @@ Lời tự giới thiệu nằm ngay ở đầu Slide 1 (nói một lần, khôn
 > `[NGHỈ 1 GIÂY]`  
 > `[CHUYỂN SANG SLIDE 5]`
 
-Dải chữ dưới cùng của slide giải thích thêm: deleted projects and trained models cannot come back (dự án đã xóa và mô hình đã huấn luyện không thể khôi phục).
+Dòng dưới câu hỏi giải thích thêm: the smartest models still answer about half of the hard questions wrongly instead of refusing; the leaderboard minimum is 18% (những model "thông minh nhất" vẫn trả lời sai khoảng một nửa câu hỏi khó thay vì từ chối; mức thấp nhất trên bảng là 18%, từ một model open-weight rẻ hơn).
 
 ---
 
