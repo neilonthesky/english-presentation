@@ -5,7 +5,7 @@
 - **Tỷ lệ đóng góp trong bài báo:** 28% (đây không phải tỷ lệ thời gian nói). Về thời gian nói, Long nói 355 giây trên tổng 835 giây (42,5%): câu quiz duy nhất với khán giả, phần giải thích luật và luồng xử lý, ba walk-through và toàn bộ phần hỏi đáp.
 - **Thời gian nói được phân bổ:** 5 phút 55 giây (355 giây) = 176 giây ở Slide 1 đến 5 (gồm cặp quiz ở Slide 3 và 4) + 7 giây ở Slide 6 (bức tường luật) + 126 giây ở Slide 7 đến 11 (luật, luồng Level 2, luồng Level 3, Jev đọc gì, Jev trả lời gì) + 46 giây cho ba walk-through (Slide 12 đến 23).
 - **Số từ mục tiêu:** ~712 từ tiếng Anh trong 355 giây, tức khoảng 120 từ mỗi phút; ở Slide 3 và 4 tốc độ chậm hơn vì có một lần chờ khán giả trả lời quiz. Ở Slide 1 đến 5 và Slide 7 đến 11, lời nói thật là kịch bản trong tệp này: ghi chú slide trong `slides/deck.pptx` là bản tóm tắt hoặc bản chi tiết kèm các điều kiện và giới hạn, nên không đọc nguyên văn. Slide 6 và ba walk-through (Slide 12 đến 23) trùng từng từ với ghi chú slide.
-- **Các slide phụ trách:** Slide 1 (50 giây), Slide 2 (50 giây), Slide 3 (15 giây, câu hỏi quiz), Slide 4 (20 giây, đáp án và câu hỏi dẫn sang Slide 5), Slide 5 (41 giây), Slide 6 (7 giây), Slide 7 đến 11 (23 + 33 + 26 + 23 + 21 giây), ba walk-through ở Slide 12 đến 23 (22 + 12 + 12 = 46 giây), cộng toàn bộ phần Q&A sau bài nói (5 phút, xem `qa.md`). Long nói liền một mạch từ Slide 1 đến Slide 23: luật và luồng xử lý được giải thích trước, rồi ba yêu cầu thật đi qua đúng luồng đó. Sau Slide 23, Long không nói nữa cho đến phần Q&A.
+- **Các slide phụ trách:** Slide 1 (50 giây), Slide 2 (50 giây), Slide 3 (15 giây, câu hỏi quiz), Slide 4 (20 giây, đáp án và câu hỏi dẫn sang Slide 5), Slide 5 (40 giây), Slide 6 (7 giây), Slide 7 đến 11 (23 + 33 + 26 + 23 + 21 giây), ba walk-through ở Slide 12 đến 23 (22 + 12 + 12 = 46 giây), cộng toàn bộ phần Q&A sau bài nói (5 phút, xem `qa.md`). Long nói liền một mạch từ Slide 1 đến Slide 23: luật và luồng xử lý được giải thích trước, rồi ba yêu cầu thật đi qua đúng luồng đó. Sau Slide 23, Long không nói nữa cho đến phần Q&A.
 - **Quy ước tương tác:** Cả nhóm chỉ có một câu quiz với khán giả, do Long đặt ở Slide 3, với đáp án hiện ở Slide 4 (model tốt nhất trên benchmark AA-Omniscience trả lời sai bao nhiêu phần trăm? — khoảng một phần năm, 18%). Câu chuyện mở đầu ở Slide 1 chỉ là lời kể, không yêu cầu khán giả làm gì. Bốn bạn còn lại chỉ trình bày, nói thẳng từ trên xuống dưới, không chào, không bàn giao và không hỏi khán giả. Sau Slide 31, Long tự mở phần hỏi đáp và trả lời tất cả câu hỏi.
 
 ---
@@ -73,7 +73,7 @@ Lời tự giới thiệu nằm ngay ở đầu Slide 1 (nói một lần, khôn
 >
 > `[NGHỈ 1 GIÂY]`  
 > 
-> So, our question is: what if a small, fast model, called Jev, decided, and the LLM only wrote the reply?
+> So, a smarter model is not the fix. The fix is the system around the model: separate steps, with fixed rules that decide. Support has been built that way for years. Here is that history.
 >
 > `[NGHỈ 1 GIÂY]`  
 > `[CHUYỂN SANG SLIDE 5]`
@@ -82,15 +82,13 @@ Dòng dưới câu hỏi giải thích thêm: the smartest models still answer a
 
 ---
 
-### Slide 5: Ba thế hệ tự động hóa hỗ trợ
-- **Tiêu đề slide:** Three generations of support automation
-- **Thời gian dự kiến trên slide:** 0 phút 41 giây (41 giây, ~76 từ)
+### Slide 5: Lịch sử tự động hóa hỗ trợ
+- **Tiêu đề slide:** A short history of support automation
+- **Thời gian dự kiến trên slide:** 0 phút 40 giây (40 giây, ~85 từ)
 
-> Support automation has three generations. Until 2022, bots ran on a classifier with code behind it: the classifier labelled the message, code ran the flow. From 2023, LLM agents took over: one model reads the message and the policy and acts. From 2024 until now, products combined the two: a classifier labels first, code applies the rules, and the LLM writes the reply. Our study compares generations two and three on the same one thousand and twenty-four requests.
+> Support automation has run the same steps for years: a classifier labels the message, fixed rules decide what to do, and something writes the reply. Rules are ordinary program code, written by people: for example, a refund above one hundred dollars is denied. They run the same way every time. Until 2022, the classifier was a trained intent model, and the replies came from templates. From 2023 until now, an LLM joined: it writes the replies, and it can label the message too. The steps stay the same. Only the model inside a step changes. So how do we improve it?
 > 
-> `[NGHỈ 1 GIÂY]`  
-> 
-> Now, the rules.
+> `[NGHỈ 1 GIÂY]`
 > 
 > `[CHUYỂN SANG SLIDE 6]`
 

@@ -98,7 +98,7 @@ const RED_HAT_BENCHMARK_URL = "https://developers.redhat.com/articles/2026/10/02
 // Speakers and speaking time per logical section; each walk-through section spans several slides.
 const LONG = "Tran Thanh Long", NAM = "Nguyen Thanh Nam", SON = "Vu Van Son", QUY = "Vuong Quang Quy", PNAM = "Nguyen Phuong Nam";
 const SPEAKER = [
-  [LONG, 50], [LONG, 50], [LONG, 15], [LONG, 20], [LONG, 40], [LONG, 41], // title, start, quiz question, quiz answer, the three generations, the ladder
+  [LONG, 50], [LONG, 50], [LONG, 15], [LONG, 20], [LONG, 40], [LONG, 41], // title, start, quiz question, quiz answer, the history, the ladder
   [LONG, 7], // many rules
   [LONG, 23], [LONG, 33], [LONG, 26], [LONG, 23], [LONG, 21], // written rules, Level 2 flow, Level 3 flow, inputs, typed answers
   [LONG, 22], [LONG, 12], [LONG, 12], // the three walk-throughs (CASES in cases.js): every click is its own slide, so these seconds cover all of them
@@ -138,7 +138,7 @@ async function photo(file, w, h, radius = 0.08, dpi = 150) {
   return "image/png;base64," + buf.toString("base64");
 }
 
-// Technical infographic-style milestone icons for the three generations slide.
+// Technical infographic-style milestone icons for the history slide.
 // Restrained editorial palette (Slate, Deck Blue, Deep Navy, Crisp White).
 // Flat, high-contrast vector system diagrams with clean geometry (128x128 SVG).
 const GEN_BADGES = {
@@ -515,42 +515,45 @@ async function curveArrowPng(svg) {
       4,
       "The answer: about half",
       "Point at C: about half. The frontier models everyone calls the smartest, GPT, Gemini, Claude, still answer roughly half of the hard questions wrongly instead of refusing. Even the leaderboard minimum, a cheaper open-weight model, is 18%, and most companies deploy models in the 30 to 65% band. " +
-        "A smarter model shrinks the number but cannot reach zero: hallucination is probabilistic. Only architecture stops it: deterministic rules and code outside the model. The next slide places that architecture in the history of support automation.",
+        "A smarter model shrinks the number but cannot reach zero: hallucination is probabilistic. Only architecture stops it: deterministic rules and code outside the model. " +
+        "Land the bridge: a smarter model is not the fix; the fix is the system around the model, separate steps with fixed rules that decide. Support has been built that way for years. The next slide shows that history.",
       "C",
       "The smartest models: about half wrong. The minimum on the board: 18%."
     );
   }
 
-  // ---------- 4. Three generations ----------
+  // ---------- 5. History ----------
   // Opening background slide: a rising serpentine road through the industry's history, described only. It comes before
-  // Jev, the levels, and the results, so it names none of them and makes no judgment.
+  // Jev, the levels, and the results, so it names none of them, uses no experiment data, and makes no judgment.
+  // Both eras run the same steps (classifier, rules, reply); only the model inside a step changes.
+  // The third pin is a question, not an era: it leads into the next slides.
   {
     const s = base(
       5,
-      "Three generations of support automation",
-      "Until 2022, support bots ran on an intent classifier with code behind it: the classifier labelled the message and code ran the flow. " +
-        "From 2023, LLM agents took over: one model reads the message and the policy and acts. " +
-        "From 2024 until now, products combined the two: a classifier labels the message first, code applies the rules, and the LLM writes the reply. " +
-        "Next, our concrete architecture and experimental evaluation."
+      "A short history of support automation",
+      "Support automation has run the same steps for years: a classifier labels the message, fixed rules decide what to do, and something writes the reply. " +
+        "Rules means ordinary program code written by people, such as: a refund above 100 dollars is denied. It runs the same way every time and is not a model. " +
+        "Until 2022, the classifier was a trained intent model that sorts a message into a fixed list of intents, rules ran the flow, and the replies came from templates. " +
+        "From 2023 until now, an LLM joined: it writes the reply, and it can label the message too. The steps stay the same, and only the model inside a step changes. " +
+        "Source for the LLM as classifier: Bocklisch et al. 2024, Rasa CALM, arXiv 2402.12234: NLU assigns a message to a fixed list of intents, while an LLM interprets the message and the business logic stays in code. " +
+        "So how do we improve it?"
     );
     // The road and infographic milestone icons are transparent PNGs (sharp); every word stays editable.
     s.addImage({ data: await serpentinePng(), x: 0, y: 0, w: 13.333, h: 7.5 });
     s.addImage({ data: await genIconPng("gen1"), x: 0.55, y: 5.383, w: 0.90, h: 0.90 });
     s.addImage({ data: await genIconPng("gen2"), x: 3.883, y: 3.55, w: 0.90, h: 0.90 });
-    s.addImage({ data: await genIconPng("gen3"), x: 7.55, y: 1.633, w: 0.90, h: 0.90 });
+    textBox(s, "?", 7.55, 1.633, 0.9, 0.9, { shape: pres.ShapeType.ellipse, fill: C.l3, line: C.white, color: C.white, size: 40, bold: true, margin: 0, align: "center", valign: "middle" });
     s.addImage({ data: await genIconPng("pin"), x: 1.888, y: 5.048, w: 0.44, h: 0.44 });
     s.addShape(pres.ShapeType.ellipse, { x: 12.23, y: 3.73, w: 0.20, h: 0.20, fill: { color: C.navy }, line: { color: C.white, width: 2 } });
     textBox(s, "until 2022", 1.25, 6.15, 3.0, 0.32, { size: 16, bold: true, color: C.navy });
-    textBox(s, "Classifier + code", 1.25, 6.46, 4.2, 0.45, { size: 23, bold: true, color: C.navy });
-    textBox(s, "A classifier labels the message, code runs the flow", 1.25, 6.92, 5.5, 0.35, { size: 16, color: C.text });
-    textBox(s, "2023 to 2024", 4.667, 4.35, 3.0, 0.32, { size: 16, bold: true, color: C.blue });
-    textBox(s, "One LLM agent", 4.667, 4.66, 4.2, 0.45, { size: 23, bold: true, color: C.navy });
-    textBox(s, "One model reads the message and the policy, then acts", 4.667, 5.12, 5.8, 0.35, { size: 16, color: C.text });
-    textBox(s, "2024 to now", 10.0, 0.80, 3.0, 0.32, { size: 16, bold: true, color: C.l3 });
-    textBox(s, "Classifier + code + LLM", 10.0, 1.12, 3.6, 0.45, { size: 23, bold: true, color: C.navy });
-    textBox(s, "A classifier labels first,", 10.0, 1.60, 3.2, 0.30, { size: 16, color: C.text });
-    textBox(s, "code applies the rules,", 10.0, 1.90, 3.2, 0.30, { size: 16, color: C.text });
-    textBox(s, "the LLM writes the reply", 10.0, 2.20, 3.2, 0.30, { size: 16, color: C.text });
+    textBox(s, "Classifier + rules", 1.25, 6.46, 4.2, 0.45, { size: 22, bold: true, color: C.navy });
+    textBox(s, "A trained model labels the message, fixed rules run the flow", 1.25, 6.92, 5.5, 0.35, { size: 16, color: C.text });
+    textBox(s, "2023-now", 4.667, 4.35, 3.0, 0.32, { size: 16, bold: true, color: C.blue });
+    textBox(s, "Classifier + rules + LLM", 4.667, 4.66, 4.2, 0.45, { size: 22, bold: true, color: C.navy });
+    textBox(s, "Same steps, and an LLM writes the reply", 4.667, 5.12, 5.8, 0.30, { size: 16, color: C.text });
+    textBox(s, "and can label the message too", 4.667, 5.42, 5.8, 0.30, { size: 16, color: C.text });
+    textBox(s, "next", 10.0, 0.80, 3.0, 0.32, { size: 16, bold: true, color: C.l3 });
+    textBox(s, "How do we improve it?", 10.0, 1.12, 3.6, 0.45, { size: 22, bold: true, color: C.navy });
     textBox(s, "start here", 2.42, 5.46, 1.8, 0.32, { size: 15, bold: true, color: C.navy });
   }
 
