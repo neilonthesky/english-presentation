@@ -2,11 +2,11 @@
 
 - **Họ và tên diễn giả:** Tran Thanh Long
 - **Vai trò trong đề tài:** Trưởng nhóm; Điều phối đề tài; Tóm tắt (Abstract), Mở đầu (Introduction) và Kết luận (Conclusion); Kiến trúc bậc thang hỗ trợ; Biên tập hoàn thiện
-- **Tỷ lệ đóng góp trong bài báo:** 28% (đây không phải tỷ lệ thời gian nói). Về thời gian nói, Long nói 355 giây trên tổng 835 giây (42,5%): câu quiz duy nhất với khán giả, phần giải thích luật và luồng xử lý, ba walk-through và toàn bộ phần hỏi đáp.
-- **Thời gian nói được phân bổ:** 5 phút 55 giây (355 giây) = 176 giây ở Slide 1 đến 5 (gồm cặp quiz ở Slide 3 và 4) + 7 giây ở Slide 6 (bức tường luật) + 126 giây ở Slide 7 đến 11 (luật, luồng Level 2, luồng Level 3, Jev đọc gì, Jev trả lời gì) + 46 giây cho ba walk-through (Slide 12 đến 23).
-- **Số từ mục tiêu:** ~712 từ tiếng Anh trong 355 giây, tức khoảng 120 từ mỗi phút; ở Slide 3 và 4 tốc độ chậm hơn vì có một lần chờ khán giả trả lời quiz. Ở Slide 1 đến 5 và Slide 7 đến 11, lời nói thật là kịch bản trong tệp này: ghi chú slide trong `slides/deck.pptx` là bản tóm tắt hoặc bản chi tiết kèm các điều kiện và giới hạn, nên không đọc nguyên văn. Slide 6 và ba walk-through (Slide 12 đến 23) trùng từng từ với ghi chú slide.
-- **Các slide phụ trách:** Slide 1 (50 giây), Slide 2 (50 giây), Slide 3 (15 giây, câu hỏi quiz), Slide 4 (20 giây, đáp án và câu hỏi dẫn sang Slide 5), Slide 5 (40 giây), Slide 6 (7 giây), Slide 7 đến 11 (23 + 33 + 26 + 23 + 21 giây), ba walk-through ở Slide 12 đến 23 (22 + 12 + 12 = 46 giây), cộng toàn bộ phần Q&A sau bài nói (5 phút, xem `qa.md`). Long nói liền một mạch từ Slide 1 đến Slide 23: luật và luồng xử lý được giải thích trước, rồi ba yêu cầu thật đi qua đúng luồng đó. Sau Slide 23, Long không nói nữa cho đến phần Q&A.
-- **Quy ước tương tác:** Cả nhóm chỉ có một câu quiz với khán giả, do Long đặt ở Slide 3, với đáp án hiện ở Slide 4 (model tốt nhất trên benchmark AA-Omniscience trả lời sai bao nhiêu phần trăm? — khoảng một phần năm, 18%). Câu chuyện mở đầu ở Slide 1 chỉ là lời kể, không yêu cầu khán giả làm gì. Bốn bạn còn lại chỉ trình bày, nói thẳng từ trên xuống dưới, không chào, không bàn giao và không hỏi khán giả. Sau Slide 31, Long tự mở phần hỏi đáp và trả lời tất cả câu hỏi.
+- **Tỷ lệ đóng góp trong bài báo:** 28% (đây không phải tỷ lệ thời gian nói). Về thời gian nói, Long nói 345 giây trên tổng 825 giây (41,8%): câu quiz duy nhất với khán giả, phần giải thích luật và luồng xử lý, ba walk-through và toàn bộ phần hỏi đáp.
+- **Thời gian nói được phân bổ:** 5 phút 45 giây (345 giây) = 185 giây ở Slide 1 đến 5 (gồm cặp quiz ở Slide 3 và 4) + 23 giây ở Slide 6 (luật viết sẵn) + 10 giây ở Slide 7 (bức tường luật) + 28 giây ở Slide 8 (giới thiệu Jev) + 44 giây ở Slide 9 và 10 (Jev đọc gì, Jev trả lời gì) + 55 giây cho ba walk-through (Slide 11 đến 20).
+- **Số từ mục tiêu:** ~697 từ tiếng Anh trong 345 giây, tức khoảng 120 từ mỗi phút; ở Slide 3 và 4 tốc độ chậm hơn vì có một lần chờ khán giả trả lời quiz. Ở Slide 1 đến 10, lời nói thật là kịch bản trong tệp này: ghi chú slide trong `slides/deck.pptx` là bản tóm tắt hoặc bản chi tiết kèm các điều kiện và giới hạn, nên không đọc nguyên văn. Slide 7 và ba walk-through (Slide 11 đến 20) trùng từng từ với ghi chú slide.
+- **Các slide phụ trách:** Slide 1 (50 giây), Slide 2 (50 giây), Slide 3 (15 giây, câu hỏi quiz), Slide 4 (20 giây, đáp án và câu hỏi dẫn sang Slide 5), Slide 5 (50 giây), Slide 6 (23 giây), Slide 7 (10 giây), Slide 8 (28 giây), Slide 9 và 10 (23 + 21 giây), ba walk-through ở Slide 11 đến 20 (33 + 12 + 10 = 55 giây), cộng toàn bộ phần Q&A sau bài nói (5 phút, xem `qa.md`). Long nói liền một mạch từ Slide 1 đến Slide 20: luật và Jev được giới thiệu trước, rồi ba yêu cầu thật đi qua đúng luồng xử lý đó. Sau Slide 20, Long không nói nữa cho đến phần Q&A.
+- **Quy ước tương tác:** Cả nhóm chỉ có một câu quiz với khán giả, do Long đặt ở Slide 3, với đáp án hiện ở Slide 4 (model tốt nhất trên benchmark AA-Omniscience trả lời sai bao nhiêu phần trăm? — khoảng một phần năm, 18%). Câu chuyện mở đầu ở Slide 1 chỉ là lời kể, không yêu cầu khán giả làm gì. Bốn bạn còn lại chỉ trình bày, nói thẳng từ trên xuống dưới, không chào, không bàn giao và không hỏi khán giả. Sau Slide 28, Long tự mở phần hỏi đáp và trả lời tất cả câu hỏi.
 
 ---
 
@@ -84,9 +84,9 @@ Dòng dưới câu hỏi giải thích thêm: the smartest models still answer a
 
 ### Slide 5: Lịch sử tự động hóa hỗ trợ
 - **Tiêu đề slide:** A short history of support automation
-- **Thời gian dự kiến trên slide:** 0 phút 40 giây (40 giây, ~85 từ)
+- **Thời gian dự kiến trên slide:** 0 phút 50 giây (50 giây, ~100 từ)
 
-> Support automation has run the same steps for years: a classifier labels the message, fixed rules decide what to do, and something writes the reply. Rules are ordinary program code, written by people: for example, a refund above one hundred dollars is denied. They run the same way every time. Until 2022, the classifier was a trained intent model, and the replies came from templates. From 2023 until now, an LLM joined: it writes the replies, and it can label the message too. The steps stay the same. Only the model inside a step changes. So how do we improve it?
+> Support automation has run the same steps for years: a classifier labels the message, fixed rules decide what to do, and something writes the reply. Rules are ordinary program code, written by people: for example, a refund above one hundred dollars is denied. They run the same way every time. Until 2022, the classifier was a trained intent model, and the replies came from templates. From 2023 until now, the classifier is an LLM, and an LLM agent holds the rules, decides, and acts. The steps stay the same. Only the model inside a step changes. So how do we improve it?
 > 
 > `[NGHỈ 1 GIÂY]`
 > 
@@ -94,19 +94,7 @@ Dòng dưới câu hỏi giải thích thêm: the smartest models still answer a
 
 ---
 
-### Slide 6: Nhiều luật: một bức tường luật
-- **Tiêu đề slide:** Real support policies have many rules
-- **Thời gian dự kiến trên slide:** 0 phút 07 giây (7 giây, ~14 từ)
-
-> Real policies have many rules. Who should apply them: an LLM agent, or Jev?
-> 
-> `[NGHỈ 1 GIÂY]`  
-> 
-> `[CHUYỂN SANG SLIDE 7]`
-
----
-
-### Slide 7: Các quy tắc bằng văn bản
+### Slide 6: Các quy tắc bằng văn bản
 - **Tiêu đề slide:** Every action meets a written rule: allow or deny
 - **Thời gian dự kiến trên slide:** 0 phút 23 giây (23 giây, ~49 từ)
 
@@ -114,15 +102,27 @@ Dòng dưới câu hỏi giải thích thêm: the smartest models still answer a
 > 
 > `[NGHỈ 1 GIÂY]`  
 > 
+> `[CHUYỂN SANG SLIDE 7]`
+
+---
+
+### Slide 7: Nhiều luật: một bức tường luật
+- **Tiêu đề slide:** Real support policies have many rules
+- **Thời gian dự kiến trên slide:** 0 phút 10 giây (10 giây, ~21 từ)
+
+> Real policies have many rules. Who should apply every rule: an LLM agent, or a fast classifier? We compare both.
+> 
+> `[NGHỈ 1 GIÂY]`  
+> 
 > `[CHUYỂN SANG SLIDE 8]`
 
 ---
 
-### Slide 8: Luồng xử lý của Autonomous Agent
-- **Tiêu đề slide:** Autonomous agent: single model decides and dispatches actions
-- **Thời gian dự kiến trên slide:** 0 phút 33 giây (33 giây, ~71 từ)
+### Slide 8: Giới thiệu Jev
+- **Tiêu đề slide:** Meet Jev, a fast classifier
+- **Thời gian dự kiến trên slide:** 0 phút 28 giây (28 giây, ~58 từ)
 
-> In the autonomous agent, one model reads the rules as prompt text and decides everything. New saves the message, and Gather info collects the chat, the whole account, and the help articles. The first LLM call answers run or refuse. If it names an action, code runs it with no independent policy check. If it refuses, nothing runs. A second LLM call writes the final message. Chat open and Resolved are not simulated.
+> Meet Jev, a fast classifier from the System One family. It gives typed labels, each with a confidence. It also answers our own yes or no questions, one for each written rule, with no fine-tuning. It cannot run an action, and it never writes text. And it is cheap: input costs four point two cents per million tokens, and its output is free.
 > 
 > `[NGHỈ 1 GIÂY]`  
 > 
@@ -130,19 +130,7 @@ Dòng dưới câu hỏi giải thích thêm: the smartest models still answer a
 
 ---
 
-### Slide 9: Luồng xử lý của Hybrid Pipeline
-- **Tiêu đề slide:** Compound hybrid pipeline: intent triage, rule check, and LLM drafting
-- **Thời gian dự kiến trên slide:** 0 phút 26 giây (26 giây, ~59 từ)
-
-> This is our compound pipeline as a state machine with seven states. Intent triage happens first: the classifier reads the chat and returns five fields. Then deterministic questions verify each written rule. The process runs the action only when no rule is broken. It does not recheck the policy facts. The LLM writes the final message.
-> 
-> `[NGHỈ 1 GIÂY]`  
-> 
-> `[CHUYỂN SANG SLIDE 10]`
-
----
-
-### Slide 10: Jev đọc gì
+### Slide 9: Jev đọc gì
 - **Tiêu đề slide:** Jev reads the chat first, then one rule at a time
 - **Thời gian dự kiến trên slide:** 0 phút 23 giây (23 giây, ~48 từ)
 
@@ -150,11 +138,11 @@ Dòng dưới câu hỏi giải thích thêm: the smartest models still answer a
 > 
 > `[NGHỈ 1 GIÂY]`  
 > 
-> `[CHUYỂN SANG SLIDE 11]`
+> `[CHUYỂN SANG SLIDE 10]`
 
 ---
 
-### Slide 11: Jev trả lời gì và quy trình đi theo
+### Slide 10: Jev trả lời gì và quy trình đi theo
 - **Tiêu đề slide:** Jev returns five fields, then one answer per rule
 - **Thời gian dự kiến trên slide:** 0 phút 21 giây (21 giây, ~46 từ)
 
@@ -164,36 +152,34 @@ Dòng dưới câu hỏi giải thích thêm: the smartest models still answer a
 > 
 > Now, three recorded requests.
 > 
-> `[CHUYỂN SANG SLIDE 12]`
+> `[CHUYỂN SANG SLIDE 11]`
 
 ---
 
-### Slide 12 đến 23: Ba walk-through (mỗi lần bấm phím tiếp là một slide)
+### Slide 11 đến 20: Ba walk-through (mỗi lần bấm phím tiếp là một slide)
 - **Tiêu đề slide:** Walk-through 1, 2 và 3 (giữ cùng tiêu đề cho mọi slide trong một walk-through)
-- **Thời gian dự kiến:** 22 giây + 12 giây + 12 giây = 46 giây (~89 từ). Walk-through 1 dùng 5 slide (đủ mọi trạng thái); walk-through 2 dùng 4 slide; walk-through 3 dùng 3 slide. Mỗi dòng dưới đây là một câu rất ngắn nói đúng lúc bấm sang slide đó. Ba yêu cầu là R0353, R0441 và R0722 của lượt chạy 1.024 yêu cầu, và mọi câu trả lời của Jev trên slide là dữ liệu ghi lại từ lượt chạy thật, nên Long chỉ cần đọc đúng các con số đã hiện trên chip.
+- **Thời gian dự kiến:** 33 giây + 12 giây + 10 giây = 55 giây (~113 từ). Walk-through 1 dùng 4 slide và cũng là chỗ giải thích sơ đồ luồng của một yêu cầu; walk-through 2 dùng 3 slide; walk-through 3 dùng 3 slide. Mỗi dòng dưới đây là một câu rất ngắn nói đúng lúc bấm sang slide đó. Ba yêu cầu là R0353, R0441 và R0722 của lượt chạy 1.024 yêu cầu, và mọi câu trả lời của Jev trên slide là dữ liệu ghi lại từ lượt chạy thật, nên Long chỉ cần đọc đúng các con số đã hiện trên chip.
 
-Bấm phím tiếp **một lần cho mỗi dòng**. Walk-through 1 nối ngay sau câu cuối của Slide 11.
+Bấm phím tiếp **một lần cho mỗi dòng**. Walk-through 1 nối ngay sau câu cuối của Slide 10.
 
-#### Walk-through 1: a refund that no rule stops (Slide 12 đến 16; 22 giây, ~40 từ)
+#### Walk-through 1: a refund that no rule stops (Slide 11 đến 14; 33 giây, ~66 từ)
 
-> **Slide 12:** A customer asks for a refund. The message is saved.  
-> **Slide 13:** Jev, first call: a refund, Start refund, low priority, no injection.  
-> **Slide 14:** Rules: Jev answers eight questions. No rule is broken.  
-> **Slide 15:** Do action: the refund starts.  
-> **Slide 16:** Final message: the LLM replies.
+> **Slide 11:** This is the flow of one request. A message enters New, Jev reads the chat, Rules asks one question for each rule, and the LLM writes the reply. A customer asks for a refund.  
+> **Slide 12:** Jev, first call: a refund, Start refund, low priority, no injection.  
+> **Slide 13:** Rules: Jev answers eight questions. No rule blocks the refund, so it runs.  
+> **Slide 14:** Final message: the LLM replies.
 
-#### Walk-through 2: a refund that a rule stops (Slide 17 đến 20; 12 giây, ~29 từ)
+#### Walk-through 2: a refund that a rule stops (Slide 15 đến 17; 12 giây, ~27 từ)
 
-> **Slide 17:** A second customer asks for a refund. Watch for the warning.  
-> **Slide 18:** Jev: the same action.  
-> **Slide 19:** Rules: the amount limit is broken. Nothing runs.  
-> **Slide 20:** Final message: the LLM explains why.
+> **Slide 15:** A second customer asks for a refund. Watch for the warning.  
+> **Slide 16:** Rules: the amount limit blocks the refund. Nothing runs.  
+> **Slide 17:** Final message: the LLM explains why.
 
-#### Walk-through 3: an order hidden in the message (Slide 21 đến 23; 12 giây, ~20 từ)
+#### Walk-through 3: an order hidden in the message (Slide 18 đến 20; 10 giây, ~20 từ)
 
-> **Slide 21:** A third customer orders a refund of everything.  
-> **Slide 22:** Jev: danger. The injection flag is on.  
-> **Slide 23:** The LLM ignores the order.
+> **Slide 18:** A third customer orders a refund of everything.  
+> **Slide 19:** Jev: danger. The injection flag is on.  
+> **Slide 20:** The LLM ignores the order.
 
 ---
 
@@ -247,4 +233,4 @@ Luyện phát âm 10 từ vựng này theo phiên âm đơn giản dưới đây
 
 ## 5. Phần hỏi đáp (Q&A): Long trả lời toàn bộ
 
-Sau khi Phuong Nam nói xong Slide 31, Long bước lên giữa sân khấu, mời khán giả đặt câu hỏi (Slide 32 đã hiện "Questions?") và trả lời **tất cả** câu hỏi trong 5 phút. Bốn bạn còn lại đứng bên cạnh, lắng nghe, không trả lời trừ khi Long nhường lời. Dùng `qa.md` làm tài liệu chính. Mở đầu mỗi câu bằng: *"Thank you for your question."* và nhắc lại câu hỏi bằng lời của mình trước khi trả lời.
+Sau khi Phuong Nam nói xong Slide 28, Long bước lên giữa sân khấu, mời khán giả đặt câu hỏi (Slide 29 đã hiện "Questions?") và trả lời **tất cả** câu hỏi trong 5 phút. Bốn bạn còn lại đứng bên cạnh, lắng nghe, không trả lời trừ khi Long nhường lời. Dùng `qa.md` làm tài liệu chính. Mở đầu mỗi câu bằng: *"Thank you for your question."* và nhắc lại câu hỏi bằng lời của mình trước khi trả lời.

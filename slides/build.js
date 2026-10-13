@@ -98,10 +98,10 @@ const RED_HAT_BENCHMARK_URL = "https://developers.redhat.com/articles/2026/10/02
 // Speakers and speaking time per logical section; each walk-through section spans several slides.
 const LONG = "Tran Thanh Long", NAM = "Nguyen Thanh Nam", SON = "Vu Van Son", QUY = "Vuong Quang Quy", PNAM = "Nguyen Phuong Nam";
 const SPEAKER = [
-  [LONG, 50], [LONG, 50], [LONG, 15], [LONG, 20], [LONG, 40], [LONG, 41], // title, start, quiz question, quiz answer, the history, the ladder
-  [LONG, 7], // many rules
-  [LONG, 23], [LONG, 33], [LONG, 26], [LONG, 23], [LONG, 21], // written rules, Level 2 flow, Level 3 flow, inputs, typed answers
-  [LONG, 22], [LONG, 12], [LONG, 12], // the three walk-throughs (CASES in cases.js): every click is its own slide, so these seconds cover all of them
+  [LONG, 50], [LONG, 50], [LONG, 15], [LONG, 20], [LONG, 50], // title, start, quiz question, quiz answer, the history
+  [LONG, 23], [LONG, 10], [LONG, 28], // written rules, many rules, Jev introduction
+  [LONG, 23], [LONG, 21], // inputs, typed answers
+  [LONG, 33], [LONG, 12], [LONG, 10], // the three walk-throughs (CASES in cases.js): every click is its own slide, so these seconds cover all of them
   // Each of the four other speakers has two slides and 120 s.
   [NAM, 60], [NAM, 60], // test data, outcomes
   [SON, 60], [SON, 60], // the run and the price, Result 1 (Jev)
@@ -515,7 +515,7 @@ async function curveArrowPng(svg) {
       4,
       "The answer: about half",
       "Point at C: about half. The frontier models everyone calls the smartest, GPT, Gemini, Claude, still answer roughly half of the hard questions wrongly instead of refusing. Even the leaderboard minimum, a cheaper open-weight model, is 18%, and most companies deploy models in the 30 to 65% band. " +
-        "A smarter model shrinks the number but cannot reach zero: hallucination is probabilistic. Only architecture stops it: deterministic rules and code outside the model. " +
+        "A smarter model shrinks the number but cannot reach zero: hallucination is probabilistic. Only architecture stops it: fixed rules outside the model. " +
         "Land the bridge: a smarter model is not the fix; the fix is the system around the model, separate steps with fixed rules that decide. Support has been built that way for years. The next slide shows that history.",
       "C",
       "The smartest models: about half wrong. The minimum on the board: 18%."
@@ -534,7 +534,7 @@ async function curveArrowPng(svg) {
       "Support automation has run the same steps for years: a classifier labels the message, fixed rules decide what to do, and something writes the reply. " +
         "Rules means ordinary program code written by people, such as: a refund above 100 dollars is denied. It runs the same way every time and is not a model. " +
         "Until 2022, the classifier was a trained intent model that sorts a message into a fixed list of intents, rules ran the flow, and the replies came from templates. " +
-        "From 2023 until now, an LLM joined: it writes the reply, and it can label the message too. The steps stay the same, and only the model inside a step changes. " +
+        "From 2023 until now, the classifier is an LLM, and an LLM agent holds the rules, decides, and acts. The steps stay the same, and only the model inside a step changes. " +
         "Source for the LLM as classifier: Bocklisch et al. 2024, Rasa CALM, arXiv 2402.12234: NLU assigns a message to a fixed list of intents, while an LLM interprets the message and the business logic stays in code. " +
         "So how do we improve it?"
     );
@@ -549,72 +549,56 @@ async function curveArrowPng(svg) {
     textBox(s, "Classifier + rules", 1.25, 6.46, 4.2, 0.45, { size: 22, bold: true, color: C.navy });
     textBox(s, "A trained model labels the message, fixed rules run the flow", 1.25, 6.92, 5.5, 0.35, { size: 16, color: C.text });
     textBox(s, "2023-now", 4.667, 4.35, 3.0, 0.32, { size: 16, bold: true, color: C.blue });
-    textBox(s, "Classifier + rules + LLM", 4.667, 4.66, 4.2, 0.45, { size: 22, bold: true, color: C.navy });
-    textBox(s, "Same steps, and an LLM writes the reply", 4.667, 5.12, 5.8, 0.30, { size: 16, color: C.text });
-    textBox(s, "and can label the message too", 4.667, 5.42, 5.8, 0.30, { size: 16, color: C.text });
+    textBox(s, "LLM Classifier + Agent", 4.667, 4.66, 5.6, 0.45, { size: 22, bold: true, color: C.navy });
+    textBox(s, "An LLM labels the message, then an LLM agent", 4.667, 5.12, 5.8, 0.30, { size: 16, color: C.text });
+    textBox(s, "holds the rules, decides, and acts", 4.667, 5.42, 5.8, 0.30, { size: 16, color: C.text });
     textBox(s, "next", 10.0, 0.80, 3.0, 0.32, { size: 16, bold: true, color: C.l3 });
     textBox(s, "How do we improve it?", 10.0, 1.12, 3.6, 0.45, { size: 22, bold: true, color: C.navy });
     textBox(s, "start here", 2.42, 5.46, 1.8, 0.32, { size: 15, bold: true, color: C.navy });
   }
 
 
-  // ---------- 6. Two automated architectures compared ----------
-  // Two architectures head-to-head on the same 1,024 requests: no Level 1 staff baseline.
+  // Fill and accent of a state of the flow: fixed code, a model, or the written rules.
+  const kinds = { fx: [C.greyL, C.grey], md: [C.blueL, C.blue], rl: [C.tealL, C.teal] };
+
+  // ---------- 4. The written rules ----------
   {
     const s = base(
       6,
-      "Two automated architectures compared",
-      "We evaluate two automated designs head-to-head on the exact same 1,024 SaaS customer requests. " +
-        "On the left, the conventional autonomous LLM agent: one generative model reads the message, the entire account, and written policies, deciding and executing actions directly. " +
-        "On the right, our compound hybrid pipeline: a lightweight intent classifier extracts structured intent, deterministic code enforces business rules, and the LLM drafts replies. " +
-        "Now, the rules."
+      "Every action meets a written rule: allow or deny",
+      "Here is the essential gate, one rule for each action. First, the Security rule: if someone else used the account or the card, deny. A refund above 100 dollars is denied. So is a password link to an e-mail that is not on file, and a plan that is already cancelled. Deleting data is always denied. The autonomous agent reads these rules as prompt text. Our hybrid pipeline evaluates each rule with a deterministic check."
     );
-    const gap = 0.4, cw = (CW - gap) / 2, y = 1.65, h = 4.05;
-    [
-      {
-        tag: "PARADIGM 1", head: "Autonomous LLM Agent", icon: "LuBot", bg: C.blue,
-        sub: "Monolithic model with prompt-based tool calling",
-        items: [
-          "Input: customer chat + full account + written policies in prompt",
-          "Triage: single LLM decides action, priority, and risk in one pass",
-          "Policy: rules evaluated probabilistically inside prompt text",
-          "Action: model triggers API tools directly without code verification",
-        ],
-      },
-      {
-        tag: "PARADIGM 2", head: "Classifier + Rules + LLM", icon: "LuWorkflow", bg: C.l3,
-        sub: "Compound pipeline separating triage, policy, and reply",
-        items: [
-          "Input: lightweight intent classifier extracts structured fields",
-          "Triage: typed intent, priority, risk, and prompt injection flags",
-          "Policy: deterministic code verifies written rules before action",
-          "Drafting: generative LLM writes replies; never touches API tools",
-        ],
-      },
-    ].forEach((p, i) => {
-      const x = ML + i * (cw + gap);
-      box(s, x, y, cw, h);
-      iconCircle(s, p.icon, x + 0.35, y + 0.35, 0.8, p.bg);
-      textBox(s, p.tag, x + 1.3, y + 0.32, cw - 1.5, 0.3, { size: 13, bold: true, color: p.bg });
-      textBox(s, p.head, x + 1.3, y + 0.62, cw - 1.5, 0.45, { size: 22, bold: true, color: C.navy });
-      textBox(s, p.sub, x + 1.3, y + 1.08, cw - 1.5, 0.32, { size: 14, color: C.muted });
-      line(s, x + 0.35, y + 1.45, cw - 0.7, 0, { color: "E1E6EC", width: 1 });
-      s.addText(bullets(p.items), {
-        x: x + 0.35, y: y + 1.65, w: cw - 0.7, h: 2.2, margin: 0, fontFace: FONT, fontSize: 15, color: C.text, paraSpaceAfter: 10, valign: "top",
+    // One deny rule for each action; the walk-throughs show the full gate.
+    const RULE_ROWS = [
+      ["Any change", "Someone else used the account or the card", "deny", true],
+      ["Refund", "Above $100", "deny", false],
+      ["Reset password", "Link to an address that is not on file", "deny", false],
+      ["Cancel plan", "The plan is already cancelled", "deny", false],
+      ["Delete data", "Always: it cannot be undone", "deny", false],
+    ];
+    const rh = 0.8, rg = 0.12;
+    RULE_ROWS.forEach(([act, rule, out, first], i) => {
+      const y = 1.55 + i * (rh + rg);
+      box(s, ML, y, CW, rh, { fill: first ? C.tealL : C.card });
+      textBox(s, act, ML + 0.3, y, 3.0, rh, { size: 22, bold: true, color: C.navy, valign: "middle" });
+      textBox(s, rule, ML + 3.5, y, 7.0, rh, { size: 22, color: C.text, valign: "middle" });
+      textBox(s, out, ML + CW - 1.5, y + 0.17, 1.2, rh - 0.34, {
+        shape: pres.ShapeType.roundRect, fill: C.red, color: C.white, size: 18, bold: true, margin: 0, valign: "middle", align: "center",
       });
     });
-    band(s, 5.95, 0.8, "LuTarget", [{ text: "Evaluation scope: ", options: { bold: true } }, { text: `both automated architectures evaluated on the exact same ${sampleSize} SaaS requests.` }]);
+    textBox(
+      s,
+      [{ text: "Two ways to apply the rules. ", options: { bold: true } }, { text: "Autonomous agent: reads rules in prompt text.   Hybrid pipeline: intent classifier and a deterministic check." }],
+      ML, 6.35, CW, 0.5, { size: 17, color: C.navy, valign: "middle" }
+    );
   }
-
-  // Fill and accent of a state of the flow: fixed code, a model, or the written rules.
-  const kinds = { fx: [C.greyL, C.grey], md: [C.blueL, C.blue], rl: [C.tealL, C.teal] };
 
   // ---------- 4. Many rules ----------
   {
     const s = base(
       7,
       "Real support policies have many rules",
-      "Real policies have many rules. Who should apply them: an LLM agent, or Jev?",
+      "Real policies have many rules. Who should apply every rule: an LLM agent, or a fast classifier? We compare both.",
       true, undefined, { w: 3.5, h: 1.5, fontSize: 28, valign: "top" }
     );
     // A diamond of rule chips that fades at the top and the bottom: an illustration of a policy that has grown to hundreds of rules, not data of the experiment.
@@ -650,155 +634,54 @@ async function curveArrowPng(svg) {
       }
     });
     textBox(s, "Illustration, not our data.", ML, 6.75, 4, 0.3, { size: 12, color: C.muted });
-    textBox(s, "Who should apply every rule: an LLM agent, or Jev?", 8.5, 6.1, 4.2, 0.9, {
+    textBox(s, "Who should apply every rule: an LLM agent, or a fast classifier?", 8.5, 6.1, 4.2, 0.9, {
       shape: pres.ShapeType.roundRect, fill: C.teal, color: C.white, size: 16, bold: true, margin: [0.08, 0.15, 0.08, 0.15], valign: "middle",
     });
   }
 
-  // ---------- 4. The written rules ----------
+  // ---------- Jev introduction ----------
   {
     const s = base(
       8,
-      "Every action meets a written rule: allow or deny",
-      "Here is the essential gate, one rule for each action. First, the Security rule: if someone else used the account or the card, deny. A refund above 100 dollars is denied. So is a password link to an e-mail that is not on file, and a plan that is already cancelled. Deleting data is always denied. The autonomous agent reads these rules as prompt text. Our hybrid pipeline evaluates each rule with deterministic code."
+      "Meet Jev, a fast classifier",
+      "Meet Jev, a fast classifier from the System One family of TypeSafe AI, version 1.13.0. It gives typed labels, each with a confidence. It also answers our own yes or no questions, one for each written rule, with no fine-tuning. It has no action tool and never writes text. It is cheap: input costs 4.2 cents per million tokens, and its output is free. On the right are recorded answers for one request."
     );
-    // One deny rule for each action; the walk-throughs show the full gate.
-    const RULE_ROWS = [
-      ["Any change", "Someone else used the account or the card", "deny", true],
-      ["Refund", "Above $100", "deny", false],
-      ["Reset password", "Link to an address that is not on file", "deny", false],
-      ["Cancel plan", "The plan is already cancelled", "deny", false],
-      ["Delete data", "Always: it cannot be undone", "deny", false],
+    const ROWS = [
+      ["LuTags", "Typed labels, each with a confidence", "Topic, action, priority, risk, injection: fixed answers."],
+      ["LuListChecks", "Answers our own yes/no questions", "One zero-shot question for each rule, with no fine-tuning."],
+      ["LuLock", "Cannot act and never writes text", "It only answers. It cannot run an action or write a reply."],
+      ["LuDollarSign", "Cheap per call", "Input: $0.042 per million tokens. Output: free."],
     ];
-    const rh = 0.8, rg = 0.12;
-    RULE_ROWS.forEach(([act, rule, out, first], i) => {
-      const y = 1.55 + i * (rh + rg);
-      box(s, ML, y, CW, rh, { fill: first ? C.tealL : C.card });
-      textBox(s, act, ML + 0.3, y, 3.0, rh, { size: 22, bold: true, color: C.navy, valign: "middle" });
-      textBox(s, rule, ML + 3.5, y, 7.0, rh, { size: 22, color: C.text, valign: "middle" });
-      textBox(s, out, ML + CW - 1.5, y + 0.17, 1.2, rh - 0.34, {
-        shape: pres.ShapeType.roundRect, fill: C.red, color: C.white, size: 18, bold: true, margin: 0, valign: "middle", align: "center",
+    const rw = 7.0, rh = 1.0, rg = 0.14;
+    ROWS.forEach(([icon, head, sub], i) => {
+      const y = 1.5 + i * (rh + rg);
+      box(s, ML, y, rw, rh);
+      iconCircle(s, icon, ML + 0.25, y + 0.15, 0.7, C.l3);
+      textBox(s, head, ML + 1.15, y + 0.1, rw - 1.35, 0.4, { size: 20, bold: true, color: C.navy, valign: "middle" });
+      textBox(s, sub, ML + 1.15, y + 0.52, rw - 1.35, 0.4, { size: 15, color: C.text, valign: "middle" });
+    });
+    // Recorded answers of one request (R0353 in cases.js): the shape of what Jev returns.
+    const px = ML + rw + 0.35, pw = CW - rw - 0.35, ph = 4 * rh + 3 * rg;
+    box(s, px, 1.5, pw, ph);
+    textBox(s, "What Jev returns", px + 0.3, 1.62, pw - 0.6, 0.4, { size: 20, bold: true, color: C.navy, valign: "middle" });
+    textBox(s, "Recorded answers for one request", px + 0.3, 2.02, pw - 0.6, 0.3, { size: 14, color: C.muted, valign: "middle" });
+    const CHIP = "E9F0F8";
+    [["Topic", "Refunds", "confidence 1.00"], ["Action", "Start refund", "confidence 0.98"], ["Rule: Amount limit", "ok", "confidence 0.97"]].forEach(([label, value, conf], i) => {
+      textBox(s, [
+        { text: label, options: { fontSize: 14, color: C.muted, breakLine: true } },
+        { text: value, options: { fontSize: 20, bold: true, color: C.navy, breakLine: true } },
+        { text: conf, options: { fontSize: 14, color: C.muted } },
+      ], px + 0.3, 2.5 + i * 1.12, pw - 0.6, 1.0, {
+        shape: pres.ShapeType.roundRect, fill: CHIP, line: CHIP, margin: [0.05, 0.15, 0.05, 0.15], valign: "middle",
       });
     });
-    textBox(
-      s,
-      [{ text: "Two ways to apply the rules. ", options: { bold: true } }, { text: "Autonomous agent: reads rules in prompt text.   Hybrid pipeline: intent classifier and deterministic rules." }],
-      ML, 6.35, CW, 0.5, { size: 17, color: C.navy, valign: "middle" }
-    );
-  }
-
-  // Level 2 flow, redrawn from figures/flow_llmagent.tex as editable shapes in the deck's style.
-  {
-    const s = base(
-      9,
-      "Autonomous agent: single model decides and dispatches actions",
-      "In the autonomous agent architecture, New saves the customer's message. Gather info provides the chat, the whole account, the help articles, and the actions already done. The first LLM call reads this information and all written rules, chooses the action, and answers run or refuse. If it names an action, code runs it without an independent policy check. If it refuses, no state-changing action runs and the flow goes to Final message. An invalid answer also runs nothing. A second LLM call writes the final message. Chat open, Resolved, and the loop for another message describe the chat design; they are not simulated in this first-pass experiment. Next, our hybrid pipeline separates these decisions."
-    );
-    textBox(s, "The agent reads the chat, the whole account, and all written rules.", ML, 1.5, CW, 0.35, { size: 18, color: C.muted });
-    const nodes = [
-      ["New", "message saved", "LuMail", "fx"],
-      ["Gather info", "chat, account, articles", "LuDatabase", "fx"],
-      ["LLM agent", "all rules; run or refuse", "LuBot", "md"],
-      ["Do action", "runs the named action", "LuZap", "fx"],
-      ["Final message", "the LLM writes the reply", "LuMessageSquareText", "md"],
-      ["Chat open", "popup: did this solve it?", "LuMessageCircle", "fx"],
-      ["Resolved", "chat closed", "LuCircleCheck", "fx"],
-    ];
-    const H = 2.1, S = 1.1, y0 = 2.2, wL = 1.6;
-    const wN = nodes.map((_, i) => i < 5 ? wL : S), hN = nodes.map((_, i) => i < 5 ? H : S);
-    const gap = (CW - wN.reduce((sum, width) => sum + width, 0)) / 6;
-    const X = nodes.map((_, i) => ML + wN.slice(0, i).reduce((sum, width) => sum + width, 0) + i * gap);
-    const yN = hN.map((height) => y0 + (H - height) / 2), cx = X.map((x, i) => x + wN[i] / 2);
-    nodes.forEach(([name, sub, icon, kind], i) => {
-      const [fill, ink] = kinds[kind];
-      box(s, X[i], yN[i], wN[i], hN[i], { fill });
-      if (i < 5) {
-        iconCircle(s, icon, cx[i] - 0.3, y0 + 0.18, 0.6, ink);
-        textBox(s, name, X[i] + 0.04, y0 + 0.88, wN[i] - 0.08, 0.38, { size: 16, bold: true, color: C.navy, align: "center", valign: "middle", margin: 0 });
-        textBox(s, sub, X[i] + 0.1, y0 + 1.28, wN[i] - 0.2, 0.8, { size: 14, align: "center" });
-      } else {
-        iconCircle(s, icon, cx[i] - 0.22, yN[i] + 0.12, 0.44, ink);
-        textBox(s, name, X[i] + 0.02, yN[i] + 0.64, wN[i] - 0.04, 0.4, { size: 14, bold: true, color: C.navy, align: "center", valign: "middle", margin: 0 });
-      }
-      if (i < 6) line(s, X[i] + wN[i] + 0.02, y0 + H / 2, gap - 0.04, 0, { arrow: true, color: C.grey });
-    });
-    textBox(s, "run", cx[2] + wN[2] / 2 + gap / 2 - 0.5, y0 - 0.3, 1.0, 0.28, { size: 15, bold: true, color: C.blue, align: "center", valign: "middle" });
-    // Refusal bypasses Do action; the agent's answer is the only policy gate.
-    const yd = 4.75;
-    line(s, cx[2], y0 + H, 0, yd - (y0 + H), { color: C.blue });
-    line(s, cx[2], yd, cx[4] - cx[2], 0, { color: C.blue });
-    line(s, cx[4], y0 + H, 0, yd - (y0 + H), { color: C.blue, arrow: true, flipV: true });
-    textBox(s, "refuse: nothing runs", cx[2], yd + 0.05, cx[4] - cx[2], 0.3, { size: 15, bold: true, color: C.blue, align: "center", valign: "middle" });
-    const yl = 5.35;
-    line(s, cx[5], yN[5] + S, 0, yl - (yN[5] + S), { color: C.muted, dash: "dash" });
-    line(s, cx[0], yl, cx[5] - cx[0], 0, { color: C.muted, dash: "dash" });
-    line(s, cx[0], y0 + H, 0, yl - (y0 + H), { arrow: true, flipV: true, color: C.muted, dash: "dash" });
-    textBox(s, "same chat: the customer writes again", cx[0], yl + 0.05, cx[5] - cx[0], 0.3, { size: 15, color: C.muted, align: "center", valign: "middle" });
-    [["Fixed code", C.greyL, C.grey], ["Model", C.blueL, C.blue]].forEach(([label, fill, ink], i) => {
-      textBox(s, label, ML + i * 1.9, 6.0, 1.7, 0.32, { shape: pres.ShapeType.roundRect, fill, line: ink, size: 14, margin: [0, 0.1, 0, 0.1], valign: "middle", align: "center" });
-    });
-    textBox(s, "Chat open and Resolved are not simulated.", ML + 4.2, 6.0, CW - 4.2, 0.32, { size: 14, color: C.muted, valign: "middle" });
-    textBox(s, "No fixed policy gate: code executes the action that the agent names.", ML, 6.45, CW, 0.35, { size: 17, bold: true, color: C.navy });
-  }
-
-  // Level 3 flow follows the Level 2 diagram for comparison.
-  {
-    const s = base(
-      10,
-      "Compound hybrid pipeline: intent triage, rule check, and LLM drafting",
-      "This is our compound hybrid pipeline as a state machine with seven states. A message enters New. Intent triage occurs first: the classifier reads the chat and returns five fields: topic, priority, action, risk flag, and injection flag. In Rules, deterministic questions verify written policies. The process follows the verified rules: it runs the action only when no rule is broken. The LLM writes the final message only, with zero direct access to tool execution."
-    );
-    const nodes = [
-      ["New", "message saved", "LuMail", "fx"],
-      ["Jev", "five fields about the chat", "LuTags", "md"],
-      ["Rules", "Jev: one yes/no answer per rule", "LuScale", "md"],
-      ["Do action", "refund, cancel plan, or reset", "LuZap", "fx"],
-      ["Final message", "the LLM writes the reply", "LuMessageSquareText", "md"],
-      ["Chat open", "popup: did this solve it?", "LuMessageCircle", "fx"],
-      ["Resolved", "chat closed", "LuCircleCheck", "fx"],
-    ];
-    // Five large states that decide or act; Chat open and Resolved are small, because they come after the answer.
-    const H = 2.1, S = 1.1, y0 = 2.2, wL = 1.6, wN = nodes.map((_, i) => (i < 5 ? wL : S)), hN = nodes.map((_, i) => (i < 5 ? H : S));
-    const gap = (CW - wN.reduce((a, v) => a + v, 0)) / 6;
-    const X = nodes.map((_, i) => ML + wN.slice(0, i).reduce((a, v) => a + v, 0) + i * gap);
-    const yN = hN.map((h) => y0 + (H - h) / 2);
-    const cx = X.map((x, i) => x + wN[i] / 2);
-    nodes.forEach(([name, sub, icon, k], i) => {
-      const [fill, ln] = kinds[k];
-      box(s, X[i], yN[i], wN[i], hN[i], { fill });
-      if (i < 5) {
-        iconCircle(s, icon, cx[i] - 0.3, y0 + 0.18, 0.6, ln);
-        textBox(s, name, X[i] + 0.04, y0 + 0.88, wN[i] - 0.08, 0.38, { size: 16, bold: true, color: C.navy, align: "center", valign: "middle", margin: 0 });
-        textBox(s, sub, X[i] + 0.1, y0 + 1.28, wN[i] - 0.2, 0.8, { size: 14, align: "center" });
-      } else {
-        iconCircle(s, icon, cx[i] - 0.22, yN[i] + 0.12, 0.44, ln);
-        textBox(s, name, X[i] + 0.02, yN[i] + 0.64, wN[i] - 0.04, 0.4, { size: 14, bold: true, color: C.navy, align: "center", valign: "middle", margin: 0 });
-      }
-      if (i < 6) line(s, X[i] + wN[i] + 0.02, y0 + H / 2, gap - 0.04, 0, { arrow: true, color: C.grey });
-    });
-    textBox(s, "Jev: none broken", cx[2] + wN[2] / 2 + gap / 2 - 0.8, y0 - 0.3, 1.6, 0.28, { size: 15, bold: true, color: C.blue, align: "center", valign: "middle" });
-    // Deny path: Rules goes straight to the Final message; nothing runs.
-    const yd = 4.75;
-    line(s, cx[2], y0 + H, 0, yd - (y0 + H), { color: C.blue });
-    line(s, cx[2], yd, cx[4] - cx[2], 0, { color: C.blue });
-    line(s, cx[4], y0 + H, 0, yd - (y0 + H), { color: C.blue, arrow: true, flipV: true });
-    textBox(s, "Jev: rule broken; nothing runs", cx[2], yd + 0.05, cx[4] - cx[2], 0.3, { size: 15, bold: true, color: C.blue, align: "center", valign: "middle" });
-    // Loop: a customer who writes again in the same chat goes back to New.
-    const yl = 5.35;
-    line(s, cx[5], yN[5] + S, 0, yl - (yN[5] + S), { color: C.muted, dash: "dash" });
-    line(s, cx[0], yl, cx[5] - cx[0], 0, { color: C.muted, dash: "dash" });
-    line(s, cx[0], y0 + H, 0, yl - (y0 + H), { arrow: true, flipV: true, color: C.muted, dash: "dash" });
-    textBox(s, "same chat: the customer writes again", cx[0], yl + 0.05, cx[5] - cx[0], 0.3, { size: 15, color: C.muted, align: "center", valign: "middle" });
-    [["Fixed code", C.greyL, C.grey], ["Model", C.blueL, C.blue]].forEach(([t, f, l], i) => {
-      textBox(s, t, ML + i * 1.9, 6.0, 1.7, 0.32, { shape: pres.ShapeType.roundRect, fill: f, line: l, size: 14, margin: [0, 0.1, 0, 0.1], valign: "middle", align: "center" });
-    });
-    textBox(s, "Code follows Jev's answers; it does not independently recheck the policy.", ML, 6.45, CW, 0.35, { size: 17, bold: true, color: C.navy });
+    band(s, 6.35, 0.65, "LuBadgeInfo", [{ text: "Jev: ", options: { bold: true } }, { text: "System One family, TypeSafe AI (Almeida, 2026), version 1.13.0." }]);
   }
 
   // ---------- 6. What Jev reads ----------
   {
     const s = base(
-      11,
+      9,
       "Jev reads the chat first, then one rule at a time",
       "Jev is called twice. The first call reads the chat only: the text and the name of the sender. The second call runs when the action changes the state. It reads the chat, the account lines that this action needs, the actions already done, and one question for each written rule of the action, for example: is the amount above 100 dollars? The questions are written text, not code; a fixed table picks the account lines. Fixed code also does the arithmetic: the purchase line states the days since the charge, so Jev reads a number and never subtracts two dates. We found that each rule needs a question that we write: questions made from the text of the rule alone made more errors. Jev supports custom zero-shot questions without task-specific fine-tuning, but the question wording still needs evaluation. This is a reason to try it, not proof that it is the fastest or most accurate model."
     );
@@ -834,9 +717,9 @@ async function curveArrowPng(svg) {
   // ---------- 7. What Jev answers ----------
   {
     const s = base(
-      12,
+      10,
       "Jev returns five fields, then one answer per rule",
-      "The first call returns five fields: topic, priority, action, risk flag, and injection flag. The four shown here guide the flow; the risk flag is also recorded. If the injection flag is on, the action becomes Send reply, so an order hidden in the text is ignored. If the action changes the state, the second call answers one yes/no question for each written rule of that action: is this rule broken? If no answer says broken, the action runs; if one does, nothing runs. Typed answers constrain the output format, not correctness. The injection flag and the rule answers both come from Jev; neither is an independent policy verifier. Now, three recorded requests."
+      "The first call returns five fields: topic, priority, action, risk flag, and injection flag. The four shown here guide the flow; the risk flag is also recorded. If the injection flag is on, the action becomes Send reply, so an order hidden in the text is ignored. If the action changes the state, the second call answers one yes/no question for each written rule of that action: does this rule block the action? If no rule blocks it, the action runs; if one does, nothing runs. Typed answers constrain the output format, not correctness. The injection flag and the rule answers both come from Jev; neither is an independent policy verifier. Now, three recorded requests."
     );
     // Four of the five fields of Call 1 are shown; risk is also recorded. Call 2 answers one question per rule.
     const questions = [
@@ -844,7 +727,7 @@ async function curveArrowPng(svg) {
       ["LuGauge", "Priority", "How urgent the request is", ["Low", "Medium", "High", "Critical"]],
       ["LuZap", "Action", "What the customer asks to do", ["Send reply", "Start refund", "Delete data", "Cancel plan", "Reset password"]],
       ["LuShieldX", "Injection flag", "The text gives orders to the model", ["on", "off"]],
-      ["LuScale", "Rules", "One yes/no question for each rule", ["Broken", "Not broken"]],
+      ["LuScale", "Rules", "One yes/no question for each rule", ["Blocks", "Does not block"]],
     ];
     const gapC = 0.2, gapX = 0.55, wC = (CW - 3 * gapC - gapX) / 5, yB = 1.5, yC = 1.95, hC = 3.9;
     const xOf = (i) => ML + i * (wC + gapC) + (i === 4 ? gapX - gapC : 0);
@@ -877,7 +760,7 @@ async function curveArrowPng(svg) {
 
 
   // ---------- 8 to 10. Walk-throughs: one request through the flow of Level 3, one slide per click ----------
-  // Each walk-through is a series of slides: the diagram of slide 7 with one recorded request played through it. Every slide
+  // Each walk-through is a series of slides: the diagram of slide 8 with one recorded request played through it. Every slide
   // lights the next state and swaps the panel below. The slides share one title and one layout, and a morph transition
   // (transitions.js) runs between them, so the next key plays the request forward and the PDF holds every step. The data of the
   // three requests is in cases.js.
@@ -885,26 +768,26 @@ async function curveArrowPng(svg) {
   const tick = await iconPng("LuCircleCheck", "#1F7A7A");
   const cross = await iconPng("LuCircleX", "#A94A4A");
   // The tone of a walk-through: normal (a request that runs), warning (a rule says no), danger (an attack in the message).
-  // `accent`: the badge and the key state; `light`: the tint of the key state; `line`: the path of a denied request; `verdict`: the colour of the verdict of the rules.
+  // `accent`: the verdict in the title and the key state; `light`: the tint of the key state; `line`: the path of a denied request; `verdict`: the colour of the verdict of the rules.
   const TONES = {
-    ok: { accent: C.teal, light: "E9F0F8", line: C.teal, badge: "ALLOWED: no rule is broken" },
-    warn: { accent: "B45309", light: "FDEBC8", line: "B45309", badge: "WARNING: a rule is broken" },
-    danger: { accent: "B91C1C", light: "FAD4D0", line: "B91C1C", badge: "DANGER: an attack in the message" },
+    ok: { accent: C.teal, light: "E9F0F8", line: C.teal },
+    warn: { accent: "B45309", light: "FDEBC8", line: "B45309" },
+    danger: { accent: "BE4F4F", light: "F3DEDC", line: "BE4F4F" },
   };
 
   const DIM = { fill: "E9EDF2", ring: "AEB7C2", text: "6B7785", arrow: "9AA6B3" }; // a state that the request has not reached
   const CHIP = "E9F0F8"; // light tint of a chip on a white card
   const FLOW = [
-    ["New", "LuMail", "fx", "Fixed code"],
-    ["Jev", "LuTags", "md", "Model: Jev"],
-    ["Rules", "LuScale", "md", "Model: Jev"],
-    ["Do action", "LuZap", "fx", "Fixed code"],
-    ["Final message", "LuMessageSquareText", "md", "Model: the LLM"],
-    ["Chat open", "LuMessageCircle", "fx", "Fixed code"],
-    ["Resolved", "LuCircleCheck", "fx", "Fixed code"],
+    ["New", "LuMail", "fx"],
+    ["Jev", "LuTags", "md"],
+    ["Rules", "LuScale", "md"],
+    ["Do action", "LuZap", "fx"],
+    ["Final message", "LuMessageSquareText", "md"],
+    ["Chat open", "LuMessageCircle", "fx"],
+    ["Resolved", "LuCircleCheck", "fx"],
   ];
 
-  // `speakerRow`: the row of SPEAKER; `frame`: the slide of the series, 0 to K. Frame 0 shows what to watch; frame k lights the
+  // `speakerRow`: the row of SPEAKER; `frame`: the slide of the series, 0 to K. Frame 0 shows only the diagram; frame k lights the
   // k-th state of the path, and the last frame lights Chat open and Resolved together.
   function walkthrough(c, speakerRow, frame) {
     // `c.show`: the indices of `c.path` that get a slide of their own (default: all). The slide of a shown state lights every state
@@ -915,8 +798,10 @@ async function curveArrowPng(svg) {
     const notes = frame === 0
       ? `This walk-through is ${K + 1} slides: press the next key once for each one, and the slides morph into each other. ${c.notes[0]}`
       : c.notes[frame];
-    const s = base(speakerRow, c.title, notes, frame === 0, "!!title");
     const tone = TONES[c.tone ?? "ok"];
+    // The tone is the colour of the second half of the title.
+    const [lead, verdict] = c.title.split(": ");
+        const s = base(speakerRow, [{ text: `${lead}: ` }, { text: verdict, options: { color: tone.accent } }], notes, frame === 0, "!!title");
     // Morph matches the objects of two slides by name when the name starts with "!!". The diagram (message, states, arrows, ring) and the
     // frame, icon circle, and icon of the panel card get such names, so the same object has the same name on every slide and Morph
     // moves it. The icon circle and its icon are matched together: a matched circle with an unmatched icon hides the icon during the
@@ -933,10 +818,11 @@ async function curveArrowPng(svg) {
     };
     // A group is drawn on the frames from its `in` frame up to, but not including, its `out` frame.
     const sc = { group: (name, o, draw) => { if ((o.in ?? 0) <= frame && (o.out === undefined || o.out > frame)) draw(named(name, name.startsWith("panel") ? 0 : Infinity)); } };
-    // The first two slides of a series fade: the way in, and what to watch -> the first state, which swaps the whole panel. The others morph.
-    transitions[frame <= 1 ? "fade" : "morph"].push(pres.slides.length);
+    // Only the first slide of a series fades (the way in). Every later slide morphs, including the move of the diagram up when the panel comes in.
+    transitions[frame === 0 ? "fade" : "morph"].push(pres.slides.length);
 
-    const H = 1.35, S = 1.1, y0 = 2.15, yDeny = 3.72, wN = FLOW.map((_, i) => (i < 5 ? 1.6 : S)), hN = FLOW.map((_, i) => (i < 5 ? H : 1.0));
+    const dy = frame === 0 ? 1.4 : 0; // frame 0 has no panel, so the diagram sits lower on the slide
+    const H = 1.35, S = 1.1, y0 = 2.15 + dy, yDeny = 3.72 + dy, wN = FLOW.map((_, i) => (i < 5 ? 1.6 : S)), hN = FLOW.map((_, i) => (i < 5 ? H : 1.0));
     const gap = (CW - wN.reduce((a, v) => a + v, 0)) / 6;
     const X = FLOW.map((_, i) => ML + wN.slice(0, i).reduce((a, v) => a + v, 0) + i * gap);
     const yN = hN.map((h) => y0 + (H - h) / 2);
@@ -945,21 +831,9 @@ async function curveArrowPng(svg) {
 
     // The customer message and the legend.
     sc.group("message", {}, (g) => {
-      box(g, ML, 1.45, 8.45, 0.55);
+      box(g, ML, 1.45, CW, 0.55);
       iconCircle(g, "LuUser", ML + 0.1, 1.5, 0.45, C.l2);
-      textBox(g, [{ text: `${c.sender}: `, options: { bold: true } }, { text: `\u201C${c.text}\u201D` }], ML + 0.7, 1.45, 7.65, 0.55, { size: 14, valign: "middle" });
-      [["Fixed code", "fx"], ["Model", "md"]].forEach(([t, k], i) => {
-        textBox(g, t, ML + 8.67 + i * 1.7, 1.52, 1.5, 0.4, {
-          shape: pres.ShapeType.roundRect, fill: kinds[k][0], line: kinds[k][1], size: 14, margin: [0, 0.05, 0, 0.05], valign: "middle", align: "center",
-        });
-      });
-    });
-
-    // The badge of the tone, at the top right.
-    sc.group("badge", {}, (g) => {
-      textBox(g, tone.badge, ML + CW - 4.3, 0.12, 4.3, 0.4, {
-        shape: pres.ShapeType.roundRect, fill: tone.accent, line: tone.accent, color: C.white, bold: true, size: 14, margin: [0, 0.1, 0, 0.1], valign: "middle", align: "center",
-      });
+      textBox(g, [{ text: `${c.sender}: `, options: { bold: true } }, { text: `\u201C${c.text}\u201D` }], ML + 0.7, 1.45, CW - 0.9, 0.55, { size: 16, valign: "middle" });
     });
 
     // The diagram. Every state and every arrow is one set of objects that has the same names on every slide and only changes colour
@@ -987,14 +861,16 @@ async function curveArrowPng(svg) {
     FLOW.forEach(([name, icon, kind], i) => {
       sc.group(`state-${i}`, {}, (g) => {
         const on = frame >= litAt[i];
-        const [fill, accent] = i === c.hot ? [tone.light, tone.accent] : kinds[kind];
-        box(g, X[i], yN[i], wN[i], hN[i], { fill: on ? fill : DIM.fill, ...(on && i === c.hot ? { line: tone.accent, lineW: 2 } : {}) });
+        const hot = on && i === c.hot; // the key state of the tone: full colour, white icon and text
+        const [fill, accent] = hot ? [tone.accent, tone.accent] : kinds[kind];
+        const ink = hot ? C.white : on ? C.navy : DIM.text;
+        box(g, X[i], yN[i], wN[i], hN[i], { fill: on ? fill : DIM.fill });
         if (i < 5) {
           iconCircle(g, icon, cx[i] - 0.25, y0 + 0.12, 0.5, on ? accent : DIM.ring);
-          textBox(g, name, X[i] + 0.04, y0 + 0.68, wN[i] - 0.08, 0.34, { size: 15, bold: true, color: on ? C.navy : DIM.text, align: "center", valign: "middle", margin: 0 });
+          textBox(g, name, X[i] + 0.04, y0 + 0.68, wN[i] - 0.08, 0.34, { size: 15, bold: true, color: ink, align: "center", valign: "middle", margin: 0 });
         } else {
           iconCircle(g, icon, cx[i] - 0.18, yN[i] + 0.1, 0.36, on ? accent : DIM.ring);
-          textBox(g, name, X[i] + 0.02, yN[i] + 0.58, wN[i] - 0.04, 0.34, { size: 14, bold: true, color: on ? C.navy : DIM.text, align: "center", valign: "middle", margin: 0 });
+          textBox(g, name, X[i] + 0.02, yN[i] + 0.58, wN[i] - 0.04, 0.34, { size: 14, bold: true, color: ink, align: "center", valign: "middle", margin: 0 });
         }
       });
       if (i < 6) sc.group(`arrow-${i}`, {}, (g) => seg(g, X[i] + wN[i] + 0.02, y0 + H / 2, gap - 0.04, 0, frame >= arrowAt[i], true, false));
@@ -1006,19 +882,16 @@ async function curveArrowPng(svg) {
       part(cx[2], y0 + H, 0, yDeny - (y0 + H), false, false);
       part(cx[2], yDeny, cx[4] - cx[2], 0, false, false);
       part(cx[4], y0 + H, 0, yDeny - (y0 + H), true, true);
-      textBox(g, "a rule is broken: nothing runs", cx[2], yDeny + 0.03, cx[4] - cx[2], 0.3, { size: 14, color: DIM.text, align: "center", valign: "middle" });
+      textBox(g, c.denyLabel ?? "a rule blocks it: nothing runs", cx[2], yDeny + 0.03, cx[4] - cx[2], 0.3, { size: 14, color: DIM.text, align: "center", valign: "middle" });
     });
 
     // The card of a panel: the icon and the title of the state, and the kind of the state.
     const card = (g, node, title) => {
-      const [, icon, kind, tag] = FLOW[node];
-      const [fill, accent] = kinds[kind];
+      const [, icon, kind] = FLOW[node];
+      const accent = kinds[kind][1];
       box(g, PX, PY, PW, PH);
       iconCircle(g, icon, PX + 0.25, PY + 0.12, 0.5, accent);
-      textBox(g, title, PX + 0.95, PY + 0.12, PW - 3.1, 0.5, { size: 19, bold: true, color: C.navy, valign: "middle" });
-      textBox(g, tag, PX + PW - 1.95, PY + 0.19, 1.7, 0.36, {
-        shape: pres.ShapeType.roundRect, fill, line: accent, size: 14, margin: [0, 0.05, 0, 0.05], valign: "middle", align: "center",
-      });
+      textBox(g, title, PX + 0.95, PY + 0.12, PW - 1.5, 0.5, { size: 19, bold: true, color: C.navy, valign: "middle" });
     };
     const lines = (items) => items.map((t, k) => ({ text: t, options: { breakLine: k < items.length - 1 } }));
 
@@ -1040,42 +913,39 @@ async function curveArrowPng(svg) {
         t.answers.forEach(([label, value, conf], i) => {
           const hot = t.warn === i;
           const runs = [
-            { text: label, options: { fontSize: 14, color: C.muted, breakLine: true } },
-            { text: value, options: { fontSize: 18, bold: true, color: hot ? tone.accent : C.navy, breakLine: Boolean(conf) } },
+            { text: label, options: { fontSize: 14, color: hot ? C.white : C.muted, breakLine: true } },
+            { text: value, options: { fontSize: 18, bold: true, color: hot ? C.white : C.navy, breakLine: Boolean(conf) } },
           ];
-          if (conf) runs.push({ text: conf, options: { fontSize: 14, color: C.muted } });
+          if (conf) runs.push({ text: conf, options: { fontSize: 14, color: hot ? C.white : C.muted } });
           textBox(g, runs, PX + 0.25 + i * (w + 0.15), PY + 0.7, w, 0.9, {
-            shape: pres.ShapeType.roundRect, fill: hot ? tone.light : CHIP, line: hot ? tone.accent : CHIP, lineW: hot ? 3 : 1, margin: [0.04, 0.12, 0.04, 0.12], valign: "middle",
+            shape: pres.ShapeType.roundRect, fill: hot ? tone.accent : CHIP, line: hot ? tone.accent : CHIP, lineW: 1, margin: [0.04, 0.12, 0.04, 0.12], valign: "middle",
           });
         });
         textBox(g, t.rule, PX + 0.25, PY + 1.8, PW - 0.5, 0.3, { size: 16, bold: true, color: C.navy, valign: "middle" });
-        textBox(g, t.note, PX + 0.25, PY + 2.15, PW - 0.5, 0.3, { size: 14, color: C.muted, valign: "middle" });
       } else if (node === 2) {
         const r = c.rules;
         if (r) {
-          // One chip for each rule question: the name of the rule, and "met" or "broken" with the confidence of the answer. Five chips in the first row.
+          // One chip for each rule question: the name of the rule, and "ok" or "blocks" with the confidence of the answer. Five chips in the first row.
           const per = 5, w = (PW - 0.5 - (per - 1) * 0.12) / per;
           r.chips.forEach(([name, state, conf], i) => {
-            const broken = state === "broken";
+            const blocks = state === "blocks";
             textBox(g, [
               { text: name, options: { fontSize: 14, color: C.muted, breakLine: true } },
-              { text: `${state}  ${conf.toFixed(2)}`, options: { fontSize: 16, bold: true, color: broken ? tone.accent : C.navy } },
+              { text: `${state}  ${conf.toFixed(2)}`, options: { fontSize: 16, bold: true, color: blocks ? tone.accent : C.navy } },
             ], PX + 0.25 + (i % per) * (w + 0.12), PY + 0.68 + Math.floor(i / per) * 0.68, w, 0.58, {
-              shape: pres.ShapeType.roundRect, fill: broken ? tone.light : CHIP, line: broken ? tone.accent : CHIP, lineW: broken ? 3 : 1, margin: [0.03, 0.1, 0.03, 0.1], valign: "middle",
+              shape: pres.ShapeType.roundRect, fill: blocks ? tone.light : CHIP, line: blocks ? tone.accent : CHIP, lineW: blocks ? 3 : 1, margin: [0.03, 0.1, 0.03, 0.1], valign: "middle",
             });
           });
           textBox(g, r.rule, PX + 0.25, PY + 2.05, PW - 0.5, 0.28, { size: 16, bold: true, color: C.navy, valign: "middle" });
-          textBox(g, r.note, PX + 0.25, PY + 2.33, PW - 0.5, 0.25, { size: 14, color: C.muted, valign: "middle" });
         } else {
           textBox(g, "No question is asked: the action is Send reply, and a reply changes nothing.", PX + 0.25, PY + 0.85, PW - 0.5, 0.9, { size: 18 });
         }
       } else if (node === 3) {
         g.addText(bullets(c.act), { x: PX + 0.25, y: PY + 0.85, w: PW - 0.5, h: 1.0, margin: 0, fontFace: FONT, fontSize: 18, color: C.text, paraSpaceAfter: 8, valign: "top" });
       } else if (node === 4) {
-        textBox(g, `\u201C${c.final.text}\u201D`, PX + 0.25, PY + 0.72, PW - 0.5, 0.98, {
-          shape: pres.ShapeType.roundRect, fill: CHIP, line: CHIP, size: 15, margin: [0.06, 0.15, 0.06, 0.15], valign: "middle",
+        textBox(g, `\u201C${c.final.text}\u201D`, PX + 0.25, PY + 0.72, PW - 0.5, 1.75, {
+          shape: pres.ShapeType.roundRect, fill: CHIP, line: CHIP, size: 19, margin: [0.1, 0.2, 0.1, 0.2], valign: "middle",
         });
-        textBox(g, c.final.meta, PX + 0.25, PY + 1.74, PW - 0.5, 0.25, { size: 14, color: C.muted, valign: "middle" });
       } else if (node === 5) {
         box(g, PX + 0.25, PY + 0.75, 3.7, 1.15, { fill: CHIP });
         textBox(g, "Did this solve your issue?", PX + 0.45, PY + 0.82, 3.3, 0.4, { size: 16, bold: true, color: C.navy, valign: "middle" });
@@ -1086,16 +956,6 @@ async function curveArrowPng(svg) {
         });
       }
     };
-
-    // Click 0: what to watch.
-    sc.group("panel-intro", { out: 1 }, (g) => {
-      const head = named("card", 3); // the frame and the icon of the card keep their names on every slide of the series; the icon circle and its icon must be matched together or Morph draws the icon under the circle
-      box(head, PX, PY, PW, PH);
-      iconCircle(head, "LuTarget", PX + 0.25, PY + 0.12, 0.5, C.blue);
-      textBox(head, "What to watch", PX + 0.95, PY + 0.12, PW - 1.5, 0.5, { size: 19, bold: true, color: C.navy, valign: "middle" });
-      textBox(g, c.watch, PX + 0.25, PY + 0.85, PW - 0.5, 0.6, { size: 20, color: C.text });
-      textBox(g, "Each click sends the request one state forward.", PX + 0.25, PY + 1.55, PW - 0.5, 0.35, { size: 15, color: C.muted });
-    });
 
     // Clicks 1 to K: the request reaches the next state.
     show.forEach((pi, p) => {
@@ -1119,14 +979,14 @@ async function curveArrowPng(svg) {
   }
 
   CASES.forEach((c, i) => {
-    for (let f = 0; f <= (c.show ?? c.path).length; f++) walkthrough(c, 13 + i, f);
+    for (let f = 0; f <= (c.show ?? c.path).length; f++) walkthrough(c, 11 + i, f);
   });
 
   // ---------- 11. Test data ----------
   // One slide for Nam: the five groups of the request set and the facts of the set that the talk must state.
   {
     const s = base(
-      16,
+      14,
       `Test data: ${data.customers} customers, ${sampleSize} requests`,
       `Public datasets have no SaaS accounts, so we built our own: ${data.customers} FrameForge customers, each with one purchase, a credit balance, and a log of password reset links. Each customer sends ${requestsPerCustomer} requests, so we have ${sampleSize} requests of ${data.categories} types in five groups. High-impact actions are the largest group, with ${groupSize[0]} requests. We made the set hard on purpose: a written rule denies the action on ${data.finalDenied} requests, and ${injectionRequests} requests hide an order in the message. A program writes the requests from a fixed start number and runs the real code of the system to make the correct answers. This is a challenge set, not production traffic.`
     );
@@ -1151,7 +1011,7 @@ async function curveArrowPng(svg) {
   // ---------- 13. Outcomes ----------
   {
     const s = base(
-      17,
+      15,
       "Every request ends served, stopped, or in error",
       "Now, how we score a request. We look at what the customer gets. Served means the run ends with the correct result. Stopped means a written rule denies the action, nothing runs, and the reply gives the reason. Error is every other run. A run is harmful if it changes money, data, the plan, or the password against the written rules. We also report the machine time of one request, the API cost per 1,000 requests, and the error counts on this request set."
     );
@@ -1177,7 +1037,7 @@ async function curveArrowPng(svg) {
   // One slide for Son: how the two levels ran, the two hosted models, the list prices, and the cost that follows.
   {
     const s = base(
-      18,
+      16,
       `Experimental setup: 1,024 requests, two architectures`,
       `We call two hosted models for real: Jev, version 1.13.0, and DeepSeek V4.1 Flash. Both architectures run on the same ${sampleSize} requests, in separate runs. The autonomous agent makes two LLM calls for each request. The hybrid pipeline makes ${(jevCalls / level3.requests).toFixed(1)} classifier calls and one LLM call. Jev costs 4.2 cents per million input tokens, and its output is free. The LLM costs 15 cents in and 60 cents out per million tokens. At list price, 1,000 requests cost $${cost2} for the autonomous agent and $${cost3} for the hybrid pipeline. These are API token charges, not total operating cost.`
     );
@@ -1234,7 +1094,7 @@ async function curveArrowPng(svg) {
   // ---------- 7. Result 1: Jev ----------
   {
     const s = base(
-      19,
+      17,
       "Jev on our SaaS test set: speed, cost, and accuracy",
       `Now the first result, for Jev alone. Half of the requests need ${level3.decisionLatency.median.toFixed(2)} seconds or less of Jev time, including rule calls, and all Jev calls cost $${level3.decisionCostPer1000.toFixed(3)} per 1,000 requests. The first call gives the right topic on ${(100 * quality.queue.accuracy).toFixed(1)} percent of the scored requests, the priority on ${(100 * quality.priority.accuracy).toFixed(1)} percent, the action on ${(100 * quality.action.accuracy).toFixed(1)} percent, and the injection flag on ${(100 * quality.injection.accuracy).toFixed(1)} percent. ${count(ruleStats.matching)} of ${count(ruleStats.answers)} rule answers match the written rules. The first-call action label is wrong on ${wrongActions.length} requests, and ${wrongActionOutcomes === 0 ? "none" : wrongActionOutcomes} of these end in a wrong outcome. ${CHANGED_SHORT}, so we saw these failures before the last test.`
     );
@@ -1261,7 +1121,7 @@ async function curveArrowPng(svg) {
   // ---------- 8. Result 2: the ladder ----------
   {
     const s = base(
-      20,
+      18,
       "On our SaaS test set: lower time, cost, and error count",
       `We compare both architectures on the same ${sampleSize} requests. The autonomous agent serves ${level2.served}, stops ${level2.stopped}, and makes ${level2.errors} errors, ${level2.harmful} of them harmful. Our hybrid pipeline serves ${level3.served}, stops ${level3.stopped}, and makes ${level3.errors} errors and ${level3.harmful} harmful runs. The hybrid pipeline needs less than half the average machine time, ${time3} seconds against ${time2}, and has ${costRatio} times lower API cost, $${cost3} against $${cost2} per 1,000 requests. Of the ${level2.errors} autonomous agent errors, ${injectionErrors2} are injection requests. The harmful errors run ${harmfulRefunds2} refunds and ${harmfulCancellations2} plan cancellations. These are outcomes on the set that we made ourselves, not a guarantee of safety.`
     );
@@ -1292,10 +1152,10 @@ async function curveArrowPng(svg) {
   }
 
   // Observed action-label and outcome results, not independent safety guards.
-  // Every numerical result is also on slide 25; the rule evaluation was not blind.
+  // Every numerical result is also on slide 24; the rule evaluation was not blind.
   {
     const s = base(
-      21,
+      19,
       "Wrong action labels, correct outcomes on this test set",
       "These are observed results, not three independent safety guards. The injection flag and the rule answers both come from Jev. " +
         `First, Jev sets the injection flag right on ${(100 * quality.injection.accuracy).toFixed(1)} percent of the requests, and when it is on, the process sends a reply. ` +
@@ -1323,17 +1183,17 @@ async function curveArrowPng(svg) {
   // Our own design only, no outside source: what each part of Level 3 may do, and what it may not do.
   {
     const s = base(
-      22,
+      20,
       "Our idea: limit what each model can trigger",
       "Our idea is to limit what each model can trigger. " +
-        "Jev has no action tool. It answers typed questions about the chat and the rules. Fixed code runs the action only when no answer reports a broken rule. " +
+        "Jev has no action tool. It answers typed questions about the chat and the rules. Fixed code runs the action only when no rule blocks it. " +
         "The LLM writes the final message after the action or the refusal, and it cannot change that decision. " +
         "This is fixed execution, not independent policy verification: the code does not recheck the policy facts against the account, so a wrong rule answer can still allow an unsafe action."
     );
     const gap = 0.3, cw = (CW - 2 * gap) / 3, y0 = 1.6, h0 = 3.95;
     [
       ["LuTags", "Jev", C.l3, "Answers typed questions about the chat and each rule. It has no action tool, but its answers control which code branch runs."],
-      ["LuShieldCheck", "Process", C.teal, "Runs an action only when Jev reports no broken rule. It does not independently verify policy facts against the account."],
+      ["LuShieldCheck", "Process", C.teal, "Runs an action only when Jev reports that no rule blocks it. It does not independently verify policy facts against the account."],
       ["LuBot", "LLM", C.blue, "Writes the final message after the action or refusal. It does not change the action decision. Its reply is not a policy check."],
     ].forEach(([ic, big, col, text], i) => {
       const x = ML + i * (cw + gap);
@@ -1370,7 +1230,7 @@ async function curveArrowPng(svg) {
       { icon: "LuDollarSign", big: `${costRatio}x`, label: `lower API cost: $${cost3} vs $${cost2} per 1,000 requests`, color: C.l3 },
     ].forEach((o, i) => callout(s, CX, 0.7 + i * 2.1, CWd, 1.9, { ...o, bigSize: 38, bigH: 0.8, bigY: 0.25, labelSize: 15 }));
     s.addNotes(
-      `Speaker: ${PNAM}, about ${SPEAKER[21][1]} s. Finally, we measured both automated architectures in separate runs on the same ${sampleSize} requests. The autonomous agent serves ${level2.served}, stops ${level2.stopped}, and makes ${level2.errors} errors. The hybrid pipeline serves ${level3.served}, stops ${level3.stopped}, and makes ${level3.errors} errors. ` +
+      `Speaker: ${PNAM}, about ${SPEAKER[19][1]} s. Finally, we measured both automated architectures in separate runs on the same ${sampleSize} requests. The autonomous agent serves ${level2.served}, stops ${level2.stopped}, and makes ${level2.errors} errors. The hybrid pipeline serves ${level3.served}, stops ${level3.stopped}, and makes ${level3.errors} errors. ` +
         `The hybrid pipeline needs less than half the average machine time and has ${costRatio} times lower API cost. Each rule needs a question that we write. ${CHANGED_SHORT}, so we saw these failures before the last test. We did not test programs that learn from examples, or other decision models. Next, we need real tickets, a separate request set, and stronger systems to compare with. ` +
         "The Red Hat link is outside context, not our data. " +
         "Thank you for listening."
@@ -1394,10 +1254,10 @@ async function curveArrowPng(svg) {
       x: M, y: 5.3, w: LW, h: 1.5, margin: 0, fontFace: FONT, fontSize: 18, color: C.white, valign: "top",
     });
     [
-      { icon: "LuWorkflow", big: "Slides 8 and 9", label: "The flows of both architectures", color: C.l3 },
-      { icon: "LuDatabase", big: "Slides 24 and 25", label: "Test data and how we score", color: C.l3 },
-      { icon: "LuBadgeCheck", big: "Slides 27 and 28", label: "Results: speed, cost, and accuracy", color: C.teal },
-      { icon: "LuScale", big: "Slide 29", label: "Wrong action labels and observed outcomes", color: C.blue },
+      { icon: "LuWorkflow", big: "Slides 11 to 20", label: "Walk-throughs: one request through the flow", color: C.l3 },
+      { icon: "LuDatabase", big: "Slides 21 and 22", label: "Test data and how we score", color: C.l3 },
+      { icon: "LuBadgeCheck", big: "Slides 24 and 25", label: "Results: speed, cost, and accuracy", color: C.teal },
+      { icon: "LuScale", big: "Slide 26", label: "Wrong action labels and observed outcomes", color: C.blue },
     ].forEach((o, i) => callout(s, CX, 0.7 + i * 1.55, CWd, 1.35, { ...o, bigSize: 28, bigH: 0.55, bigY: 0.12, labelSize: 15 }));
     s.addNotes("Question slide, not part of the timed talk. Tran Thanh Long answers; the other four stand beside him. The cards on the right say which slide to open for each kind of question.");
   }

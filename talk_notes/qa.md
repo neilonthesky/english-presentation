@@ -1,6 +1,6 @@
 # Q&A: câu hỏi bất ngờ (Unprepared Questions)
 
-Long trả lời tất cả câu hỏi trong 5 phút. Bốn bạn còn lại đứng bên cạnh, lắng nghe, chỉ nói khi Long nhường lời. Tệp này chỉ dành cho câu hỏi **không nằm trong kịch bản**. Mọi con số lấy từ slide 26 đến 31.
+Long trả lời tất cả câu hỏi trong 5 phút. Bốn bạn còn lại đứng bên cạnh, lắng nghe, chỉ nói khi Long nhường lời. Tệp này chỉ dành cho câu hỏi **không nằm trong kịch bản**. Mọi con số lấy từ slide 23 đến 28.
 
 ## Cách trả lời mọi câu hỏi (4 bước)
 
