@@ -4,7 +4,7 @@
 
 University coursework for "English Writing and Presentation Skills" (Phenikaa School of Computing, October 2026). The repo produces three linked artifacts about one research study — comparing an autonomous LLM agent against a hybrid classifier-plus-rules pipeline (the "Jev pipeline") for consequential customer-support actions:
 
-- A generated presentation deck (`slides/deck.pptx`, 29 slides).
+- A generated presentation deck (`slides/deck.pptx`, 31 slides).
 - The experiment behind it (`experiment/`, Bun + TypeScript, calls real LLM APIs).
 - A LaTeX paper (`paper.tex`, mirrored in `overleaf/`) and talk scripts (`talk_notes/`).
 
@@ -27,7 +27,7 @@ Key idea of the study: Jev never acts. It answers typed labels and one yes/no qu
 
 ## Key Directories
 
-- `slides/` — deck generator. `build.js` is the single large source (all 29 slides); `cases.js` holds the three morph walk-through scenarios; `charts.js` post-processes chart XML; `transitions.js` injects Morph `<p159:morph>` XML with a fade fallback.
+- `slides/` — deck generator. `build.js` is the single large source (all 31 slides); `cases.js` holds the three morph walk-through scenarios; `charts.js` post-processes chart XML; `transitions.js` injects Morph `<p159:morph>` XML with a fade fallback.
 - `experiment/` — the study. `system/` simulates the SaaS product (accounts, written rules, actions); `notes/*.md` document ablation/robustness/screening methodology; `results/` holds run outputs (dated, tagged, immutable).
 - `talk_notes/` — per-speaker scripts (`speaker_1..5.md`), timing/slide allocation (`README.md`), Q&A prep (`qa.md`).
 - `figures/`, `overleaf/` — TikZ flow diagrams and the Overleaf copy of the paper.
@@ -70,10 +70,10 @@ Useful `run.ts` flags: `--out`, `--cache`, `--data`, `--requests`, `--offline`, 
 - Visible slide text and spoken scripts are plain English: short sentences, B1 vocabulary, no em dashes, no semicolons, active voice.
 - Banned words on slides and in notes: "automation", "autonomous", "versus"; the fictional company name "FrameForge" appears only in `paper.tex` and `experiment/` code — the deck says "a made-up AI video maker service company".
 - The opening slide introduces the subject only; it does not judge or preview later material.
-- Quiz questions (slides 3-4, interactive ones from slide 5 on) must lead into the next slide's content.
+- Quiz questions (slides 3-4, interactive ones from slide 7 on) must lead into the next slide's content.
 - The conclusion slide makes no "future work" claims.
-- Language split: everything in the repo is English; only `talk_notes/` stage directions (e.g. `[NGHỈ 1 GIÂY]`, `[CHUYỂN SANG SLIDE 22]`) and headers may be Vietnamese. Spoken lines in blockquotes are English.
-- Speaker mapping (fixed): Tran Thanh Long slides 1-20 + Q&A; Nguyen Thanh Nam 21-22; Vu Van Son 23-24; Vuong Quang Quy 25-26; Nguyen Phuong Nam 27-28. Slide 29 is Q&A (untimed).
+- Language split: everything in the repo is English; only `talk_notes/` stage directions (e.g. `[NGHỈ 1 GIÂY]`, `[CHUYỂN SANG SLIDE 24]`) and headers may be Vietnamese. Spoken lines in blockquotes are English.
+- Speaker mapping (fixed): Tran Thanh Long slides 1-22 + Q&A; Nguyen Thanh Nam 23-24; Vu Van Son 25-26; Vuong Quang Quy 27-28; Nguyen Phuong Nam 29-30. Slide 31 is Q&A (untimed).
 
 ## Important Files
 

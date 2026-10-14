@@ -1,8 +1,8 @@
 # Speaker 4: Vuong Quang Quy
 
-Slide 25 và 26
+Slide 27 và 28
 
-### Slide 25: Kết quả 2: cùng model viết câu trả lời, khác bước quyết định
+### Slide 27: Kết quả 2: cùng model viết câu trả lời, khác bước quyết định
 
 > We tested both systems on the same one thousand and twenty-four requests. Both use the same LLM to write the reply. Only the decision step is different.
 > 
@@ -22,9 +22,9 @@ Slide 25 và 26
 > 
 > `[NGHỈ 1 GIÂY]`  
 > 
-> `[CHUYỂN SANG SLIDE 26]`
+> `[CHUYỂN SANG SLIDE 28]`
 
-### Slide 26: Nhãn hành động sai, kết cục đúng
+### Slide 28: Nhãn hành động sai, kết cục đúng
 
 > These are observed results, not three independent safety guards. The injection flag and the rule answers both come from Jev. First, Jev sets the injection flag right on ninety-eight point four percent of the requests, and when it is on, the process sends a reply.
 > 

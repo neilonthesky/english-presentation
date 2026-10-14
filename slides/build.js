@@ -98,7 +98,7 @@ const TITLE = "Structured Decision Gates for Customer Support Agents: Intent Det
 // Speakers and speaking time per logical section; each walk-through section spans several slides.
 const LONG = "Tran Thanh Long", NAM = "Nguyen Thanh Nam", SON = "Vu Van Son", QUY = "Vuong Quang Quy", PNAM = "Nguyen Phuong Nam";
 const SPEAKER = [
-  [LONG, 50], [LONG, 50], [LONG, 15], [LONG, 20], [LONG, 50], // title, start, quiz question, quiz answer, the history
+  [LONG, 50], [LONG, 50], [LONG, 15], [LONG, 15], [LONG, 15], [LONG, 25], [LONG, 50], // title, start, quiz question, quiz answer, the two evidence charts, the history
   [LONG, 23], [LONG, 10], [LONG, 28], // written rules, many rules, Jev introduction
   [LONG, 23], [LONG, 21], // inputs, typed answers
   [LONG, 33], [LONG, 12], [LONG, 10], // the three walk-throughs (CASES in cases.js): every click is its own slide, so these seconds cover all of them
@@ -389,49 +389,70 @@ function scaleOrnament(svg, xf) {
   };
 
   // ---------- 1. Title ----------
-  // Left: the approved topic-driven title and the team (x 0.7 to 6.6 on deep blue).
-  // Right: the two agent designs compared (x 7.6 to 12.63 on light panel).
+  // Light halftone slide. Left: the approved title, the course, and the team (x 0.7 to 7.1).
+  // Right: the two agent designs side by side (x 7.6 to 12.63) on a soft panel over the dots.
   {
     const s = pres.addSlide();
-    s.background = { color: C.l3 };
-    const M = 0.7, LW = 5.9, PX = 6.9, SX = PX + 0.7, SW = 13.333 - 0.7 - SX, light = "E3ECF6";
-    s.addShape(pres.ShapeType.rect, { x: PX, y: 0, w: 13.333 - PX, h: 7.5, fill: { color: C.bg }, line: { color: C.bg, width: 0 } });
+    s.background = { color: "F4F7FA" };
+    const M = 0.7, LW = 6.4, SX = 7.6, SW = 13.333 - 0.7 - SX;
+    // Halftone dots that grow toward the right edge: decoration only, drawn first so all content covers it.
+    {
+      const PXI = 150, step = 0.26 * PXI;
+      let dots = "";
+      for (let x = 6.7 * PXI; x < 13.333 * PXI + step; x += step) {
+        for (let y = 0; y < 7.5 * PXI + step; y += step) {
+          const xx = x + (Math.round(y / step) % 2) * (step / 2);
+          const f = Math.min(1, Math.max(0, (xx / PXI - 6.7) / 5.6));
+          const r = step * 0.46 * Math.pow(f, 1.3) * (0.55 + 0.45 * (0.5 + 0.5 * Math.sin((y / PXI) * 0.9)));
+          if (r > 1.2) dots += `<circle cx="${xx.toFixed(1)}" cy="${y.toFixed(1)}" r="${r.toFixed(1)}" fill="${f > 0.7 ? "#1B365D" : "#4A82B8"}"/>`;
+        }
+      }
+      const dotsSvg = `<svg xmlns="http://www.w3.org/2000/svg" width="${13.333 * PXI}" height="${7.5 * PXI}" viewBox="0 0 ${13.333 * PXI} ${7.5 * PXI}">${dots}</svg>`;
+      const dotsPng = await sharp(Buffer.from(dotsSvg), { density: 200 }).resize(2000, 1125).png().toBuffer();
+      s.addImage({ data: "image/png;base64," + dotsPng.toString("base64"), x: 0, y: 0, w: 13.333, h: 7.5 });
+    }
 
     s.addText(
       [{ text: "Phenikaa School of Computing", options: { bold: true, breakLine: true } }, { text: "English Writing and Presentation Skills \u00b7 October 2026" }],
-      { x: M, y: 0.7, w: LW, h: 0.65, margin: 0, fontFace: FONT, fontSize: 16, color: light, valign: "top", paraSpaceAfter: 2 }
+      { x: M, y: 0.6, w: LW, h: 0.7, margin: 0, fontFace: FONT, fontSize: 15, color: C.muted, valign: "top", paraSpaceAfter: 2 }
     );
-    s.addText("Structured Decision Gates for\nCustomer Support Agents:\nIntent Detection and Rule Checks", {
-      x: M, y: 1.55, w: LW, h: 2.4, margin: 0, fontFace: FONT, fontSize: 28, bold: true, color: C.white, valign: "top",
+    s.addText("Structured Decision Gates for Customer Support Agents:", {
+      x: M, y: 1.55, w: LW, h: 2.0, margin: 0, fontFace: FONT, fontSize: 34, bold: true, color: C.navy, valign: "top",
     });
-    s.addText("Team", { x: M, y: 4.15, w: LW, h: 0.32, margin: 0, fontFace: FONT, fontSize: 16, bold: true, color: light, valign: "middle" });
+    s.addText("Intent Detection and Rule Checks", {
+      x: M, y: 3.7, w: LW, h: 0.6, margin: 0, fontFace: FONT, fontSize: 24, bold: true, color: C.teal, valign: "top",
+    });
+    s.addShape(pres.ShapeType.line, { x: M, y: 4.6, w: 1.0, h: 0, line: { color: C.l2, width: 3 } });
     const team = [LONG, NAM, SON, QUY, PNAM];
     s.addText(team.map((t, i) => ({ text: t, options: { breakLine: i < team.length - 1 } })), {
-      x: M, y: 4.52, w: LW, h: 1.5, margin: 0, fontFace: FONT, fontSize: 18, color: C.white, valign: "top",
+      x: M, y: 4.85, w: LW, h: 1.5, margin: 0, fontFace: FONT, fontSize: 17, color: C.text, valign: "top",
     });
 
-    // Right panel: The two agent designs
+    // Soft panel behind the right content so the dots never run under text.
+    s.addShape(pres.ShapeType.roundRect, { x: SX - 0.35, y: 0.45, w: SW + 0.7, h: 6.6, rectRadius: 0.12, fill: { color: "F4F7FA", transparency: 6 }, line: { color: "F4F7FA", width: 0 } });
+
+    // Right panel: the two agent designs
     s.addText("Two agent designs\nfor support", { x: SX, y: 0.7, w: SW, h: 1.05, margin: 0, fontFace: FONT, fontSize: 26, bold: true, color: C.navy, valign: "top" });
-    s.addText("Which architecture can handle consequential customer actions?", { x: SX, y: 1.82, w: SW, h: 0.45, margin: 0, fontFace: FONT, fontSize: 14, color: C.text, valign: "top" });
+    s.addText("Which design fits customer actions that are hard to undo?", { x: SX, y: 1.82, w: SW, h: 0.45, margin: 0, fontFace: FONT, fontSize: 14, color: C.text, valign: "top" });
 
     const gap = 0.25, cardW = (SW - gap) / 2, cardY = 2.38, cardH = 4.42;
-    // Paradigm 1: LLM Agent
+    // Design 1: LLM agent
     box(s, SX, cardY, cardW, cardH, { fill: C.white });
     s.addShape(pres.ShapeType.roundRect, { x: SX, y: cardY, w: cardW, h: 0.82, rectRadius: 0.08, fill: { color: C.blue }, line: { color: C.blue, width: 0 } });
     s.addImage({ data: img.LuBot, x: SX + 0.16, y: cardY + 0.16, w: 0.5, h: 0.5 });
     s.addText("LLM\nAgent", { x: SX + 0.72, y: cardY + 0.08, w: cardW - 0.8, h: 0.66, margin: 0, fontFace: FONT, fontSize: 15, bold: true, color: C.white, valign: "middle" });
     s.addText(
       bullets([
-        "One monolithic model",
-        "Policies in system prompt",
-        "Model decides & executes",
-        "High token & latency cost",
-        "Susceptible to injection",
+        "One big model",
+        "The rules are in its prompt",
+        "The model decides and acts",
+        "Slow and costly",
+        "Can follow hidden orders",
       ]),
       { x: SX + 0.14, y: cardY + 0.95, w: cardW - 0.28, h: 3.3, margin: 0, fontFace: FONT, fontSize: 14, color: C.text, paraSpaceAfter: 8, valign: "top" }
     );
 
-    // Paradigm 2: Classifier + Rules + LLM
+    // Design 2: classifier + rules + LLM
     const x2 = SX + cardW + gap;
     box(s, x2, cardY, cardW, cardH, { fill: C.white });
     s.addShape(pres.ShapeType.roundRect, { x: x2, y: cardY, w: cardW, h: 0.82, rectRadius: 0.08, fill: { color: C.navy }, line: { color: C.navy, width: 0 } });
@@ -439,19 +460,19 @@ function scaleOrnament(svg, xf) {
     s.addText("Classifier +\nRules + LLM", { x: x2 + 0.72, y: cardY + 0.08, w: cardW - 0.8, h: 0.66, margin: 0, fontFace: FONT, fontSize: 15, bold: true, color: C.white, valign: "middle" });
     s.addText(
       bullets([
-        "Structured intent triage",
-        "Facts parsed by classifier",
-        "Code applies the rule answers",
-        "LLM drafts reply only",
-        "Zero unchecked actions",
+        "A classifier labels the request",
+        "It reads facts from the chat",
+        "Code applies each rule answer",
+        "The LLM only writes the reply",
+        "No action without a check",
       ]),
       { x: x2 + 0.14, y: cardY + 0.95, w: cardW - 0.28, h: 3.3, margin: 0, fontFace: FONT, fontSize: 14, color: C.text, paraSpaceAfter: 8, valign: "top" }
     );
 
     s.addNotes(
-      `Speaker: ${LONG}, about ${SPEAKER[0][1]} s. Good morning. When customers request refunds, plan changes, or account deletions, a system that handles money and data without a check can cause severe harm. ` +
-        "Companies often deploy LLM agents that read policy text and act directly, but these agents are slow, expensive, and vulnerable to prompt injection. " +
-        "Today, we study an alternative architecture: combining intent classification, rule checks in code, and an LLM that writes the reply, and compare both on consequential customer requests."
+      `Speaker: ${LONG}, about ${SPEAKER[0][1]} s. Good morning. Today we look at a support chat for a made-up AI video maker service company. The chat can do real things, such as give a refund. ` +
+        "The slide shows two designs for this chat. On the left, an LLM agent. One model reads the chat and the rules, and it does the action. " +
+        "On the right, a classifier labels the request, code applies each rule answer, and the LLM only writes the reply."
     );
   }
 
@@ -563,20 +584,54 @@ function scaleOrnament(svg, xf) {
       "The answer: about half",
       "Point at C: about half. The frontier models everyone calls the smartest, GPT, Gemini, Claude, still answer roughly half of the hard questions wrongly instead of refusing. Even the leaderboard minimum, a cheaper open-weight model, is 18%, and most companies deploy models in the 30 to 65% band. " +
         "A smarter model shrinks the number but cannot reach zero: hallucination is probabilistic. Only architecture stops it: fixed rules outside the model. " +
-        "Land the bridge: a smarter model is not the fix; the fix is the system around the model, separate steps with fixed rules that decide. Support has been built that way for years. The next slide shows that history.",
+        "Then show the evidence: the next two slides are the charts from Artificial Analysis behind these numbers.",
       "C",
       "The smartest models: about half wrong. The minimum on the board: 18%."
     );
   }
 
-  // ---------- 5. History ----------
+  // ---------- 5 and 6. The evidence: the Artificial Analysis charts behind the quiz ----------
+  // Two screenshots from Artificial Analysis (AA-Omniscience), each on its own slide so the labels stay readable.
+  // The quiz answer says what the numbers are; these slides show where they come from.
+  {
+    const evidence = (n, title, notes, file, srcW, srcH, maxH = 3.75) => {
+      const s = base(n, title, notes);
+      const w = Math.min(CW - 0.3, (maxH - 0.3) * (srcW / srcH)), h = w * (srcH / srcW);
+      const cardW = w + 0.3, cardH = h + 0.3, cardX = ML + (CW - cardW) / 2, cardY = 1.55;
+      box(s, cardX, cardY, cardW, cardH, { fill: C.white });
+      s.addImage({ path: file, x: cardX + 0.15, y: cardY + 0.15, w, h });
+      return s;
+    };
+    const rate = evidence(
+      5,
+      "Hallucination rate on AA-Omniscience",
+      "This is the chart behind the answer. Each bar is one model. The bar shows the hallucination rate on AA-Omniscience: the share of wrong answers among all answers that are not correct. A lower bar is better. " +
+        "Read the two ends. The lowest bar is 18%, and it belongs to MiniMax-M3, a cheaper open-weight model. The highest bar is 96%. The models that most people call the smartest, GPT, Gemini, and Claude, sit between 45% and 77%. Most models on the board fall between 30 and 65%. " +
+        "Source: Artificial Analysis.",
+      "assets/omniscience_rate.png", 1369, 406
+    );
+    band(rate, 5.45, 0.9, "LuBadgeInfo", [{ text: "The lowest rate on the board is 18%. ", options: { bold: true } }, { text: "Most models sit between 30 and 65%." }]);
+    textBox(rate, "Hallucination rate: the share of wrong answers among all answers that are not correct. Source: Artificial Analysis.", ML, 6.5, CW, 0.35, { size: 13, color: C.muted });
+    const scatter = evidence(
+      6,
+      "A higher score does not remove hallucination",
+      "This chart puts the same models on two axes. Left to right is the AA-Omniscience Index, the score of the model. Bottom to top is the hallucination rate. Each dot is one model. " +
+        "The green box is the most attractive area: a high score and a hallucination rate below 50%. Only a few models reach it. Many models with a high score still sit above 50%. A higher score does not make the rate fall to zero. " +
+        "So a smarter model is not the fix. The fix is the system around the model: separate steps, with fixed rules that decide. Support has been built that way for years. The next slide shows that history. " +
+        "Source: Artificial Analysis.",
+      "assets/omniscience_scatter.png", 1383, 556, 4.95
+    );
+    textBox(scatter, "Green box: a high score and a hallucination rate below 50%. Source: Artificial Analysis.", ML, 6.62, CW, 0.3, { size: 13, color: C.muted });
+  }
+
+  // ---------- 7. History ----------
   // Opening background slide: a rising serpentine road through the industry's history, described only. It comes before
   // Jev, the levels, and the results, so it names none of them, uses no experiment data, and makes no judgment.
   // Both eras run the same steps (classifier, rules, reply); only the model inside a step changes.
   // The third pin is a question, not an era: it leads into the next slides.
   {
     const s = base(
-      5,
+      7,
       "A short history of support systems",
       "Support systems have run the same steps for years: a classifier labels the message, fixed rules decide what to do, and something writes the reply. " +
         "Rules means ordinary program code written by people, such as: a refund above 100 dollars is denied. It runs the same way every time and is not a model. " +
@@ -611,7 +666,7 @@ function scaleOrnament(svg, xf) {
   // ---------- 4. The written rules ----------
   {
     const s = base(
-      6,
+      8,
       "Every action meets a written rule: allow or deny",
       "Here is the essential gate, one rule for each action. First, the Security rule: if someone else used the account or the card, deny. A refund above 100 dollars is denied. So is a password link to an e-mail that is not on file, and a plan that is already cancelled. Deleting data is always denied. The LLM agent reads these rules as prompt text. Our pipeline checks each rule with one question, and the code runs the answer."
     );
@@ -643,7 +698,7 @@ function scaleOrnament(svg, xf) {
   // ---------- 4. Many rules ----------
   {
     const s = base(
-      7,
+      9,
       "Real support policies have many rules",
       "Real policies have many rules. Who should apply every rule: an LLM agent, or a fast classifier? We compare both.",
       true, undefined, { w: 3.5, h: 1.5, fontSize: 28, valign: "top" }
@@ -689,7 +744,7 @@ function scaleOrnament(svg, xf) {
   // ---------- Jev introduction ----------
   {
     const s = base(
-      8,
+      10,
       "Meet Jev, a fast classifier",
       "Meet Jev, a fast classifier from the System One family of TypeSafe AI, version 1.13.0. It gives typed labels, each with a confidence. It also answers our own yes or no questions, one for each written rule, with no fine-tuning. It has no action tool and never writes text. It is cheap: input costs 4.2 cents per million tokens, and its output is free. On the right are recorded answers for one request."
     );
@@ -728,7 +783,7 @@ function scaleOrnament(svg, xf) {
   // ---------- 6. What Jev reads ----------
   {
     const s = base(
-      9,
+      11,
       "Jev reads the chat first, then one rule at a time",
       "Jev is called twice. The first call reads the chat only: the text and the name of the sender. The second call runs when the action changes the state. It reads the chat, the account lines that this action needs, the actions already done, and one question for each written rule of the action, for example: is the amount above 100 dollars? The questions are written text, not code; a fixed table picks the account lines. Fixed code also does the arithmetic: the purchase line states the days since the charge, so Jev reads a number and never subtracts two dates. We found that each rule needs a question that we write: questions made from the text of the rule alone made more errors. Jev supports custom zero-shot questions without task-specific fine-tuning, but the question wording still needs evaluation. This is a reason to try it, not proof that it is the fastest or most accurate model."
     );
@@ -764,7 +819,7 @@ function scaleOrnament(svg, xf) {
   // ---------- 7. What Jev answers ----------
   {
     const s = base(
-      10,
+      12,
       "Jev returns five fields, then one answer per rule",
       "The first call returns five fields: topic, priority, action, risk flag, and injection flag. The four shown here guide the flow; the risk flag is also recorded. If the injection flag is on, the action becomes Send reply, so an order hidden in the text is ignored. If the action changes the state, the second call answers one yes/no question for each written rule of that action: does this rule block the action? If no rule blocks it, the action runs; if one does, nothing runs. Typed answers constrain the output format, not correctness. The injection flag and the rule answers both come from Jev; neither is an independent policy verifier. Now, three recorded requests."
     );
@@ -1014,14 +1069,14 @@ function scaleOrnament(svg, xf) {
   }
 
   CASES.forEach((c, i) => {
-    for (let f = 0; f <= (c.show ?? c.path).length; f++) walkthrough(c, 11 + i, f);
+    for (let f = 0; f <= (c.show ?? c.path).length; f++) walkthrough(c, 13 + i, f);
   });
 
   // ---------- 11. Test data ----------
   // One slide for Nam: the five groups of the request set and the facts of the set that the talk must state.
   {
     const s = base(
-      14,
+      16,
       `Test data: ${data.customers} customers, ${sampleSize} requests`,
       `We made our own test set. It has ${data.customers} customers of a made-up AI video maker service company. Each customer has one purchase, some credits, and a list of password reset links. Each customer sends ${requestsPerCustomer} requests. So we have ${sampleSize} requests, in ${data.categories} types and five groups. The biggest group is high-impact actions, with ${groupSize[0]} requests. We made the set hard on purpose. On ${data.finalDenied} requests, a written rule says no. On ${injectionRequests} requests, an order hides inside the message. A program wrote all the requests and the correct answers. This is a hard test set, not real customer traffic.`
     );
@@ -1045,7 +1100,7 @@ function scaleOrnament(svg, xf) {
   // ---------- 13. Outcomes ----------
   {
     const s = base(
-      15,
+      17,
       "Every request ends served, stopped, or in error",
       "Now, how we score a request. We look at what the customer gets. Served means the run ends with the correct result. Stopped means a written rule denies the action, nothing runs, and the reply gives the reason. Error is every other run. A run is harmful if it changes money, data, the plan, or the password against the written rules. We also report the machine time of one request, the API cost per 1,000 requests, and the error counts on this request set."
     );
@@ -1080,7 +1135,7 @@ function scaleOrnament(svg, xf) {
   // One slide for Son: how the two levels ran, the two hosted models, the list prices, and the cost that follows.
   {
     const s = base(
-      16,
+      18,
       `Experimental setup: 1,024 requests, two architectures`,
       `We call two hosted models for real: Jev, version 1.13.0, and DeepSeek V4.1 Flash. Both architectures run on the same ${sampleSize} requests, in separate runs. The LLM agent makes two LLM calls: one to classify the request and one to answer for each request. The Jev pipeline makes ${(jevCalls / level3.requests).toFixed(1)} classifier calls and one LLM call. Jev costs 4.2 cents per million input tokens, and its output is free. The LLM costs 15 cents in and 60 cents out per million tokens. At list price, 1,000 requests cost $${cost2} for the LLM agent and $${cost3} for the Jev pipeline. These are API token charges, not total operating cost.`
     );
@@ -1136,7 +1191,7 @@ function scaleOrnament(svg, xf) {
   // ---------- 7. Result 1: Jev ----------
   {
     const s = base(
-      17,
+      19,
       "Jev on our test set: speed, cost, and accuracy",
       `Now the first result, for Jev alone. Half of the requests need ${level3.decisionLatency.median.toFixed(2)} seconds or less of Jev time, including rule calls, and all Jev calls cost $${level3.decisionCostPer1000.toFixed(3)} per 1,000 requests. The first call gives the right topic on ${(100 * quality.queue.accuracy).toFixed(1)} percent of the scored requests, the priority on ${(100 * quality.priority.accuracy).toFixed(1)} percent, the action on ${(100 * quality.action.accuracy).toFixed(1)} percent, and the injection flag on ${(100 * quality.injection.accuracy).toFixed(1)} percent. ${count(ruleStats.matching)} of ${count(ruleStats.answers)} rule answers match the written rules. The first-call action label is wrong on ${wrongActions.length} requests, and ${wrongActionOutcomes === 0 ? "none" : wrongActionOutcomes} of these end in a wrong outcome. ${CHANGED_SHORT}, so we saw these failures before the last test.`
     );
@@ -1163,7 +1218,7 @@ function scaleOrnament(svg, xf) {
   // Both levels write the Final message with the same LLM. Only the decision step differs: one LLM agent call, or Jev answering typed questions.
   {
     const s = base(
-      18,
+      20,
       "Same reply model, different decision step",
       `We tested both systems on the same ${sampleSize} requests. Both use the same LLM to write the reply. Only the decision step is different. The LLM agent decides in one step. It serves ${level2.served} requests and stops ${level2.stopped}. It gets ${level2.errors} requests wrong. ${level2.harmful} of them cause real damage. ${injectionErrors2} are orders that hide inside the message. The Jev pipeline serves ${level3.served} requests and stops ${level3.stopped}. It gets none wrong. Jev is also faster. One request takes ${time3} seconds, not ${time2}. It is cheaper too. One thousand requests cost ${Math.round(100 * level3.apiCostPer1000)} cents, not $${cost2}. These numbers come from our own test set. They do not prove that the system is always safe. The two systems differ in model, input, and flow, so the results do not show which part gives the gain.`
     );
@@ -1194,10 +1249,10 @@ function scaleOrnament(svg, xf) {
   }
 
   // Observed action-label and outcome results, not independent safety guards.
-  // Every numerical result is also on slide 24; the rule evaluation was not blind.
+  // Every numerical result is also on slide 26; the rule evaluation was not blind.
   {
     const s = base(
-      19,
+      21,
       "Wrong action labels, correct outcomes on this test set",
       "These are observed results, not three independent safety guards. The injection flag and the rule answers both come from Jev. " +
         `First, Jev sets the injection flag right on ${(100 * quality.injection.accuracy).toFixed(1)} percent of the requests, and when it is on, the process sends a reply. ` +
@@ -1225,7 +1280,7 @@ function scaleOrnament(svg, xf) {
   // Our own design only, no outside source: what each part of Level 3 may do, and what it may not do.
   {
     const s = base(
-      20,
+      22,
       "Our idea: limit what each model can trigger",
       "Our idea is to limit what each model can trigger. " +
         "Jev has no action tool. It answers typed questions about the chat and the rules. Fixed code runs the action only when no rule blocks it. " +
@@ -1270,7 +1325,7 @@ function scaleOrnament(svg, xf) {
       { icon: "LuDollarSign", big: `${costRatio}x`, label: `lower API cost: $${cost3} vs $${cost2} per 1,000 requests`, color: C.l3 },
     ].forEach((o, i) => callout(s, CX, 0.7 + i * 2.1, CWd, 1.9, { ...o, bigSize: 38, bigH: 0.8, bigY: 0.25, labelSize: 15 }));
     s.addNotes(
-      `Speaker: ${PNAM}, about ${SPEAKER[19][1]} s. Last, we tested both systems on the same ${sampleSize} requests. The LLM agent serves ${level2.served} and stops ${level2.stopped}. It gets ${level2.errors} wrong. The Jev pipeline serves ${level3.served} and stops ${level3.stopped}. It gets none wrong. ` +
+      `Speaker: ${PNAM}, about ${SPEAKER[21][1]} s. Last, we tested both systems on the same ${sampleSize} requests. The LLM agent serves ${level2.served} and stops ${level2.stopped}. It gets ${level2.errors} wrong. The Jev pipeline serves ${level3.served} and stops ${level3.stopped}. It gets none wrong. ` +
         `The Jev pipeline is ${speedRatio} times faster and ${costRatio} times cheaper. Each rule needs a question that we write. ${CHANGED_SHORT}, so we saw these failures before the last test. We did not test other models. ` +
          +
         "Thank you for listening."
@@ -1294,10 +1349,10 @@ function scaleOrnament(svg, xf) {
       x: M, y: 5.3, w: LW, h: 1.5, margin: 0, fontFace: FONT, fontSize: 18, color: C.white, valign: "top",
     });
     [
-      { icon: "LuWorkflow", big: "Slides 11 to 20", label: "Walk-throughs: one request through the flow", color: C.l3 },
-      { icon: "LuDatabase", big: "Slides 21 and 22", label: "Test data and how we score", color: C.l3 },
-      { icon: "LuBadgeCheck", big: "Slides 24 and 25", label: "Results: speed, cost, and accuracy", color: C.teal },
-      { icon: "LuScale", big: "Slide 26", label: "Wrong action labels and observed outcomes", color: C.blue },
+      { icon: "LuWorkflow", big: "Slides 13 to 22", label: "Walk-throughs: one request through the flow", color: C.l3 },
+      { icon: "LuDatabase", big: "Slides 23 and 24", label: "Test data and how we score", color: C.l3 },
+      { icon: "LuBadgeCheck", big: "Slides 26 and 27", label: "Results: speed, cost, and accuracy", color: C.teal },
+      { icon: "LuScale", big: "Slide 28", label: "Wrong action labels and observed outcomes", color: C.blue },
     ].forEach((o, i) => callout(s, CX, 0.7 + i * 1.55, CWd, 1.35, { ...o, bigSize: 28, bigH: 0.55, bigY: 0.12, labelSize: 15 }));
     s.addNotes("Question slide, not part of the timed talk. Tran Thanh Long answers; the other four stand beside him. The cards on the right say which slide to open for each kind of question.");
   }

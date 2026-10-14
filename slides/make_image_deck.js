@@ -14,7 +14,7 @@ const path = require("path");
 const JSZip = require("jszip");
 const pptxgen = require("pptxgenjs");
 
-const SLIDES = 29;
+const SLIDES = 31;
 const TITLE = "Structured Decision Gates for Customer Support Agents";
 
 async function notesOf(deckPath) {

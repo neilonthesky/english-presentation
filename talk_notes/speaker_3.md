@@ -1,8 +1,8 @@
 # Speaker 3: Vu Van Son
 
-Slide 23 và 24
+Slide 25 và 26
 
-### Slide 23: Cách chạy và giá: hai kiến trúc, hai mô hình, một bảng giá
+### Slide 25: Cách chạy và giá: hai kiến trúc, hai mô hình, một bảng giá
 
 > We call two hosted models for real: Jev, version one point thirteen, and DeepSeek V four point one Flash. Both systems run on the same one thousand and twenty-four requests, in separate runs.
 > 
@@ -16,9 +16,9 @@ Slide 23 và 24
 > 
 > `[NGHỈ 1 GIÂY]`  
 > 
-> `[CHUYỂN SANG SLIDE 24]`
+> `[CHUYỂN SANG SLIDE 26]`
 
-### Slide 24: Kết quả 1: Jev nhanh, rẻ và phần lớn đúng
+### Slide 26: Kết quả 1: Jev nhanh, rẻ và phần lớn đúng
 
 > Now the first result, for Jev alone. Half of the requests need zero point four seven seconds or less of Jev time, including rule calls, and all Jev calls cost six point six cents per one thousand requests.
 > 
@@ -32,4 +32,4 @@ Slide 23 và 24
 > 
 > `[NGHỈ 1 GIÂY]`
 > 
-> `[CHUYỂN SANG SLIDE 25]`
+> `[CHUYỂN SANG SLIDE 27]`

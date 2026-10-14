@@ -1,8 +1,8 @@
 # Speaker 5: Nguyen Phuong Nam
 
-Slide 27 và 28
+Slide 29 và 30
 
-### Slide 27: Ý tưởng của chúng tôi: giới hạn điều mỗi mô hình có thể kích hoạt
+### Slide 29: Ý tưởng của chúng tôi: giới hạn điều mỗi mô hình có thể kích hoạt
 
 > Our idea is to limit what each model can trigger. Jev has no action tool. It answers typed questions about the chat and the rules.
 > 
@@ -16,9 +16,9 @@ Slide 27 và 28
 > 
 > `[NGHỈ 1 GIÂY]`  
 > 
-> `[CHUYỂN SANG SLIDE 28]`
+> `[CHUYỂN SANG SLIDE 30]`
 
-### Slide 28: Kết luận
+### Slide 30: Kết luận
 
 > Last, we tested both systems on the same one thousand and twenty-four requests. The LLM agent serves seven hundred and ninety-five and stops one hundred and ninety-eight. It gets thirty-one wrong. The Jev pipeline serves eight hundred and twenty-five and stops one hundred and ninety-nine. It gets none wrong.
 > 

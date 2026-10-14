@@ -1,8 +1,8 @@
 # Speaker 2: Nguyen Thanh Nam
 
-Slide 21 và 22
+Slide 23 và 24
 
-### Slide 21: Dữ liệu thử nghiệm: 512 khách hàng, 1.024 yêu cầu
+### Slide 23: Dữ liệu thử nghiệm: 512 khách hàng, 1.024 yêu cầu
 
 > We made our own test set. It has five hundred and twelve customers of a made-up AI video maker service company. Each customer has one purchase, some credits, and a list of password reset links.
 > 
@@ -16,9 +16,9 @@ Slide 21 và 22
 > 
 > `[NGHỈ 1 GIÂY]`  
 > 
-> `[CHUYỂN SANG SLIDE 22]`
+> `[CHUYỂN SANG SLIDE 24]`
 
-### Slide 22: Cách chấm: ba kết cục và một lần chạy gây hại
+### Slide 24: Cách chấm: ba kết cục và một lần chạy gây hại
 
 > Now, how we score each request. We look at what the customer gets. Served means the run ends with the correct result. Stopped means a written rule says no, nothing runs, and the reply gives the reason. Error means any other result.
 > 
@@ -28,4 +28,4 @@ Slide 21 và 22
 > 
 > `[NGHỈ 1 GIÂY]`
 > 
-> `[CHUYỂN SANG SLIDE 23]`
+> `[CHUYỂN SANG SLIDE 25]`
