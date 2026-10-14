@@ -90,9 +90,9 @@ Slide 1 đến 22
 
 ### Slide 8: Các quy tắc bằng văn bản
 
-> Here is the key gate: one rule for each action. First, the Security rule. If another person uses the account or the card, the answer is deny.
+> Here is the key gate: written rules that allow or deny an action. First, the Security rule. If another person uses the account or the card, the answer is deny.
 > 
-> The answer is also deny for four cases: a refund above one hundred dollars, a password link to an unknown e-mail, a plan that is already cancelled, and any data deletion.
+> The rules also deny a refund above one hundred dollars. They deny a refund if the customer used credits. They deny a plan that is already cancelled. They deny any data deletion. When a rule says deny, nothing runs, and the reply gives the reason.
 > 
 > `[NGHỈ 1 GIÂY]`  
 > 

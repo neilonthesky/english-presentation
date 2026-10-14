@@ -668,13 +668,13 @@ function scaleOrnament(svg, xf) {
     const s = base(
       8,
       "Every action meets a written rule: allow or deny",
-      "Here is the essential gate, one rule for each action. First, the Security rule: if someone else used the account or the card, deny. A refund above 100 dollars is denied. So is a password link to an e-mail that is not on file, and a plan that is already cancelled. Deleting data is always denied. The LLM agent reads these rules as prompt text. Our pipeline checks each rule with one question, and the code runs the answer."
+      "Here is the essential gate: written rules that allow or deny an action. First, the Security rule: if someone else used the account or the card, the answer is deny. A refund above 100 dollars is denied. A refund is also denied when the customer already used credits. A plan that is already cancelled is denied. Deleting data is always denied. Deny means nothing runs, and the reply gives the reason."
     );
-    // One deny rule for each action; the walk-throughs show the full gate.
+    // One deny rule for four examples; the walk-throughs show the full gate. No model is named here: Jev comes on slide 10.
     const RULE_ROWS = [
-      ["Any change", "Someone else used the account or the card", "deny", true],
+      ["Security", "Someone else used the account or the card", "deny", true],
       ["Refund", "Above $100", "deny", false],
-      ["Reset password", "Link to an address that is not on file", "deny", false],
+      ["Refund", "Credits are already used", "deny", false],
       ["Cancel plan", "The plan is already cancelled", "deny", false],
       ["Delete data", "Always: it cannot be undone", "deny", false],
     ];
@@ -690,7 +690,7 @@ function scaleOrnament(svg, xf) {
     });
     textBox(
       s,
-      [{ text: "Two ways to apply the rules. ", options: { bold: true } }, { text: "LLM agent: reads the rules in prompt text.   Jev pipeline: Jev answers one question for each rule." }],
+      [{ text: "Deny means nothing runs. ", options: { bold: true } }, { text: "The reply gives the reason." }],
       ML, 6.35, CW, 0.5, { size: 17, color: C.navy, valign: "middle" }
     );
   }
