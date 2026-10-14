@@ -4,6 +4,10 @@ Slide 27 và 28
 
 ### Slide 27: Kết quả 2: cùng model viết câu trả lời, khác bước quyết định
 
+> Thank you, Son. My name is Vuong Quang Quy. I will show the main result of the two systems. Then I will explain why wrong labels do not give wrong outcomes.
+> 
+> `[NGHỈ 1 GIÂY]`  
+> 
 > We tested both systems on the same one thousand and twenty-four requests. Both use the same LLM to write the reply. Only the decision step is different.
 > 
 > The LLM agent decides in one step. It serves seven hundred and ninety-five requests and stops one hundred and ninety-eight. It gets thirty-one requests wrong. Ten of them cause real damage. Twenty-seven are orders that hide inside the message.
@@ -34,7 +38,7 @@ Slide 27 và 28
 > 
 > `[NGHỈ 1 GIÂY]`  
 > 
-> The Jev pipeline gets none wrong and has no harmful runs on this set. Two refund inputs were changed after earlier failures, so we saw these failures before this last test.
+> The Jev pipeline gets none wrong and has no harmful runs on this set. We changed two refund inputs after earlier failures. So we saw these failures before this last test.
 > 
 > `[NGHỈ 1 GIÂY]`  
 > `[CHUYỂN SANG SLIDE 29 - PHƯƠNG NAM TIẾP TỤC]`

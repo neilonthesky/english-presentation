@@ -4,6 +4,10 @@ Slide 29 và 30
 
 ### Slide 29: Ý tưởng của chúng tôi: giới hạn điều mỗi mô hình có thể kích hoạt
 
+> Thank you, Quy. My name is Nguyen Phuong Nam. I will explain our main idea, and then I will give the conclusion.
+> 
+> `[NGHỈ 1 GIÂY]`  
+> 
 > Our idea is to limit what each model can trigger. Jev has no action tool. It answers typed questions about the chat and the rules.
 > 
 > `[NGHỈ 1 GIÂY]`  
@@ -12,7 +16,7 @@ Slide 29 và 30
 > 
 > `[NGHỈ 1 GIÂY]`  
 > 
-> This is fixed execution, not independent policy verification: the code does not recheck the policy facts against the account, so a wrong rule answer can still allow an unsafe action.
+> This is fixed execution. It is not independent policy verification. The code does not recheck the policy facts against the account. So a wrong rule answer can still allow an unsafe action.
 > 
 > `[NGHỈ 1 GIÂY]`  
 > 

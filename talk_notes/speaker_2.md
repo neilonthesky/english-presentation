@@ -4,6 +4,10 @@ Slide 23 và 24
 
 ### Slide 23: Dữ liệu thử nghiệm: 512 khách hàng, 1.024 yêu cầu
 
+> Thank you, Long. My name is Nguyen Thanh Nam. I will explain our test data and how we score each request.
+> 
+> `[NGHỈ 1 GIÂY]`  
+> 
 > We made our own test set. It has five hundred and twelve customers of a made-up AI video maker service company. Each customer has one purchase, some credits, and a list of password reset links.
 > 
 > `[NGHỈ 1 GIÂY]`  

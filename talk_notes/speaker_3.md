@@ -4,6 +4,10 @@ Slide 25 và 26
 
 ### Slide 25: Cách chạy và giá: hai kiến trúc, hai mô hình, một bảng giá
 
+> Thank you, Nam. My name is Vu Van Son. I will explain how we ran the test, what it costs, and the first result for Jev.
+> 
+> `[NGHỈ 1 GIÂY]`  
+> 
 > We call two hosted models for real: Jev, version one point thirteen, and DeepSeek V four point one Flash. Both systems run on the same one thousand and twenty-four requests. Each system runs on its own.
 > 
 > `[NGHỈ 1 GIÂY]`  
