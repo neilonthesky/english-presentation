@@ -29,3 +29,5 @@ Slide 29 và 30
 > `[NGHỈ 1 GIÂY]`
 > 
 > Thank you for listening.
+>
+> `[CHUYỂN SANG SLIDE 31 - HỎI ĐÁP]`

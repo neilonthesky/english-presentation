@@ -36,4 +36,5 @@ Slide 27 và 28
 > 
 > The Jev pipeline gets none wrong and has no harmful runs on this set. Two refund inputs were changed after earlier failures, so we saw these failures before this last test.
 > 
-> `[NGHỈ 1 GIÂY]`
+> `[NGHỈ 1 GIÂY]`  
+> `[CHUYỂN SANG SLIDE 29 - PHƯƠNG NAM TIẾP TỤC]`
